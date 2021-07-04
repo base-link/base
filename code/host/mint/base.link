@@ -1,0 +1,134 @@
+
+load ../mine
+  load /bind
+    take mine bind
+  load /book
+    take mine book
+  load /call
+    take mine call
+  load /case
+    take mine case
+  load /cast
+    take mine cast
+  load /deck
+    take mine deck
+  load /file
+    take mine file
+  load /form
+    take mine form
+  load /hold
+    take mine hold
+  load /hook
+    take mine hook
+  load /lace
+    take mine lace
+  load /load
+    take mine load
+  load /make
+    take mine make
+  load /mint
+    take mine mint
+  load /move
+    take mine move
+  load /seed
+    take mine seed
+  load /sift
+    take mine sift
+  load /site
+    take mine site
+  load /task
+    take mine task
+  load /test
+    take mine test
+  load /tune
+    take mine tune
+  load /view
+    take mine view
+
+mint bind
+  mine bind
+  mill bind
+
+mint book
+  mine book
+  mill book
+
+mint call
+  mine call
+  mill call
+
+mint case
+  mine case
+  mill case
+
+mint cast
+  mine cast
+  mill cast
+
+mint deck
+  mine deck
+  mill deck
+
+mint file
+  mine file
+  mill file
+
+mint form
+  mine form
+  mill form
+
+mint hold
+  mine hold
+  mill hold
+
+mint hook
+  mine hook
+  mill hook
+
+mint lace
+  mine lace
+  mill lace
+
+mint load
+  mine load
+  mill load
+
+mint make
+  mine make
+  mill make
+
+mint mint
+  mine mint
+  mill mint
+
+mint move
+  mine move
+  mill move
+
+mint seed
+  mine seed
+  mill seed
+
+mint sift
+  mine sift
+  mill sift
+
+mint site
+  mine site
+  mill site
+
+mint task
+  mine task
+  mill task
+
+mint test
+  mine test
+  mill test
+
+mint tune
+  mine tune
+  mill tune
+
+mint view
+  mine view
+  mill view

@@ -1,0 +1,7 @@
+
+load ../..
+  load /deck
+    take mine deck
+
+mine deck-file
+  mine form, form deck

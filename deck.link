@@ -1,0 +1,14 @@
+
+deck @drumwork/base
+  lead <Link Script Compiler>
+  make <Link Script>
+  make <Computation>
+  make <Philosophy>
+  make <Information>
+  make <Platform>
+  make <White Label>
+  team <Lance Pollard>, site <lp@elk.fm>
+  hook ./hook
+  call ./call
+  read ./read
+  term <Apache 2.0>

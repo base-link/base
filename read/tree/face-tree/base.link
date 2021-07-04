@@ -1,0 +1,3 @@
+
+hook /@:host, call load-host
+  hook /:deck, call load-deck

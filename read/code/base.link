@@ -1,0 +1,26 @@
+
+head <Part 1: The Code>
+  flow <Here we will build a dictionary app.>
+  fuse ./note
+  fuse ./form
+  fuse ./mint
+  fuse ./tree
+  fuse ./make
+  fuse ./seed
+  fuse ./bind
+  fuse ./view
+  fuse ./face
+  fuse ./cast
+  fuse ./read
+  fuse ./host
+  fuse ./head
+  head <Creating initial data>
+  head <Making it Visible>
+  head <Saving and Deleting Data>
+
+term <english>
+  talk <pronunciation>
+  term latin, <>
+  term chinese, <>
+  term pinyin, <>
+  mean <>

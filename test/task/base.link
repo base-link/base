@@ -1,0 +1,58 @@
+
+load @drumwork/dock/code/javascript/binding/number
+  take task add
+  take task subtract
+  take task decrement
+
+task test-fibonacci-loop
+  call find-fibonacci-via-loop
+    bind i, text 7
+    save o
+  hold test-equal
+    bind base, text 13
+    bind head, link o
+
+task find-fibonacci-via-loop
+  base i
+
+  host g, size 0
+  host o, size 1
+  host d
+
+  call walk
+    hook link
+      save d, link o
+      call add
+        bind base, link g
+        bind head, link d
+        save o
+      save g, link d
+      call decrement
+        bind integer, link i
+        save i
+
+  turn seed, link g
+
+task find-fibonacci-via-recursion
+  base i
+  base g, base 0
+  base o, base 1
+
+  test miss
+    bind blob, link i
+    hook like
+      turn seed, link g
+    hook miss
+      call subtract
+        bind base, link i
+        bind head, text 1
+        save d
+      call add
+        bind base, link o
+        bind head, link g
+        save t
+      call find-fibonacci-via-recursion
+        bind i, link d
+        bind g, link o
+        bind o, link t
+        turn seed

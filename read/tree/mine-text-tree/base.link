@@ -1,0 +1,44 @@
+The find-form references a separate form or "class" to replace it with.
+
+The find-list is a chain, which iterates over values in the text.
+
+find list
+  bind base, mark 2
+  bind head, mark 4
+  find text, text <x>
+
+The find-miss is like a sieve, allowing optional match of content.
+
+find miss
+  find text, text <x>
+
+The find-head is like matching the first match.
+
+find head
+  find text, text <x>
+  find text, text <y>
+  find text, text <z>
+
+The call is a type of zone for the find. It calls a function for the input.
+
+The find-text is for matching exact text, which can be code for symbols, cord for strings, and mark for numbers.
+
+find text, text <x>
+find text, mark 123
+find text, code #h123
+find text, link x
+
+The find-test is for checking if a value fits certain constraints, and if so, it executes the parser for that branch.
+
+find test, test test-is-equal
+  bind base, link x
+  bind head, link y
+  find ...
+
+The find-band is for clipping a range of values.
+
+The find-mark is for specifying a specific number of things.
+
+Write each one in isolation for testing, then combine them in the end.
+
+Then find-slab is a block.

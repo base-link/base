@@ -1,0 +1,62 @@
+
+form zone
+
+form book
+  base head, form head
+  base zone, form list
+
+form word-seat
+  case text
+  case term
+
+form head
+  base name, form text
+  base face, list face
+  base date, form date
+  base mark
+    base base, form text
+    base line, form text
+    base head, form text
+  base text, form text
+  base word, list word-seat
+
+form lead
+  base text, form text
+  base look, form look
+    miss rise
+  base zone, list zone
+
+form flow
+  base text, form text
+  base look, form look
+
+form bank-seat
+  case list
+  case flow
+
+form bank
+  base zone, list bank-seat
+
+form list-seat
+  case list
+  case flow
+
+form list
+  base make, form term
+    take seed, term mark
+    take seed, term hand
+  base zone, list list-seat
+
+form look
+  base tilt, form sink
+    miss rise
+  base skew, form mark
+    miss rise
+  base bold, form mark
+    miss rise
+  base tint, form tint
+    miss rise
+  base code
+    take head
+      take form, form term
+      take form, form sink

@@ -1,0 +1,55 @@
+
+mine mine
+  mine term, term mine
+    mine term
+      take name
+    mine tree, tree block
+
+mine head
+  mine term, term mine
+    mine term, term head
+    mine tree, tree block
+
+mine weave
+  mine term, term mine
+    mine term, term weave
+    mine tree, tree block
+
+mine name
+  mine term, term mine
+    mine term, term name
+    mine term, term name
+      mine name
+        take name
+    mine tree, tree block
+
+mine class
+  mine term, term mine
+    mine term, term class
+    mine term, term class
+      mine name
+        throw name
+
+mine chain
+  mine term, term mine
+    mine term, term chain
+    mine tree, tree block
+
+mine sieve
+  mine term, term mine
+    mine term, term sieve
+    mine tree, tree block
+
+mine write
+  mine term, term mine
+    mine term, term write
+    mine term, term write
+      mine write
+        throw build
+
+mine trace
+  mine term, term mine
+    mine term, term trace
+    mine term, term trace
+      mine write, write trace
+        throw build

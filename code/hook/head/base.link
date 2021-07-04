@@ -1,0 +1,121 @@
+
+load @drumwork/base/code/head
+  load /task/hook
+    take task void
+    take task bind-deck
+    take task halt
+    take task make-deck
+    take task make-face
+    take task make-host
+    take task load
+    take task save-seed
+    take task read-seed
+
+hook make
+  note <Create a new deck repository>
+  base name
+  base lead
+    lead <-t>
+    lead <--title>
+  base host
+    lead <-a>
+    lead <--author>
+  base mark
+    lead <-v>
+    lead <--version>
+  task make-deck
+
+  hook deck
+    note <Create a new deck repository>
+    base name
+    base lead
+      lead <-t>
+      lead <--title>
+    base host
+      lead <-a>
+      lead <--author>
+    base mark
+      lead <-v>
+      lead <--version>
+    task make-deck
+
+  hook face
+    note <Create a person user>
+    base name
+    task make-face
+
+  hook host
+    note <Create an organization>
+    base name
+    task make-host
+
+hook load
+  note <Install a deck locally>
+  base name
+  task load
+
+  hook deck
+    note <Install a deck locally>
+    base name
+    task load
+
+hook link
+  note <Start the local system connected to the remote system>
+
+  hook deck
+    note <Share the deck with the base>
+
+hook lock
+  note <Login>
+  base cite
+    note <Email>
+  base code, wait rise
+    note <Password>
+  task lock
+
+  hook void
+    note <Logout>
+    base cite
+    task lock-void
+
+hook save
+  hook seed
+    note <Create an environment variable>
+    base name
+    base sift
+    task save-seed
+
+hook read
+  hook seed
+    note <Read environment variable>
+    base name
+    task read-seed
+
+  hook note
+    note <Tail the logs>
+
+hook bind
+  note <Publish latest version of deck>
+  task bind-deck
+
+  hook deck
+    note <Publish latest version of deck>
+    task bind-deck
+
+hook halt
+  note <Stop the system from running>
+  task halt
+
+hook mark
+  base mark, form size
+    mint mint-size
+  task mark
+
+hook move
+  hook mark
+    note <Bump to next version>
+    base link, form term
+      case a
+      case b
+      case c
+    task move-mark

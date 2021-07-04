@@ -1,0 +1,27 @@
+
+load ../call
+  take form call
+
+load ../task
+  take form task
+
+load ../link
+  take form link
+
+form sift
+  case call
+  case task
+  case form
+  case link
+
+form link
+  base road
+
+form read
+  base road
+
+form move
+  base road
+
+form loan
+  base road

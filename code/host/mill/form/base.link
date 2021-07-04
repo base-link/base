@@ -1,0 +1,34 @@
+
+load <../case>
+  hook mill head
+  hook mill base
+
+load <../task>
+  hook mill task
+
+mill form
+  mill name
+    save name
+  mill form
+    line form
+  mill form, form seed
+    line seed
+  mill form, form head
+    line head
+  mill form, form base
+    line base
+  mill form, form bond
+    line bond
+  mill form, form task
+    line task
+  make form
+    bind name, link name
+    bind form, link form
+    bind head, link head
+    bind base, link base
+    bind bond, link bond
+    bind task, link task
+    turn seed
+
+mill seed
+mill bond

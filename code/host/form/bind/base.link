@@ -1,0 +1,10 @@
+
+load ../term
+  take form term
+
+load ../sift
+  take form sift
+
+form bind
+  base term, form term
+  base sift, form sift

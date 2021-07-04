@@ -1,0 +1,83 @@
+
+mine base
+  mine term, term base
+    tree rest
+
+mine head
+  mine term, term head
+    tree rest
+
+mine host
+  mine term, term host
+    tree rest
+
+tree rest
+  mine term
+    take name
+  mine room
+    mine case
+      mine form, form list
+        take list
+      mine form, form draw
+        take draw
+      mine form, form form
+        take form
+      mine form, form take
+        take take
+  mine room
+    mine form, form free
+      take free
+      note <Mutable>
+  mine room
+    mine form, form base-sift
+      take base-sift
+
+mine list
+  mine term, term list
+    mine term
+      take form
+
+mine draw
+  mine term, term draw
+    mine term
+      take form
+
+mine take
+  mine head
+    mine form, form take-head
+    mine form, form take-list
+    mine form, form take-form
+
+mine take-head
+  mine term, term take
+    mine term, term head
+    mine form, form take
+
+mine take-list
+  mine term, term take
+    mine term, term list
+    mine form, form take
+
+mine take-form
+  mine term, term take
+    mine term, term form
+    mine term, form form
+      mine term
+        take form
+
+mine free
+  mine term, term free
+    mine term
+      take term
+
+mine base-sift
+  mine term, term base
+    mine case
+      mine text
+        take text
+      mine term, term make
+        mine form, form make
+          take make
+      mine term, term call
+        mine form, form call
+          take call

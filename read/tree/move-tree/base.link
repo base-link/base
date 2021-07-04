@@ -1,0 +1,35 @@
+
+move animate-along-path
+  head middle
+
+  host flow-turn, turn flow-turn
+
+  ride flow-turn-slot
+    save x, computed value
+    save y, computed value
+
+  time 1s
+    bind flow-turn-slot, mark 0
+  time 0.5
+    bind flow-turn-slot, link middle
+  time 0.5
+    bind flow-turn-slot, mark 100%
+
+move animate-opacity-and-width
+  beat 0%
+    bind fade, mark 0
+  beat 50%
+    bind fade, mark 0.2
+    bind ease, text <linear>
+  beat 100%
+    bind fade, mark 1
+
+move animate-opacity-and-width
+  head middle
+
+  time 1s
+    bind fade, mark 0
+  time 0.5
+    bind fade, link middle
+  time 0.5
+    bind fade, mark 1

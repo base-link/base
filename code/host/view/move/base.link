@@ -1,0 +1,20 @@
+
+move fade-head
+  beat 0
+    bind seed, size 0
+  beat 100
+    bind seed, size 1
+
+move fade-base
+  beat 0
+    bind seed, size 1
+  beat 100
+    bind seed, size 0
+
+move move-hill-head
+
+move move-hill-base
+
+move move-land-head
+
+move move-land-base

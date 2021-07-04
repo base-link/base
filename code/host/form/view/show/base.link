@@ -1,0 +1,19 @@
+
+form word
+  case text
+  case term
+
+form show
+  base base, list base
+  base feed, list feed
+  base view, form view
+  base lead, form text
+    note <Title>
+  base word, list word
+    note <Keywords>
+  base text, form text
+    note <Description>
+  base look, list look
+    note <Image or favicon>
+
+form look

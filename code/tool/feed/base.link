@@ -1,0 +1,25 @@
+
+load ../form
+  load /host
+    take form host
+  load /deck
+    take form deck
+  load /face
+    take form face
+
+feed @drumwork/base/feed/host
+  form host
+  slot name
+
+feed @drumwork/base/feed/deck
+  form deck
+  slot name
+  slot host, slot name
+
+feed @drumwork/base/feed/face
+  form face
+  slot name
+  slot cite
+
+feed @drumwork/base/feed/show-host
+  find show-host

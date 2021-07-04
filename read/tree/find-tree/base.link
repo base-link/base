@@ -1,0 +1,14 @@
+
+find user-location
+  fork user
+    fork email
+    fork name
+    fork location
+      fork lat
+      fork lng
+  test match
+    bind base, link user/email
+    bind head, find grammar
+  sort user/email, rank head
+  lead 100
+  base 10 (offset)

@@ -1,0 +1,12 @@
+
+load ../..
+  load /load
+    take mine load
+  load /cast
+    take mine cast
+
+mine cast-file
+  mine list
+    mine form, form load
+  mine list
+    mine form, form cast

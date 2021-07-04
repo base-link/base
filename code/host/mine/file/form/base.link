@@ -1,0 +1,15 @@
+
+load ../..
+  load /load
+    take mine load
+  load /form
+    take mine form
+    take mine tree
+
+mine form-file
+  mine list
+    mine form, form load
+  mine list
+    mine case
+      mine form, form form
+      mine form, form tree

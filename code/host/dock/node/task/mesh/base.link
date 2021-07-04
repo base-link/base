@@ -1,0 +1,8 @@
+
+task draw
+  base view, form view
+  call lace
+    bind lace, link lace html
+    bind tree, link view
+    save text
+  turn seed, link text

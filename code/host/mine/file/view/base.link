@@ -1,0 +1,12 @@
+
+load ../..
+  load /load
+    hook mine load
+  load /view
+    hook mine view
+
+mine view-file
+  mine list
+    mine form, form load
+  mine list
+    mine form, form view

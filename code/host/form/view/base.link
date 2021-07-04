@@ -1,0 +1,111 @@
+
+form view
+  base name, form term
+  base star, note <Point>
+  base fill-coat, note <Fill color>
+  base fill-fade, note <Fill opacity>
+  base side-coat, note <Edge color>
+  base side-fade, note <Edge opacity>
+  base side-fork-arch, note <Border radius>
+  base mark, note <ID>
+  base view, note <Image>
+  base hash, note <Shadow>
+  base rein, note <Constraints>
+  base hint, note <Alt text/title>
+  base hill-move, form size-work
+    note <y>
+  base land-move, form size-work
+    note <x>
+  base room-move, form size-work
+    note <z>
+  base land-size, form size-work
+    note <Width>
+  base hill-size, form size-work
+    note <Height>
+  base head-hill-rift-size
+    note <spacing above>
+  base base-hill-rift-size
+  base head-land-rift-size
+    note <spacing to the right>
+  base base-land-rift-size
+    note <spacing to the left>
+  base rift-size
+    note <spacing around>
+  base text-size, form size
+  base text-make, form term
+    note <font family>
+  base text-heft, form size
+    note <weight>
+  base text-tilt, form sink
+    note <italics>
+  base text, form text
+  base flow, form term
+    note <flow/layout choices>
+  base fold, form sink
+    note <wrap>
+  base look
+    note <theme/style>
+  base mint, form term
+    note <html tag>
+  base site
+    note <value>
+  base skew-hill, form size-work
+  base skew-land, form size-work
+  base turn, form size-work
+    note <rotation>
+  base blur, form size-work
+    note <blurring>
+  base hold, form text
+    note <Placeholder>
+
+  bond fade
+  bond fill
+
+  base feel, form task
+    note <touch/click>
+  base take, form task
+    note <drag>
+  base toss, form task
+    note <drop>
+  base move, form task
+    note <mouse>
+  base void, form task
+    note <stop mouse movement>
+  base mark, form task
+    note <focus>
+  base blur, form task
+    note <blur>
+  base dock, form task
+    note <select>
+  base face, form task
+    note <hover>
+  base seed, form task
+    note <copy>
+  base tack, form task
+    note <paste>
+  base load, form task
+    note <mount>
+  base free, form task
+    note <unmount>
+  base roll, form task
+    note <wheel>
+  base code, form task
+    note <type>
+  base code-head, form task
+  base code-base, form task
+  base dash, form task
+    note <scroll>
+  base tune, form task
+    note <animate>
+  base zoom-head, form task
+    note <Zoom in>
+  base zoom-base, form task
+    note <Zoom out>
+  base size, form task
+    note <resize>
+  base hook, form task
+    note <update>
+  base link, form task
+    note <browser connected>
+  base link-halt, form task
+    note <disconnected>

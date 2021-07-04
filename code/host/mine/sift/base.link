@@ -1,0 +1,56 @@
+
+load <../make>
+  hook mine make
+
+load <../call>
+  hook mine call
+
+load <../task>
+  hook mine task
+
+load <../form>
+  hook mine form
+
+mine sift
+  mine head
+    mine text
+      take text
+    mine term, term text
+      mine text
+        take text
+    mine form, form link
+      take link
+    mine form, form move
+      take move
+    mine form, form read
+      take read
+    mine form, form loan
+      take loan
+    mine form, form make
+      take make
+    mine form, form call
+      take call
+    mine form, form task
+      take task
+    mine form, form form
+      take form
+
+mine link
+  mine term, term link
+    mine road
+      take road
+
+mine move
+  mine term, term move
+    mine road
+      take road
+
+mine read
+  mine term, term read
+    mine road
+      take road
+
+mine loan
+  mine term, term loan
+    mine road
+      take road

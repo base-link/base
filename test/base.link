@@ -1,0 +1,5 @@
+
+load ./task
+  take task test-fibonacci-loop
+
+test test-fibonacci-loop

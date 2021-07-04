@@ -1,0 +1,16 @@
+
+form view-text
+  case view
+  case text
+
+view cell-list
+  head seat
+  base cell-view
+    form view
+      bind seat, link seat
+  base lead, list view-text
+  base list
+    form list
+      bind seat, link seat
+
+view list

@@ -1,0 +1,13 @@
+
+name <The Base Book>
+team <Lance Pollard>
+term <Link Script>
+term <Compiler>
+mark <0.0.1>
+note <abstract>
+
+fuse ./head
+fuse ./code
+fuse ./tree
+fuse ./mesh
+fuse ./back

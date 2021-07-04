@@ -1,0 +1,13 @@
+
+mesh glyph-g
+  curl glyph-g-start
+    move x, y
+    line x, y
+    bend cx, cy, x, y
+      turn take
+    bend cx, cy, x, y
+      turn take
+    turn 2
+    arch rx, ry, angle, flag1, flag2, x, y
+      slot free (absolute position)
+    halt lead
