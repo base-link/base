@@ -39,24 +39,25 @@ Here are a few examples from existing code. The first is how you might define a 
 A package definition:
 
 ```
-deck @drumwork/link
-  text <Link Script Compiler>
-  make <Link>
+deck @drumwork/base
+  head <Link Script Compiler>
+  make <Link Script>
   make <Computation>
   make <Philosophy>
   make <Information>
   make <Platform>
   make <White Label>
-  hand <Lance Pollard>
-  mail <lp@elk.fm>
-  link ./link
+  team <Lance Pollard>, site <lp@elk.fm>
+  hook ./hook
+  read ./read
+  term <Apache 2.0>
 ```
 
 The first block of the Tao Te Ching:
 
 ```
-text <道德经>
-  text <第一章>
+head <道德经>
+  head <第一章>
     text <道可道，非恆道；>
     text <名可名，非恆名。>
     text <無名天地之始；>
@@ -73,49 +74,49 @@ And the fibonacci functions:
 
 ```
 task find-fibonacci-via-loop
-  head i
+  base i
 
-  host g, text 0
-  host o, text 1
+  host g, size 0
+  host o, size 1
   host d
 
   call walk
     hook link
-      save d, read o
+      save d, link o
       call add
-        seed base, read g
-        seed head, read d
+        bind base, link g
+        bind head, link d
         save o
-      save g, read d
+      save g, link d
       call decrement
-        seed integer, read i
+        bind integer, link i
         save i
 
-  back lead, read g
+  turn seed, link g
 
 task find-fibonacci-via-recursion
-  head i
-  head g, fault 0
-  head o, fault 1
+  base i
+  base g, base 0
+  base o, base 1
 
-  call test-miss
-    seed blob, read i
-    hook mesh
-      back lead, read g
+  test miss
+    bind blob, link i
+    hook like
+      turn seed, link g
     hook miss
       call subtract
-        seed base, read i
-        seed head, text 1
+        bind base, link i
+        bind head, text 1
         save d
       call add
-        seed base, read o
-        seed head, read g
+        bind base, link o
+        bind head, link g
         save t
       call find-fibonacci-via-recursion
-        seed i, read d
-        seed g, read o
-        seed o, read t
-        back lead
+        bind i, link d
+        bind g, link o
+        bind o, link t
+        turn seed
 ```
 
 Now we will go into the actual specification of the syntax.
