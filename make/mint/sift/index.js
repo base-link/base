@@ -37,7 +37,6 @@ function makeText(base) {
 }
 
 function mintSift(base) {
-  console.log(JSON.stringify(base))
   switch (base.name) {
     case `cord`:
       return {
@@ -47,6 +46,11 @@ function mintSift(base) {
     case `text`:
       return makeText(base)
     case `mark`:
+      return {
+        form: `sift-mark`,
+        mark: base.link[0].mark
+      }
+    case `size`:
       return {
         form: `sift-mark`,
         mark: base.link[0].mark

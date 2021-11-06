@@ -14,7 +14,9 @@ const pathResolver = require('path')
 const ROAD_TO_MINT = {
   '@drumwork/base/test': 'test-file',
   '@drumwork/base/test/task': 'task-file',
+  '@drumwork/dock/code/browser/binding/document': 'dock-task-file',
   '@drumwork/dock/code/javascript/binding/base': 'dock-task-file',
+  '@drumwork/dock/code/javascript/binding/console': 'dock-task-file',
   '@drumwork/dock/code/javascript/binding/number': 'dock-task-file'
 }
 

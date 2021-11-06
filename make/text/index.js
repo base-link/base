@@ -8,10 +8,11 @@ module.exports = make
 function make(file, deck) {
   const text = []
   const list = [file]
+  const last = []
   while (list.length) {
     const base = list.shift()
     text.push(``)
-    makeFile(base).forEach(line => {
+    makeFile(base, last).forEach(line => {
       text.push(line)
     })
     const roadList = makeRoad(base)
@@ -19,12 +20,13 @@ function make(file, deck) {
       list.push(deck[load.road])
     })
   }
-  return HEAD + text.join('\n')
+  return HEAD + text.join('\n') + '\n\n' + last.join('\n')
 }
 
-function makeFile(file) {
+function makeFile(file, last) {
   const text = []
-  text.push(`base.load('${file.road}', file => {`)
+  const calls = []
+  text.push(`base.bind('${file.road}', file => {`)
   let code
   switch (file.mint) {
     case `task-file`:
@@ -49,25 +51,29 @@ function makeFile(file) {
       code = makeFeedFile(file)
       break
     case `test-file`:
-      code = makeTestFile(file)
+      code = makeTestFile(file, calls)
       break
   }
   code.forEach(line => {
     text.push(`  ${line}`)
   })
   text.push(`})`)
+  if (calls.length) {
+    last.push(`base.call('${file.road}')`)
+  }
   return text
 }
 
 function makeTaskFile(file) {
   const text = []
   const code = []
+  const formKnit = {}
   code.push(...makeTaskHead())
-  file.load.forEach(load => {
-    code.push(...makeLoad(load))
+  file.load.forEach((load, i) => {
+    code.push(...makeLoad(load, i, formKnit))
   })
   file.task.forEach(task => {
-    code.push(...makeTask(task))
+    code.push(...makeTask(task, formKnit))
   })
   code.forEach(line => {
     text.push(`  ${line}`)
@@ -79,8 +85,8 @@ function makeFormFile(file) {
   const text = []
   const code = []
   code.push(...makeFormHead())
-  file.load.forEach(load => {
-    code.push(...makeLoad(load))
+  file.load.forEach((load, i) => {
+    code.push(...makeLoad(load, i))
   })
   file.form.forEach(form => {
     code.push(...makeForm(form))
@@ -103,8 +109,8 @@ function makeCallFile(file) {
   const text = []
   const code = []
   code.push(...makeTaskHead())
-  file.load.forEach(load => {
-    code.push(...makeLoad(load))
+  file.load.forEach((load, i) => {
+    code.push(...makeLoad(load, i))
   })
   file.call.forEach(call => {
     code.push(...makeCall(call))
@@ -119,16 +125,22 @@ function makeFeedFile(file) {
 
 }
 
-function makeTestFile(file) {
+function makeTestFile(file, calls) {
   const text = []
   const code = []
   const roadList = makeRoad(file)
-  roadList.forEach(load => {
-    code.push(...makeLoad(load))
+  const formKnit = {}
+  roadList.forEach((load, i) => {
+    code.push(...makeLoad(load, i, formKnit))
   })
+  code.push(`file.base = function(){`)
+  calls.push(true)
   file.test.forEach(test => {
-    code.push(...makeTest(test))
+    makeTest(test, formKnit).forEach(line => {
+      code.push(`  ${line}`)
+    })
   })
+  code.push(`}`)
   code.forEach(line => {
     text.push(line)
   })
@@ -151,18 +163,29 @@ function makeHead(name) {
   return [`file.${name} = file.${name} || {}`]
 }
 
-function makeLoad(load) {
+function makeLoad(load, i, formKnit = {}) {
   // how to handle the load structure, what even is the load structure?
   const text = []
+
   load.take.forEach(take => {
-    text.push(JSON.stringify(take) + ` = base.link('${load.road}')`)
+    const form = toMethodName(take.name)
+    const name = toMethodName(take.link[0].name)
+    formKnit[name] = `x${i + 1}.${form}.${name}`
   })
+
+  text.push(`const x${i + 1} = base.load('${load.road}')`)
+  // Object.keys(formKnit).forEach(form => {
+  //   const list = formKnit[form].map(x => `  ${x}`).join(',\n')
+  //   text.push(`const {`)
+  //   text.push(...list.split('\n'))
+  //   text.push(`} = x${i + 1}.${form}`)
+  // })
   return text
 }
 
-function makeTest(test) {
+function makeTest(test, formKnit) {
   const text = []
-  text.push(`${toMethodName(test.name)}()`)
+  text.push(`${formKnit[toMethodName(test.name)]}()`)
   return text
 }
 
@@ -170,7 +193,7 @@ function makeTest(test) {
  * This is a higher-level function.
  */
 
-function makeTask(task) {
+function makeTask(task, formKnit) {
   const text = []
   const params = []
   const initializers = []
@@ -178,28 +201,29 @@ function makeTask(task) {
     if (base.base) {
       initializers.push(base)
     } else {
-      params.push(`${base.name}`)
+      params.push(`${toMethodName(base.name)}`)
     }
   })
-  if (params.length > 1) {
-    text.push(`file.${task.name} = function(`)
-    text.push(...params.map(x => `  ${x}`).join(',\n').split('\n'))
-    text.push('){')
-  } else {
-    text.push(`file.${task.name} = function(${params.join(', ')}){`)
-  }
+  formKnit[toMethodName(task.name)] = `file.task.${toMethodName(task.name)}`
+  text.push(``)
+  text.push(`file.task.${toMethodName(task.name)} = function(${params.join(', ')}){`)
   initializers.forEach(base => {
-    text.push(`  if (${base.name} == null) {`)
+    text.push(`  if (${toMethodName(base.name)} == null) {`)
     if (base.base.form === 'text') {
-      text.push(`    ${base.name} = '${base.base.sift}'`)
+      text.push(`    ${toMethodName(base.name)} = '${base.base.sift}'`)
     } else {
-      text.push(`    ${base.name} = ${base.base.sift}`)
+      text.push(`    ${toMethodName(base.name)} = ${base.base.sift}`)
     }
     text.push(`  }`)
     text.push(``)
   })
   task.zone.forEach(zone => {
     switch (zone.form) {
+      case `host`:
+        makeHost(zone).forEach(line => {
+          text.push(`  ${line}`)
+        })
+        break
       case `save`:
         // x[y] = a.b
         // x = a
@@ -214,7 +238,7 @@ function makeTask(task) {
         })
         break
       case `call`:
-        makeCall(zone).forEach(line => {
+        makeCall(zone, formKnit).forEach(line => {
           text.push(`  ${line}`)
         })
         break
@@ -231,6 +255,23 @@ function makeSave(zone) {
   return text
 }
 
+function makeSave2(zone) {
+  const left = makeNest(zone.nest)
+  const right = makeSift(zone.sift)
+  const text = [`${left} = ${right}`]
+  return text
+}
+
+function makeHost(zone) {
+  const left = zone.name
+  const right = zone.sift && makeSift(zone.sift)
+  if (typeof right === 'undefined') {
+    return [`let ${left}`]
+  } else {
+    return [`let ${left} = ${right}`]
+  }
+}
+
 function makeTurn(zone) {
   const right = makeSift(zone.sift)
   const text = [`return ${right}`]
@@ -241,24 +282,58 @@ function makeCallTurn(zone) {
 
 }
 
-function makeCall(call) {
+function makeCall(call, formKnit) {
   // how to resolve all the various scenarios with the call?
   const turn = call.zone.filter(zone => zone.form === 'call-turn')[0]
   const save = call.zone.filter(zone => zone.form === 'call-save')[0]
   const text = []
   const bind = []
-  let mean
+  let mean = ''
   if (turn) {
     mean = `return `
   } else if (save) {
     mean = `${makeNest(save.nest)} = `
   }
-  text.push(`${mean}${call.name}(`)
+  text.push(`${mean}${formKnit[toMethodName(call.name)]}(`)
   call.bind.forEach(b => {
     const sift = makeSift(b.sift)
-    bind.push(sift)
+    bind.push(`  ${sift}`)
   })
-  text.push(...bind.join(',\n').split('\n'))
+  const hooks = []
+  call.hook.forEach(h => {
+    const hook = []
+    hook.push(`  function(){`)
+    h.zone.forEach(zone => {
+      switch (zone.form) {
+        case `host`:
+          makeHost(zone).forEach(line => {
+            hook.push(`    ${line}`)
+          })
+          break
+        case `save`:
+          // x[y] = a.b
+          // x = a
+          // x = 10
+          makeSave2(zone).forEach(line => {
+            hook.push(`    ${line}`)
+          })
+          break
+        case `turn`:
+          makeTurn(zone).forEach(line => {
+            hook.push(`    ${line}`)
+          })
+          break
+        case `call`:
+          makeCall(zone, formKnit).forEach(line => {
+            hook.push(`    ${line}`)
+          })
+          break
+      }
+    })
+    hook.push(`  }`)
+    hooks.push(hook.join('\n'))
+  })
+  text.push(...[...bind, ...hooks].join(',\n').split('\n'))
   text.push(`)`)
   return text
 }
@@ -268,9 +343,9 @@ function makeNest(nest) {
     switch (stem.form) {
       case 'term':
         if (i === 0) {
-          return stem.name
+          return toMethodName(stem.name)
         } else {
-          return `.${stem.name}`
+          return `.${toMethodName(stem.name)}`
         }
         break
     }
@@ -281,6 +356,7 @@ function makeSift(sift) {
   switch (sift.form) {
     case `text`: return `'${sift.text}'`
     case `size`: return `${sift.size}`
+    case `sift-mark`: return `${sift.mark}`
     case `link`: return makeNest(sift.nest)
   }
 }
@@ -289,8 +365,8 @@ function makeDockTaskFile(file) {
   const text = []
   const code = []
   code.push(...makeTaskHead())
-  file.load.forEach(load => {
-    code.push(...makeLoad(load))
+  file.load.forEach((load, i) => {
+    code.push(...makeLoad(load, i))
   })
   file.task.forEach(task => {
     code.push(...makeDockTask(task))
@@ -313,16 +389,16 @@ function makeDockTask(task) {
     if (base.base) {
       initializers.push(base)
     } else {
-      params.push(`${base.name}`)
+      params.push(`${toMethodName(base.name)}`)
     }
   })
   text.push(`file.task.${toMethodName(task.name)} = function(${params.join(', ')}){`)
   initializers.forEach(base => {
-    text.push(`  if (${base.name} == null) {`)
+    text.push(`  if (${toMethodName(base.name)} == null) {`)
     if (base.base.form === 'text') {
-      text.push(`    ${base.name} = '${base.base.sift}'`)
+      text.push(`    ${toMethodName(base.name)} = '${base.base.sift}'`)
     } else {
-      text.push(`    ${base.name} = ${base.base.sift}`)
+      text.push(`    ${toMethodName(base.name)} = ${base.base.sift}`)
     }
     text.push(`  }`)
     text.push(``)
@@ -343,42 +419,153 @@ function makeDockTask(task) {
 function makeDockCall(call) {
   const turn = call.zone.filter(zone => zone.form === 'call-turn')[0]
   const text = []
-  let head
+  let head = ''
   if (turn) {
     head = `return `
   }
   let base
   switch (call.name) {
     case `make`:
-      base = makeDockCallMake(call);
+      base = makeDockCallMake(call)
       break
     case `test`:
-      base = makeDockCallTest(call);
+      base = makeDockCallTest(call)
       break
     case `test-fall`:
-      base = makeDockCallTestFall(call);
+      base = makeDockCallTestFall(call)
       break
     case `look`: // debugger
-      base = makeDockCallLook(call);
+      base = makeDockCallLook(call)
       break
     case `call-base`: // method
-      base = makeDockCallCallBase(call);
+      base = makeDockCallCallBase(call)
       break
     case `call-head`: // unary operation
-      base = makeDockCallCallHead(call);
+      base = makeDockCallCallHead(call)
       break
-    case `call-twin`: // unary operation
-      base = makeDockCallCallTwin(call);
+    case `call-twin`: // binary operation
+      base = makeDockCallCallTwin(call)
+      break
+    case `call-try`: // try/catch
+      base = makeDockCallCallTry(call)
+      break
+    case `test-else`: // if/else
+      base = makeDockCallTestElse(call)
+      break
+    case `loop`: // while loop
+      base = makeDockCallLoop(call)
+      break
+    case `debug`: // debugger
+      base = makeDockCallDebug(call)
+      break
+    case `call-keyword`: // typeof
+      base = makeDockCallKeyword(call)
+      break
+    case `call-keyword-2`: // instanceof
+      base = makeDockCallKeyword2(call)
+      break
+    case `set-dynamic-aspect`:
+      base = makeDockCallSetDynamicAspect(call)
+      break
+    case `get-dynamic-aspect`:
+      base = makeDockCallGetDynamicAspect(call)
+      break
+    case `delete`:
+      base = makeDockCallDelete(call)
       break
   }
   return `${head}${base}`.split('\n')
+}
+
+function makeDockCallDelete(call) {
+  const text = []
+  const object = call.bind.filter(bind => bind.name === 'object')[0]
+  const aspect = call.bind.filter(bind => bind.name === 'aspect')[0]
+  text.push(`delete ${makeNest(object.sift.nest)}[${makeNest(aspect.sift.nest)}]`)
+  return text.join('\n')
+}
+
+function makeDockCallGetDynamicAspect(call) {
+  const text = []
+  const object = call.bind.filter(bind => bind.name === 'object')[0]
+  const aspect = call.bind.filter(bind => bind.name === 'aspect')[0]
+  text.push(`${makeNest(object.sift.nest)}[${makeNest(aspect.sift.nest)}]`)
+  return text.join('\n')
+}
+
+function makeDockCallSetDynamicAspect(call) {
+  const text = []
+  const object = call.bind.filter(bind => bind.name === 'object')[0]
+  const aspect = call.bind.filter(bind => bind.name === 'aspect')[0]
+  const factor = call.bind.filter(bind => bind.name === 'factor')[0]
+  text.push(`${makeNest(object.sift.nest)}[${makeNest(aspect.sift.nest)}] = ${makeNest(factor.sift.nest)}`)
+  return text.join('\n')
+}
+
+function makeDockCallKeyword2(call) {
+  const text = []
+  const left = call.bind.filter(bind => bind.name === 'left')[0]
+  const keyword = call.bind.filter(bind => bind.name === 'keyword')[0]
+  const right = call.bind.filter(bind => bind.name === 'right')[0]
+  text.push(`${makeNest(left.sift.nest)} ${keyword.sift.text} ${makeNest(right.sift.nest)}`)
+  return text.join('\n')
+}
+
+function makeDockCallKeyword(call) {
+  const text = []
+  const keyword = call.bind.filter(bind => bind.name === 'keyword')[0]
+  const value = call.bind.filter(bind => bind.name === 'value')[0]
+  text.push(`${keyword.sift.text} ${makeNest(value.sift.nest)}`)
+  return text.join('\n')
+}
+
+function makeDockCallDebug(call) {
+  const text = []
+  const keyword = call.bind.filter(bind => bind.name === 'keyword')[0]
+  text.push(`${keyword.sift.text}`)
+  return text.join('\n')
+}
+
+function makeDockCallLoop(call) {
+  const text = []
+  const check = call.bind.filter(bind => bind.name === 'check')[0]
+  const block = call.bind.filter(bind => bind.name === 'block')[0]
+  text.push(`while (${makeNest(check.sift.nest)}()) {`)
+  text.push(`  ${makeNest(block.sift.nest)}()`)
+  text.push(`}`)
+  return text.join('\n')
+}
+
+function makeDockCallTestElse(call) {
+  const text = []
+  const check = call.bind.filter(bind => bind.name === 'check')[0]
+  const block = call.bind.filter(bind => bind.name === 'block')[0]
+  const other = call.bind.filter(bind => bind.name === 'else')[0]
+  text.push(`if (${makeNest(check.sift.nest)}()) {`)
+  text.push(`  return ${makeNest(block.sift.nest)}()`)
+  text.push(`} else {`)
+  text.push(`  return ${makeNest(other.sift.nest)}()`)
+  text.push(`}`)
+  return text.join('\n')
+}
+
+function makeDockCallCallTry(call) {
+  const text = []
+  const block = call.bind.filter(bind => bind.name === 'block')[0]
+  const error = call.bind.filter(bind => bind.name === 'error')[0]
+  text.push(`try {`)
+  text.push(`  ${makeNest(block.sift.nest)}()`)
+  text.push(`} catch (e) {`)
+  text.push(`  ${makeNest(error.sift.nest)}(e)`)
+  text.push(`}`)
+  return text.join('\n')
 }
 
 function makeDockCallCallHead(call) {
   const text = []
   const value = call.bind.filter(bind => bind.name === 'value')[0]
   const operation = call.bind.filter(bind => bind.name === 'operation')[0]
-  text.push(`${makeNest(value.sift.nest)}${operation.sift.text}`)
+  text.push(`${operation.sift.text}${makeNest(value.sift.nest)}`)
   return text.join('\n')
 }
 
@@ -391,6 +578,18 @@ function makeDockCallCallTwin(call) {
   return text.join('\n')
 }
 
+function makeDockCallMake(call) {
+  const text = []
+  const ctor = call.bind[0]
+  const factor = call.bind.slice(1)
+  const bind = []
+  factor.forEach(factor => {
+    bind.push(`${makeNest(factor.sift.nest)}`)
+  })
+  text.push(`new ${ctor.sift.text}(${bind.join(', ')})`)
+  return text.join('\n')
+}
+
 function makeDockCallCallBase(call) {
   const text = []
   const object = call.bind[0]
@@ -400,7 +599,11 @@ function makeDockCallCallBase(call) {
   factor.forEach(factor => {
     bind.push(`${makeNest(factor.sift.nest)}`)
   })
-  text.push(`${object.sift.text}.${method.sift.text}(${bind.join(', ')})`)
+  if (object.sift.form === 'link') {
+    text.push(`${makeNest(object.sift.nest)}.${method.sift.text}(${bind.join(', ')})`)
+  } else {
+    text.push(`${object.sift.text}.${method.sift.text}(${bind.join(', ')})`)
+  }
   return text.join('\n')
 }
 
@@ -408,8 +611,8 @@ function makeDockCallTest(call) {
   const text = []
   const test = call.bind[0]
   const make = call.bind[1]
-  text.push(`if (${test.name}) {`)
-  text.push(`  return ${make}()`)
+  text.push(`if (${makeNest(test.sift.nest)}()) {`)
+  text.push(`  return ${makeNest(make.sift.nest)}()`)
   text.push(`}`)
   return text.join('\n')
 }

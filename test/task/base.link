@@ -3,14 +3,21 @@ load @drumwork/dock/code/javascript/binding/number
   take task add
   take task subtract
   take task decrement
+load @drumwork/dock/code/javascript/binding/base
+  take task check-if-strictly-equal
+  take task check-gt
+  take task check-else
+  take task walk
+load @drumwork/dock/code/javascript/binding/console
+  take task log
 
-task test-fibonacci-loop
-  call find-fibonacci-via-loop
-    bind i, text 7
-    save o
-  hold test-equal
-    bind base, text 13
-    bind head, link o
+task assert-equal
+  base base
+  base head
+
+  call check-if-strictly-equal
+    bind left, link base
+    bind right, link head
 
 task find-fibonacci-via-loop
   base i
@@ -20,6 +27,11 @@ task find-fibonacci-via-loop
   host d
 
   call walk
+    hook test
+      call check-gt
+        bind left, link i
+        bind right, text 0
+        turn seed
     hook link
       save d, link o
       call add
@@ -38,7 +50,7 @@ task find-fibonacci-via-recursion
   base g, base 0
   base o, base 1
 
-  test miss
+  call check-else
     bind blob, link i
     hook like
       turn seed, link g
@@ -56,3 +68,14 @@ task find-fibonacci-via-recursion
         bind g, link o
         bind o, link t
         turn seed
+    turn seed
+
+task test-fibonacci-loop
+  call find-fibonacci-via-loop
+    bind i, text 7
+    save o
+  call log
+    bind message, link o
+  call assert-equal
+    bind base, text 13
+    bind head, link o

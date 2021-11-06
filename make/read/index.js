@@ -19,6 +19,8 @@ const patterns = [
 
 const stringPatterns = [
   [/^\{/, 'base-term'],
+  [/^\\[>]/, 'text', true, null, '>'],
+  [/^\\[<]/, 'text', true, null, '<'],
   [/^[^\{>]+(?:\\[>\{])?/, 'text', true],
   [/^>/, 'head-text'],
 ]
@@ -137,7 +139,7 @@ function read(str) {
           if (pattern[3]) {
             nesting++
           }
-          if (pattern[2]) attrs.text = text
+          if (pattern[2]) attrs.text = pattern[4] || text
           tokens.push(attrs)
           str = str.substr(text.length)
           break x

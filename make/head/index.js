@@ -41,6 +41,11 @@ class Base {
     return this
   }
 
+  call(road) {
+    const file = this.load(road)
+    if (file.base) file.base()
+  }
+
   free(road) {
     const list = road.split('/')
     let size = 0

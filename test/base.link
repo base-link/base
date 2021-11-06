@@ -1,5 +1,7 @@
 
 load ./task
   take task test-fibonacci-loop
+load @drumwork/dock/code/browser/binding/document
+  take task create-element
 
 test test-fibonacci-loop

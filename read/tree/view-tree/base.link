@@ -63,6 +63,15 @@ view verse
   host is-entering-title
   host is-leaving-title
 
+  tune x
+    move fade-in
+      hook update
+        base value
+        save x, link value
+  tune y
+    move fade-out
+
+
   hook mount-start
     save is-entering-title, link on
     save is-title-visible, link on

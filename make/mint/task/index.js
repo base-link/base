@@ -21,6 +21,9 @@ function mintTask(base) {
       case 'host':
         task.zone.push(mintHost(base))
         break
+      case 'turn':
+        task.zone.push(mintTurn(base))
+        break
       case 'call':
         task.zone.push(mintCall(base))
         break
@@ -76,9 +79,11 @@ function mintBase(base) {
 
 function mintHost(base) {
   const name = findName(base)
+  const sift = base.link[1] && mintSift(base.link[1])
   const zone = {
-    form: 'task-host',
-    name
+    form: 'host',
+    name,
+    sift
   }
   return zone
 }
@@ -105,6 +110,10 @@ function mintHook(base) {
         const save = mintSave(base)
         zone.zone.push(save)
         break
+      case 'turn':
+        const turn = mintTurn(base)
+        zone.zone.push(turn)
+        break
       default:
         throw base.name
     }
@@ -121,6 +130,16 @@ const mintBind = b => {
     sift
   }
   return bind
+}
+
+function mintTurn(base) {
+  const name = findName(base)
+  const sift = base.link[1] && mintSift(base.link[1])
+  return {
+    form: `turn`,
+    name,
+    sift
+  }
 }
 
 function mintCallTurn(base) {
