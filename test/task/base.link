@@ -47,11 +47,15 @@ task find-fibonacci-via-loop
 
 task find-fibonacci-via-recursion
   base i
-  base g, base 0
-  base o, base 1
+  base g, size 0
+  base o, size 1
 
   call check-else
-    bind blob, link i
+    hook test
+      call check-if-strictly-equal
+        bind left, link i
+        bind right, text 0
+        turn seed
     hook like
       turn seed, link g
     hook miss
@@ -76,6 +80,8 @@ task test-fibonacci-loop
     save o
   call log
     bind message, link o
-  call assert-equal
-    bind base, text 13
-    bind head, link o
+  call find-fibonacci-via-recursion
+    bind i, text 7
+    save x
+  call log
+    bind message, link x

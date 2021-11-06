@@ -69,10 +69,12 @@ function mintCall(base) {
 
 function mintBase(base) {
   const name = findName(base)
+  const sift = base.link[1] && mintSift(base.link[1])
   // just mint it into complete match tree just in case.
   const b = {
     form: 'task-base',
     name,
+    sift,
   }
   return b
 }

@@ -20,7 +20,7 @@ function make(file, deck) {
       list.push(deck[load.road])
     })
   }
-  return HEAD + text.join('\n') + '\n\n' + last.join('\n')
+  return HEAD + text.join('\n') + '\n\n' + last.join('\n') + '\n'
 }
 
 function makeFile(file, last) {
@@ -55,7 +55,7 @@ function makeFile(file, last) {
       break
   }
   code.forEach(line => {
-    text.push(`  ${line}`)
+    text.push(`${line}`)
   })
   text.push(`})`)
   if (calls.length) {
@@ -198,21 +198,20 @@ function makeTask(task, formKnit) {
   const params = []
   const initializers = []
   task.base.forEach(base => {
-    if (base.base) {
+    if (base.sift) {
       initializers.push(base)
-    } else {
-      params.push(`${toMethodName(base.name)}`)
     }
+    params.push(`${toMethodName(base.name)}`)
   })
   formKnit[toMethodName(task.name)] = `file.task.${toMethodName(task.name)}`
   text.push(``)
   text.push(`file.task.${toMethodName(task.name)} = function(${params.join(', ')}){`)
   initializers.forEach(base => {
     text.push(`  if (${toMethodName(base.name)} == null) {`)
-    if (base.base.form === 'text') {
-      text.push(`    ${toMethodName(base.name)} = '${base.base.sift}'`)
+    if (base.sift.form === 'text') {
+      text.push(`    ${toMethodName(base.name)} = '${makeSift(base.sift)}'`)
     } else {
-      text.push(`    ${toMethodName(base.name)} = ${base.base.sift}`)
+      text.push(`    ${toMethodName(base.name)} = ${makeSift(base.sift)}`)
     }
     text.push(`  }`)
     text.push(``)
@@ -392,6 +391,7 @@ function makeDockTask(task) {
       params.push(`${toMethodName(base.name)}`)
     }
   })
+  text.push(``)
   text.push(`file.task.${toMethodName(task.name)} = function(${params.join(', ')}){`)
   initializers.forEach(base => {
     text.push(`  if (${toMethodName(base.name)} == null) {`)
