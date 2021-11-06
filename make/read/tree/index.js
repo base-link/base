@@ -1,7 +1,7 @@
 
 module.exports = make
 
-function make(hack) {
+function make(hack, road) {
   let node = { name: 'base', link: [] }
   let child
   // let base = node
@@ -83,15 +83,61 @@ function make(hack) {
         }
         node.link.push(child)
         break
-      case `name`:
-        child = {
-          form: `term`,
-          name: token.text,
-          link: []
-        }
+      case `nest`:
+        child = parse(token.text)
         node.link.push(child)
         break
     }
   }
   return stack.shift().link[0]
+}
+
+const patterns = [
+  [/^[a-z][a-z0-9]*(?:-[a-z0-9]+)*/, 'name'],
+  [/^\[/, 'base-read'],
+  [/^\]/, 'head-read'],
+  [/^\//, 'stem']
+]
+
+function parse(str) {
+  let text = str
+  let node
+  let nest = []
+  let result = nest
+  let stack = [nest]
+  let track = false
+  while (str.length) {
+    nest = stack[stack.length - 1]
+    p:
+    for (let pattern of patterns) {
+      let match = str.match(pattern[0])
+      if (match) {
+        if (pattern[1] === 'name') {
+          node = {
+            form: `term`,
+            name: match[0],
+            link: []
+          }
+          nest.push(node)
+        } else if (pattern[1] === 'stem') {
+          stack.push(node.link)
+        } else if (pattern[1] === 'base-read') {
+          node = {
+            form: 'read',
+            link: []
+          }
+          nest.push(node)
+          track = true
+          stack.push(node.link)
+        } else if (pattern[1] === 'head-read') {
+          stack.pop()
+        }
+
+        str = str.substr(match[0].length)
+        break p
+      }
+    }
+  }
+  if (track) console.log(result)
+  return result[0]
 }

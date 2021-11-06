@@ -17,7 +17,8 @@ const ROAD_TO_MINT = {
   '@drumwork/dock/code/browser/binding/document': 'dock-task-file',
   '@drumwork/dock/code/javascript/binding/base': 'dock-task-file',
   '@drumwork/dock/code/javascript/binding/console': 'dock-task-file',
-  '@drumwork/dock/code/javascript/binding/number': 'dock-task-file'
+  '@drumwork/dock/code/javascript/binding/number': 'dock-task-file',
+  '@drumwork/dock/code/javascript/binding/object': 'dock-task-file'
 }
 
 const MINT = {
@@ -92,7 +93,7 @@ function makeTestFile(road) {
   const [host, name, ...rest] = road.split('/')
   const text = readFile(`../${name}/${rest.join('/')}/base.link`)
   const line = readText(text)
-  const tree = makeTree(line)
+  const tree = makeTree(line, road.replace(/\//g, '-'))
   const file = mintTestFile(road, tree)
   return file
 }
@@ -100,14 +101,14 @@ function makeTestFile(road) {
 function makeFormFile(road) {
   const text = readFile(`./${road}/base.link`)
   const line = readText(text)
-  const tree = makeTree(line)
+  const tree = makeTree(line, road.replace(/\//g, '-'))
   const file = mintFormFile(road, tree)
 }
 
 function makeCallFile(road) {
   const text = readFile(`./${road}/base.link`)
   const line = readText(text)
-  const tree = makeTree(line)
+  const tree = makeTree(line, road.replace(/\//g, '-'))
   const file = mintCallFile(road, tree)
 }
 
@@ -115,7 +116,7 @@ function makeTaskFile(road) {
   const [host, name, ...rest] = road.split('/')
   const text = readFile(`../${name}/${rest.join('/')}/base.link`)
   const line = readText(text)
-  const tree = makeTree(line)
+  const tree = makeTree(line, road.replace(/\//g, '-'))
   const file = mintTaskFile(road, tree)
   return file
 }

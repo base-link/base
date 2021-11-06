@@ -22,5 +22,10 @@ function mintLoad(base) {
 }
 
 function mintTake(base) {
-  return base.link[0]
+  const take = base.link[0]
+  let save
+  if (base.link[1]) {
+    save = base.link[1].link[0]
+  }
+  return { take, save }
 }

@@ -20,6 +20,13 @@ function make(file, deck) {
       list.push(deck[load.road])
     })
   }
+  text.forEach((line, i) => {
+    if (line.trim()) {
+      text[i] = line
+    } else {
+      text[i] = line.trim()
+    }
+  })
   return HEAD + text.join('\n') + '\n\n' + last.join('\n') + '\n'
 }
 
@@ -142,7 +149,7 @@ function makeTestFile(file, calls) {
   })
   code.push(`}`)
   code.forEach(line => {
-    text.push(line)
+    text.push(`  ${line}`)
   })
   return text
 }
@@ -167,19 +174,14 @@ function makeLoad(load, i, formKnit = {}) {
   // how to handle the load structure, what even is the load structure?
   const text = []
 
-  load.take.forEach(take => {
+  load.take.forEach(({ take, save }) => {
     const form = toMethodName(take.name)
     const name = toMethodName(take.link[0].name)
-    formKnit[name] = `x${i + 1}.${form}.${name}`
+    const savedName = save ? toMethodName(save.link[0].name) : name
+    formKnit[savedName] = `x${i + 1}.${form}.${name}`
   })
 
   text.push(`const x${i + 1} = base.load('${load.road}')`)
-  // Object.keys(formKnit).forEach(form => {
-  //   const list = formKnit[form].map(x => `  ${x}`).join(',\n')
-  //   text.push(`const {`)
-  //   text.push(...list.split('\n'))
-  //   text.push(`} = x${i + 1}.${form}`)
-  // })
   return text
 }
 
@@ -353,6 +355,7 @@ function makeNest(nest) {
 
 function makeSift(sift) {
   switch (sift.form) {
+    case `sift-text`: return `'${sift.text}'`
     case `text`: return `'${sift.text}'`
     case `size`: return `${sift.size}`
     case `sift-mark`: return `${sift.mark}`
@@ -473,8 +476,18 @@ function makeDockCall(call) {
     case `delete`:
       base = makeDockCallDelete(call)
       break
+    case `create-literal`:
+      base = makeDockCallCreateLiteral(call)
+      break
   }
   return `${head}${base}`.split('\n')
+}
+
+function makeDockCallCreateLiteral(call) {
+  const text = []
+  const literal = call.bind.filter(bind => bind.name === 'literal')[0]
+  text.push(literal.sift.text)
+  return text.join('\n')
 }
 
 function makeDockCallDelete(call) {

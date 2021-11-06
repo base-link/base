@@ -8,8 +8,13 @@ load @drumwork/dock/code/javascript/binding/base
   take task check-gt
   take task check-else
   take task walk
+  take task set-field
+  take task shift-left
 load @drumwork/dock/code/javascript/binding/console
   take task log
+load @drumwork/dock/code/javascript/binding/object
+  take task create
+    save task create-object
 
 task assert-equal
   base base
@@ -83,5 +88,26 @@ task test-fibonacci-loop
   call find-fibonacci-via-recursion
     bind i, text 7
     save x
+  call log
+    bind message, link x
+  call create-object
+    save x
+  call set-field
+    bind object, link x
+    bind attribute, text <foo>
+    bind value, text <bar>
+  call set-field
+    bind object, link x
+    bind attribute, text <x>
+    bind value, link o
+  save v, text <hello>
+  call shift-left
+    bind left, link o
+    bind right, size 5
+    save x/y
+  call shift-left
+    bind left, link o
+    bind right, size 7
+    save x[v]
   call log
     bind message, link x

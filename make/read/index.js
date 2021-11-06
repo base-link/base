@@ -1,6 +1,6 @@
 
 const patterns = [
-  [/^[a-z][a-z0-9]*(?:-[a-z0-9]+)*/, 'name', true],
+  [/^[a-z][a-z0-9\-\/\[\]]*/, 'nest', true],
   [/^\(/, 'base-arch'],
   [/^ /, 'base-arch', null, true],
   [/^\)/, 'head-arch'],
@@ -19,15 +19,14 @@ const patterns = [
 
 const stringPatterns = [
   [/^\{/, 'base-term'],
-  [/^\\[>]/, 'text', true, null, '>'],
-  [/^\\[<]/, 'text', true, null, '<'],
-  [/^[^\{>]+(?:\\[>\{])?/, 'text', true],
+  [/^(?:\\[<>\{\}])+/, 'text', true, null, t => t.replace(/\\/g, '')],
+  [/^[^\{>]+/, 'text', true],
   [/^>/, 'head-text'],
 ]
 
 function read(str) {
   const tokens = []
-  tokens.push({ form: 'name', text: 'start' })
+  tokens.push({ form: 'nest', text: 'start' })
   tokens.push({ form: 'base-arch' })
   let indents = [0]
   let nesting = 0
@@ -139,7 +138,7 @@ function read(str) {
           if (pattern[3]) {
             nesting++
           }
-          if (pattern[2]) attrs.text = pattern[4] || text
+          if (pattern[2]) attrs.text = pattern[4] ? pattern[4](text) : text
           tokens.push(attrs)
           str = str.substr(text.length)
           break x
@@ -160,7 +159,6 @@ function read(str) {
     indents.pop()
   }
   tokens.push({ form: 'head-arch' })
-  // console.log(tokens)
   return tokens
 }
 

@@ -76,11 +76,11 @@ class Base {
 host.base = new Base
 
 base.bind('@drumwork/base/test', file => {
-const x1 = base.load('@drumwork/base/test/task')
-const x2 = base.load('@drumwork/dock/code/browser/binding/document')
-file.base = function(){
-  x1.task.test_fibonacci_loop()
-}
+  const x1 = base.load('@drumwork/base/test/task')
+  const x2 = base.load('@drumwork/dock/code/browser/binding/document')
+  file.base = function(){
+    x1.task.test_fibonacci_loop()
+  }
 })
 
 base.bind('@drumwork/base/test/task', file => {
@@ -88,6 +88,7 @@ base.bind('@drumwork/base/test/task', file => {
   const x1 = base.load('@drumwork/dock/code/javascript/binding/number')
   const x2 = base.load('@drumwork/dock/code/javascript/binding/base')
   const x3 = base.load('@drumwork/dock/code/javascript/binding/console')
+  const x4 = base.load('@drumwork/dock/code/javascript/binding/object')
 
   file.task.assert_equal = function(base, head){
     x2.task.check_if_strictly_equal(
@@ -167,6 +168,30 @@ base.bind('@drumwork/base/test/task', file => {
       o
     )
     x = file.task.find_fibonacci_via_recursion(
+      7
+    )
+    x3.task.log(
+      x
+    )
+    x = x4.task.create(
+
+    )
+    x2.task.set_field(
+      x,
+      'foo',
+      'bar'
+    )
+    x2.task.set_field(
+      x,
+      'x',
+      o
+    )
+    x.y = x2.task.shift_left(
+      o,
+      5
+    )
+    x = x2.task.shift_left(
+      o,
       7
     )
     x3.task.log(
@@ -559,15 +584,15 @@ base.bind('@drumwork/dock/code/javascript/binding/base', file => {
   }
 
   file.task.shift_left = function(left, right){
-    return left < right
+    return left << right
   }
 
   file.task.shift_right = function(left, right){
-    return left > right
+    return left >> right
   }
 
   file.task.shift_right_unsigned = function(left, right){
-    return left > right
+    return left >>> right
   }
 
   file.task.compute_bitwise_and = function(left, right){
@@ -700,6 +725,34 @@ base.bind('@drumwork/dock/code/javascript/binding/console', file => {
 
   file.task.warn = function(obj1, msg, subst1){
     console.warn(obj1, msg, subst1)
+  }
+})
+
+base.bind('@drumwork/dock/code/javascript/binding/object', file => {
+  file.task = file.task || {}
+
+  file.task.create = function(){
+    return {}
+  }
+
+  file.task.check_if_has_property = function(object, property){
+    return object.hasOwnProperty(property)
+  }
+
+  file.task.stringify_json = function(object){
+    return JSON.stringify(object)
+  }
+
+  file.task.parse_json = function(string){
+    return JSON.parse(string)
+  }
+
+  file.task.get_keys = function(object){
+    return Object.keys(object)
+  }
+
+  file.task.get_values = function(object){
+    return Object.values(object)
   }
 })
 
