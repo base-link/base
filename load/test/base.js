@@ -89,6 +89,7 @@ base.bind('@drumwork/base/test/task', file => {
   const x2 = base.load('@drumwork/dock/code/javascript/binding/base')
   const x3 = base.load('@drumwork/dock/code/javascript/binding/console')
   const x4 = base.load('@drumwork/dock/code/javascript/binding/object')
+  const x5 = base.load('@drumwork/dock/code/javascript/binding/error')
 
   file.task.assert_equal = function(base, head){
     x2.task.check_if_strictly_equal(
@@ -190,9 +191,8 @@ base.bind('@drumwork/base/test/task', file => {
       o,
       5
     )
-    x = x2.task.shift_left(
-      o,
-      7
+    x.z = x5.task.create(
+      'hello world'
     )
     x3.task.log(
       x
@@ -753,6 +753,91 @@ base.bind('@drumwork/dock/code/javascript/binding/object', file => {
 
   file.task.get_values = function(object){
     return Object.values(object)
+  }
+})
+
+base.bind('@drumwork/dock/code/javascript/binding/error', file => {
+  file.task = file.task || {}
+  const x1 = base.load('../string')
+
+  file.task.create = function(message){
+    return new Error(message)
+  }
+
+  file.task.get_stack = function(error){
+    return undefined
+  }
+
+  file.task.throw = function(message){
+    undefined
+  }
+})
+
+base.bind('@drumwork/dock/code/javascript/binding/string', file => {
+  file.task = file.task || {}
+
+  file.task.replace = function(string, pattern, replacer){
+    return string.replace(pattern, replacer)
+  }
+
+  file.task.trim = function(string){
+    return string.trim()
+  }
+
+  file.task.get_char_code_at = function(string, index){
+    return string.charCodeAt(index)
+  }
+
+  file.task.get_char_at = function(string, index){
+    return string.charAt(index)
+  }
+
+  file.task.get_char_from_code = function(code){
+    return String.fromCharCode(code)
+  }
+
+  file.task.get_char_from_code_point = function(code){
+    return String.fromCodePoint(code)
+  }
+
+  file.task.convert_to_lowercase = function(string){
+    return string.toLowerCase()
+  }
+
+  file.task.convert_to_uppercase = function(string){
+    return string.toUpperCase()
+  }
+
+  file.task.create = function(){
+    return ''
+  }
+
+  file.task.match = function(string, pattern){
+    return string.match(pattern)
+  }
+
+  file.task.create_collator = function(){
+    new Intl.Collator()
+  }
+
+  file.task.get_collator_comparator = function(collator){
+    undefined
+  }
+
+  file.task.split = function(string, pattern){
+    return string.split(pattern)
+  }
+
+  file.task.check_starts_with = function(string, pattern){
+    return string.startsWith(pattern)
+  }
+
+  file.task.check_ends_with = function(string, pattern){
+    return string.endsWith(pattern)
+  }
+
+  file.task.pad_start = function(string, pad_size, pad_string){
+    return string.padStart(pad_size, pad_string)
   }
 })
 

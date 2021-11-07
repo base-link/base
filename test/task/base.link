@@ -15,6 +15,9 @@ load @drumwork/dock/code/javascript/binding/console
 load @drumwork/dock/code/javascript/binding/object
   take task create
     save task create-object
+load @drumwork/dock/code/javascript/binding/error
+  take task create
+    save task create-error
 
 task assert-equal
   base base
@@ -105,9 +108,8 @@ task test-fibonacci-loop
     bind left, link o
     bind right, size 5
     save x/y
-  call shift-left
-    bind left, link o
-    bind right, size 7
-    save x[v]
+  call create-error
+    bind message, text <hello world>
+    save x/z
   call log
     bind message, link x

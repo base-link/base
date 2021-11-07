@@ -14,7 +14,10 @@ const pathResolver = require('path')
 const ROAD_TO_MINT = {
   '@drumwork/base/test': 'test-file',
   '@drumwork/base/test/task': 'task-file',
+  // '@drumwork/base/code/host/form/book': 'form-file',
   '@drumwork/dock/code/browser/binding/document': 'dock-task-file',
+  '@drumwork/dock/code/javascript/binding/error': 'dock-task-file',
+  '@drumwork/dock/code/javascript/binding/string': 'dock-task-file',
   '@drumwork/dock/code/javascript/binding/base': 'dock-task-file',
   '@drumwork/dock/code/javascript/binding/console': 'dock-task-file',
   '@drumwork/dock/code/javascript/binding/number': 'dock-task-file',
@@ -24,6 +27,7 @@ const ROAD_TO_MINT = {
 const MINT = {
   'task-file': makeTaskFile,
   'dock-task-file': makeTaskFile,
+  'form-file': makeFormFile
 }
 
 make()
@@ -99,10 +103,12 @@ function makeTestFile(road) {
 }
 
 function makeFormFile(road) {
-  const text = readFile(`./${road}/base.link`)
+  const [host, name, ...rest] = road.split('/')
+  const text = readFile(`../${name}/${rest.join('/')}/base.link`)
   const line = readText(text)
   const tree = makeTree(line, road.replace(/\//g, '-'))
   const file = mintFormFile(road, tree)
+  return file
 }
 
 function makeCallFile(road) {
