@@ -3,8 +3,5 @@ load ../..
   load /task
     take task test-fibonacci-loop
     take task test-read-file
-  load /task/view
-    take task mount-example-view
 
 test test-fibonacci-loop
-test mount-example-view

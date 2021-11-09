@@ -1,6 +1,8 @@
 
 load ../../view/example
   take view example
+load @drumwork/dock/code/javascript/console
+  take task log
 
 task mount
   base mesh
@@ -9,3 +11,5 @@ task mount-example-view
   call mount
     bind mesh
       make view example
+  call log
+    bind message, text <hello world>
