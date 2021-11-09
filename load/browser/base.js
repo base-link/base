@@ -100,7 +100,7 @@ base.bind('@drumwork/base/test/task/view', file => {
       undefined
     )
     x2.task.log(
-      'hello world'
+      'done'
     )
   }
 })

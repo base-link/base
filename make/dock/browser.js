@@ -22,4 +22,4 @@ const ROAD_TO_MINT = {
   '@drumwork/base/code/host/form/link': 'form-file',
 }
 
-make(`@drumwork/base/test/dock/browser`, ROAD_TO_MINT)
+make(`@drumwork/base/test/dock/browser`, ROAD_TO_MINT, `browser`)

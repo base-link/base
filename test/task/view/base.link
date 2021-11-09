@@ -12,4 +12,4 @@ task mount-example-view
     bind mesh
       make view example
   call log
-    bind message, text <hello world>
+    bind message, text <done>

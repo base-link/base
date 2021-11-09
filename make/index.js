@@ -21,14 +21,14 @@ const MINT = {
 
 module.exports = make
 
-function make(base, ROAD_TO_MINT) {
+function make(base, ROAD_TO_MINT, dock) {
   const deck = {}
   const file = deck[base] = makeTestFile(base)
   file.mint = 'test-file'
   load(deck[base], deck, ROAD_TO_MINT)
   muse(file)
   const text = makeText(file, deck)
-  save(`test`, text)
+  save(dock, text)
 }
 
 function load(file, deck, ROAD_TO_MINT) {
