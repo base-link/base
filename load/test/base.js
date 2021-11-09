@@ -77,7 +77,6 @@ host.base = new Base
 
 base.bind('@drumwork/base/test', file => {
   const x1 = base.load('@drumwork/base/test/task')
-  const x2 = base.load('@drumwork/dock/code/browser/binding/document')
   file.base = function(){
     x1.task.test_fibonacci_loop()
   }
@@ -85,11 +84,12 @@ base.bind('@drumwork/base/test', file => {
 
 base.bind('@drumwork/base/test/task', file => {
   file.task = file.task || {}
-  const x1 = base.load('@drumwork/dock/code/javascript/binding/number')
-  const x2 = base.load('@drumwork/dock/code/javascript/binding/base')
-  const x3 = base.load('@drumwork/dock/code/javascript/binding/console')
-  const x4 = base.load('@drumwork/dock/code/javascript/binding/object')
-  const x5 = base.load('@drumwork/dock/code/javascript/binding/error')
+  const x1 = base.load('@drumwork/dock/code/javascript/number')
+  const x2 = base.load('@drumwork/dock/code/javascript/base')
+  const x3 = base.load('@drumwork/dock/code/javascript/console')
+  const x4 = base.load('@drumwork/dock/code/javascript/object')
+  const x5 = base.load('@drumwork/dock/code/javascript/error')
+  const x6 = base.load('@drumwork/base/code/dock/node/file')
 
   file.task.assert_equal = function(base, head){
     x2.task.check_if_strictly_equal(
@@ -161,7 +161,7 @@ base.bind('@drumwork/base/test/task', file => {
     )
   }
 
-  file.task.test_fibonacci_loop = function(){
+  file.task.test_fibonacci_loop = async function(){
     o = file.task.find_fibonacci_via_loop(
       7
     )
@@ -197,206 +197,17 @@ base.bind('@drumwork/base/test/task', file => {
     x3.task.log(
       x
     )
+    content = await x6.task.read(
+      'deck.link',
+      'utf-8'
+    )
+    x3.task.log(
+      content
+    )
   }
 })
 
-base.bind('@drumwork/dock/code/browser/binding/document', file => {
-  file.task = file.task || {}
-
-  file.task.build_document = function(){
-    return new Document()
-  }
-
-  file.task.get_body = function(build){
-    return undefined
-  }
-
-  file.task.set_body = function(build, value){
-    undefined
-  }
-
-  file.task.get_character_set = function(build){
-    return undefined
-  }
-
-  file.task.get_compat_mode = function(build){
-    return undefined
-  }
-
-  file.task.get_content_type = function(build){
-    return undefined
-  }
-
-  file.task.get_doctype = function(build){
-    return undefined
-  }
-
-  file.task.get_document_element = function(build){
-    return undefined
-  }
-
-  file.task.get_document_uri = function(build){
-    return undefined
-  }
-
-  file.task.get_embeds = function(build){
-    return undefined
-  }
-
-  file.task.get_fonts = function(build){
-    return undefined
-  }
-
-  file.task.set_fonts = function(build, value){
-    undefined
-  }
-
-  file.task.get_forms = function(build){
-    return undefined
-  }
-
-  file.task.get_head = function(build){
-    return undefined
-  }
-
-  file.task.get_hidden = function(build){
-    return undefined
-  }
-
-  file.task.get_images = function(build){
-    return undefined
-  }
-
-  file.task.get_implementation = function(build){
-    return undefined
-  }
-
-  file.task.get_links = function(build){
-    return undefined
-  }
-
-  file.task.get_moz_synthetic_document = function(build){
-    return undefined
-  }
-
-  file.task.set_moz_synthetic_document = function(build, value){
-    undefined
-  }
-
-  file.task.get_picture_in_picture_enabled = function(build){
-    return undefined
-  }
-
-  file.task.get_plugins = function(build){
-    return undefined
-  }
-
-  file.task.get_feature_policy = function(build){
-    return undefined
-  }
-
-  file.task.get_scripts = function(build){
-    return undefined
-  }
-
-  file.task.get_scrolling_element = function(build){
-    return undefined
-  }
-
-  file.task.get_timeline = function(build){
-    return undefined
-  }
-
-  file.task.get_undo_manager = function(build){
-    return undefined
-  }
-
-  file.task.get_visibility_state = function(build){
-    return undefined
-  }
-
-  file.task.adopt_node = function(build, external_node){
-    return build.adoptNode(external_node)
-  }
-
-  file.task.create_attribute = function(build){
-    return build.createAttribute()
-  }
-
-  file.task.create_attribute_ns = function(build){
-    return build.createAttributeNS()
-  }
-
-  file.task.create_cdata_section = function(build){
-    return build.createCDATASection()
-  }
-
-  file.task.create_comment = function(build, data){
-    return build.createComment(data)
-  }
-
-  file.task.create_document_fragment = function(build){
-    return build.createDocumentFragment()
-  }
-
-  file.task.create_element = function(build, tag_name, options){
-    return build.createElement(tag_name, options)
-  }
-
-  file.task.create_element_ns = function(build, namespace_uri, qualified_name, options, options){
-    return build.createElementNS(namespace_uri, qualified_name, options, options)
-  }
-
-  file.task.create_event = function(build){
-    return build.createEvent()
-  }
-
-  file.task.create_node_iterator = function(build){
-    return build.createNodeIterator()
-  }
-
-  file.task.create_processing_instruction = function(build){
-    return build.createProcessingInstruction()
-  }
-
-  file.task.create_range = function(build){
-    return build.createRange()
-  }
-
-  file.task.create_text_node = function(build){
-    return build.createTextNode()
-  }
-
-  file.task.create_tree_walker = function(build, root, what_to_show, filter, entity_reference_expansion){
-    return build.createTreeWalker(root, what_to_show, filter, entity_reference_expansion)
-  }
-
-  file.task.exit_picture_in_picture = function(build){
-    return build.exitPictureInPicture()
-  }
-
-  file.task.get_elements_by_class_name = function(build){
-    return build.getElementsByClassName()
-  }
-
-  file.task.get_elements_by_tag_name = function(build){
-    return build.getElementsByTagName()
-  }
-
-  file.task.get_elements_by_tag_name_ns = function(build){
-    return build.getElementsByTagNameNS()
-  }
-
-  file.task.import_node = function(build, external_node, deep){
-    return build.importNode(external_node, deep)
-  }
-
-  file.task.request_storage_access = function(build){
-    return build.requestStorageAccess()
-  }
-})
-
-base.bind('@drumwork/dock/code/javascript/binding/number', file => {
+base.bind('@drumwork/dock/code/javascript/number', file => {
   file.task = file.task || {}
 
   file.task.parse_decimal = function(string){
@@ -516,7 +327,7 @@ base.bind('@drumwork/dock/code/javascript/binding/number', file => {
   }
 })
 
-base.bind('@drumwork/dock/code/javascript/binding/base', file => {
+base.bind('@drumwork/dock/code/javascript/base', file => {
   file.task = file.task || {}
 
   file.task.walk = function(check, block){
@@ -557,6 +368,10 @@ base.bind('@drumwork/dock/code/javascript/binding/base', file => {
 
   file.task.check_if_equal = function(left, right){
     return left == right
+  }
+
+  file.task.check_if_null = function(value){
+    return value == null
   }
 
   file.task.check_if_strictly_equal = function(left, right){
@@ -648,7 +463,7 @@ base.bind('@drumwork/dock/code/javascript/binding/base', file => {
   }
 })
 
-base.bind('@drumwork/dock/code/javascript/binding/console', file => {
+base.bind('@drumwork/dock/code/javascript/console', file => {
   file.task = file.task || {}
 
   file.task.assert = function(assertion, obj1, msg, subst1){
@@ -728,7 +543,7 @@ base.bind('@drumwork/dock/code/javascript/binding/console', file => {
   }
 })
 
-base.bind('@drumwork/dock/code/javascript/binding/object', file => {
+base.bind('@drumwork/dock/code/javascript/object', file => {
   file.task = file.task || {}
 
   file.task.create = function(){
@@ -756,7 +571,7 @@ base.bind('@drumwork/dock/code/javascript/binding/object', file => {
   }
 })
 
-base.bind('@drumwork/dock/code/javascript/binding/error', file => {
+base.bind('@drumwork/dock/code/javascript/error', file => {
   file.task = file.task || {}
   const x1 = base.load('../string')
 
@@ -773,7 +588,50 @@ base.bind('@drumwork/dock/code/javascript/binding/error', file => {
   }
 })
 
-base.bind('@drumwork/dock/code/javascript/binding/string', file => {
+base.bind('@drumwork/base/code/dock/node/file', file => {
+  file.task = file.task || {}
+  const x1 = base.load('@drumwork/dock/code/node/fs')
+  const x2 = base.load('@drumwork/dock/code/javascript/promise')
+  const x3 = base.load('@drumwork/dock/code/javascript/module')
+  const x4 = base.load('@drumwork/dock/code/javascript/base')
+
+  file.task.read = function(name, encoding){
+    let fs
+    fs = x3.task.require(
+      'fs'
+    )
+    return x2.task.make(
+      function handle(resolve, reject){
+        x1.task.read_file(
+          fs,
+          name,
+          encoding,
+          function handle(error, data){
+            x4.task.check_else(
+              function(){
+                return x4.task.check_if_null(
+                  error
+                )
+              },
+              function(){
+                resolve(
+                  data
+                )
+              },
+              function(){
+                reject(
+                  error
+                )
+              }
+            )
+          }
+        )
+      }
+    )
+  }
+})
+
+base.bind('@drumwork/dock/code/javascript/string', file => {
   file.task = file.task || {}
 
   file.task.replace = function(string, pattern, replacer){
@@ -838,6 +696,222 @@ base.bind('@drumwork/dock/code/javascript/binding/string', file => {
 
   file.task.pad_start = function(string, pad_size, pad_string){
     return string.padStart(pad_size, pad_string)
+  }
+})
+
+base.bind('@drumwork/dock/code/node/fs', file => {
+  file.task = file.task || {}
+
+  file.task.write_file = function(fs, path, content, encoding, callback){
+    fs.writeFile(path, content, encoding, callback)
+  }
+
+  file.task.read_file = function(fs, path, encoding, callback){
+    fs.readFile(path, encoding, callback)
+  }
+
+  file.task.append_file = function(fs, path, data, callback){
+    fs.appendFile(path, data, callback)
+  }
+
+  file.task.change_mode = function(fs, path, mode, callback){
+    fs.chmod(path, mode, callback)
+  }
+
+  file.task.change_owner = function(fs, path, uid, gid, callback){
+    fs.chown(path, uid, gid, callback)
+  }
+
+  file.task.copy_file = function(fs, src, dest, mode, callback){
+    fs.copyFile(src, dest, mode, callback)
+  }
+
+  file.task.create_read_stream = function(fs, path, options){
+    fs.createReadStream(path, options)
+  }
+
+  file.task.create_write_stream = function(fs, path, options){
+    fs.createWriteStream(path, options)
+  }
+
+  file.task.build_directory = function(fs, path, options, callback){
+    fs.mkdir(path, options, callback)
+  }
+
+  file.task.read_directory = function(fs, path, options, callback){
+    fs.readdir(path, options, callback)
+  }
+
+  file.task.rename = function(fs, old_path, new_path, callback){
+    fs.rename(old_path, new_path, callback)
+  }
+
+  file.task.clear_directory = function(fs, path, options, callback){
+    fs.rmdir(path, options, callback)
+  }
+
+  file.task.stat = function(fs, path, options, callback){
+    fs.stat(path, options, callback)
+  }
+
+  file.task.truncate = function(fs, path, size, callback){
+    fs.truncate(path, size, callback)
+  }
+
+  file.task.unlink = function(fs, path, callback){
+    fs.unlink(path, callback)
+  }
+})
+
+base.bind('@drumwork/dock/code/javascript/promise', file => {
+  file.task = file.task || {}
+
+  file.task.make = function(hook){
+    return new Promise(hook)
+  }
+})
+
+base.bind('@drumwork/dock/code/javascript/module', file => {
+  file.task = file.task || {}
+
+  file.task.require = function(path){
+    return require(path)
+  }
+})
+
+base.bind('@drumwork/dock/code/javascript/base', file => {
+  file.task = file.task || {}
+
+  file.task.walk = function(check, block){
+    while (check()) {
+      block()
+    }
+  }
+
+  file.task.check = function(check, block){
+    if (check()) {
+      return block()
+    }
+  }
+
+  file.task.check_else = function(check, block, other){
+    if (check()) {
+      return block()
+    } else {
+      return other()
+    }
+  }
+
+  file.task.debug_function = function(func){
+    window.debug(func)
+  }
+
+  file.task.debug = function(){
+    debugger
+  }
+
+  file.task.queue = function(func){
+    window.setImmediate(func)
+  }
+
+  file.task.compute_bitwise_or = function(left, right){
+    return left | right
+  }
+
+  file.task.check_if_equal = function(left, right){
+    return left == right
+  }
+
+  file.task.check_if_null = function(value){
+    return value == null
+  }
+
+  file.task.check_if_strictly_equal = function(left, right){
+    return left === right
+  }
+
+  file.task.get_typeof = function(value){
+    return typeof value
+  }
+
+  file.task.get_instanceof = function(left, right){
+    return left instanceof right
+  }
+
+  file.task.set_field = function(object, attribute, value){
+    object[attribute] = value
+  }
+
+  file.task.get_field = function(object, attribute){
+    return object[attribute]
+  }
+
+  file.task.remove_field = function(object, attribute){
+    delete object[attribute]
+  }
+
+  file.task.shift_left = function(left, right){
+    return left << right
+  }
+
+  file.task.shift_right = function(left, right){
+    return left >> right
+  }
+
+  file.task.shift_right_unsigned = function(left, right){
+    return left >>> right
+  }
+
+  file.task.compute_bitwise_and = function(left, right){
+    return left & right
+  }
+
+  file.task.check_or = function(left, right){
+    return left || right
+  }
+
+  file.task.try_catch = function(block, error){
+    try {
+      block()
+    } catch (e) {
+      error(e)
+    }
+  }
+
+  file.task.check_if_truthy = function(value){
+    return !!value
+  }
+
+  file.task.check_opposite = function(value){
+    return !value
+  }
+
+  file.task.check_not_equal = function(left, right){
+    return left !== right
+  }
+
+  file.task.flip_block = function(value){
+    return ~value
+  }
+
+  file.task.check_gt = function(left, right){
+    return left > right
+  }
+
+  file.task.check_lt = function(left, right){
+    return left < right
+  }
+
+  file.task.check_gte = function(left, right){
+    return left > right
+  }
+
+  file.task.check_lte = function(left, right){
+    return left < right
+  }
+
+  file.task.check_and = function(left, right){
+    return left && right
   }
 })
 

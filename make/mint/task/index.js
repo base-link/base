@@ -9,9 +9,11 @@ mintTask.mintCall = mintCall
 function mintTask(base) {
   const name = findName(base)
   const task = {
+    form: 'task',
     name,
     base: [],
     zone: [],
+    wait: false,
   }
   base.link.slice(1).forEach(base => {
     switch (base.name) {
@@ -27,6 +29,9 @@ function mintTask(base) {
       case 'call':
         task.zone.push(mintCall(base))
         break
+      case 'wait':
+        task.wait = true
+        break
     }
   })
   return task
@@ -38,6 +43,7 @@ function mintCall(base) {
   const call = {
     form: `call`,
     name,
+    wait: false,
     bind: [],
     zone: [],
     hook: [],
@@ -60,6 +66,9 @@ function mintCall(base) {
       case `turn`:
         const turn = mintCallTurn(base)
         call.zone.push(turn)
+        break
+      case `wait`:
+        call.wait = true
         break
     }
   })
@@ -125,7 +134,7 @@ function mintHook(base) {
 
 const mintBind = b => {
   const name = findName(b)
-  const sift = mintSift(b.link[1])
+  const sift = b.link[1].name === 'task' ? mintTask(b.link[1]) : mintSift(b.link[1])
   const bind = {
     form: `bind`,
     name,

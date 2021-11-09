@@ -14,14 +14,16 @@ const pathResolver = require('path')
 const ROAD_TO_MINT = {
   '@drumwork/base/test': 'test-file',
   '@drumwork/base/test/task': 'task-file',
-  // '@drumwork/base/code/host/form/book': 'form-file',
-  '@drumwork/dock/code/browser/binding/document': 'dock-task-file',
-  '@drumwork/dock/code/javascript/binding/error': 'dock-task-file',
-  '@drumwork/dock/code/javascript/binding/string': 'dock-task-file',
-  '@drumwork/dock/code/javascript/binding/base': 'dock-task-file',
-  '@drumwork/dock/code/javascript/binding/console': 'dock-task-file',
-  '@drumwork/dock/code/javascript/binding/number': 'dock-task-file',
-  '@drumwork/dock/code/javascript/binding/object': 'dock-task-file'
+  '@drumwork/base/code/dock/node/file': 'task-file',
+  '@drumwork/dock/code/javascript/error': 'dock-task-file',
+  '@drumwork/dock/code/javascript/string': 'dock-task-file',
+  '@drumwork/dock/code/javascript/base': 'dock-task-file',
+  '@drumwork/dock/code/javascript/console': 'dock-task-file',
+  '@drumwork/dock/code/javascript/number': 'dock-task-file',
+  '@drumwork/dock/code/javascript/object': 'dock-task-file',
+  '@drumwork/dock/code/javascript/promise': 'dock-task-file',
+  '@drumwork/dock/code/javascript/module': 'dock-task-file',
+  '@drumwork/dock/code/node/fs': 'dock-task-file'
 }
 
 const MINT = {
@@ -50,6 +52,9 @@ function load(file, deck) {
     const [host, name, ...rest] = road.split('/')
     if (!deck[road]) {
       const mint = ROAD_TO_MINT[road]
+      if (!MINT[mint]) {
+        throw `${mint} - ${road}`
+      }
       deck[road] = MINT[mint](road)
       deck[road].mint = mint
       load(deck[road], deck)
