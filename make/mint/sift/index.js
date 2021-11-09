@@ -1,4 +1,5 @@
 
+const mintMake = require('../make')
 const { findName } = require('../name')
 const mintNest = require('../nest')
 
@@ -70,6 +71,8 @@ function mintSift(base) {
         form: 'link',
         nest: mintNest(base.link[0])
       }
+    case `make`:
+      return mintMake(base);
     default:
       throw JSON.stringify(base)
   }

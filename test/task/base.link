@@ -21,6 +21,19 @@ load @drumwork/dock/code/javascript/error
 load @drumwork/base/code/dock/node/file
   take task read
     save task read-file
+load @drumwork/base/code/host/form
+  load /bind
+    take form bind
+  load /term
+    take form term
+  load /sift
+    take form sift
+  load /call
+    take form call
+  load /task
+    take form task
+  load /link
+    take form link
 
 task assert-equal
   base base

@@ -1,6 +1,9 @@
 
+load ../call
+  take form call
+
 form flow-seat
-  case call
+  case call, form call
   case save
 
 form task

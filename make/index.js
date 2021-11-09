@@ -8,12 +8,15 @@ const mintCallFile = require('./mint/file/call')
 const mintTaskFile = require('./mint/file/task')
 const mintFormFile = require('./mint/file/form')
 const mintTestFile = require('./mint/file/test')
+const mintViewFile = require('./mint/file/view')
 const makeText = require('./text')
 const pathResolver = require('path')
 
 const ROAD_TO_MINT = {
   '@drumwork/base/test': 'test-file',
+  '@drumwork/base/test/view/example': 'view-file',
   '@drumwork/base/test/task': 'task-file',
+  '@drumwork/base/test/task/view': 'task-file',
   '@drumwork/base/code/dock/node/file': 'task-file',
   '@drumwork/dock/code/javascript/error': 'dock-task-file',
   '@drumwork/dock/code/javascript/string': 'dock-task-file',
@@ -23,13 +26,20 @@ const ROAD_TO_MINT = {
   '@drumwork/dock/code/javascript/object': 'dock-task-file',
   '@drumwork/dock/code/javascript/promise': 'dock-task-file',
   '@drumwork/dock/code/javascript/module': 'dock-task-file',
-  '@drumwork/dock/code/node/fs': 'dock-task-file'
+  '@drumwork/dock/code/node/fs': 'dock-task-file',
+  '@drumwork/base/code/host/form/bind': 'form-file',
+  '@drumwork/base/code/host/form/term': 'form-file',
+  '@drumwork/base/code/host/form/sift': 'form-file',
+  '@drumwork/base/code/host/form/call': 'form-file',
+  '@drumwork/base/code/host/form/task': 'form-file',
+  '@drumwork/base/code/host/form/link': 'form-file',
 }
 
 const MINT = {
-  'task-file': makeTaskFile,
   'dock-task-file': makeTaskFile,
-  'form-file': makeFormFile
+  'task-file': makeTaskFile,
+  'form-file': makeFormFile,
+  'view-file': makeViewFile,
 }
 
 make()
@@ -98,12 +108,23 @@ function save(name, text) {
   fs.writeFileSync(`load/${name}/base.js`, text)
 }
 
+function makeViewFile(road) {
+  const [host, name, ...rest] = road.split('/')
+  const text = readFile(`../${name}/${rest.join('/')}/base.link`)
+  const line = readText(text)
+  const tree = makeTree(line, road.replace(/\//g, '-'))
+  const file = mintViewFile(road, tree)
+  file.text = text
+  return file
+}
+
 function makeTestFile(road) {
   const [host, name, ...rest] = road.split('/')
   const text = readFile(`../${name}/${rest.join('/')}/base.link`)
   const line = readText(text)
   const tree = makeTree(line, road.replace(/\//g, '-'))
   const file = mintTestFile(road, tree)
+  file.text = text
   return file
 }
 

@@ -9,9 +9,14 @@ function make(file, deck) {
   const text = []
   const list = [file]
   const last = []
+  const knit = {}
   while (list.length) {
     const base = list.shift()
     text.push(``)
+    if (knit[base.road]) {
+      continue
+    }
+    knit[base.road] = true
     makeFile(base, last).forEach(line => {
       text.push(line)
     })
@@ -27,23 +32,24 @@ function make(file, deck) {
       text[i] = line.trim()
     }
   })
-  return HEAD + text.join('\n') + '\n\n' + last.join('\n') + '\n'
+  return HEAD + text.join('\n').trim() + '\n\n' + last.join('\n') + '\n'
 }
 
 function makeFile(file, last) {
   const text = []
   const calls = []
+  const roadList = makeRoad(file)
   text.push(`base.bind('${file.road}', file => {`)
   let code
   switch (file.mint) {
     case `task-file`:
-      code = makeTaskFile(file)
+      code = makeTaskFile(file, roadList)
       break
     case `dock-task-file`:
-      code = makeDockTaskFile(file)
+      code = makeDockTaskFile(file, roadList)
       break
     case `form-file`:
-      code = makeFormFile(file)
+      code = makeFormFile(file, roadList, calls)
       break
     case `mine-file`:
       code = makeMineFile(file)
@@ -60,13 +66,19 @@ function makeFile(file, last) {
     case `test-file`:
       code = makeTestFile(file, calls)
       break
+    case `view-file`:
+      code = makeViewFile(file, calls)
+      break
+    default:
+      throw file.mint
+      break
   }
   code.forEach(line => {
     text.push(`${line}`)
   })
   text.push(`})`)
   if (calls.length) {
-    last.push(`base.call('${file.road}')`)
+    last.push(`base.link('${file.road}')`)
   }
   return text
 }
@@ -75,10 +87,13 @@ function makeTaskFile(file) {
   const text = []
   const code = []
   const formKnit = {}
-  code.push(...makeTaskHead())
   file.load.forEach((load, i) => {
     code.push(...makeLoad(load, i, formKnit))
   })
+  if (file.load.length) {
+    code.push(``)
+  }
+  code.push(...makeTaskHead())
   file.task.forEach(task => {
     code.push(...makeTask(task, formKnit))
   })
@@ -88,19 +103,85 @@ function makeTaskFile(file) {
   return text
 }
 
-function makeFormFile(file) {
+function makeFormFile(file, roadList, calls) {
   const text = []
   const code = []
+  const knit = {}
+  roadList.forEach((load, i) => {
+    code.push(...makeLoad(load, i, knit))
+  })
+  if (file.load.length) {
+    code.push(``)
+  }
   code.push(...makeFormHead())
-  file.load.forEach((load, i) => {
-    code.push(...makeLoad(load, i))
-  })
+  calls.push(true)
   file.form.forEach(form => {
-    code.push(...makeForm(form))
+    code.push(``)
+    code.push(...makeForm(form, knit))
   })
+  const binds = []
+  file.form.forEach(form => {
+    binds.push(...takeForm(form, knit))
+  })
+  if (binds.length) {
+    if (file.form.length) {
+      code.push(``)
+    }
+    code.push(`file.bind(function(){`)
+    code.push(...binds)
+    code.push(`})`)
+  }
   code.forEach(line => {
     text.push(`  ${line}`)
   })
+  return text
+}
+
+function takeView(view, formKnit) {
+  const text = []
+  let path = []
+  view.zone.forEach((zone, i) => {
+    if (zone.form === 'mesh') {
+      const childPath = path.concat(i).map(x => `[${x}]`).join('')
+      const name = toMethodName(zone.name)
+      const bind = formKnit[name] ? formKnit[name] : `file.view.${name}`
+      text.push(`  file.view.${toMethodName(view.name)}.zone${childPath}.case = ${bind}`)
+    }
+  })
+  return text
+}
+
+function takeForm(form, formKnit) {
+  const text = []
+  if (form.base) {
+    Object.keys(form.base).forEach(name => {
+      const base = form.base[name]
+      if (base.case) {
+        switch (base.case.form) {
+          case 'form':
+          case 'list':
+            const name = toMethodName(base.case.name)
+            const bind = formKnit[name] ? formKnit[name] : `file.form.${name}`
+            text.push(`  file.form.${toMethodName(form.name)}.base['${base.name}'].case.bind = ${bind}`)
+            break
+        }
+      }
+    })
+  } else if (form.case) {
+    Object.keys(form.case).forEach(name => {
+      const base = form.case[name]
+      if (base.case) {
+        switch (base.case.form) {
+          case 'form':
+          case 'list':
+            const name = toMethodName(base.case.name)
+            const bind = formKnit[name] ? formKnit[name] : `file.form.${name}`
+            text.push(`  file.form.${toMethodName(form.name)}.case['${base.name}'].case.bind = ${bind}`)
+            break
+        }
+      }
+    })
+  }
   return text
 }
 
@@ -119,6 +200,9 @@ function makeCallFile(file) {
   file.load.forEach((load, i) => {
     code.push(...makeLoad(load, i))
   })
+  if (file.load.length) {
+    code.push(``)
+  }
   file.call.forEach(call => {
     code.push(...makeCall(call))
   })
@@ -132,6 +216,42 @@ function makeFeedFile(file) {
 
 }
 
+function makeViewFile(file) {
+  const text = []
+  const code = []
+  const knit = {}
+  const roadList = makeRoad(file)
+  roadList.forEach((load, i) => {
+    code.push(...makeLoad(load, i, knit))
+  })
+  if (roadList.length) {
+    code.push(``)
+  }
+  code.push(`file.view = {}`)
+  file.view.forEach(view => {
+    code.push(``)
+    makeView(view, knit).forEach(line => {
+      code.push(`${line}`)
+    })
+  })
+  const binds = []
+  file.view.forEach(form => {
+    binds.push(...takeView(form, knit))
+  })
+  if (binds.length) {
+    if (file.view.length) {
+      code.push(``)
+    }
+    code.push(`file.bind(function(){`)
+    code.push(...binds)
+    code.push(`})`)
+  }
+  code.forEach(line => {
+    text.push(`  ${line}`)
+  })
+  return text
+}
+
 function makeTestFile(file, calls) {
   const text = []
   const code = []
@@ -140,14 +260,17 @@ function makeTestFile(file, calls) {
   roadList.forEach((load, i) => {
     code.push(...makeLoad(load, i, formKnit))
   })
-  code.push(`file.base = function(){`)
+  if (file.load.length) {
+    code.push(``)
+  }
+  code.push(`file.bind(function(){`)
   calls.push(true)
   file.test.forEach(test => {
     makeTest(test, formKnit).forEach(line => {
       code.push(`  ${line}`)
     })
   })
-  code.push(`}`)
+  code.push(`})`)
   code.forEach(line => {
     text.push(`  ${line}`)
   })
@@ -167,7 +290,7 @@ function makeTestHead() {
 }
 
 function makeHead(name) {
-  return [`file.${name} = file.${name} || {}`]
+  return [`file.${name} = {}`]
 }
 
 function makeLoad(load, i, formKnit = {}) {
@@ -182,6 +305,35 @@ function makeLoad(load, i, formKnit = {}) {
   })
 
   text.push(`const x${i + 1} = base.load('${load.road}')`)
+  return text
+}
+
+function makeForm(form, formKnit) {
+  const text = []
+  const json = customJSONStringify(form)
+  json.forEach((line, i) => {
+    if (i === 0) {
+      json[i] = line
+    } else {
+      json[i] = `  ${line}`
+    }
+  })
+  text.push(`file.form.${toMethodName(form.name)} = ${json.join('\n')}`)
+  return text
+}
+
+function makeView(view, formKnit) {
+  const text = []
+  const name = formKnit[toMethodName(view.name)]
+  const json = customJSONStringify(view)
+  json.forEach((line, i) => {
+    if (i === 0) {
+      json[i] = line
+    } else {
+      json[i] = `  ${line}`
+    }
+  })
+  text.push(`file.view.${toMethodName(view.name)} = ${json.join('\n')}`)
   return text
 }
 
@@ -426,10 +578,13 @@ function makeSift(sift) {
 function makeDockTaskFile(file) {
   const text = []
   const code = []
-  code.push(...makeTaskHead())
   file.load.forEach((load, i) => {
     code.push(...makeLoad(load, i))
   })
+  if (file.load.length) {
+    code.push(``)
+  }
+  code.push(...makeTaskHead())
   file.task.forEach(task => {
     code.push(...makeDockTask(task))
   })
@@ -740,4 +895,20 @@ function makeLoadRoad(baseRoad, load, list) {
 
 function toMethodName(term) {
   return term.replace(/\-/g, '_')
+}
+
+function customJSONStringify(o) {
+  return JSON.stringify(o, null, 2)
+    .split(/\n/)
+    .map(line => {
+      if (line.match(/^ +"([^-"]+)": "([^"]+)"/)) {
+        return line.replace(/^( +)"([^"]+)": "([^"]+)"/, "$1$2: '$3'")
+      } else if (line.match(/^ +"([^-"]+)"/)) {
+        return line.replace(/^( +)"([^"]+)"/, "$1$2")
+      } else if (line.match(/^ +"([^"]+)"/)) {
+        return line.replace(/^( +)"([^"]+)"/, "$1'$2'")
+      } else {
+        return line
+      }
+    })
 }

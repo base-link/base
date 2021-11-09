@@ -14,6 +14,10 @@ class File {
   constructor(road) {
     this.road = road
   }
+
+  bind(task) {
+    this.host = task
+  }
 }
 
 class Base {
@@ -41,9 +45,9 @@ class Base {
     return this
   }
 
-  call(road) {
+  link(road) {
     const file = this.load(road)
-    if (file.base) file.base()
+    if (file.host) file.host()
   }
 
   free(road) {
@@ -74,22 +78,26 @@ class Base {
 }
 
 host.base = new Base
-
 base.bind('@drumwork/base/test', file => {
   const x1 = base.load('@drumwork/base/test/task')
-  file.base = function(){
+  const x2 = base.load('@drumwork/base/test/task/view')
+
+  file.bind(function(){
     x1.task.test_fibonacci_loop()
-  }
+    x2.task.mount_example_view()
+  })
 })
 
 base.bind('@drumwork/base/test/task', file => {
-  file.task = file.task || {}
   const x1 = base.load('@drumwork/dock/code/javascript/number')
   const x2 = base.load('@drumwork/dock/code/javascript/base')
   const x3 = base.load('@drumwork/dock/code/javascript/console')
   const x4 = base.load('@drumwork/dock/code/javascript/object')
   const x5 = base.load('@drumwork/dock/code/javascript/error')
   const x6 = base.load('@drumwork/base/code/dock/node/file')
+  const x7 = base.load('@drumwork/base/code/host/form')
+
+  file.task = {}
 
   file.task.assert_equal = function(base, head){
     x2.task.check_if_strictly_equal(
@@ -204,8 +212,23 @@ base.bind('@drumwork/base/test/task', file => {
   }
 })
 
+base.bind('@drumwork/base/test/task/view', file => {
+  const x1 = base.load('../../view/example')
+
+  file.task = {}
+
+  file.task.mount = function(mesh){
+  }
+
+  file.task.mount_example_view = function(){
+    file.task.mount(
+      undefined
+    )
+  }
+})
+
 base.bind('@drumwork/dock/code/javascript/number', file => {
-  file.task = file.task || {}
+  file.task = {}
 
   file.task.parse_decimal = function(string){
     return window.parseFloat(string)
@@ -325,7 +348,7 @@ base.bind('@drumwork/dock/code/javascript/number', file => {
 })
 
 base.bind('@drumwork/dock/code/javascript/base', file => {
-  file.task = file.task || {}
+  file.task = {}
 
   file.task.walk = function(check, block){
     while (check()) {
@@ -461,7 +484,7 @@ base.bind('@drumwork/dock/code/javascript/base', file => {
 })
 
 base.bind('@drumwork/dock/code/javascript/console', file => {
-  file.task = file.task || {}
+  file.task = {}
 
   file.task.assert = function(assertion, obj1, msg, subst1){
     console.assert(assertion, obj1, msg, subst1)
@@ -541,7 +564,7 @@ base.bind('@drumwork/dock/code/javascript/console', file => {
 })
 
 base.bind('@drumwork/dock/code/javascript/object', file => {
-  file.task = file.task || {}
+  file.task = {}
 
   file.task.create = function(){
     return {}
@@ -569,8 +592,9 @@ base.bind('@drumwork/dock/code/javascript/object', file => {
 })
 
 base.bind('@drumwork/dock/code/javascript/error', file => {
-  file.task = file.task || {}
   const x1 = base.load('../string')
+
+  file.task = {}
 
   file.task.create = function(message){
     return new Error(message)
@@ -586,11 +610,12 @@ base.bind('@drumwork/dock/code/javascript/error', file => {
 })
 
 base.bind('@drumwork/base/code/dock/node/file', file => {
-  file.task = file.task || {}
   const x1 = base.load('@drumwork/dock/code/node/fs')
   const x2 = base.load('@drumwork/dock/code/javascript/promise')
   const x3 = base.load('@drumwork/dock/code/javascript/module')
   const x4 = base.load('@drumwork/dock/code/javascript/base')
+
+  file.task = {}
 
   file.task.read = function(name, encoding){
     let fs
@@ -628,8 +653,546 @@ base.bind('@drumwork/base/code/dock/node/file', file => {
   }
 })
 
+base.bind('@drumwork/base/code/host/form/bind', file => {
+  const x1 = base.load('@drumwork/base/code/host/form/term')
+  const x2 = base.load('@drumwork/base/code/host/form/sift')
+
+  file.form = {}
+
+  file.form.bind = {
+    name: 'bind',
+    base: {
+      term: {
+        form: 'base',
+        name: 'term',
+        case: {
+          form: 'form',
+          name: 'term'
+        }
+      },
+      sift: {
+        form: 'base',
+        name: 'sift',
+        case: {
+          form: 'form',
+          name: 'sift'
+        }
+      }
+    }
+  }
+
+  file.bind(function(){
+    file.form.bind.base['term'].case.bind = x1.form.term
+    file.form.bind.base['sift'].case.bind = x2.form.sift
+  })
+})
+
+base.bind('@drumwork/base/code/host/form/term', file => {
+  file.form = {}
+
+  file.form.term = {
+    name: 'term',
+    base: {
+      text: {
+        form: 'base',
+        name: 'text',
+        case: {
+          form: 'form',
+          name: 'text'
+        }
+      }
+    }
+  }
+
+  file.bind(function(){
+    file.form.term.base['text'].case.bind = file.form.text
+  })
+})
+
+base.bind('@drumwork/base/code/host/form/sift', file => {
+  const x1 = base.load('@drumwork/base/code/host/form/call')
+  const x2 = base.load('@drumwork/base/code/host/form/task')
+  const x3 = base.load('@drumwork/base/code/host/form/link')
+
+  file.form = {}
+
+  file.form.sift = {
+    name: 'sift',
+    case: {
+      call: {
+        form: 'case',
+        name: 'call'
+      },
+      task: {
+        form: 'case',
+        name: 'task'
+      },
+      form: {
+        form: 'case',
+        name: 'form'
+      },
+      link: {
+        form: 'case',
+        name: 'link'
+      }
+    }
+  }
+
+  file.form.link = {
+    name: 'link',
+    base: {
+      road: {
+        form: 'base',
+        name: 'road'
+      }
+    }
+  }
+
+  file.form.read = {
+    name: 'read',
+    base: {
+      road: {
+        form: 'base',
+        name: 'road'
+      }
+    }
+  }
+
+  file.form.move = {
+    name: 'move',
+    base: {
+      road: {
+        form: 'base',
+        name: 'road'
+      }
+    }
+  }
+
+  file.form.loan = {
+    name: 'loan',
+    base: {
+      road: {
+        form: 'base',
+        name: 'road'
+      }
+    }
+  }
+})
+
+base.bind('@drumwork/base/code/host/form/call', file => {
+  const x1 = base.load('@drumwork/base/code/host/form/bind')
+  const x2 = base.load('@drumwork/base/code/host/form/task')
+
+  file.form = {}
+
+  file.form.call = {
+    name: 'call',
+    base: {
+      name: {
+        form: 'base',
+        name: 'name',
+        case: {
+          form: 'form',
+          name: 'term'
+        }
+      },
+      bind: {
+        form: 'base',
+        name: 'bind',
+        case: {
+          form: 'list',
+          name: 'bind'
+        }
+      },
+      flow: {
+        form: 'base',
+        name: 'flow',
+        case: {
+          form: 'list',
+          name: 'call-flow'
+        }
+      },
+      hook: {
+        form: 'base',
+        name: 'hook',
+        case: {
+          form: 'list',
+          name: 'hook'
+        }
+      }
+    }
+  }
+
+  file.form.hook = {
+    name: 'hook',
+    base: {
+      name: {
+        form: 'base',
+        name: 'name',
+        case: {
+          form: 'form',
+          name: 'term'
+        }
+      },
+      band: {
+        form: 'base',
+        name: 'band',
+        case: {
+          form: 'form',
+          name: 'term'
+        }
+      },
+      base: {
+        form: 'base',
+        name: 'base',
+        case: {
+          form: 'list',
+          name: 'base'
+        }
+      },
+      flow: {
+        form: 'base',
+        name: 'flow',
+        case: {
+          form: 'list',
+          name: 'task-flow'
+        }
+      },
+      task: {
+        form: 'base',
+        name: 'task',
+        case: {
+          form: 'list',
+          name: 'task'
+        }
+      }
+    }
+  }
+
+  file.form.flow = {
+    name: 'flow',
+    case: {
+      call: {
+        form: 'case',
+        name: 'call'
+      },
+      save: {
+        form: 'case',
+        name: 'save'
+      },
+      turn: {
+        form: 'case',
+        name: 'turn'
+      }
+    }
+  }
+
+  file.form.save = {
+    name: 'save',
+    base: {
+      road: {
+        form: 'base',
+        name: 'road',
+        case: {
+          form: 'form',
+          name: 'road'
+        }
+      }
+    }
+  }
+
+  file.form.turn = {
+    name: 'turn',
+    base: {
+      term: {
+        form: 'base',
+        name: 'term',
+        case: {
+          form: 'form',
+          name: 'term'
+        }
+      }
+    }
+  }
+
+  file.bind(function(){
+    file.form.call.base['name'].case.bind = file.form.term
+    file.form.call.base['bind'].case.bind = x1.form.bind
+    file.form.call.base['flow'].case.bind = file.form.call_flow
+    file.form.call.base['hook'].case.bind = file.form.hook
+    file.form.hook.base['name'].case.bind = file.form.term
+    file.form.hook.base['band'].case.bind = file.form.term
+    file.form.hook.base['base'].case.bind = x2.form.base
+    file.form.hook.base['flow'].case.bind = x2.form.flow
+    file.form.hook.base['task'].case.bind = file.form.task
+    file.form.save.base['road'].case.bind = file.form.road
+    file.form.turn.base['term'].case.bind = file.form.term
+  })
+})
+
+base.bind('@drumwork/base/code/host/form/task', file => {
+  const x1 = base.load('@drumwork/base/code/host/form/call')
+
+  file.form = {}
+
+  file.form.flow_seat = {
+    name: 'flow-seat',
+    case: {
+      call: {
+        form: 'case',
+        name: 'call',
+        case: {
+          form: 'form',
+          name: 'call'
+        }
+      },
+      save: {
+        form: 'case',
+        name: 'save'
+      }
+    }
+  }
+
+  file.form.task = {
+    name: 'task',
+    base: {
+      name: {
+        form: 'base',
+        name: 'name',
+        case: {
+          form: 'form',
+          name: 'term'
+        }
+      },
+      head: {
+        form: 'base',
+        name: 'head',
+        case: {
+          form: 'list',
+          name: 'head'
+        }
+      },
+      base: {
+        form: 'base',
+        name: 'base',
+        case: {
+          form: 'list',
+          name: 'base'
+        }
+      },
+      flow: {
+        form: 'base',
+        name: 'flow',
+        case: {
+          form: 'form',
+          name: 'list'
+        }
+      },
+      task: {
+        form: 'base',
+        name: 'task',
+        case: {
+          form: 'list',
+          name: 'task'
+        }
+      }
+    }
+  }
+
+  file.form.head = {
+    name: 'head',
+    base: {
+      name: {
+        form: 'base',
+        name: 'name',
+        case: {
+          form: 'form',
+          name: 'term'
+        }
+      },
+      'head-form': {
+        form: 'base',
+        name: 'head-form',
+        case: {
+          form: 'form',
+          name: 'form'
+        }
+      },
+      fall: {
+        form: 'base',
+        name: 'fall',
+        case: {
+          form: 'form',
+          name: 'task'
+        }
+      }
+    }
+  }
+
+  file.form.base = {
+    name: 'base',
+    base: {
+      name: {
+        form: 'base',
+        name: 'name',
+        case: {
+          form: 'form',
+          name: 'term'
+        }
+      },
+      'base-form': {
+        form: 'base',
+        name: 'base-form',
+        case: {
+          form: 'form',
+          name: 'form'
+        }
+      },
+      fall: {
+        form: 'base',
+        name: 'fall',
+        case: {
+          form: 'form',
+          name: 'task'
+        }
+      }
+    }
+  }
+
+  file.bind(function(){
+    file.form.flow_seat.case['call'].case.bind = x1.form.call
+    file.form.task.base['name'].case.bind = file.form.term
+    file.form.task.base['head'].case.bind = file.form.head
+    file.form.task.base['base'].case.bind = file.form.base
+    file.form.task.base['flow'].case.bind = file.form.list
+    file.form.task.base['task'].case.bind = file.form.task
+    file.form.head.base['name'].case.bind = file.form.term
+    file.form.head.base['head-form'].case.bind = file.form.form
+    file.form.head.base['fall'].case.bind = file.form.task
+    file.form.base.base['name'].case.bind = file.form.term
+    file.form.base.base['base-form'].case.bind = file.form.form
+    file.form.base.base['fall'].case.bind = file.form.task
+  })
+})
+
+base.bind('@drumwork/base/code/host/form/link', file => {
+  file.form = {}
+
+  file.form.link = {
+    name: 'link'
+  }
+})
+
+base.bind('@drumwork/base/test/view/example', file => {
+  file.view = {}
+
+  file.view.h1 = {
+    form: 'view',
+    name: 'h1',
+    base: [],
+    bond: [],
+    hook: [],
+    zone: [],
+    task: []
+  }
+
+  file.view.example = {
+    form: 'view',
+    name: 'example',
+    base: [],
+    bond: [],
+    hook: [],
+    zone: [
+      {
+        form: 'mesh',
+        name: 'h1',
+        bind: [
+          {
+            form: 'bind',
+            name: 'fill',
+            sift: {
+              form: 'sift-text',
+              text: '#ff0000'
+            }
+          },
+          {
+            form: 'bind',
+            name: 'text',
+            sift: {
+              form: 'sift-text',
+              text: 'hello world'
+            }
+          }
+        ],
+        vibe: [
+          {
+            form: 'vibe',
+            name: 'hover',
+            bind: [
+              {
+                form: 'bind',
+                name: 'fill',
+                sift: {
+                  form: 'sift-text',
+                  text: '#00ff00'
+                }
+              }
+            ],
+            hook: []
+          }
+        ],
+        zone: [],
+        hook: [
+          {
+            form: 'hook',
+            name: 'click',
+            base: [
+              {
+                form: 'task-base',
+                name: 'event'
+              }
+            ],
+            zone: [
+              {
+                form: 'call',
+                name: 'log',
+                wait: false,
+                bind: [
+                  {
+                    form: 'bind',
+                    name: 'message',
+                    sift: {
+                      form: 'link',
+                      nest: {
+                        form: 'nest',
+                        stem: [
+                          {
+                            form: 'term',
+                            name: 'event'
+                          }
+                        ]
+                      }
+                    }
+                  }
+                ],
+                zone: [],
+                hook: []
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    task: []
+  }
+
+  file.bind(function(){
+    file.view.example.zone[0].case = file.view.h1
+  })
+})
+
 base.bind('@drumwork/dock/code/javascript/string', file => {
-  file.task = file.task || {}
+  file.task = {}
 
   file.task.replace = function(string, pattern, replacer){
     return string.replace(pattern, replacer)
@@ -697,7 +1260,7 @@ base.bind('@drumwork/dock/code/javascript/string', file => {
 })
 
 base.bind('@drumwork/dock/code/node/fs', file => {
-  file.task = file.task || {}
+  file.task = {}
 
   file.task.write_file = function(fs, path, content, encoding, callback){
     fs.writeFile(path, content, encoding, callback)
@@ -761,155 +1324,29 @@ base.bind('@drumwork/dock/code/node/fs', file => {
 })
 
 base.bind('@drumwork/dock/code/javascript/promise', file => {
-  file.task = file.task || {}
+  file.task = {}
 
   file.task.make = function(hook){
     return new Promise(hook)
   }
+
+  file.task.call_all = function(array){
+    return Promise.all(array)
+  }
 })
 
 base.bind('@drumwork/dock/code/javascript/module', file => {
-  file.task = file.task || {}
+  file.task = {}
 
   file.task.require = function(path){
     return require(path)
   }
 })
 
-base.bind('@drumwork/dock/code/javascript/base', file => {
-  file.task = file.task || {}
-
-  file.task.walk = function(check, block){
-    while (check()) {
-      block()
-    }
-  }
-
-  file.task.check = function(check, block){
-    if (check()) {
-      return block()
-    }
-  }
-
-  file.task.check_else = function(check, block, other){
-    if (check()) {
-      return block()
-    } else {
-      return other()
-    }
-  }
-
-  file.task.debug_function = function(func){
-    window.debug(func)
-  }
-
-  file.task.debug = function(){
-    debugger
-  }
-
-  file.task.queue = function(func){
-    window.setImmediate(func)
-  }
-
-  file.task.compute_bitwise_or = function(left, right){
-    return left | right
-  }
-
-  file.task.check_if_equal = function(left, right){
-    return left == right
-  }
-
-  file.task.check_if_null = function(value){
-    return value == null
-  }
-
-  file.task.check_if_strictly_equal = function(left, right){
-    return left === right
-  }
-
-  file.task.get_typeof = function(value){
-    return typeof value
-  }
-
-  file.task.get_instanceof = function(left, right){
-    return left instanceof right
-  }
-
-  file.task.set_field = function(object, attribute, value){
-    object[attribute] = value
-  }
-
-  file.task.get_field = function(object, attribute){
-    return object[attribute]
-  }
-
-  file.task.remove_field = function(object, attribute){
-    delete object[attribute]
-  }
-
-  file.task.shift_left = function(left, right){
-    return left << right
-  }
-
-  file.task.shift_right = function(left, right){
-    return left >> right
-  }
-
-  file.task.shift_right_unsigned = function(left, right){
-    return left >>> right
-  }
-
-  file.task.compute_bitwise_and = function(left, right){
-    return left & right
-  }
-
-  file.task.check_or = function(left, right){
-    return left || right
-  }
-
-  file.task.try_catch = function(block, error){
-    try {
-      block()
-    } catch (e) {
-      error(e)
-    }
-  }
-
-  file.task.check_if_truthy = function(value){
-    return !!value
-  }
-
-  file.task.check_opposite = function(value){
-    return !value
-  }
-
-  file.task.check_not_equal = function(left, right){
-    return left !== right
-  }
-
-  file.task.flip_block = function(value){
-    return ~value
-  }
-
-  file.task.check_gt = function(left, right){
-    return left > right
-  }
-
-  file.task.check_lt = function(left, right){
-    return left < right
-  }
-
-  file.task.check_gte = function(left, right){
-    return left > right
-  }
-
-  file.task.check_lte = function(left, right){
-    return left < right
-  }
-
-  file.task.check_and = function(left, right){
-    return left && right
-  }
-})
-
-base.call('@drumwork/base/test')
+base.link('@drumwork/base/test')
+base.link('@drumwork/base/code/host/form/bind')
+base.link('@drumwork/base/code/host/form/term')
+base.link('@drumwork/base/code/host/form/sift')
+base.link('@drumwork/base/code/host/form/call')
+base.link('@drumwork/base/code/host/form/task')
+base.link('@drumwork/base/code/host/form/link')

@@ -1,0 +1,11 @@
+
+load ../../view/example
+  take view example
+
+task mount
+  base mesh
+
+task mount-example-view
+  call mount
+    bind mesh
+      make view example

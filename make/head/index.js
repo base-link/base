@@ -14,6 +14,10 @@ class File {
   constructor(road) {
     this.road = road
   }
+
+  bind(task) {
+    this.host = task
+  }
 }
 
 class Base {
@@ -41,9 +45,9 @@ class Base {
     return this
   }
 
-  call(road) {
+  link(road) {
     const file = this.load(road)
-    if (file.base) file.base()
+    if (file.host) file.host()
   }
 
   free(road) {

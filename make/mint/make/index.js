@@ -1,11 +1,13 @@
 
+const { findName } = require('../name')
+
 module.exports = mintMake
 
 function mintMake(base) {
-  const name = findName(base)
+  const name = base.link[0]
 
   const zone = {
-    form: `mill-make`,
+    form: `make`,
     name,
     bind: [],
     zone: []
