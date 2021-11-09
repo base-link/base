@@ -12,29 +12,6 @@ const mintViewFile = require('./mint/file/view')
 const makeText = require('./text')
 const pathResolver = require('path')
 
-const ROAD_TO_MINT = {
-  '@drumwork/base/test': 'test-file',
-  '@drumwork/base/test/view/example': 'view-file',
-  '@drumwork/base/test/task': 'task-file',
-  '@drumwork/base/test/task/view': 'task-file',
-  '@drumwork/base/code/dock/node/file': 'task-file',
-  '@drumwork/dock/code/javascript/error': 'dock-task-file',
-  '@drumwork/dock/code/javascript/string': 'dock-task-file',
-  '@drumwork/dock/code/javascript/base': 'dock-task-file',
-  '@drumwork/dock/code/javascript/console': 'dock-task-file',
-  '@drumwork/dock/code/javascript/number': 'dock-task-file',
-  '@drumwork/dock/code/javascript/object': 'dock-task-file',
-  '@drumwork/dock/code/javascript/promise': 'dock-task-file',
-  '@drumwork/dock/code/javascript/module': 'dock-task-file',
-  '@drumwork/dock/code/node/fs': 'dock-task-file',
-  '@drumwork/base/code/host/form/bind': 'form-file',
-  '@drumwork/base/code/host/form/term': 'form-file',
-  '@drumwork/base/code/host/form/sift': 'form-file',
-  '@drumwork/base/code/host/form/call': 'form-file',
-  '@drumwork/base/code/host/form/task': 'form-file',
-  '@drumwork/base/code/host/form/link': 'form-file',
-}
-
 const MINT = {
   'dock-task-file': makeTaskFile,
   'task-file': makeTaskFile,
@@ -42,20 +19,19 @@ const MINT = {
   'view-file': makeViewFile,
 }
 
-make()
+module.exports = make
 
-function make() {
+function make(base, ROAD_TO_MINT) {
   const deck = {}
-  const base = `@drumwork/base/test`
   const file = deck[base] = makeTestFile(base)
   file.mint = 'test-file'
-  load(deck[base], deck)
+  load(deck[base], deck, ROAD_TO_MINT)
   muse(file)
   const text = makeText(file, deck)
   save(`test`, text)
 }
 
-function load(file, deck) {
+function load(file, deck, ROAD_TO_MINT) {
   const roadList = makeRoad(file)
   file.loadList = []
   roadList.forEach(road => {
@@ -67,7 +43,7 @@ function load(file, deck) {
       }
       deck[road] = MINT[mint](road)
       deck[road].mint = mint
-      load(deck[road], deck)
+      load(deck[road], deck, ROAD_TO_MINT)
     }
   })
 }

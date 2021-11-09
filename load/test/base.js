@@ -78,7 +78,7 @@ class Base {
 }
 
 host.base = new Base
-base.bind('@drumwork/base/test', file => {
+base.bind('@drumwork/base/test/dock/node', file => {
   const x1 = base.load('@drumwork/base/test/task')
   const x2 = base.load('@drumwork/base/test/task/view')
 
@@ -1343,10 +1343,11 @@ base.bind('@drumwork/dock/code/javascript/module', file => {
   }
 })
 
-base.link('@drumwork/base/test')
+base.link('@drumwork/base/test/dock/node')
 base.link('@drumwork/base/code/host/form/bind')
 base.link('@drumwork/base/code/host/form/term')
 base.link('@drumwork/base/code/host/form/sift')
 base.link('@drumwork/base/code/host/form/call')
 base.link('@drumwork/base/code/host/form/task')
 base.link('@drumwork/base/code/host/form/link')
+base.link('@drumwork/base/test/view/example')
