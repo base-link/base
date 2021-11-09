@@ -1,0 +1,24 @@
+
+load @drumwork/dock/code/javascript/module
+  take task require
+
+call require
+  bind path, text <@drumwork/rise.browser.js>
+  save rise
+
+task load-view
+  base view
+
+  call call-base
+    bind object, link rise
+    bind method, text <load>
+    bind factor, link view
+
+task create-mesh
+  base view
+
+  call call-base
+    bind object, link rise
+    bind method, text <createMesh>
+    bind factor, link view
+    turn seed

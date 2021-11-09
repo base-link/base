@@ -1,0 +1,6 @@
+{
+  "name": "@drumwork/rise.browser.js",
+  "files": [
+    "./view/index.js"
+  ]
+}

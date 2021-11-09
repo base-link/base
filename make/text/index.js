@@ -87,10 +87,11 @@ function makeTaskFile(file) {
   const text = []
   const code = []
   const formKnit = {}
-  file.load.forEach((load, i) => {
+  const roadList = makeRoad(file)
+  roadList.forEach((load, i) => {
     code.push(...makeLoad(load, i, formKnit))
   })
-  if (file.load.length) {
+  if (roadList.length) {
     code.push(``)
   }
   code.push(...makeTaskHead())

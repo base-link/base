@@ -87,7 +87,7 @@ base.bind('@drumwork/base/test/dock/browser', file => {
 })
 
 base.bind('@drumwork/base/test/task/view', file => {
-  const x1 = base.load('../../view/example')
+  const x1 = base.load('@drumwork/base/test/view/example')
   const x2 = base.load('@drumwork/dock/code/javascript/console')
 
   file.task = {}
