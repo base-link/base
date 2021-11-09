@@ -191,9 +191,6 @@ base.bind('@drumwork/base/test/task', file => {
       o,
       5
     )
-    x.z = x5.task.create(
-      'hello world'
-    )
     x3.task.log(
       x
     )

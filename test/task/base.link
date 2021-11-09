@@ -113,9 +113,6 @@ task test-fibonacci-loop
     bind left, link o
     bind right, size 5
     save x/y
-  call create-error
-    bind message, text <hello world>
-    save x/z
   call log
     bind message, link x
   call read-file
