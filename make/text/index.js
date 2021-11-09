@@ -216,7 +216,7 @@ function makeFeedFile(file) {
 
 }
 
-function makeViewFile(file) {
+function makeViewFile(file, calls) {
   const text = []
   const code = []
   const knit = {}
@@ -235,6 +235,7 @@ function makeViewFile(file) {
     })
   })
   const binds = []
+  calls.push(true)
   file.view.forEach(form => {
     binds.push(...takeView(form, knit))
   })
