@@ -1,5 +1,10 @@
 
+module.exports = {
+  load
+}
+
 function load(home, view) {
+  console.log(arguments)
   const { staticStyles, dynamicStyles, handlers, otherAttributes } = parseView(view)
   const className = createCSSSelectorsFromStyles(home, view.name, staticStyles)
   home.view[view.id] = {

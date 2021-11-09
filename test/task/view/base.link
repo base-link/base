@@ -3,12 +3,11 @@ load ../../view/example
   take view example
 load @drumwork/dock/code/javascript/console
   take task log
-
-task mount
-  base mesh
+load @drumwork/base/code/dock/browser
+  take task load-view
 
 task mount-example-view
-  call mount
+  call load-view
     bind mesh
       make view example
   call log

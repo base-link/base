@@ -6,25 +6,31 @@ const HEAD = fs.readFileSync('./make/head/index.js', 'utf-8')
 module.exports = make
 
 function make(file, deck) {
-  const text = []
   const list = [file]
   const last = []
   const knit = {}
+  const texts = []
   while (list.length) {
     const base = list.shift()
-    text.push(``)
     if (knit[base.road]) {
       continue
     }
+    const text = []
+    text.push(``)
     knit[base.road] = true
     makeFile(base, last).forEach(line => {
       text.push(line)
     })
+    texts.unshift(text)
     const roadList = makeRoad(base)
     roadList.forEach(load => {
       list.push(deck[load.road])
     })
   }
+  const text = []
+  texts.forEach(list => {
+    text.push(...list)
+  })
   text.forEach((line, i) => {
     if (line.trim()) {
       text[i] = line
@@ -98,10 +104,17 @@ function makeTaskFile(file) {
   file.task.forEach(task => {
     code.push(...makeTask(task, formKnit))
   })
+  file.call.forEach(call => {
+    code.push(...makeFileCall(call, formKnit))
+  })
   code.forEach(line => {
     text.push(`  ${line}`)
   })
   return text
+}
+
+function makeFileCall(call, formKnit) {
+  return makeCall(call, formKnit)
 }
 
 function makeFormFile(file, roadList, calls) {
@@ -580,8 +593,9 @@ function makeSift(sift) {
 function makeDockTaskFile(file) {
   const text = []
   const code = []
+  const formKnit = {}
   file.load.forEach((load, i) => {
-    code.push(...makeLoad(load, i))
+    code.push(...makeLoad(load, i, formKnit))
   })
   if (file.load.length) {
     code.push(``)
@@ -589,6 +603,9 @@ function makeDockTaskFile(file) {
   code.push(...makeTaskHead())
   file.task.forEach(task => {
     code.push(...makeDockTask(task))
+  })
+  file.call.forEach(call => {
+    code.push(...makeFileCall(call, formKnit))
   })
   code.forEach(line => {
     text.push(`  ${line}`)

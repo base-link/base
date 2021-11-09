@@ -3,7 +3,7 @@ load @drumwork/dock/code/javascript/module
   take task require
 
 call require
-  bind path, text <@drumwork/rise.browser.js>
+  bind path, text <@drumwork/rise.browser.js/view>
   save rise
 
 task load-view

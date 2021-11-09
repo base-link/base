@@ -20,6 +20,7 @@ const ROAD_TO_MINT = {
   '@drumwork/base/code/host/form/call': 'form-file',
   '@drumwork/base/code/host/form/task': 'form-file',
   '@drumwork/base/code/host/form/link': 'form-file',
+  '@drumwork/base/code/dock/browser': 'dock-task-file',
 }
 
 make(`@drumwork/base/test/dock/browser`, ROAD_TO_MINT, `browser`)

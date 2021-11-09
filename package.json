@@ -1,0 +1,7 @@
+{
+  "name": "@drumwork/base",
+  "version": "0.0.1",
+  "dependencies": {
+    "@drumwork/rise.browser.js": "*"
+  }
+}

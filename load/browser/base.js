@@ -78,30 +78,108 @@ class Base {
 }
 
 host.base = new Base
-base.bind('@drumwork/base/test/dock/browser', file => {
-  const x1 = base.load('@drumwork/base/test/task/view')
+base.bind('@drumwork/dock/code/javascript/module', file => {
+  file.task = {}
 
-  file.bind(function(){
-    x1.task.mount_example_view()
-  })
+  file.task.require = function(path){
+    return require(path)
+  }
 })
 
-base.bind('@drumwork/base/test/task/view', file => {
-  const x1 = base.load('@drumwork/base/test/view/example')
-  const x2 = base.load('@drumwork/dock/code/javascript/console')
+base.bind('@drumwork/base/code/dock/browser', file => {
+  const x1 = base.load('@drumwork/dock/code/javascript/module')
 
   file.task = {}
 
-  file.task.mount = function(mesh){
+  file.task.load_view = function(view){
+    rise.load(view)
   }
 
-  file.task.mount_example_view = function(){
-    file.task.mount(
-      undefined
-    )
-    x2.task.log(
-      'done'
-    )
+  file.task.create_mesh = function(view){
+    return rise.createMesh(view)
+  }
+  rise = x1.task.require(
+    '@drumwork/rise.browser.js/view'
+  )
+})
+
+base.bind('@drumwork/dock/code/javascript/console', file => {
+  file.task = {}
+
+  file.task.assert = function(assertion, obj1, msg, subst1){
+    console.assert(assertion, obj1, msg, subst1)
+  }
+
+  file.task.clear = function(){
+    console.clear()
+  }
+
+  file.task.count = function(label){
+    console.count(label)
+  }
+
+  file.task.count_reset = function(label){
+    console.countReset(label)
+  }
+
+  file.task.debug = function(obj1, msg, subst1){
+    console.debug(obj1, msg, subst1)
+  }
+
+  file.task.dir = function(object){
+    console.dir(object)
+  }
+
+  file.task.dirxml = function(object){
+    console.dirxml(object)
+  }
+
+  file.task.error = function(obj1, msg, subst1){
+    console.error(obj1, msg, subst1)
+  }
+
+  file.task.group = function(label){
+    console.group(label)
+  }
+
+  file.task.group_collapsed = function(label){
+    console.groupCollapsed(label)
+  }
+
+  file.task.group_end = function(){
+    console.groupEnd()
+  }
+
+  file.task.info = function(obj1, msg, subst1){
+    console.info(obj1, msg, subst1)
+  }
+
+  file.task.log = function(message){
+    console.log(message)
+  }
+
+  file.task.table = function(data, columns){
+    console.table(data, columns)
+  }
+
+  file.task.time = function(label){
+    console.time(label)
+  }
+
+  file.task.time_end = function(label){
+    console.timeEnd(label)
+  }
+
+  file.task.time_log = function(label){
+    console.timeLog(label)
+  }
+
+  file.task.trace = function(any){
+    console.trace(any)
+  }
+
+  file.task.warn = function(obj1, msg, subst1){
+    console.warn(obj1, msg, subst1)
   }
 })
 
@@ -213,84 +291,29 @@ base.bind('@drumwork/base/test/view/example', file => {
   })
 })
 
-base.bind('@drumwork/dock/code/javascript/console', file => {
+base.bind('@drumwork/base/test/task/view', file => {
+  const x1 = base.load('@drumwork/base/test/view/example')
+  const x2 = base.load('@drumwork/dock/code/javascript/console')
+  const x3 = base.load('@drumwork/base/code/dock/browser')
+
   file.task = {}
 
-  file.task.assert = function(assertion, obj1, msg, subst1){
-    console.assert(assertion, obj1, msg, subst1)
+  file.task.mount_example_view = function(){
+    x3.task.load_view(
+      undefined
+    )
+    x2.task.log(
+      'done'
+    )
   }
+})
 
-  file.task.clear = function(){
-    console.clear()
-  }
+base.bind('@drumwork/base/test/dock/browser', file => {
+  const x1 = base.load('@drumwork/base/test/task/view')
 
-  file.task.count = function(label){
-    console.count(label)
-  }
-
-  file.task.count_reset = function(label){
-    console.countReset(label)
-  }
-
-  file.task.debug = function(obj1, msg, subst1){
-    console.debug(obj1, msg, subst1)
-  }
-
-  file.task.dir = function(object){
-    console.dir(object)
-  }
-
-  file.task.dirxml = function(object){
-    console.dirxml(object)
-  }
-
-  file.task.error = function(obj1, msg, subst1){
-    console.error(obj1, msg, subst1)
-  }
-
-  file.task.group = function(label){
-    console.group(label)
-  }
-
-  file.task.group_collapsed = function(label){
-    console.groupCollapsed(label)
-  }
-
-  file.task.group_end = function(){
-    console.groupEnd()
-  }
-
-  file.task.info = function(obj1, msg, subst1){
-    console.info(obj1, msg, subst1)
-  }
-
-  file.task.log = function(message){
-    console.log(message)
-  }
-
-  file.task.table = function(data, columns){
-    console.table(data, columns)
-  }
-
-  file.task.time = function(label){
-    console.time(label)
-  }
-
-  file.task.time_end = function(label){
-    console.timeEnd(label)
-  }
-
-  file.task.time_log = function(label){
-    console.timeLog(label)
-  }
-
-  file.task.trace = function(any){
-    console.trace(any)
-  }
-
-  file.task.warn = function(obj1, msg, subst1){
-    console.warn(obj1, msg, subst1)
-  }
+  file.bind(function(){
+    x1.task.mount_example_view()
+  })
 })
 
 base.link('@drumwork/base/test/dock/browser')
