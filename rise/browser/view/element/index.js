@@ -573,7 +573,7 @@ function bind(el, mesh) {
   }
   if (mesh.handlers) {
     mesh.handlers.forEach(handler => {
-      el.addEventListener(handler.name, handler.handle)
+      el.addEventListener(handler.type, handler.handle)
     })
   }
   mesh.nativeElement = el

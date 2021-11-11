@@ -102,6 +102,13 @@ function makeNativeMesh(zone, view, home) {
     }
   })
 
+  zone.hook.forEach(hook => {
+    mesh.handlers.push({
+      type: hook.name,
+      handle: (e) => console.log(e)
+    })
+  })
+
   return mesh
 }
 
