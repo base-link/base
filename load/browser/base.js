@@ -91,15 +91,33 @@ base.bind('@drumwork/base/code/dock/browser', file => {
 
   file.task = {}
 
-  file.task.load_view = function(view){
-    rise.load(view)
+  file.task.make_base = function(){
+    return rise_base.make()
+  }
+
+  file.task.make = function(type){
+    return rise_make.make(type)
+  }
+
+  file.task.bind_view = function(list, base){
+    rise_mesh.bind(list, base)
+  }
+
+  file.task.draw_view = function(mesh){
+    rise_mesh.draw(mesh)
   }
 
   file.task.create_mesh = function(view){
-    return rise.createMesh(view)
+    return rise_mesh.createMesh(view)
   }
-  rise = x1.task.require(
-    '@drumwork/rise.browser.js/view'
+  rise_mesh = require(
+    '@drumwork/rise.browser.js/view/mesh'
+  )
+  rise_make = require(
+    '@drumwork/rise.browser.js/make'
+  )
+  rise_base = require(
+    '@drumwork/rise.browser.js/base'
   )
 })
 
@@ -217,6 +235,14 @@ base.bind('@drumwork/base/test/view/example', file => {
           },
           {
             form: 'bind',
+            name: 'text-fill',
+            sift: {
+              form: 'sift-text',
+              text: 'white'
+            }
+          },
+          {
+            form: 'bind',
             name: 'text',
             sift: {
               form: 'sift-text',
@@ -295,12 +321,26 @@ base.bind('@drumwork/base/test/task/view', file => {
   const x1 = base.load('@drumwork/base/test/view/example')
   const x2 = base.load('@drumwork/dock/code/javascript/console')
   const x3 = base.load('@drumwork/base/code/dock/browser')
+  const x4 = base.load('@drumwork/base/code/dock/browser')
 
   file.task = {}
 
   file.task.mount_example_view = function(){
-    x3.task.load_view(
-      undefined
+    b = x3.task.make_base(
+
+    )
+    frag = x4.task.make(
+      x1.view.example
+    )
+    x2.task.log(
+      frag
+    )
+    x3.task.bind_view(
+      frag,
+      b
+    )
+    x3.task.draw_view(
+      frag
     )
     x2.task.log(
       'done'

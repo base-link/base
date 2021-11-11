@@ -1,4 +1,6 @@
 
+const webpack = require('webpack')
+const pathResolver = require('path')
 const make = require('..')
 
 const ROAD_TO_MINT = {
@@ -23,4 +25,19 @@ const ROAD_TO_MINT = {
   '@drumwork/base/code/dock/browser': 'dock-task-file',
 }
 
-make(`@drumwork/base/test/dock/browser`, ROAD_TO_MINT, `browser`)
+async function compile() {
+  webpack({
+    mode: 'development',
+    entry: './load/browser/base.js',
+    output: {
+      filename: './load/browser/bundle.js',
+      path: pathResolver.resolve(pathResolver.join(__dirname, '../..'))
+    }
+  }, (err, stats) => {
+    if (err || stats.hasErrors()) {
+      console.log(err);
+    }
+  });
+}
+
+make(`@drumwork/base/test/dock/browser`, ROAD_TO_MINT, `browser`, compile)

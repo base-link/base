@@ -1,12 +1,16 @@
 
-function createNode() {
+module.exports = {
+  make,
+}
+
+function createNode(props = {}) {
   return {
     id: genUUID(),
-    props: {}
+    props
   }
 }
 
-function createStore() {
+function make() {
   return {
     mesh: {},
     pool: {},

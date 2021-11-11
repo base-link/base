@@ -1,6 +1,8 @@
 
 const makers = {}
 
+const { make: makeMesh } = require('../view/mesh')
+
 module.exports = {
   make,
   register
@@ -10,8 +12,13 @@ function register(name, maker) {
   makers[name] = maker
 }
 
-function make(path, bind, home) {
+function make(type, bind, home) {
   let ctor
+
+  if (type.form === 'view') {
+    return makeMesh(type)
+  }
+
   if (path.depth > 1) {
     ctor = getFromHome(home, path)
   } else {

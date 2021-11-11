@@ -4,11 +4,25 @@ load ../../view/example
 load @drumwork/dock/code/javascript/console
   take task log
 load @drumwork/base/code/dock/browser
+  take task make-base
   take task load-view
+  take task bind-view
+  take task draw-view
+load @drumwork/base/code/dock/browser
+  take task make
 
 task mount-example-view
-  call load-view
-    bind mesh
-      make view example
+  call make-base
+    save b
+  call make
+    bind type, link view example
+    save frag
+  call log
+    bind message, link frag
+  call bind-view
+    bind list, link frag
+    bind base, link b
+  call draw-view
+    bind mesh, link frag
   call log
     bind message, text <done>

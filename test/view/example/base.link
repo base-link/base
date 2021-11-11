@@ -4,6 +4,7 @@ view h1
 view example
   mesh h1
     bind fill, text <#ff0000>
+    bind text-fill, text <white>
     bind text, text <hello world>
     vibe hover
       bind fill, text <#00ff00>

@@ -2,6 +2,7 @@
   "name": "@drumwork/base",
   "version": "0.0.1",
   "dependencies": {
-    "@drumwork/rise.browser.js": "*"
+    "@drumwork/rise.browser.js": "*",
+    "webpack": "^5.64.0"
   }
 }

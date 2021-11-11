@@ -315,7 +315,9 @@ function makeLoad(load, i, formKnit = {}) {
   load.take.forEach(({ take, save }) => {
     const form = toMethodName(take.name)
     const name = toMethodName(take.link[0].name)
-    const savedName = save ? toMethodName(save.link[0].name) : name
+    // tmp hack for now
+    const fullName = form === 'view' ? `view/${name}` : name
+    const savedName = save ? toMethodName(save.link[0].name) : fullName
     formKnit[savedName] = `x${i + 1}.${form}.${name}`
   })
 
@@ -521,10 +523,11 @@ function makeCall(call, formKnit) {
   if (wait) {
     mean = `${mean}await `
   }
-  const methodName = formKnit[toMethodName(call.name)] || toMethodName(call.name)
+  // require modules have to be explicit for webpack to parse them.
+  const methodName = call.name === 'require' ? 'require' : formKnit[toMethodName(call.name)] || toMethodName(call.name)
   text.push(`${mean}${methodName}(`)
   call.bind.forEach(b => {
-    const sift = b.sift.form === 'task' ? makeInlineTask(b.sift, formKnit).join('\n  ').trim() : makeSift(b.sift)
+    const sift = b.sift.form === 'task' ? makeInlineTask(b.sift, formKnit).join('\n  ').trim() : makeSift(b.sift, formKnit)
     bind.push(`  ${sift}`)
   })
   const hooks = []
@@ -566,8 +569,8 @@ function makeCall(call, formKnit) {
   return text
 }
 
-function makeNest(nest) {
-  return nest.stem.map((stem, i) => {
+function makeNest(nest, formKnit = {}) {
+  const path = nest.stem.map((stem, i) => {
     switch (stem.form) {
       case 'term':
         if (i === 0) {
@@ -578,15 +581,21 @@ function makeNest(nest) {
         break
     }
   }).join('')
+  const slashedPath = path.replace(/\./g, '/')
+  if (formKnit[slashedPath]) {
+    return formKnit[slashedPath]
+  } else {
+    return path
+  }
 }
 
-function makeSift(sift) {
+function makeSift(sift, formKnit = {}) {
   switch (sift.form) {
     case `sift-text`: return `'${sift.text}'`
     case `text`: return `'${sift.text}'`
     case `size`: return `${sift.size}`
     case `sift-mark`: return `${sift.mark}`
-    case `link`: return makeNest(sift.nest)
+    case `link`: return makeNest(sift.nest, formKnit)
   }
 }
 
