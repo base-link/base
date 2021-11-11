@@ -29,6 +29,17 @@ function make(view, home) {
   view.zone.forEach(zone => {
     if (zone.form === 'mesh') {
       if (NATIVE_ELEMENT_LIST.includes(zone.name)) {
+        // so with forks, we would be specifying the home,
+        // which would tell you how to resolve each linked variable.
+        //
+        // so then a click handler would pass its home link,
+        // which is the context of the element.
+        //
+        // onclick(home, event)
+        //
+        // also, the home is bound to data that might change,
+        // so if the home properties change, the scope changes,
+        // and so the code on in the views should get re-evaluated.
         const mesh = makeNativeMesh(zone, view, home)
         fragment.push(mesh)
       }
