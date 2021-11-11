@@ -88,6 +88,7 @@ base.bind('@drumwork/dock/code/javascript/module', file => {
 
 base.bind('@drumwork/base/code/dock/browser', file => {
   const x1 = base.load('@drumwork/dock/code/javascript/module')
+  let x1_1
 
   file.task = {}
 
@@ -119,6 +120,10 @@ base.bind('@drumwork/base/code/dock/browser', file => {
   rise_base = require(
     '@drumwork/rise.browser.js/base'
   )
+
+  file.bind(() => {
+    x1_1 = x1.task.require
+  })
 })
 
 base.bind('@drumwork/dock/code/javascript/console', file => {
@@ -312,7 +317,7 @@ base.bind('@drumwork/base/test/view/example', file => {
     task: []
   }
 
-  file.bind(function(){
+  file.bind(() => {
     file.view.example.zone[0].case = file.view.h1
   })
 })
@@ -322,39 +327,60 @@ base.bind('@drumwork/base/test/task/view', file => {
   const x2 = base.load('@drumwork/dock/code/javascript/console')
   const x3 = base.load('@drumwork/base/code/dock/browser')
   const x4 = base.load('@drumwork/base/code/dock/browser')
+  let x1_1
+  let x2_1
+  let x3_1
+  let x3_2
+  let x3_3
+  let x3_4
+  let x4_1
 
   file.task = {}
 
   file.task.mount_example_view = function(){
-    b = x3.task.make_base(
+    b = x3_1(
 
     )
-    frag = x4.task.make(
-      x1.view.example
+    frag = x4_1(
+      x1_1
     )
-    x2.task.log(
+    x2_1(
       frag
     )
-    x3.task.bind_view(
+    x3_3(
       frag,
       b
     )
-    x3.task.draw_view(
+    x3_4(
       frag
     )
-    x2.task.log(
+    x2_1(
       'done'
     )
   }
+
+  file.bind(() => {
+    x1_1 = x1.view.example
+    x2_1 = x2.task.log
+    x3_1 = x3.task.make_base
+    x3_2 = x3.task.load_view
+    x3_3 = x3.task.bind_view
+    x3_4 = x3.task.draw_view
+    x4_1 = x4.task.make
+  })
 })
 
 base.bind('@drumwork/base/test/dock/browser', file => {
   const x1 = base.load('@drumwork/base/test/task/view')
+  let x1_1
 
-  file.bind(function(){
-    x1.task.mount_example_view()
+  file.bind(() => {
+    x1_1 = x1.task.mount_example_view
+    x1_1()
   })
 })
 
-base.link('@drumwork/base/test/dock/browser')
+base.link('@drumwork/base/code/dock/browser')
 base.link('@drumwork/base/test/view/example')
+base.link('@drumwork/base/test/task/view')
+base.link('@drumwork/base/test/dock/browser')
