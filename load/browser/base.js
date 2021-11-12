@@ -209,13 +209,66 @@ base.bind('@drumwork/dock/code/javascript/console', file => {
 base.bind('@drumwork/base/test/view/example', file => {
   file.view = {}
 
-  file.view.h1 = {
+  file.view.check = {
     form: 'view',
-    name: 'h1',
+    name: 'check',
     base: [],
     bond: [],
     hook: [],
-    zone: [],
+    zone: [
+      {
+        form: 'mesh',
+        name: 'header',
+        bind: [],
+        vibe: [],
+        zone: [
+          {
+            form: 'mesh',
+            name: 'h2',
+            bind: [
+              {
+                form: 'bind',
+                name: 'text',
+                sift: {
+                  form: 'sift-text',
+                  text: 'foo bar'
+                }
+              }
+            ],
+            vibe: [],
+            zone: [],
+            hook: []
+          },
+          {
+            form: 'mesh',
+            name: 'div',
+            bind: [],
+            vibe: [],
+            zone: [
+              {
+                form: 'mesh',
+                name: 'h3',
+                bind: [
+                  {
+                    form: 'bind',
+                    name: 'text',
+                    sift: {
+                      form: 'sift-text',
+                      text: 'another'
+                    }
+                  }
+                ],
+                vibe: [],
+                zone: [],
+                hook: []
+              }
+            ],
+            hook: []
+          }
+        ],
+        hook: []
+      }
+    ],
     task: []
   }
 
@@ -312,13 +365,23 @@ base.bind('@drumwork/base/test/view/example', file => {
             ]
           }
         ]
+      },
+      {
+        form: 'mesh',
+        name: 'check',
+        bind: [],
+        vibe: [],
+        zone: [],
+        hook: []
       }
     ],
     task: []
   }
 
   file.bind(() => {
+    file.view.check.zone[0].case = file.view.header
     file.view.example.zone[0].case = file.view.h1
+    file.view.example.zone[1].case = file.view.check
   })
 })
 

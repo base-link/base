@@ -42,6 +42,9 @@ function make(view, home) {
         // and so the code on in the views should get re-evaluated.
         const mesh = makeNativeMesh(zone, view, home)
         fragment.push(mesh)
+      } else {
+        const mesh = makeComponentMesh(zone, view, home)
+        fragment.push(mesh)
       }
     }
   })
@@ -71,6 +74,10 @@ function bind(fragment, base) {
   })
 }
 
+function makeComponentMesh(zone, view, home) {
+
+}
+
 function makeNativeMesh(zone, view, home) {
   const mesh = {
     form: 'mesh',
@@ -80,6 +87,7 @@ function makeNativeMesh(zone, view, home) {
     staticStyles: [],
     attributes: {},
     handlers: [],
+    children: [],
     className: `x${view.name}`
   }
 
@@ -96,7 +104,7 @@ function makeNativeMesh(zone, view, home) {
     } else if (name === 'tag') {
       mesh.tagName = getBindingValue(bind.sift)
     } else if (name === 'text') {
-      mesh.children = [
+      mesh.children.push(
         {
           form: 'mesh',
           name: 'text',
@@ -104,13 +112,17 @@ function makeNativeMesh(zone, view, home) {
             text: getBindingValue(bind.sift)
           }
         }
-      ]
+      )
     } else if (name === 'children') {
 
     } else {
       const value = getBindingValue(bind.sift)
       mesh.attributes[name] = value
     }
+  })
+
+  zone.zone.forEach(childZone => {
+    mesh.children.push(makeNativeMesh(childZone, view))
   })
 
   zone.hook.forEach(hook => {

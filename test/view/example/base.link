@@ -1,5 +1,11 @@
 
-view h1
+view check
+  mesh header
+    mesh h2
+      bind text, text <foo bar>
+    mesh div
+      mesh h3
+        bind text, text <another>
 
 view example
   mesh h1
@@ -12,3 +18,4 @@ view example
       base event
       call log
         bind message, link event
+  mesh check

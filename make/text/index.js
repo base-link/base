@@ -185,7 +185,7 @@ function takeForm(form, formKnit) {
           case 'form':
           case 'list':
             const name = toMethodName(base.case.name)
-            const bind = formKnit[name] ? formKnit[name] : `file.form.${name}`
+            const bind = formKnit.names[`form/${name}`] ? formKnit.names[`form/${name}`] : `file.form.${name}`
             bindings.push({
               name: `file.form.${toMethodName(form.name)}.base['${base.name}'].case.bind`,
               value: `${bind}`
@@ -202,7 +202,7 @@ function takeForm(form, formKnit) {
           case 'form':
           case 'list':
             const name = toMethodName(base.case.name)
-            const bind = formKnit[name] ? formKnit[name] : `file.form.${name}`
+            const bind = formKnit[`form/${name}`] ? formKnit[`form/${name}`] : `file.form.${name}`
             bindings.push({
               name: `file.form.${toMethodName(form.name)}.case['${base.name}'].case.bind`,
               value: `${bind}`
