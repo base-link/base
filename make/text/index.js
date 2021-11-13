@@ -1,4 +1,6 @@
 
+// https://stackoverflow.com/questions/68850952/how-can-you-reverse-this-pseudo-prng-to-get-back-the-original-number
+
 const fs = require('fs')
 const pathResolver = require('path')
 const HEAD = fs.readFileSync('./make/head/index.js', 'utf-8')
