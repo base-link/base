@@ -15,7 +15,7 @@
   \******************************/
 /***/ (() => {
 
-eval("throw new Error(\"Module parse failed: Unexpected token (120:12)\\nYou may need an appropriate loader to handle this file type, currently no loaders are configured to process this file. See https://webpack.js.org/concepts#loaders\\n| \\n| let x2\\n> let [object Object]\\n| base.bind('@drumwork/base/test/dock/browser', file => {\\n| })\");\n\n//# sourceURL=webpack://@drumwork/base/./load/browser/base.js?");
+eval("throw new Error(\"Module parse failed: Identifier 'x2' has already been declared (122:6)\\nYou may need an appropriate loader to handle this file type, currently no loaders are configured to process this file. See https://webpack.js.org/concepts#loaders\\n| \\n|   let x2\\n>   let x2\\n| \\n|   file.bind(() => {\");\n\n//# sourceURL=webpack://@drumwork/base/./load/browser/base.js?");
 
 /***/ })
 

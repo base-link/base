@@ -11,9 +11,8 @@ function createFileBind(file) {
   return {
     file,
     variableIndex: 1,
-    variableNames: {},
-    keywordToVariableNameMap: {},
-    lookup: {},
+    names: {},
+    links: {},
     requires: [],
     commands: [],
     bindings: [],
@@ -22,14 +21,16 @@ function createFileBind(file) {
 
 function getFileBindName(bind) {
   const name = `x${bind.variableIndex++}`
-  bind.variableNames[name] = false
+  bind.names[name] = false
   return name
 }
 
 function addFileBindTake(bind, requireKey, path) {
-  let links = bind.keywordToVariableNameMap
+  let links = bind.links
   let search = path.concat()
   let variableKey
+
+  reference(bind, requireKey)
 
   while (search.length) {
     variableKey = getFileBindName(bind)
@@ -42,6 +43,7 @@ function addFileBindTake(bind, requireKey, path) {
   }
 
   bind.bindings.push({
+    form: 'read',
     name: variableKey,
     requireKey,
     path
@@ -50,17 +52,8 @@ function addFileBindTake(bind, requireKey, path) {
 
 function resolveFileBind(fileBind) {
   const newFileBind = createFileBind(fileBind.file)
-  newFileBind.bindings = fileBind.bindings
-  newFileBind.requires = fileBind.requires
   const nameMap = {}
   let i = 1
-  fileBind.forks.forEach(input => {
-    if (input.isForked) {
-      const newName = `x${i++}`
-      nameMap[input.key] = newName
-      newFileBind.names[newName] = true
-    }
-  })
   Object.keys(fileBind.names).forEach(name => {
     const isUsed = fileBind.names[name]
     if (isUsed) {
@@ -78,6 +71,28 @@ function resolveFileBind(fileBind) {
       })
     }
   })
+  fileBind.bindings.forEach(req => {
+    newFileBind.bindings.push({
+      ...req,
+      name: nameMap[req.name]
+    })
+  })
+  fileBind.commands.forEach(command => {
+    switch (command.form) {
+      case 'fork':
+        const isUsed = fileBind.names[command.variableKey]
+        const variableKey = isUsed ? nameMap[command.variableKey] : null
+        newFileBind.commands.push({
+          ...command,
+          variableKey
+        })
+        break
+      default:
+        newFileBind.commands.push(command)
+        break
+    }
+  })
+  return newFileBind
 }
 
 function make(file, deck) {
@@ -102,24 +117,69 @@ function make(file, deck) {
   return text.join('\n').trim() + '\n'
 }
 
-function makeText(fileBindList) {
+function makeText(oldBinds) {
+  const fileBindList = oldBinds.map(resolveFileBind)
   const link = fileBindList.filter(x => x.link)
 
   const text = [HEAD]
 
-  fileBindList.forEach(x => {
+  fileBindList.forEach(bind => {
     text.push(``)
-    x.requires.forEach(req => {
-      if (req.isUsed) {
-        text.push(`const ${req.name} = base.load('${req.road}')`)
-      }
-    })
-    text.push(``)
-    x.bindings.forEach(binding => {
-      text.push(`let ${binding.name}`)
+
+    text.push(`base.bind('${bind.file.road}', file => {`)
+
+    bind.requires.forEach(req => {
+      text.push(`  const ${req.name} = base.load('${req.road}')`)
     })
 
-    text.push(`base.bind('${x.file.road}', file => {`)
+    if (bind.requires.length) {
+      text.push(``)
+    }
+
+    bind.bindings.forEach(binding => {
+      text.push(`  let ${binding.name}`)
+    })
+
+    if (bind.bindings.length) {
+      text.push(``)
+    }
+
+    bind.commands.forEach(command => {
+      switch (command.form) {
+        case 'string':
+          text.push(`  ${command.host}.save('${command.name}', '${command.blob}')`)
+          break
+        case 'number':
+        case 'boolean':
+        case 'null':
+          text.push(`  ${command.host}.save('${command.name}', ${command.blob})`)
+          break
+        case 'fork':
+          if (command.variableKey) {
+            text.push(`  const ${command.variableKey} = ${command.host}.fork('${command.name}')`)
+          } else {
+            text.push(`  ${command.host}.fork('${command.name}')`)
+          }
+          break
+      }
+    })
+
+    if (bind.bindings.length) {
+      text.push(`  file.bind(() => {`)
+      bind.bindings.forEach(binding => {
+        switch (binding.form) {
+          case 'read':
+
+            break
+          case 'call':
+            text.push(`    ${binding.name}()`)
+            break
+        }
+      })
+      text.push(`    `)
+      text.push(`  })`)
+    }
+
     text.push(`})`)
   })
 
@@ -375,9 +435,11 @@ function makeView(bind, view) {
 }
 
 function makeTest(bind, test) {
+  const key = bind.links.task.links[test.name].key
+  reference(bind, key)
   bind.bindings.push({
     form: 'call',
-    name: bind.links[`task/${test.name}`],
+    name: key
   })
 }
 
@@ -970,6 +1032,7 @@ function makeForkObject(bind, parentNode, object) {
     const value = object[name]
     const type = typeof value
     if (type === 'string') {
+      reference(bind, parentNode.key)
       bind.commands.push({
         form: 'save',
         sort: 'string',
@@ -978,6 +1041,7 @@ function makeForkObject(bind, parentNode, object) {
         blob: value
       })
     } else if (type === 'number') {
+      reference(bind, parentNode.key)
       bind.commands.push({
         form: 'save',
         sort: 'number',
@@ -986,6 +1050,7 @@ function makeForkObject(bind, parentNode, object) {
         blob: value
       })
     } else if (type === 'boolean') {
+      reference(bind, parentNode.key)
       bind.commands.push({
         form: 'save',
         sort: 'boolean',
@@ -994,6 +1059,7 @@ function makeForkObject(bind, parentNode, object) {
         blob: value
       })
     } else if (type === 'function') {
+      reference(bind, parentNode.key)
       bind.commands.push({
         form: 'save',
         sort: 'function',
@@ -1002,6 +1068,7 @@ function makeForkObject(bind, parentNode, object) {
         blob: value
       })
     } else if (type === 'object' && value) {
+      reference(bind, parentNode.key)
       const variableKey = getFileBindName(bind)
       bind.commands.push({
         form: 'fork',
@@ -1015,6 +1082,7 @@ function makeForkObject(bind, parentNode, object) {
       }
       makeForkObject(bind, node, value)
     } else if (value === null) {
+      reference(bind, parentNode.key)
       bind.commands.push({
         form: 'save',
         sort: 'null',
@@ -1026,6 +1094,6 @@ function makeForkObject(bind, parentNode, object) {
   }
 }
 
-function makeForkLeaf(value) {
-
+function reference(bind, name) {
+  bind.names[name] = true
 }
