@@ -84,11 +84,15 @@ function resolveFileBind(fileBind) {
         const variableKey = isUsed ? nameMap[command.variableKey] : null
         newFileBind.commands.push({
           ...command,
+          host: nameMap[command.host],
           variableKey
         })
         break
       default:
-        newFileBind.commands.push(command)
+        newFileBind.commands.push({
+          ...command,
+          host: nameMap[command.host]
+        })
         break
     }
   })
@@ -146,13 +150,17 @@ function makeText(oldBinds) {
 
     bind.commands.forEach(command => {
       switch (command.form) {
-        case 'string':
-          text.push(`  ${command.host}.save('${command.name}', '${command.blob}')`)
-          break
-        case 'number':
-        case 'boolean':
-        case 'null':
-          text.push(`  ${command.host}.save('${command.name}', ${command.blob})`)
+        case `save`:
+          switch (command.sort) {
+            case 'string':
+              text.push(`  ${command.host}.save('${command.name}', '${command.blob}')`)
+              break
+            case 'number':
+            case 'boolean':
+            case 'null':
+              text.push(`  ${command.host}.save('${command.name}', ${command.blob})`)
+              break
+          }
           break
         case 'fork':
           if (command.variableKey) {
@@ -1080,7 +1088,15 @@ function makeForkObject(bind, parentNode, object) {
         key: variableKey,
         links: {}
       }
-      makeForkObject(bind, node, value)
+      if (Array.isArray(value)) {
+        let obj = value.reduce((m, x, i) => {
+          m[i] = x
+          return m
+        }, {})
+        makeForkObject(bind, node, obj)
+      } else {
+        makeForkObject(bind, node, value)
+      }
     } else if (value === null) {
       reference(bind, parentNode.key)
       bind.commands.push({
