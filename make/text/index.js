@@ -10,9 +10,9 @@ module.exports = make
 function createFileBind(file) {
   return {
     file,
-    index: 1,
-    names: {},
-    links: {},
+    variableIndex: 1,
+    variableNames: {},
+    keywordToVariableNameMap: {},
     lookup: {},
     requires: [],
     commands: [],
@@ -21,17 +21,26 @@ function createFileBind(file) {
 }
 
 function getFileBindName(bind) {
-  const name = `x${bind.index++}`
-  bind.names[name] = false
+  const name = `x${bind.variableIndex++}`
+  bind.variableNames[name] = false
   return name
 }
 
 function addFileBindTake(bind, requireKey, path) {
-  const variableKey = getFileBindName(bind)
-  const searchKey = path.join('/')
-  bind.links[searchKey] = {
-    key: variableKey
+  let links = bind.keywordToVariableNameMap
+  let search = path.concat()
+  let variableKey
+
+  while (search.length) {
+    variableKey = getFileBindName(bind)
+    let pathNode = search.shift()
+    let ref = links[pathNode] = links[pathNode] || {
+      key: variableKey,
+      links: {}
+    }
+    links = ref.links
   }
+
   bind.bindings.push({
     name: variableKey,
     requireKey,
