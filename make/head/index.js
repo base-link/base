@@ -10,11 +10,41 @@ class Site {
   }
 }
 
-class File {
-  constructor(road) {
-    this.road = road
+class Fork {
+  constructor(base, home, mark) {
+    this.mark = mark
+    this.base = base
+    this.home = home || base.home
+    this.head = {}
   }
 
+  fork(name, home) {
+    const fork = new Fork(this, home, name)
+    this.head[name] = fork
+    return fork
+  }
+
+  save(name, blob) {
+    const form = typeof blob
+    this.head[name] = {
+      form,
+      blob
+    }
+    return blob
+  }
+
+  read(...road) {
+    let stem = this
+    let i = 0
+    while (i < road.length) {
+      const name = road[i++]
+      stem = stem.head[name]
+    }
+    return stem
+  }
+}
+
+class File extends Fork {
   bind(task) {
     this.host = task
   }
@@ -36,7 +66,13 @@ class Base {
       mesh = site.mesh
       size++
     }
-    const file = site.file = site.file || new File(road)
+
+    let file = site.file
+    if (!file) {
+      site.file = file = new File()
+      file.save('road', road)
+    }
+
     return file
   }
 

@@ -7,32 +7,120 @@ const HEAD = fs.readFileSync('./make/head/index.js', 'utf-8')
 
 module.exports = make
 
+function createFileBind(file) {
+  return {
+    file,
+    index: 1,
+    names: {},
+    links: {},
+    lookup: {},
+    requires: [],
+    commands: [],
+    bindings: [],
+  }
+}
+
+function getFileBindName(bind) {
+  const name = `x${bind.index++}`
+  bind.names[name] = false
+  return name
+}
+
+function addFileBindTake(bind, requireKey, path) {
+  const variableKey = getFileBindName(bind)
+  const searchKey = path.join('/')
+  bind.links[searchKey] = {
+    key: variableKey
+  }
+  bind.bindings.push({
+    name: variableKey,
+    requireKey,
+    path
+  })
+}
+
+function resolveFileBind(fileBind) {
+  const newFileBind = createFileBind(fileBind.file)
+  newFileBind.bindings = fileBind.bindings
+  newFileBind.requires = fileBind.requires
+  const nameMap = {}
+  let i = 1
+  fileBind.forks.forEach(input => {
+    if (input.isForked) {
+      const newName = `x${i++}`
+      nameMap[input.key] = newName
+      newFileBind.names[newName] = true
+    }
+  })
+  Object.keys(fileBind.names).forEach(name => {
+    const isUsed = fileBind.names[name]
+    if (isUsed) {
+      const newName = `x${i++}`
+      nameMap[name] = newName
+      newFileBind.names[newName] = true
+    }
+  })
+  fileBind.requires.forEach(req => {
+    const isUsed = fileBind.names[req.name]
+    if (isUsed) {
+      newFileBind.requires.push({
+        ...req,
+        name: nameMap[req.name]
+      })
+    }
+  })
+}
+
 function make(file, deck) {
   const list = [file]
-  const last = []
-  const knit = {}
-  const texts = []
+  const roadKnit = {}
+  const fileBindList = []
   while (list.length) {
     const base = list.shift()
-    if (knit[base.road]) {
+    if (roadKnit[base.road]) {
       continue
     }
-    const text = []
-    text.push(``)
-    knit[base.road] = true
-    makeFile(base, last).forEach(line => {
-      text.push(line)
-    })
-    texts.unshift(text)
-    const roadList = makeRoad(base)
+    roadKnit[base.road] = true
+    const fileBind = makeFile(base)
+    fileBindList.push(fileBind)
+    const roadList = makeRoad({ file: base })
     roadList.forEach(load => {
       list.push(deck[load.road])
     })
   }
-  const text = []
-  texts.forEach(list => {
-    text.push(...list)
+
+  const text = makeText(fileBindList)
+  return text.join('\n').trim() + '\n'
+}
+
+function makeText(fileBindList) {
+  const link = fileBindList.filter(x => x.link)
+
+  const text = [HEAD]
+
+  fileBindList.forEach(x => {
+    text.push(``)
+    x.requires.forEach(req => {
+      if (req.isUsed) {
+        text.push(`const ${req.name} = base.load('${req.road}')`)
+      }
+    })
+    text.push(``)
+    x.bindings.forEach(binding => {
+      text.push(`let ${binding.name}`)
+    })
+
+    text.push(`base.bind('${x.file.road}', file => {`)
+    text.push(`})`)
   })
+
+  if (link.length) {
+    text.push(``)
+    link
+      .reverse()
+      .map(x => text.push(`file.link('${x.road}')`))
+  }
+
   text.forEach((line, i) => {
     if (line.trim()) {
       text[i] = line
@@ -40,101 +128,74 @@ function make(file, deck) {
       text[i] = line.trim()
     }
   })
-  return HEAD + text.join('\n').trim() + '\n\n' + last.reverse().join('\n') + '\n'
+
+  return text
 }
 
 function makeFile(file, last) {
-  const text = []
-  const calls = []
-  text.push(`base.bind('${file.road}', file => {`)
-  let code
+  const bind = createFileBind(file)
   switch (file.mint) {
     case `task-file`:
-      code = makeTaskFile(file, calls)
+      makeTaskFile(bind)
       break
     case `dock-task-file`:
-      code = makeDockTaskFile(file, calls)
+      makeDockTaskFile(bind)
       break
     case `form-file`:
-      code = makeFormFile(file, roadList, calls)
+      makeFormFile(bind)
       break
     case `mine-file`:
-      code = makeMineFile(file)
+      makeMineFile(bind)
       break
     case `mill-file`:
-      code = makeMillFile(file)
+      makeMillFile(bind)
       break
     case `call-file`:
-      code = makeCallFile(file)
+      makeCallFile(bind)
       break
     case `feed-file`:
-      code = makeFeedFile(file)
+      makeFeedFile(bind)
       break
     case `test-file`:
-      code = makeTestFile(file, calls)
+      makeTestFile(bind)
       break
     case `view-file`:
-      code = makeViewFile(file, calls)
+      makeViewFile(bind)
       break
     default:
       throw file.mint
       break
   }
-  code.forEach(line => {
-    text.push(`${line}`)
-  })
-  text.push(`})`)
-  if (calls.length) {
-    last.push(`base.link('${file.road}')`)
-  }
-  return text
+  return bind
 }
 
-function makeTaskFile(file, calls) {
-  const text = []
-  const code = []
-  const loadState = {
-    requires: [],
-    variables: [],
-    references: [],
-    names: {}
-  }
-  const roadList = makeRoad(file)
-  roadList.forEach((load, i) => {
-    makeLoad(load, i, loadState)
+function makeTaskFile(bind) {
+  const roadList = makeRoad(bind)
+  roadList.forEach(load => {
+    makeLoad(bind, load)
   })
-  code.push(...makeInitialLoadState(loadState))
-  if (roadList.length) {
-    code.push(``)
-  }
-  code.push(...makeTaskHead())
-  file.task.forEach(task => {
-    code.push(...makeTask(task, loadState))
+  makeFork(bind, 'file', { task: {} })
+  bind.file.task.forEach(task => {
+    makeTask(bind, task)
   })
-  file.call.forEach(call => {
-    code.push(...makeFileCall(call, loadState))
+  bind.file.call.forEach(call => {
+    makeFileCall(bind, call)
   })
-  code.push(...makeBindingState(loadState))
-  if (loadState.references.length) {
-    calls.push(true)
-  }
-  code.forEach(line => {
-    text.push(`  ${line}`)
-  })
-  return text
 }
 
-function makeFileCall(call, formKnit) {
-  return makeCall(call, formKnit)
+function makeFileCall(bind, call) {
+  return makeCall(call, bind)
 }
 
 function makeFormFile(file, roadList, calls) {
   const text = []
   const code = []
   const loadState = {
+    forkCount: 1,
+    forkKeys: {},
     requires: [],
     variables: [],
-    references: [],
+    bindings: [],
     names: {}
   }
   roadList.forEach((load, i) => {
@@ -151,7 +212,7 @@ function makeFormFile(file, roadList, calls) {
     code.push(...makeForm(form, knit))
   })
   file.form.forEach(form => {
-    loadState.references.push(...takeForm(form, knit))
+    loadState.bindings.push(...takeForm(form, knit))
   })
   code.push(...makeBindingState(loadState))
   code.forEach(line => {
@@ -248,102 +309,39 @@ function makeFeedFile(file) {
 
 }
 
-function makeViewFile(file, calls) {
-  const text = []
-  const code = []
-  const loadState = {
-    requires: [],
-    variables: [],
-    references: [],
-    names: {}
-  }
-  const roadList = makeRoad(file)
-  roadList.forEach((load, i) => {
-    makeLoad(load, i, loadState)
+function makeViewFile(bind) {
+  const roadList = makeRoad(bind)
+  roadList.forEach(load => {
+    makeLoad(bind, load)
   })
-  code.push(...makeInitialLoadState(loadState))
-  code.push(`file.view = {}`)
-  file.view.forEach(view => {
-    code.push(``)
-    makeView(view, loadState).forEach(line => {
-      code.push(`${line}`)
-    })
+  makeFork(bind, 'file', { view: {} })
+  bind.file.view.forEach(view => {
+    makeView(bind, view)
   })
-  calls.push(true)
-  file.view.forEach(form => {
-    loadState.references.push(...takeView(form, loadState))
-  })
-  code.push(...makeBindingState(loadState))
-  code.forEach(line => {
-    text.push(`  ${line}`)
-  })
-  return text
 }
 
-function makeTestFile(file, calls) {
-  const text = []
-  const code = []
-  const roadList = makeRoad(file)
-  const loadState = {
-    requires: [],
-    variables: [],
-    references: [],
-    names: {}
-  }
-  roadList.forEach((load, i) => {
-    makeLoad(load, i, loadState)
+function makeTestFile(bind) {
+  const roadList = makeRoad(bind)
+  roadList.forEach(load => {
+    makeLoad(bind, load)
   })
-  calls.push(true)
-  code.push(...makeInitialLoadState(loadState))
-  code.push(...makeBindingState(loadState, (t) => {
-    file.test.forEach(test => {
-      makeTest(test, loadState).forEach(line => {
-        t.push(`  ${line}`)
-      })
-    })
-  }))
-  code.forEach(line => {
-    text.push(`  ${line}`)
+  bind.file.test.forEach(test => {
+    makeTest(bind, test)
   })
-  return text
 }
 
-function makeTaskHead() {
-  return makeHead(`task`)
-}
-
-function makeFormHead() {
-  return makeHead(`form`)
-}
-
-function makeTestHead() {
-  return makeHead(`test`)
-}
-
-function makeHead(name) {
-  return [`file.${name} = {}`]
-}
-
-function makeLoad(load, i, { names, requires, variables, references }) {
-  requires.push({
-    name: `x${i + 1}`,
+function makeLoad(bind, load) {
+  const requireName = getFileBindName(bind)
+  bind.requires.push({
+    name: requireName,
     road: load.road
   })
 
-  load.take.forEach(({ take, save }, k) => {
-    const form = toMethodName(take.name)
-    const name = toMethodName(take.link[0].name)
-    const savedName = save ? toMethodName(save.link[0].name) : name
-    const variable = `x${i + 1}_${k + 1}`
-    names[`${form}/${savedName}`] = variable
-    variables.push({
-      name: variable
-    })
-
-    references.push({
-      name: variable,
-      value: `x${i + 1}.${form}.${savedName}`
-    })
+  load.take.forEach(({ take, save }) => {
+    const form = take.name
+    const name = take.link[0].name
+    const savedName = save ? save.link[0].name : name
+    addFileBindTake(bind, requireName, [form, savedName])
   })
 }
 
@@ -361,33 +359,24 @@ function makeForm(form) {
   return text
 }
 
-function makeView(view, formKnit) {
-  const text = []
-  const name = formKnit.names[`view/${toMethodName(view.name)}`]
-  const json = customJSONStringify(view)
-  json.forEach((line, i) => {
-    if (i === 0) {
-      json[i] = line
-    } else {
-      json[i] = `  ${line}`
-    }
+function makeView(bind, view) {
+  makeFork(bind, 'file/view', {
+    [view.name]: view
   })
-  text.push(`file.view.${toMethodName(view.name)} = ${json.join('\n')}`)
-  return text
 }
 
-function makeTest(test, { names }) {
-  const text = []
-  text.push(`${names[`task/${toMethodName(test.name)}`]}()`)
-  return text
+function makeTest(bind, test) {
+  bind.bindings.push({
+    form: 'call',
+    name: bind.links[`task/${test.name}`],
+  })
 }
 
 /**
  * This is a higher-level function.
  */
 
-function makeTask(task, loadState) {
-  const text = []
+function makeTask(bind, task) {
   const params = []
   const initializers = []
   const wait = !!task.wait
@@ -395,27 +384,28 @@ function makeTask(task, loadState) {
     if (base.sift) {
       initializers.push(base)
     }
-    params.push(`${toMethodName(base.name)}`)
+    params.push(`${base.name}`)
   })
-  loadState.names[`task/${toMethodName(task.name)}`] = `file.task.${toMethodName(task.name)}`
-  text.push(``)
   const prefix = wait ? `async ` : ``
-  text.push(`file.task.${toMethodName(task.name)} = ${prefix}function(${params.join(', ')}){`)
+  const t = [`return function(){`]
+  t.push(`return ${prefix}function(${params.join(', ')}){`)
+
   initializers.forEach(base => {
-    text.push(`  if (${toMethodName(base.name)} == null) {`)
+    t.push(`  if (${base.name} == null) {`)
     if (base.sift.form === 'text') {
-      text.push(`    ${toMethodName(base.name)} = '${makeSift(base.sift)}'`)
+      t.push(`    ${base.name} = '${makeSift(base.sift)}'`)
     } else {
-      text.push(`    ${toMethodName(base.name)} = ${makeSift(base.sift)}`)
+      t.push(`    ${base.name} = ${makeSift(base.sift)}`)
     }
-    text.push(`  }`)
-    text.push(``)
+    t.push(`  }`)
+    t.push(``)
   })
+
   task.zone.forEach(zone => {
     switch (zone.form) {
       case `host`:
         makeHost(zone).forEach(line => {
-          text.push(`  ${line}`)
+          t.push(`  ${line}`)
         })
         break
       case `save`:
@@ -423,23 +413,31 @@ function makeTask(task, loadState) {
         // x = a
         // x = 10
         makeSave(zone).forEach(line => {
-          text.push(`  ${line}`)
+          t.push(`  ${line}`)
         })
         break
       case `turn`:
         makeTurn(zone).forEach(line => {
-          text.push(`  ${line}`)
+          t.push(`  ${line}`)
         })
         break
       case `call`:
-        makeCall(zone, loadState).forEach(line => {
-          text.push(`  ${line}`)
+        makeCall(zone, bind).forEach(line => {
+          t.push(`  ${line}`)
         })
         break
     }
   })
-  text.push('}')
-  return text
+  t.push(`}`)
+  t.push('}')
+  console.log(t.join('\n'))
+  const func = new Function(t.join('\n'))()
+  makeFork(bind, `file/task`, {
+    [task.name]: {
+      base: task,
+      call: func
+    }
+  })
 }
 
 function makeInlineTask(task, loadState) {
@@ -450,16 +448,16 @@ function makeInlineTask(task, loadState) {
     if (base.sift) {
       initializers.push(base)
     }
-    params.push(`${toMethodName(base.name)}`)
+    params.push(`${base.name}`)
   })
   text.push(``)
-  text.push(`function ${toMethodName(task.name)}(${params.join(', ')}){`)
+  text.push(`function ${task.name}(${params.join(', ')}){`)
   initializers.forEach(base => {
-    text.push(`  if (${toMethodName(base.name)} == null) {`)
+    text.push(`  if (${base.name} == null) {`)
     if (base.sift.form === 'text') {
-      text.push(`    ${toMethodName(base.name)} = '${makeSift(base.sift)}'`)
+      text.push(`    ${base.name} = '${makeSift(base.sift)}'`)
     } else {
-      text.push(`    ${toMethodName(base.name)} = ${makeSift(base.sift)}`)
+      text.push(`    ${base.name} = ${makeSift(base.sift)}`)
     }
     text.push(`  }`)
     text.push(``)
@@ -548,7 +546,7 @@ function makeCall(call, loadState) {
   // require modules have to be explicit for webpack to parse them.
   const methodName = call.name === 'require'
     ? 'require'
-    : loadState.names[`task/${toMethodName(call.name)}`] || toMethodName(call.name)
+    : loadState.names[`task/${call.name}`]
   text.push(`${mean}${methodName}(`)
   call.bind.forEach(b => {
     const sift = b.sift.form === 'task'
@@ -600,9 +598,9 @@ function makeNest(nest, loadState = {}) {
     switch (stem.form) {
       case 'term':
         if (i === 0) {
-          return toMethodName(stem.name)
+          return stem.name
         } else {
-          return `.${toMethodName(stem.name)}`
+          return `[${stem.name}]`
         }
         break
     }
@@ -625,87 +623,43 @@ function makeSift(sift, loadState = {}) {
   }
 }
 
-function makeInitialLoadState({ requires, variables }) {
-  const text = []
-  requires.forEach(req => {
-    text.push(`const ${req.name} = base.load('${req.road}')`)
+function makeDockTaskFile(bind) {
+  bind.file.load.forEach(load => {
+    makeLoad(bind, load)
   })
-  variables.forEach(variable => {
-    text.push(`let ${variable.name}`)
+  makeFork(bind, `file`, {
+    task: {}
   })
-  return text
-}
-
-function makeBindingState({ references }, callback) {
-  const text = []
-  if (references.length) {
-    text.push(``)
-    text.push(`file.bind(() => {`)
-    references.forEach(reference => {
-      text.push(`  ${reference.name} = ${reference.value}`)
-    })
-    if (callback) callback(text)
-    text.push(`})`)
-  }
-  return text
-}
-
-function makeDockTaskFile(file, calls) {
-  const text = []
-  const code = []
-  const loadState = {
-    requires: [],
-    variables: [],
-    references: [],
-    names: {}
-  }
-  file.load.forEach((load, i) => {
-    makeLoad(load, i, loadState)
+  bind.file.task.forEach(task => {
+    makeDockTask(bind, task)
   })
-  code.push(...makeInitialLoadState(loadState))
-  if (file.load.length) {
-    code.push(``)
-  }
-  code.push(...makeTaskHead())
-  file.task.forEach(task => {
-    code.push(...makeDockTask(task, loadState))
+  bind.file.call.forEach(call => {
+    makeFileCall(bind, call)
   })
-  file.call.forEach(call => {
-    code.push(...makeFileCall(call, loadState))
-  })
-  code.push(...makeBindingState(loadState))
-  if (loadState.references.length) {
-    calls.push(true)
-  }
-  code.forEach(line => {
-    text.push(`  ${line}`)
-  })
-  return text
 }
 
 /**
  * This is a native JavaScript function.
  */
 
-function makeDockTask(task, loadState) {
-  const text = []
+function makeDockTask(bind, task) {
   const params = []
   const initializers = []
   task.base.forEach(base => {
     if (base.base) {
       initializers.push(base)
     } else {
-      params.push(`${toMethodName(base.name)}`)
+      params.push(`${base.name}`)
     }
   })
-  text.push(``)
-  text.push(`file.task.${toMethodName(task.name)} = function(${params.join(', ')}){`)
+  const text = [`return function(){`]
+  text.push(`return function(${params.join(', ')}){`)
   initializers.forEach(base => {
-    text.push(`  if (${toMethodName(base.name)} == null) {`)
+    text.push(`  if (${base.name} == null) {`)
     if (base.base.form === 'text') {
-      text.push(`    ${toMethodName(base.name)} = '${base.base.sift}'`)
+      text.push(`    ${base.name} = '${base.base.sift}'`)
     } else {
-      text.push(`    ${toMethodName(base.name)} = ${base.base.sift}`)
+      text.push(`    ${base.name} = ${base.base.sift}`)
     }
     text.push(`  }`)
     text.push(``)
@@ -713,19 +667,26 @@ function makeDockTask(task, loadState) {
   task.zone.forEach(zone => {
     switch (zone.form) {
       case `call`:
-        makeDockCall(zone, loadState).forEach(line => {
+        makeDockCall(zone, bind).forEach(line => {
           text.push(`  ${line}`)
         })
         break
     }
   })
   text.push('}')
+  text.push('}')
+  const func = new Function(text.join('\n'))()
+  makeFork(bind, 'file/task', {
+    [task.name]: {
+      base: task,
+      call: func
+    }
+  })
   return text
 }
 
 function makeDockCall(call, loadState) {
   const turn = call.zone.filter(zone => zone.form === 'call-turn')[0]
-  const text = []
   let head = ''
   if (turn) {
     head = `return `
@@ -953,9 +914,9 @@ function makeDockCallLook() {
   return `debugger`
 }
 
-function makeRoad(file, list = []) {
-  file.load.forEach(load => {
-    makeLoadRoad(file.road, load, list)
+function makeRoad(bind, list = []) {
+  bind.file.load.forEach(load => {
+    makeLoadRoad(bind.file.road, load, list)
   })
   return list
 }
@@ -982,22 +943,80 @@ function makeLoadRoad(baseRoad, load, list) {
   }
 }
 
-function toMethodName(term) {
-  return term.replace(/\-/g, '_')
+function makeFork(bind, path, object) {
+  const parts = path.split('/')
+  let node = bind
+  while (parts.length) {
+    let part = parts.shift()
+    node = node.links[part] = node.links[part] || {
+      key: getFileBindName(bind),
+      links: {}
+    }
+  }
+  makeForkObject(bind, node, object)
 }
 
-function customJSONStringify(o) {
-  return JSON.stringify(o, null, 2)
-    .split(/\n/)
-    .map(line => {
-      if (line.match(/^ +"([^-"]+)": "([^"]+)"/)) {
-        return line.replace(/^( +)"([^"]+)": "([^"]+)"/, "$1$2: '$3'")
-      } else if (line.match(/^ +"([^-"]+)"/)) {
-        return line.replace(/^( +)"([^"]+)"/, "$1$2")
-      } else if (line.match(/^ +"([^"]+)"/)) {
-        return line.replace(/^( +)"([^"]+)"/, "$1'$2'")
-      } else {
-        return line
+function makeForkObject(bind, parentNode, object) {
+  for (const name in object) {
+    const value = object[name]
+    const type = typeof value
+    if (type === 'string') {
+      bind.commands.push({
+        form: 'save',
+        sort: 'string',
+        host: parentNode.key,
+        name,
+        blob: value
+      })
+    } else if (type === 'number') {
+      bind.commands.push({
+        form: 'save',
+        sort: 'number',
+        host: parentNode.key,
+        name,
+        blob: value
+      })
+    } else if (type === 'boolean') {
+      bind.commands.push({
+        form: 'save',
+        sort: 'boolean',
+        host: parentNode.key,
+        name,
+        blob: value
+      })
+    } else if (type === 'function') {
+      bind.commands.push({
+        form: 'save',
+        sort: 'function',
+        host: parentNode.key,
+        name,
+        blob: value
+      })
+    } else if (type === 'object' && value) {
+      const variableKey = getFileBindName(bind)
+      bind.commands.push({
+        form: 'fork',
+        host: parentNode.key,
+        name,
+        variableKey,
+      })
+      const node = parentNode.links[name] = {
+        key: variableKey,
+        links: {}
       }
-    })
+      makeForkObject(bind, node, value)
+    } else if (value === null) {
+      bind.commands.push({
+        form: 'save',
+        sort: 'null',
+        host: parentNode.key,
+        name,
+        blob: value
+      })
+    }
+  }
+}
+
+function makeForkLeaf(value) {
+
 }
