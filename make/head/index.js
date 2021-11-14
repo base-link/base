@@ -40,7 +40,11 @@ class Fork {
       const name = road[i++]
       fork = fork.head[name]
     }
-    return fork
+    if (fork.form === 'fork') {
+      return fork
+    } else {
+      return fork.blob
+    }
   }
 }
 

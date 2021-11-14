@@ -39,7 +39,11 @@ class Fork {
       const name = road[i++]
       fork = fork.head[name]
     }
-    return fork
+    if (fork.form === 'fork') {
+      return fork
+    } else {
+      return fork.blob
+    }
   }
 }
 
@@ -121,8 +125,7 @@ base.bind('@drumwork/base/test/dock/browser', file => {
   let x2
 
   file.bind(() => {
-    x2 = x1.read('task', 'mount-example-view')
-
+    x2 = x1.read('task', 'mount-example-view', 'call')
   })
 })
 
@@ -138,7 +141,6 @@ base.bind('@drumwork/base/test/task/view', file => {
   let x62
   let x63
   let x64
-  let x65
 
   const x6 = file.fork('task')
   const x7 = x6.fork('mount-example-view')
@@ -271,35 +273,33 @@ base.bind('@drumwork/base/test/task/view', file => {
   x55.fork('hook')
   x8.save('wait', false)
   x7.save('call', function(){
-    b = undefined(
+    b = x9(
     
     )
-    frag = undefined(
+    frag = x16(
       view[example]
     )
-    undefined(
+    x6(
       frag
     )
-    undefined(
+    x11(
       frag,
       b
     )
-    undefined(
+    x13(
       frag
     )
-    undefined(
+    x6(
       'done'
     )
   })
   file.bind(() => {
     x59 = x1.read('view', 'example')
-    x60 = x4.read('task', 'log')
-    x61 = x7.read('task', 'make-base')
-    x62 = x7.read('task', 'load-view')
-    x63 = x7.read('task', 'bind-view')
-    x64 = x7.read('task', 'draw-view')
-    x65 = x16.read('task', 'make')
-
+    x60 = x2.read('task', 'log', 'call')
+    x61 = x3.read('task', 'make-base', 'call')
+    x62 = x3.read('task', 'bind-view', 'call')
+    x63 = x3.read('task', 'draw-view', 'call')
+    x64 = x4.read('task', 'make', 'call')
   })
 })
 
@@ -1649,8 +1649,7 @@ base.bind('@drumwork/base/code/dock/browser', file => {
     return rise-mesh.createMesh(view)
   })
   file.bind(() => {
-    x104 = x1.read('task', 'require')
-
+    x104 = x1.read('task', 'require', 'call')
   })
 })
 

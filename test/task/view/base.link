@@ -5,7 +5,6 @@ load @drumwork/dock/code/javascript/console
   take task log
 load @drumwork/base/code/dock/browser
   take task make-base
-  take task load-view
   take task bind-view
   take task draw-view
 load @drumwork/base/code/dock/browser

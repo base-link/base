@@ -16,7 +16,8 @@ function createFileBind(file) {
     requires: [],
     commands: [],
     bindings: [],
-    calls: []
+    calls: [],
+    callCalls: []
   }
 }
 
@@ -73,15 +74,22 @@ function resolveFileBind(fileBind) {
     }
   })
   fileBind.bindings.forEach(req => {
-    const isUsed = fileBind.names[req.name]
+    let isUsed = fileBind.names[req.name]
     if (!isUsed) {
       const newName = `x${i++}`
       nameMap[req.name] = newName
       newFileBind.names[newName] = true
     }
+    isUsed = fileBind.names[req.requireKey]
+    if (!isUsed) {
+      const newName = `x${i++}`
+      nameMap[req.requireKey] = newName
+      newFileBind.names[newName] = true
+    }
     newFileBind.bindings.push({
       ...req,
-      name: nameMap[req.name]
+      name: nameMap[req.name],
+      requireKey: nameMap[req.requireKey]
     })
   })
   fileBind.commands.forEach(command => {
@@ -102,6 +110,22 @@ function resolveFileBind(fileBind) {
           host: hostIsFile ? 'file' : nameMap[command.host]
         })
         break
+    }
+  })
+  newFileBind.callCalls = fileBind.callCalls.map(call => {
+    return {
+      ...call,
+      zone: call.zone.map(zone => {
+        switch (zone.form) {
+          case 'call-save':
+            return {
+              ...zone,
+              // nest
+            }
+            break
+          default: throw JSON.stringify(zone)
+        }
+      })
     }
   })
   return newFileBind
@@ -196,6 +220,9 @@ function makeText(oldBinds) {
         switch (binding.form) {
           case 'read':
             const nodes = binding.path.map(x => `'${x}'`)
+            if (binding.path[0] === 'task') {
+              nodes.push(`'call'`)
+            }
             text.push(`    ${binding.name} = ${binding.requireKey}.read(${nodes.join(', ')})`)
             break
           case 'call':
@@ -203,7 +230,6 @@ function makeText(oldBinds) {
             break
         }
       })
-      text.push(`    `)
       text.push(`  })`)
     }
 
@@ -275,7 +301,7 @@ function makeTaskFile(bind) {
     makeTask(bind, task)
   })
   bind.file.call.forEach(call => {
-    makeFileCall(bind, call)
+    bind.callCalls.push(call)
   })
 }
 
@@ -510,7 +536,7 @@ function makeTask(bind, task) {
         // x[y] = a.b
         // x = a
         // x = 10
-        makeSave(zone).forEach(line => {
+        makeSave(zone, bind).forEach(line => {
           t.push(`  ${line}`)
         })
         break
@@ -528,7 +554,6 @@ function makeTask(bind, task) {
   })
   t.push(`}`)
   t.push('}')
-  console.log(t.join('\n'))
   const func = new Function(t.join('\n'))()
   makeFork(bind, `file/task`, {
     [task.name]: {
@@ -644,7 +669,7 @@ function makeCall(call, loadState) {
   // require modules have to be explicit for webpack to parse them.
   const methodName = call.name === 'require'
     ? 'require'
-    : loadState.names[`task/${call.name}`]
+    : loadState.links.task.links[call.name].key
   text.push(`${mean}${methodName}(`)
   call.bind.forEach(b => {
     const sift = b.sift.form === 'task'
@@ -732,7 +757,7 @@ function makeDockTaskFile(bind) {
     makeDockTask(bind, task)
   })
   bind.file.call.forEach(call => {
-    makeFileCall(bind, call)
+    bind.callCalls.push(call)
   })
 }
 
@@ -981,7 +1006,8 @@ function makeDockCallCallBase(call, loadState) {
   if (object.sift.form === 'link') {
     text.push(`${makeNest(object.sift.nest, loadState)}.${method.sift.text}(${bind.join(', ')})`)
   } else {
-    text.push(`${object.sift.text}.${method.sift.text}(${bind.join(', ')})`)
+    const tasks = loadState.links.file.links.task.links
+    text.push(`${tasks[object.sift.text] ? tasks[object.sift.text].key : object.sift.text}.${method.sift.text}(${bind.join(', ')})`)
   }
   return text.join('\n')
 }
