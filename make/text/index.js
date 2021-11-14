@@ -16,6 +16,7 @@ function createFileBind(file) {
     requires: [],
     commands: [],
     bindings: [],
+    calls: []
   }
 }
 
@@ -72,26 +73,33 @@ function resolveFileBind(fileBind) {
     }
   })
   fileBind.bindings.forEach(req => {
+    const isUsed = fileBind.names[req.name]
+    if (!isUsed) {
+      const newName = `x${i++}`
+      nameMap[req.name] = newName
+      newFileBind.names[newName] = true
+    }
     newFileBind.bindings.push({
       ...req,
       name: nameMap[req.name]
     })
   })
   fileBind.commands.forEach(command => {
+    const hostIsFile = fileBind.links.file.key === command.host
     switch (command.form) {
       case 'fork':
         const isUsed = fileBind.names[command.variableKey]
         const variableKey = isUsed ? nameMap[command.variableKey] : null
         newFileBind.commands.push({
           ...command,
-          host: nameMap[command.host],
+          host: hostIsFile ? 'file' : nameMap[command.host],
           variableKey
         })
         break
       default:
         newFileBind.commands.push({
           ...command,
-          host: nameMap[command.host]
+          host: hostIsFile ? 'file' : nameMap[command.host]
         })
         break
     }
@@ -123,7 +131,7 @@ function make(file, deck) {
 
 function makeText(oldBinds) {
   const fileBindList = oldBinds.map(resolveFileBind)
-  const link = fileBindList.filter(x => x.link)
+  const link = fileBindList.filter(x => x.bindings.length > 0)
 
   const text = [HEAD]
 
@@ -160,6 +168,16 @@ function makeText(oldBinds) {
             case 'null':
               text.push(`  ${command.host}.save('${command.name}', ${command.blob})`)
               break
+            case 'function':
+              const lines = command.blob().toString().split('\n').map((x, i) => {
+                if (i === 0) {
+                  return x
+                } else {
+                  return `  ${x}`
+                }
+              }).join('\n')
+              text.push(`  ${command.host}.save('${command.name}', ${lines})`)
+              break
           }
           break
         case 'fork':
@@ -177,7 +195,8 @@ function makeText(oldBinds) {
       bind.bindings.forEach(binding => {
         switch (binding.form) {
           case 'read':
-
+            const nodes = binding.path.map(x => `'${x}'`)
+            text.push(`    ${binding.name} = ${binding.requireKey}.read(${nodes.join(', ')})`)
             break
           case 'call':
             text.push(`    ${binding.name}()`)
@@ -195,7 +214,7 @@ function makeText(oldBinds) {
     text.push(``)
     link
       .reverse()
-      .map(x => text.push(`file.link('${x.road}')`))
+      .map(x => text.push(`base.link('${x.file.road}')`))
   }
 
   text.forEach((line, i) => {
@@ -445,7 +464,7 @@ function makeView(bind, view) {
 function makeTest(bind, test) {
   const key = bind.links.task.links[test.name].key
   reference(bind, key)
-  bind.bindings.push({
+  bind.calls.push({
     form: 'call',
     name: key
   })

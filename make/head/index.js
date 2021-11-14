@@ -14,7 +14,7 @@ class Fork {
   constructor(base, home, mark) {
     this.mark = mark
     this.base = base
-    this.home = home || base.home
+    this.home = home || (base ? base.home : null)
     this.head = {}
   }
 
@@ -34,13 +34,13 @@ class Fork {
   }
 
   read(...road) {
-    let stem = this
+    let fork = this
     let i = 0
     while (i < road.length) {
       const name = road[i++]
-      stem = stem.head[name]
+      fork = fork.head[name]
     }
-    return stem
+    return fork
   }
 }
 
