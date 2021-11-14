@@ -273,20 +273,20 @@ base.bind('@drumwork/base/test/task/view', file => {
   x55.fork('hook')
   x8.save('wait', false)
   x7.save('call', function(){
-    b = x9(
+    b = x8(
     
     )
-    frag = x16(
+    frag = x12(
       view[example]
     )
     x6(
       frag
     )
-    x11(
+    x9(
       frag,
       b
     )
-    x13(
+    x10(
       frag
     )
     x6(

@@ -27,6 +27,19 @@ function getFileBindName(bind) {
   return name
 }
 
+function getName(bind, path) {
+  let i = 0
+  let node = bind
+  while (i < path.length) {
+    let pathNode = path[i++]
+    node = node.links[pathNode] = node.links[pathNode] || {
+      key: getFileBindName(bind),
+      links: {}
+    }
+  }
+  return node.key
+}
+
 function addFileBindTake(bind, requireKey, path) {
   let links = bind.links
   let search = path.concat()
@@ -35,13 +48,13 @@ function addFileBindTake(bind, requireKey, path) {
   reference(bind, requireKey)
 
   while (search.length) {
-    variableKey = getFileBindName(bind)
     let pathNode = search.shift()
     let ref = links[pathNode] = links[pathNode] || {
-      key: variableKey,
+      key: getFileBindName(bind),
       links: {}
     }
     links = ref.links
+    variableKey = ref.key
   }
 
   bind.bindings.push({
@@ -120,7 +133,19 @@ function resolveFileBind(fileBind) {
           case 'call-save':
             return {
               ...zone,
-              // nest
+              nest: {
+                ...zone.nest,
+                stem: zone.nest.stem.map((stem, i) => {
+                  if (i === 0) {
+                    return {
+                      ...stem,
+                      name: getName(fileBind, stem.name),
+                    }
+                  } else {
+                    return stem
+                  }
+                })
+              }
             }
             break
           default: throw JSON.stringify(zone)
