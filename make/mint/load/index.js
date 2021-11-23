@@ -2,20 +2,19 @@
 module.exports = mintLoad
 
 function mintLoad(base) {
-  const road = base[0].text
+  const road = base.link[0].text
   const load = {
     road,
     load: [],
     take: []
   }
-  base.slice(1).forEach(base => {
-    const term = base.link[0]
-    switch (term.term) {
+  base.link.slice(1).forEach(link => {
+    switch (link.name) {
       case `load`:
-        load.load.push(mintLoad(base.link.slice(1)))
+        load.load.push(mintLoad(link))
         break
       case `take`:
-        load.take.push(mintTake(base.link.slice(1)))
+        load.take.push(mintTake(link))
         break
     }
   })
@@ -23,10 +22,24 @@ function mintLoad(base) {
 }
 
 function mintTake(base) {
-  const take = base[0]
+  const takeForm = base.link[0]
+  const takeFormBase = takeForm.link[0]
+  const take = {
+    form: 'form-base',
+    host: takeForm.name,
+    base: takeFormBase.name
+  }
+
+  const saveForm = base.link[1]
   let save
-  // if (base.link[1]) {
-  //   save = base.link[1].link[0]
-  // }
-  return { take, save }
+  if (saveForm) {
+    const saveFormBase = saveForm.link[0]
+    save = {
+      form: 'form-base',
+      host: saveForm.name,
+      base: saveFormBase.name
+    }
+  }
+
+  return { form: 'take', take, save }
 }

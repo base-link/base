@@ -2,6 +2,7 @@
 const AST = require('@lancejpollard/normalize-ast.js/create')
 const makeRoad = require('../../make')
 const {
+  makeLoad,
   makeSave,
   makeHost,
   makeTurn,
@@ -19,7 +20,7 @@ function makeDockTaskFile(file) {
     makeDockTask(file, task)
   })
   file.originalFile.call.forEach(call => {
-    file.callCalls.push(call)
+    // file.callCalls.push(call)
   })
 }
 
@@ -27,7 +28,7 @@ function makeDockTaskFile(file) {
  * This is a native JavaScript function.
  */
 
-function makeDockTask(bind, task) {
+function makeDockTask(file, task) {
   const params = []
   const wait = !!task.wait
   task.base.forEach(base => {

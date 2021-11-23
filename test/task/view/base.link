@@ -11,11 +11,11 @@ load @drumwork/base/code/dock/browser
   take task make
 
 task mount-example-view
-  call make-base
-    save b
-  call make
-    bind type, link view example
-    save frag
+  save b
+    call make-base
+  save frag
+    call make
+      bind type, link view example
   call log
     bind message, link frag
   call bind-view

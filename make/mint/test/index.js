@@ -2,7 +2,7 @@
 module.exports = mint
 
 function mint(base) {
-  const name = base[0].link[0].term
+  const name = base.link[0].name
   const test = {
     name
   }

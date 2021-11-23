@@ -8,17 +8,16 @@ function mintFile(road, base) {
   const task = []
   const load = []
   const call = []
-  base.forEach(base => {
-    const term = base.link[0]
-    switch (term.term) {
+  base.link.forEach(link => {
+    switch (link.name) {
       case 'load':
-        load.push(mintLoad(base.link.slice(1)))
+        load.push(mintLoad(link))
         break
       case 'call':
-        call.push(mintTask.mintCall(base.link.slice(1)))
+        call.push(mintTask.mintCall(link))
         break
       case 'task':
-        task.push(mintTask(base.link.slice(1)))
+        task.push(mintTask(link))
         break
     }
   })

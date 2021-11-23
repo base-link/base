@@ -69,10 +69,12 @@ function mintSift(base) {
     case 'link':
       return {
         form: 'link',
-        nest: mintNest(base.link[0])
+        link: base.link[0]
       }
     case `make`:
       return mintMake(base);
+    case `call`:
+      return mintSift.mintCall(base);
     default:
       throw JSON.stringify(base)
   }

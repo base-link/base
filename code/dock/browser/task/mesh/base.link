@@ -1,8 +1,8 @@
 
 task make
   base view, form view
-  call create-element
-    bind tag, link view/tag
-    save element
+  save element
+    call create-element
+      bind tag, link view/tag
 
 task draw

@@ -55,17 +55,16 @@ task find-fibonacci-via-loop
       call check-gt
         bind left, link i
         bind right, text 0
-        turn seed
     hook link
       save d, link o
-      call add
-        bind base, link g
-        bind head, link d
-        save o
+      save o
+        call add
+          bind base, link g
+          bind head, link d
       save g, link d
-      call decrement
-        bind integer, link i
-        save i
+      save i
+        call decrement
+          bind integer, link i
 
   turn seed, link g
 
@@ -79,40 +78,37 @@ task find-fibonacci-via-recursion
       call check-if-strictly-equal
         bind left, link i
         bind right, text 0
-        turn seed
     hook like
       turn seed, link g
     hook miss
-      call subtract
-        bind base, link i
-        bind head, text 1
-        save d
-      call add
-        bind base, link o
-        bind head, link g
-        save t
+      save d
+        call subtract
+          bind base, link i
+          bind head, text 1
+      save t
+        call add
+          bind base, link o
+          bind head, link g
       call find-fibonacci-via-recursion
         bind i, link d
         bind g, link o
         bind o, link t
-        turn seed
-    turn seed
 
 task test-fibonacci-loop
   wait bind
 
-  call find-fibonacci-via-loop
-    bind i, text 7
-    save o
+  save o
+    call find-fibonacci-via-loop
+      bind i, text 7
   call log
     bind message, link o
-  call find-fibonacci-via-recursion
-    bind i, text 7
-    save x
+  save x
+    call find-fibonacci-via-recursion
+      bind i, text 7
   call log
     bind message, link x
-  call create-object
-    save x
+  save x
+    call create-object
   call set-field
     bind object, link x
     bind attribute, text <foo>
@@ -122,16 +118,16 @@ task test-fibonacci-loop
     bind attribute, text <x>
     bind value, link o
   save v, text <hello>
-  call shift-left
-    bind left, link o
-    bind right, size 5
-    save x/y
+  save x/y
+    call shift-left
+      bind left, link o
+      bind right, size 5
   call log
     bind message, link x
-  call read-file
-    bind path, text <deck.link>
-    bind encoding, text <utf-8>
-    wait bind
-    save content
+  save content
+    call read-file
+      bind path, text <deck.link>
+      bind encoding, text <utf-8>
+      wait bind
   call log
     bind message, link content

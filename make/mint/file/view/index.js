@@ -7,14 +7,13 @@ module.exports = mintFile
 function mintFile(road, base) {
   const view = []
   const load = []
-  base.forEach(base => {
-    const term = base.link[0]
-    switch (term.term) {
+  base.link.forEach(base => {
+    switch (base.name) {
       case 'load':
-        load.push(mintLoad(base.link.slice(1)))
+        load.push(mintLoad(base))
         break
       case 'view':
-        view.push(mintView(base.link.slice(1)))
+        view.push(mintView(base))
         break
     }
   })

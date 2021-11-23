@@ -11,6 +11,20 @@ makeRoad.makeTurn = makeTurn
 makeRoad.makeCall = makeCall
 makeRoad.makeNest = makeNest
 makeRoad.makeSift = makeSift
+makeRoad.makeLoad = makeLoad
+
+function makeLoad(file, load) {
+  const requireName = `x${file.index++}`
+
+  file.requires[requireName] = load.road
+
+  load.take.forEach(({ take, save }) => {
+    const host = take.host
+    const base = take.base
+    const savedName = save ? save.base : base
+    file.names[`${host}/${savedName}`] = requireName
+  })
+}
 
 function makeRoad(file, list = []) {
   file.load.forEach(load => {
@@ -107,20 +121,36 @@ function makeCall(file, call) {
   )
 }
 
-function makeNest(file, nest) {
-  // const name =
-  const member = AST.createMemberExpression(
-    AST.createLiteral(nest.nest.name)
-  )
-  return member
-}
-
 function makeSift(file, sift) {
-  const form = sift.link[0].term
-  switch (form) {
+  switch (sift.form) {
     case `sift-text`: return AST.createLiteral(sift.text)
     case `text`: return AST.createLiteral(sift.text)
     case `size`: return AST.createLiteral(sift.size)
-    case `link`: return makeNest(file, sift.link[1])
+    case `link`: return makeLink(file, sift.link)
+  }
+}
+
+function makeLink(file, link) {
+  if (link.form === 'host') {
+    return AST.createIdentifier(link.name)
+  } else {
+    return makeNest(link)
+  }
+}
+
+function makeNest(node) {
+  if (node.form == 'site') {
+    return {
+      type: 'Identifier',
+      name: node.name,
+    };
+  } else {
+    const [base, ...props] = node.link;
+    return props.reduce((lhs, rhs) => ({
+      type: 'MemberExpression',
+      object: lhs,
+      property: transform(rhs),
+      computed: rhs.form == 'nest',
+    }), transform(base));
   }
 }

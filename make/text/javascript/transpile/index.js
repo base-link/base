@@ -10,6 +10,7 @@ const {
   makeHost,
   makeTurn,
   makeCall,
+  makeLoad,
 } = makeRoad;
 
 module.exports = make
@@ -93,19 +94,6 @@ function makeTaskFile(file) {
   // file.originalFile.call.forEach(call => {
   //   file.output.call.push(call)
   // })
-}
-
-function makeLoad(file, load) {
-  const requireName = `x${file.index++}`
-
-  file.requires[requireName] = load.road
-
-  load.take.forEach(({ take, save }) => {
-    const form = take.name
-    const name = take.link[0].name
-    const savedName = save ? save.link[0].name : name
-    file.names[`${form}/${savedName}`] = requireName
-  })
 }
 
 /**
