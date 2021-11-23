@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "dependencies": {
     "@drumwork/rise.browser.js": "*",
+    "@lancejpollard/normalize-ast.js": "*",
+    "acorn": "^8.5.0",
+    "esquery": "^1.4.0",
     "webpack": "^5.64.0"
   }
 }

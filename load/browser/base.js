@@ -273,21 +273,21 @@ base.bind('@drumwork/base/test/task/view', file => {
   x55.fork('hook')
   x8.save('wait', false)
   x7.save('call', function(){
-    b = x8(
+    x15 = x8(
     
     )
-    frag = x12(
-      view[example]
+    x16 = x12(
+      x2['example']
     )
     x6(
-      frag
+      x16
     )
     x9(
-      frag,
-      b
+      x16,
+      x15
     )
     x10(
-      frag
+      x16
     )
     x6(
       'done'
@@ -517,7 +517,7 @@ base.bind('@drumwork/dock/code/javascript/console', file => {
   x11.fork('hook')
   x4.save('wait', false)
   x3.save('call', function(assertion, obj1, msg, subst1){
-    console.assert(assertion, obj1, msg, subst1)
+    x13.assert(x3, x4, x5, x6)
   })
   const x37 = x2.fork('clear')
   const x38 = x37.fork('base')
@@ -546,7 +546,7 @@ base.bind('@drumwork/dock/code/javascript/console', file => {
   x40.fork('hook')
   x38.save('wait', false)
   x37.save('call', function(){
-    console.clear()
+    x13.clear()
   })
   const x46 = x2.fork('count')
   const x47 = x46.fork('base')
@@ -589,7 +589,7 @@ base.bind('@drumwork/dock/code/javascript/console', file => {
   x51.fork('hook')
   x47.save('wait', false)
   x46.save('call', function(label){
-    console.count(label)
+    x13.count(x62)
   })
   const x62 = x2.fork('count-reset')
   const x63 = x62.fork('base')
@@ -632,7 +632,7 @@ base.bind('@drumwork/dock/code/javascript/console', file => {
   x67.fork('hook')
   x63.save('wait', false)
   x62.save('call', function(label){
-    console.countReset(label)
+    x13.countReset(x62)
   })
   const x78 = x2.fork('debug')
   const x79 = x78.fork('base')
@@ -703,7 +703,7 @@ base.bind('@drumwork/dock/code/javascript/console', file => {
   x85.fork('hook')
   x79.save('wait', false)
   x78.save('call', function(obj1, msg, subst1){
-    console.debug(obj1, msg, subst1)
+    x13.debug(x4, x5, x6)
   })
   const x106 = x2.fork('dir')
   const x107 = x106.fork('base')
@@ -746,7 +746,7 @@ base.bind('@drumwork/dock/code/javascript/console', file => {
   x111.fork('hook')
   x107.save('wait', false)
   x106.save('call', function(object){
-    console.dir(object)
+    x13.dir(x129)
   })
   const x122 = x2.fork('dirxml')
   const x123 = x122.fork('base')
@@ -789,7 +789,7 @@ base.bind('@drumwork/dock/code/javascript/console', file => {
   x127.fork('hook')
   x123.save('wait', false)
   x122.save('call', function(object){
-    console.dirxml(object)
+    x13.dirxml(x129)
   })
   const x138 = x2.fork('error')
   const x139 = x138.fork('base')
@@ -860,7 +860,7 @@ base.bind('@drumwork/dock/code/javascript/console', file => {
   x145.fork('hook')
   x139.save('wait', false)
   x138.save('call', function(obj1, msg, subst1){
-    console.error(obj1, msg, subst1)
+    x13.error(x4, x5, x6)
   })
   const x166 = x2.fork('group')
   const x167 = x166.fork('base')
@@ -903,7 +903,7 @@ base.bind('@drumwork/dock/code/javascript/console', file => {
   x171.fork('hook')
   x167.save('wait', false)
   x166.save('call', function(label){
-    console.group(label)
+    x13.group(x62)
   })
   const x182 = x2.fork('group-collapsed')
   const x183 = x182.fork('base')
@@ -946,7 +946,7 @@ base.bind('@drumwork/dock/code/javascript/console', file => {
   x187.fork('hook')
   x183.save('wait', false)
   x182.save('call', function(label){
-    console.groupCollapsed(label)
+    x13.groupCollapsed(x62)
   })
   const x198 = x2.fork('group-end')
   const x199 = x198.fork('base')
@@ -975,7 +975,7 @@ base.bind('@drumwork/dock/code/javascript/console', file => {
   x201.fork('hook')
   x199.save('wait', false)
   x198.save('call', function(){
-    console.groupEnd()
+    x13.groupEnd()
   })
   const x207 = x2.fork('info')
   const x208 = x207.fork('base')
@@ -1046,7 +1046,7 @@ base.bind('@drumwork/dock/code/javascript/console', file => {
   x214.fork('hook')
   x208.save('wait', false)
   x207.save('call', function(obj1, msg, subst1){
-    console.info(obj1, msg, subst1)
+    x13.info(x4, x5, x6)
   })
   const x235 = x2.fork('log')
   const x236 = x235.fork('base')
@@ -1089,7 +1089,7 @@ base.bind('@drumwork/dock/code/javascript/console', file => {
   x240.fork('hook')
   x236.save('wait', false)
   x235.save('call', function(message){
-    console.log(message)
+    x13.log(x274)
   })
   const x251 = x2.fork('table')
   const x252 = x251.fork('base')
@@ -1146,7 +1146,7 @@ base.bind('@drumwork/dock/code/javascript/console', file => {
   x257.fork('hook')
   x252.save('wait', false)
   x251.save('call', function(data, columns){
-    console.table(data, columns)
+    x13.table(x293, x294)
   })
   const x273 = x2.fork('time')
   const x274 = x273.fork('base')
@@ -1189,7 +1189,7 @@ base.bind('@drumwork/dock/code/javascript/console', file => {
   x278.fork('hook')
   x274.save('wait', false)
   x273.save('call', function(label){
-    console.time(label)
+    x13.time(x62)
   })
   const x289 = x2.fork('time-end')
   const x290 = x289.fork('base')
@@ -1232,7 +1232,7 @@ base.bind('@drumwork/dock/code/javascript/console', file => {
   x294.fork('hook')
   x290.save('wait', false)
   x289.save('call', function(label){
-    console.timeEnd(label)
+    x13.timeEnd(x62)
   })
   const x305 = x2.fork('time-log')
   const x306 = x305.fork('base')
@@ -1275,7 +1275,7 @@ base.bind('@drumwork/dock/code/javascript/console', file => {
   x310.fork('hook')
   x306.save('wait', false)
   x305.save('call', function(label){
-    console.timeLog(label)
+    x13.timeLog(x62)
   })
   const x321 = x2.fork('trace')
   const x322 = x321.fork('base')
@@ -1318,7 +1318,7 @@ base.bind('@drumwork/dock/code/javascript/console', file => {
   x326.fork('hook')
   x322.save('wait', false)
   x321.save('call', function(any){
-    console.trace(any)
+    x13.trace(x373)
   })
   const x337 = x2.fork('warn')
   const x338 = x337.fork('base')
@@ -1389,7 +1389,7 @@ base.bind('@drumwork/dock/code/javascript/console', file => {
   x344.fork('hook')
   x338.save('wait', false)
   x337.save('call', function(obj1, msg, subst1){
-    console.warn(obj1, msg, subst1)
+    x13.warn(x4, x5, x6)
   })
 })
 
@@ -1434,7 +1434,7 @@ base.bind('@drumwork/base/code/dock/browser', file => {
   x7.fork('hook')
   x5.save('wait', false)
   x4.save('call', function(){
-    return rise-base.make()
+    return x6.make()
   })
   const x18 = x3.fork('make')
   const x19 = x18.fork('base')
@@ -1485,7 +1485,7 @@ base.bind('@drumwork/base/code/dock/browser', file => {
   x23.fork('hook')
   x19.save('wait', false)
   x18.save('call', function(type){
-    return rise-make.make(type)
+    return x24.make(x23)
   })
   const x39 = x3.fork('bind-view')
   const x40 = x39.fork('base')
@@ -1547,7 +1547,7 @@ base.bind('@drumwork/base/code/dock/browser', file => {
   x45.fork('hook')
   x40.save('wait', false)
   x39.save('call', function(list, base){
-    rise-mesh.bind(list, base)
+    x49.bind(x47, x48)
   })
   const x64 = x3.fork('draw-view')
   const x65 = x64.fork('base')
@@ -1595,7 +1595,7 @@ base.bind('@drumwork/base/code/dock/browser', file => {
   x69.fork('hook')
   x65.save('wait', false)
   x64.save('call', function(mesh){
-    rise-mesh.draw(mesh)
+    x49.draw(x77)
   })
   const x83 = x3.fork('create-mesh')
   const x84 = x83.fork('base')
@@ -1646,7 +1646,7 @@ base.bind('@drumwork/base/code/dock/browser', file => {
   x88.fork('hook')
   x84.save('wait', false)
   x83.save('call', function(view){
-    return rise-mesh.createMesh(view)
+    return x49.createMesh(x99)
   })
   file.bind(() => {
     x104 = x1.read('task', 'require', 'call')
@@ -1696,7 +1696,7 @@ base.bind('@drumwork/dock/code/javascript/module', file => {
   x9.fork('hook')
   x4.save('wait', false)
   x3.save('call', function(path){
-    return require(path)
+    return require(x3)
   })
 })
 
