@@ -7,7 +7,7 @@ module.exports = mintTask
 mintTask.mintCall = mintCall
 
 function mintTask(base) {
-  const name = findName(base)
+  const name = base[0].link[0].term
   const task = {
     form: 'task',
     name,
@@ -15,19 +15,20 @@ function mintTask(base) {
     zone: [],
     wait: false,
   }
-  base.link.slice(1).forEach(base => {
-    switch (base.name) {
+  base.slice(1).forEach(base => {
+    const term = base.link[0]
+    switch (term.term) {
       case 'base':
-        task.base.push(mintBase(base))
+        task.base.push(mintBase(base.link.slice(1)))
         break
       case 'host':
-        task.zone.push(mintHost(base))
+        task.zone.push(mintHost(base.link.slice(1)))
         break
       case 'turn':
-        task.zone.push(mintTurn(base))
+        task.zone.push(mintTurn(base.link.slice(1)))
         break
       case 'call':
-        task.zone.push(mintCall(base))
+        task.zone.push(mintCall(base.link.slice(1)))
         break
       case 'wait':
         task.wait = true
@@ -38,7 +39,7 @@ function mintTask(base) {
 }
 
 function mintCall(base) {
-  const name = findName(base)
+  const name = base[0].link[0].term
 
   const call = {
     form: `call`,
@@ -49,22 +50,23 @@ function mintCall(base) {
     hook: [],
   }
 
-  base.link.slice(1).forEach(base => {
-    switch (base.name) {
+  base.slice(1).forEach(base => {
+    const term = base.link[0]
+    switch (term.term) {
       case `bind`:
-        const bind = mintBind(base)
+        const bind = mintBind(base.link.slice(1))
         call.bind.push(bind)
         break
       case `hook`:
-        const hook = mintHook(base)
+        const hook = mintHook(base.link.slice(1))
         call.hook.push(hook)
         break
       case `save`:
-        const save = mintCallSave(base)
+        const save = mintCallSave(base.link.slice(1))
         call.zone.push(save)
         break
       case `turn`:
-        const turn = mintCallTurn(base)
+        const turn = mintCallTurn(base.link.slice(1))
         call.zone.push(turn)
         break
       case `wait`:
@@ -77,8 +79,8 @@ function mintCall(base) {
 }
 
 function mintBase(base) {
-  const name = findName(base)
-  const sift = base.link[1] && mintSift(base.link[1])
+  const name = base[0].link[0].term
+  const sift = base[1]
   // just mint it into complete match tree just in case.
   const b = {
     form: 'task-base',
@@ -133,8 +135,8 @@ function mintHook(base) {
 }
 
 const mintBind = b => {
-  const name = findName(b)
-  const sift = b.link[1].name === 'task' ? mintTask(b.link[1]) : mintSift(b.link[1])
+  const name = b[0].link[0].term
+  const sift = b[1]
   const bind = {
     form: `bind`,
     name,
@@ -154,7 +156,7 @@ function mintTurn(base) {
 }
 
 function mintCallTurn(base) {
-  const name = findName(base)
+  const name = base[0].link[0].term
   return {
     form: `call-turn`,
     name
@@ -162,7 +164,7 @@ function mintCallTurn(base) {
 }
 
 function mintCallSave(base) {
-  const nest = mintNest(base.link[0])
+  const nest = base[0].link[0]
   const zone = {
     form: `call-save`,
     nest

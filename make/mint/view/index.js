@@ -7,7 +7,7 @@ const mintTask = require('../task')
 module.exports = mintView
 
 function mintView(base) {
-  const name = findName(base)
+  const name = base[0].link[0].term
   const view = {
     form: 'view',
     name,
@@ -17,28 +17,29 @@ function mintView(base) {
     zone: [],
     task: [],
   }
-  base.link.slice(1).forEach(base => {
-    switch (base.name) {
+  base.slice(1).forEach(base => {
+    const term = base.link[0]
+    switch (term.term) {
       case 'base':
-        view.base.push(mintBase(base))
+        view.base.push(mintBase(base.link.slice(1)))
         break
       case 'host':
-        view.zone.push(mintHost(base))
+        view.zone.push(mintHost(base.link.slice(1)))
         break
       case 'call':
-        view.zone.push(mintCall(base))
+        view.zone.push(mintCall(base.link.slice(1)))
         break
       case 'task':
-        view.task.push(mintTask(base))
+        view.task.push(mintTask(base.link.slice(1)))
         break
       case 'test':
-        view.zone.push(mintTest(base))
+        view.zone.push(mintTest(base.link.slice(1)))
         break
       case 'walk':
-        view.zone.push(mintWalk(base))
+        view.zone.push(mintWalk(base.link.slice(1)))
         break
       case 'mesh':
-        view.zone.push(mintMesh(base))
+        view.zone.push(mintMesh(base.link.slice(1)))
         break
     }
   })
@@ -46,7 +47,7 @@ function mintView(base) {
 }
 
 function mintMesh(base) {
-  const name = findName(base)
+  const name = base[0].link[0].term
 
   const mesh = {
     form: 'mesh',
@@ -57,28 +58,29 @@ function mintMesh(base) {
     hook: []
   }
 
-  base.link.slice(1).forEach(base => {
-    switch (base.name) {
+  base.slice(1).forEach(base => {
+    const term = base.link[0]
+    switch (term.term) {
       case 'bind':
-        mesh.bind.push(mintBind(base))
+        mesh.bind.push(mintBind(base.link.slice(1)))
         break
       case 'vibe':
-        mesh.vibe.push(mintVibe(base))
+        mesh.vibe.push(mintVibe(base.link.slice(1)))
         break
       case 'hook':
-        mesh.hook.push(mintHook(base))
+        mesh.hook.push(mintHook(base.link.slice(1)))
         break
       case 'mesh':
-        mesh.zone.push(mintMesh(base))
+        mesh.zone.push(mintMesh(base.link.slice(1)))
         break
       case 'task':
-        mesh.task.push(mintTask(base))
+        mesh.task.push(mintTask(base.link.slice(1)))
         break
       case 'test':
-        mesh.zone.push(mintTest(base))
+        mesh.zone.push(mintTest(base.link.slice(1)))
         break
       case 'walk':
-        mesh.zone.push(mintWalk(base))
+        mesh.zone.push(mintWalk(base.link.slice(1)))
         break
     }
   })
@@ -87,7 +89,7 @@ function mintMesh(base) {
 }
 
 function mintVibe(base) {
-  const name = findName(base)
+  const name = base[0].link[0].term
 
   const vibe = {
     form: 'vibe',
@@ -96,13 +98,14 @@ function mintVibe(base) {
     hook: []
   }
 
-  base.link.slice(1).forEach(base => {
-    switch (base.name) {
+  base.slice(1).forEach(base => {
+    const term = base.link[0]
+    switch (term.term) {
       case 'bind':
-        vibe.bind.push(mintBind(base))
+        vibe.bind.push(mintBind(base.link.slice(1)))
         break
       case 'hook':
-        vibe.hook.push(mintHook(base))
+        vibe.hook.push(mintHook(base.link.slice(1)))
         break
     }
   })
@@ -137,7 +140,7 @@ function mintTest(base) {
 }
 
 function mintCall(base) {
-  const name = findName(base)
+  const name = base[0].link[0].term
 
   const call = {
     form: `call`,
@@ -148,22 +151,23 @@ function mintCall(base) {
     hook: [],
   }
 
-  base.link.slice(1).forEach(base => {
-    switch (base.name) {
+  base.slice(1).forEach(base => {
+    const term = base.link[0]
+    switch (term.term) {
       case `bind`:
-        const bind = mintBind(base)
+        const bind = mintBind(base.link.slice(1))
         call.bind.push(bind)
         break
       case `hook`:
-        const hook = mintHook(base)
+        const hook = mintHook(base.link.slice(1))
         call.hook.push(hook)
         break
       case `save`:
-        const save = mintCallSave(base)
+        const save = mintCallSave(base.link.slice(1))
         call.zone.push(save)
         break
       case `turn`:
-        const turn = mintCallTurn(base)
+        const turn = mintCallTurn(base.link.slice(1))
         call.zone.push(turn)
         break
       case `wait`:
@@ -176,8 +180,8 @@ function mintCall(base) {
 }
 
 function mintBase(base) {
-  const name = findName(base)
-  const sift = base.link[1] && mintSift(base.link[1])
+  const name = base[0].link[0].term
+  const sift = base[1]
   // just mint it into complete match tree just in case.
   const b = {
     form: 'task-base',
@@ -199,29 +203,30 @@ function mintHost(base) {
 }
 
 function mintHook(base) {
-  const name = findName(base)
+  const name = base[0].link[0].term
   const zone = {
     form: `hook`,
     name,
     base: [],
     zone: []
   }
-  base.link.slice(1).forEach(base => {
-    switch (base.name) {
+  base.slice(1).forEach(base => {
+    const term = base.link[0]
+    switch (term.term) {
       case 'base':
-        const b = mintBase(base)
+        const b = mintBase(base.link.slice(1))
         zone.base.push(b)
         break
       case 'call':
-        const call = mintCall(base)
+        const call = mintCall(base.link.slice(1))
         zone.zone.push(call)
         break
       case 'save':
-        const save = mintSave(base)
+        const save = mintSave(base.link.slice(1))
         zone.zone.push(save)
         break
       case 'turn':
-        const turn = mintTurn(base)
+        const turn = mintTurn(base.link.slice(1))
         zone.zone.push(turn)
         break
       default:
@@ -232,8 +237,8 @@ function mintHook(base) {
 }
 
 const mintBind = b => {
-  const name = findName(b)
-  const sift = b.link[1].name === 'task' ? mintView(b.link[1]) : mintSift(b.link[1])
+  const name = b[0].link[0].term
+  const sift = b[1]
   const bind = {
     form: `bind`,
     name,

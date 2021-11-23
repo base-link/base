@@ -1,16 +1,15 @@
 
 const fs = require('fs')
 const muse = require('./muse')
-const readText = require('./read')
-const makeTree = require('./read/tree')
+const makeTree = require('@lancejpollard/link-parser.js')
 const mintDeckFile = require('./mint/file/deck')
 const mintCallFile = require('./mint/file/call')
 const mintTaskFile = require('./mint/file/task')
 const mintFormFile = require('./mint/file/form')
 const mintTestFile = require('./mint/file/test')
 const mintViewFile = require('./mint/file/view')
-const makeText = require('./text')
-const pathResolver = require('path')
+const makeText = require('./text/javascript')
+const makeRoad = require('./text/javascript/make')
 
 const MINT = {
   'dock-task-file': makeTaskFile,
@@ -28,14 +27,14 @@ function make(base, ROAD_TO_MINT, dock, compile) {
   load(deck[base], deck, ROAD_TO_MINT)
   muse(file)
   const text = makeText(file, deck)
-  save(dock, text)
-  if (compile) compile()
+  // save(dock, text)
+  // if (compile) compile()
 }
 
 function load(file, deck, ROAD_TO_MINT) {
   const roadList = makeRoad(file)
   file.loadList = []
-  roadList.forEach(road => {
+  roadList.forEach(({ road }) => {
     const [host, name, ...rest] = road.split('/')
     if (!deck[road]) {
       const mint = ROAD_TO_MINT[road]
@@ -49,35 +48,6 @@ function load(file, deck, ROAD_TO_MINT) {
   })
 }
 
-function makeRoad(file, list = []) {
-  file.load.forEach(load => {
-    makeLoadRoad(file.road, load, list)
-  })
-  return list
-}
-
-function makeLoadRoad(baseRoad, load, list) {
-  if (load.road.match(/^@/)) {
-    if (load.take.length) {
-      list.push(load.road)
-    } else {
-      const road = load.road
-      load.load.forEach(load => {
-        makeLoadRoad(road, load, list)
-      })
-    }
-  } else {
-    const road = pathResolver.join(baseRoad, load.road)
-    if (load.take.length) {
-      list.push(road)
-    } else {
-      load.load.forEach(load => {
-        makeLoadRoad(road, load, list)
-      })
-    }
-  }
-}
-
 function save(name, text) {
   if (!fs.existsSync(`load/${name}`)) {
     fs.mkdirSync(`load/${name}`)
@@ -88,8 +58,7 @@ function save(name, text) {
 function makeViewFile(road) {
   const [host, name, ...rest] = road.split('/')
   const text = readFile(`../${name}/${rest.join('/')}/base.link`)
-  const line = readText(text)
-  const tree = makeTree(line, road.replace(/\//g, '-'))
+  const tree = makeTree(text, road.replace(/\//g, '-'))
   const file = mintViewFile(road, tree)
   file.text = text
   return file
@@ -98,8 +67,7 @@ function makeViewFile(road) {
 function makeTestFile(road) {
   const [host, name, ...rest] = road.split('/')
   const text = readFile(`../${name}/${rest.join('/')}/base.link`)
-  const line = readText(text)
-  const tree = makeTree(line, road.replace(/\//g, '-'))
+  const tree = makeTree(text, road.replace(/\//g, '-'))
   const file = mintTestFile(road, tree)
   file.text = text
   return file
@@ -108,24 +76,21 @@ function makeTestFile(road) {
 function makeFormFile(road) {
   const [host, name, ...rest] = road.split('/')
   const text = readFile(`../${name}/${rest.join('/')}/base.link`)
-  const line = readText(text)
-  const tree = makeTree(line, road.replace(/\//g, '-'))
+  const tree = makeTree(text, road.replace(/\//g, '-'))
   const file = mintFormFile(road, tree)
   return file
 }
 
 function makeCallFile(road) {
   const text = readFile(`./${road}/base.link`)
-  const line = readText(text)
-  const tree = makeTree(line, road.replace(/\//g, '-'))
+  const tree = makeTree(text, road.replace(/\//g, '-'))
   const file = mintCallFile(road, tree)
 }
 
 function makeTaskFile(road) {
   const [host, name, ...rest] = road.split('/')
   const text = readFile(`../${name}/${rest.join('/')}/base.link`)
-  const line = readText(text)
-  const tree = makeTree(line, road.replace(/\//g, '-'))
+  const tree = makeTree(text, road.replace(/\//g, '-'))
   const file = mintTaskFile(road, tree)
   return file
 }
