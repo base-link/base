@@ -1,4 +1,0 @@
-
-function mintDeck(base) {
-
-}
