@@ -1,6 +1,0 @@
-
-load @drumwork/base
-  take task test
-
-hook test
-  task test

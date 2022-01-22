@@ -1,0 +1,46 @@
+
+load @drumwork/dock/code/javascript/console
+  take task log
+load @drumwork/base/code/dock/browser
+  take task make-base
+  take task bind-view
+  take task draw-view
+load @drumwork/base/code/dock/browser
+  take task make
+
+task mount-example-view
+  save b
+    call make-base
+  save frag
+    call make
+      bind type, loan view example
+  call log
+    bind message, loan frag
+  call bind-view
+    bind list, loan frag
+    bind base, loan b
+  call draw-view
+    bind mesh, loan frag
+  call log
+    bind message, text <done>
+
+view check
+  mesh header
+    mesh h2
+      bind text, text <foo bar>
+    mesh div
+      mesh h3
+        bind text, text <another>
+
+view example
+  mesh h1
+    bind fill, text <#ff0000>
+    bind text-fill, text <white>
+    bind text, text <hello world>
+    vibe hover
+      bind fill, text <#00ff00>
+    hook click
+      base event
+      call log
+        bind message, link event
+  mesh check

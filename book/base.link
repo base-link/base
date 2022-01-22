@@ -1,0 +1,71 @@
+
+name <The Base Book>
+face <Lance Pollard>
+term <Link Text>
+term <Compiler>
+mark <0.0.1>
+note <abstract>
+
+fuse ./head
+fuse ./code
+fuse ./tree
+fuse ./mesh
+fuse ./back
+
+There is a `want` type, which is the result of side-effectful computations. You then check the want.value to get the result, which could be an exception or a value, or a waiting thing, or something else. Or a lead. A lead is the result you get back which you can unpack.
+
+So you have the lead and the loan (borrow) or the host (owner). These govern side effects and mutable changes to state.
+
+The type inference flows through scope changes, so when you go through an if-statement, you extend the current scope into a new scope in the tree/branch. This tells you the typinig environment and what your type might be at that time.
+
+The slot is the pointer (index or address, and value or object).
+
+So the I/O functions return leads. You can halt on any specific point.
+
+It can also turn fall or throw an error.
+
+turn fall is throwing an error
+turn back is returning value
+seed back is like yielding to a function
+
+A mesh is a base object. A blob is a generic value.
+
+The fork line/tree is the lexical scope.
+The call line is the current trace of calls.
+
+The fork line is as follows:
+
+- base
+- file
+- task/form
+- stem (branch in logic)
+
+The lead is the result of side effect computation.
+
+task x
+  wait bond (is async)
+
+  fork call
+    Creates a new scope.
+
+zone x
+  view button
+
+A zone is a component.
+
+task x
+  link y
+  link z
+
+form x
+  link y
+  link z
+
+Convert the docs to markdown.
+
+option type
+maybe type
+any type
+
+https://papl.cs.brown.edu/2015/Type_Inference.html
+https://www.infoq.com/articles/java-local-variable-type-inference/

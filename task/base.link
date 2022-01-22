@@ -1,0 +1,7 @@
+
+load @drumwork/base
+  load /work/task/make
+    take task make
+
+hook make
+  task make

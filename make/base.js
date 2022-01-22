@@ -7,6 +7,7 @@ const COMMAND = [
   {
     entry: 'make link',
     title: `Convert JavaScript to Link Text`,
+    does: makeLink,
     options: [
       {
         key: 'input',
@@ -25,6 +26,7 @@ const COMMAND = [
   {
     entry: 'make',
     title: `Compile Link Text to JavaScript`,
+    does: makeJS,
     options: [
       {
         key: 'output',
@@ -82,4 +84,12 @@ function printUsage() {
   for (const command of COMMAND) {
 
   }
+}
+
+function makeLink() {
+
+}
+
+function makeJS() {
+
 }

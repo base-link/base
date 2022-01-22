@@ -1,0 +1,91 @@
+
+head <Part 3: The Mesh>
+  flow <Here we describe how the system works internally.>
+  fuse ./browser
+  fuse ./node
+  fuse ./ios
+  fuse ./macos
+  fuse ./linux
+  fuse ./android
+
+All properties are immutable in tasks by default. To make them mutable, add {code <lock free>} to the case definition.
+
+- work: The main app logic.
+- host: The main server.
+- face: The frontend app.
+- head: The CLI.
+- task: Project commands.
+- bind: Settings and configuration.
+- dock: Platform specific bindings.
+- mint: Mapping file patterns to file object constructors.
+- read: Documentation
+- make: Build outputs.
+- hook: Entrypoint
+
+Each test.link file is for running tests.
+
+lock free (mutable)
+move (shift)
+loan (borrow)
+read (clone)
+link (any of these)
+
+fork for this scope
+fork/head for parent
+fork/form for form
+
+case is a variable
+
+Everything is a work (task and form).
+
+A base is a record with links.
+
+A deed is a call instance.
+
+- cast
+  - form: A work of art
+  - task: To do work
+- call
+  - hook
+  - sift
+  - link
+  - make
+  - save
+- test
+- file
+  - load
+- deck
+- home
+- dock
+- base
+- mesh
+- mint
+  - mine
+  - mill
+  - file
+  - tree
+- lace
+  - file
+  - tree
+- feed
+- hook
+  - make
+  - head
+  - face
+- leaf
+- show
+- view
+- look
+- tree
+- book
+- work
+
+A site is a node in the graph.
+
+band tool
+  test <Log to console>
+    show <hello world>
+    find console-had-log
+      bind text, text <hello world>
+
+The band is for grouping tests into suites.

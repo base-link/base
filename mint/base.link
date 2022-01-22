@@ -1,0 +1,10 @@
+
+load @drumwork/mesh
+  take mint test-file
+  take mint task-file
+
+walk ./**/test.link
+  mint test-file
+
+walk ./task/**/base.link
+  mint task-file

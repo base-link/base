@@ -1,0 +1,32 @@
+
+head <Part 3: The Tree>
+  fuse ./deck-tree
+  fuse ./rise-tree
+  fuse ./door-tree
+  fuse ./line-tree
+  fuse ./form-tree
+  fuse ./task-tree
+  fuse ./call-tree
+  fuse ./dock-tree
+  fuse ./bind-tree
+  fuse ./mine-text-tree
+  fuse ./mill-text-tree
+  fuse ./mine-tree-tree
+  fuse ./mill-tree-tree
+  fuse ./mint-tree
+  fuse ./lace-text-tree
+  fuse ./lace-tree-tree
+  fuse ./seed-tree
+  fuse ./find-tree
+  fuse ./feed-tree
+  fuse ./list-tree
+  fuse ./view-tree
+  fuse ./look-tree
+  fuse ./move-tree
+  fuse ./leaf-tree
+  fuse ./show-tree
+  fuse ./face-tree
+  fuse ./tree-text-tree
+  fuse ./rule-tree
+  fuse ./book-tree
+  fuse ./cast-tree

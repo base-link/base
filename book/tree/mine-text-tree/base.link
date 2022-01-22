@@ -1,0 +1,44 @@
+The mine-form references a separate form or "class" to replace it with.
+
+The mine-list is a chain, which iterates over values in the text.
+
+mine list
+  bind base, mark 2
+  bind head, mark 4
+  mine text, text <x>
+
+The mine-miss is like a sieve, allowing optional match of content.
+
+mine miss
+  mine text, text <x>
+
+The mine-head is like matching the first match.
+
+mine head
+  mine text, text <x>
+  mine text, text <y>
+  mine text, text <z>
+
+The call is a type of zone for the mine. It calls a function for the input.
+
+The mine-text is for matching exact text, which can be code for symbols, cord for strings, and mark for numbers.
+
+mine text, text <x>
+mine text, mark 123
+mine text, code #h123
+mine text, link x
+
+The mine-test is for checking if a value fits certain constraints, and if so, it executes the parser for that branch.
+
+mine test, test test-is-equal
+  bind base, link x
+  bind head, link y
+  mine ...
+
+The mine-band is for clipping a range of values.
+
+The mine-mark is for specifying a specific number of things.
+
+Write each one in isolation for testing, then combine them in the end.
+
+Then mine-slab is a block.

@@ -1,5 +1,0 @@
-
-load @drumwork/base
-  take task make
-
-call make

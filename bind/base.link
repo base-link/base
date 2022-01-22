@@ -1,0 +1,11 @@
+
+Tree of settings.
+
+bind tint
+  bind fall, term black
+  bind fear, term red
+  bind tell, term yellow
+  bind calm, term blue
+  bind land, term green
+  bind seek, term purple
+  bind rise, term white

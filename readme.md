@@ -13,7 +13,7 @@
 
 <h3 align='center'>base</h3>
 <p align='center'>
-  The Link Script Compiler
+  The Link Text Compiler
 </p>
 
 <p align='center'>
@@ -38,19 +38,21 @@ Here are a few examples from existing code. The first is how you might define a 
 
 A package definition:
 
-```
-deck @drumwork/base
-  head <Link Script Compiler>
-  make <Link Script>
-  make <Computation>
-  make <Philosophy>
-  make <Information>
-  make <Platform>
-  make <White Label>
-  team <Lance Pollard>, site <lp@elk.fm>
-  hook ./hook
-  read ./read
-  term <Apache 2.0>
+```link
+name @drumwork/base
+head <Link Text Compiler>
+make <Link Text>
+make <Computation>
+make <Philosophy>
+make <Information>
+make <Platform>
+make <White Label>
+face <Lance Pollard>, site <lp@elk.fm>
+mark <0.0.1>
+dock head
+dock task
+read book
+term <Apache 2.0>
 ```
 
 The first block of the Tao Te Ching:
@@ -506,7 +508,7 @@ You can write code or data in the same way. The key is figuring out the right DS
 
 ### License
 
-Copyright 2021 <a href='https://drum.work'>DrumWork</a>
+Copyright 2021-2022 <a href='https://drum.work'>DrumWork</a>
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -523,17 +525,3 @@ limitations under the License.
 ### DrumWork
 
 This is being developed by the folks at [DrumWork](https://drum.work), a California-based project for helping humanity master information and computation. DrumWork started off in the winter of 2008 as a spark of an idea, to forming a company 10 years later in the winter of 2018, to a seed of a project just beginning its development phases. It is entirely bootstrapped by working full time and running [Etsy](https://etsy.com/shop/mountbuild) and [Amazon](https://www.amazon.com/s?rh=p_27%3AMount+Build) shops. Also find us on [Facebook](https://www.facebook.com/drumworkteam), [Twitter](https://twitter.com/drumworkteam), and [LinkedIn](https://www.linkedin.com/company/drumworkteam). Check out our other GitHub projects as well!
-
-<br/>
-<br/>
-
-<p align='center'>
-  <em>From Mount you find the Stone, reaching to the Cloud.<br/>
-  No where on Earth do you feel the power of Nature all around.<br/>
-  With the Cloud so close, you can see, touch, and taste.<br/>
-  Feeding your energy to the Stone with haste.<br/>
-  Mount holds it shape, like the secret ball.</em>
-</p>
-
-<br/>
-<br/>

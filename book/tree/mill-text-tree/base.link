@@ -1,0 +1,57 @@
+The head for the mill is just like a normal input value.
+
+mill boolean
+  head text
+
+The call for a mill is just like a normal call.
+
+mill boolean
+  call parse-string-to-boolean
+    bind text, <123>
+    turn base
+
+The turn for a call is for returning a value, turning around and giving the value.
+
+mill string
+  turn seed, link symbol
+
+The seed turn is the standard return variable name.
+
+The save is for defining a variable.
+
+mill string
+  save symbol
+
+The mill-test is a checker which if conditionally true will resolve the branched milles.
+
+mill x
+  test test-mesh
+    bind base, link text
+    bind head, text <->
+    hook mesh
+      save minus, link true
+
+Nested milles work as expected, they all possibly get evaluated as they get found.
+
+mill x
+  mill exponent
+    mill sign
+    mill integer
+
+The make is just like a normal make, building an object.
+
+mill object
+  make object
+    save object
+
+The line zone is for concatenating an array.
+
+mill array
+  mill value, form value
+    line item
+
+The mill-form is for referencing other milles.
+
+mill value
+  mill string, form string
+    turn seed
