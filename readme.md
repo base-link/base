@@ -7,10 +7,6 @@
 <br/>
 <br/>
 
-<p align='center'>
-  <img src='https://github.com/baselinkteam/link/blob/work/look/dock.png?raw=true' height='128'/>
-</p>
-
 <h3 align='center'>base</h3>
 <p align='center'>
   The Link Text Compiler
