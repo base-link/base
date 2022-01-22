@@ -35,20 +35,20 @@ Here are a few examples from existing code. The first is how you might define a 
 A package definition:
 
 ```link
-name @drumwork/base
-head <Link Text Compiler>
-make <Link Text>
-make <Computation>
-make <Philosophy>
-make <Information>
-make <Platform>
-make <White Label>
-face <Lance Pollard>, site <lp@elk.fm>
-mark <0.0.1>
-dock head
-dock task
-read book
-term <Apache 2.0>
+deck @drumwork/base
+  head <Link Text Compiler>
+  make <Link Text>
+  make <Computation>
+  make <Philosophy>
+  make <Information>
+  make <Platform>
+  make <White Label>
+  face <Lance Pollard>, site <lp@elk.fm>
+  mark <0.0.1>
+  dock head
+  dock task
+  read book
+  term <Apache 2.0>
 ```
 
 The first block of the Tao Te Ching:
