@@ -1,7 +1,0 @@
-
-form rise
-form fall
-
-form sink
-  case rise
-  case fall

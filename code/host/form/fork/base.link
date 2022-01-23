@@ -1,6 +1,0 @@
-
-form fork
-  note <Scope>
-  base base, form fork
-  base head, list fork
-  base task, form task

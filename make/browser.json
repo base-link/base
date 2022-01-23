@@ -1,0 +1,24 @@
+{
+  "files": [
+    { "path": "../test/dock/browser", "type": "test-file" },
+    { "path": "../test/view/example", "type": "view-file" },
+    { "path": "../test/task", "type": "task-file" },
+    { "path": "../test/task/view", "type": "task-file" },
+    { "path": "../code/javascript/error", "type": "dock-task-file" },
+    { "path": "../code/javascript/string", "type": "dock-task-file" },
+    { "path": "../code/javascript/base", "type": "dock-task-file" },
+    { "path": "../code/javascript/console", "type": "dock-task-file" },
+    { "path": "../code/javascript/number", "type": "dock-task-file" },
+    { "path": "../code/javascript/object", "type": "dock-task-file" },
+    { "path": "../code/javascript/promise", "type": "dock-task-file" },
+    { "path": "../code/javascript/module", "type": "dock-task-file" },
+    { "path": "../code/host/form/bind", "type": "form-file" },
+    { "path": "../code/host/form/term", "type": "form-file" },
+    { "path": "../code/host/form/sift", "type": "form-file" },
+    { "path": "../code/host/form/call", "type": "form-file" },
+    { "path": "../code/host/form/task", "type": "form-file" },
+    { "path": "../code/host/form/link", "type": "form-file" },
+    { "path": "../code/dock/browser", "type": "dock-task-file" }
+  ],
+  "entry": "../test/dock/browser"
+}

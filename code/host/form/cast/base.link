@@ -1,7 +1,0 @@
-
-form cast
-  base road, form text
-  base mark, form mark
-  base sort, form term
-  base head, list head
-  base blob, form code

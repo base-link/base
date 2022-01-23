@@ -1,9 +1,0 @@
-
-load ../form
-  take form form
-
-form list
-  head seat, form form
-  base size, form size
-  base base, link form, link seat
-  base head, link form, link seat
