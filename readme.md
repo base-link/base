@@ -220,7 +220,7 @@ load /an-absolute/other/path.js
 
 That is, they are just special strings. You can interpolate on them like strings as well with square brackets.
 
-### Mesh Type System
+### Base Type System
 
 Every object in the system is a mesh, a graphical node so to speak, with links and sites.
 
