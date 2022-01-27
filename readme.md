@@ -359,7 +359,7 @@ task find-fibonacci-via-loop
 
 #### Call
 
-Tasks get applied with the call cast.
+Tasks get applied with the call form.
 
 ```link
 call check-gt
@@ -374,6 +374,87 @@ Calls automatically return a value without anything, but you can also return exp
 ```
 turn back, text 0
 ```
+
+#### Make
+
+The make is the mesh constructor.
+
+```link
+make bind
+  bind term, link term
+  bind term, link term
+```
+
+### Custom DSLs
+
+You can build your own DSLs by defining a mine, mill, and mint which combines the two.
+
+#### Mine
+
+A mine is a parser. There are two types of mines by default, the text mine (which parses text/bits) and the tree mine (which parses the trees of terms). The tree of terms that you get initially is passed through the mine, and matched with a mill, to get the final mesh.
+
+```link
+mine bind
+  mine term, term bind
+    mine term
+      take name
+    mine room
+      make case
+        mine form, form sift
+          take sift
+```
+
+#### Mill
+
+The mill takes the streaming output from the mine, and converts it into mesh.
+
+```link
+mill bind
+  mill term
+    save term
+  mill sift
+    mill text
+      save sift
+    mill link
+      mill road
+        base seed
+        make link
+          bind road, link seed
+          save sift
+    mill move
+      mill road
+        base seed
+        make move
+          bind road, link seed
+          save sift
+    mill read
+      mill road
+        base seed
+        make read
+          bind road, link seed
+          save sift
+    mill loan
+      mill road
+        base seed
+        make loan
+          bind road, link seed
+          save sift
+    mill make, form make
+      save sift
+    mill call, form call
+      save sift
+    mill task, form task
+      save sift
+    mill task, form form
+      save sift
+  make bind
+    bind term, link term
+    bind term, link term
+```
+
+To construct your own DSLs, you simply define a mine which parses the term tree (following the example mines for inspiration), and define a mill to convert the mines parsings into mesh.
+
+This gives us a way to transform text content to trees to meshes, and verify the transformation is correct.
 
 ### License
 
