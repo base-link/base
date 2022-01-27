@@ -224,6 +224,10 @@ That is, they are just special strings. You can interpolate on them like strings
 
 Every object in the system is a mesh, a graphical node so to speak, with links and sites.
 
+Each mesh is given a mark, which is an ID relative to the organization, package, file, and type in which the record sits.
+
+#### Ownership
+
 These objects are owned (ownership types / affine types), and references are passed around in a structured way.
 
 ```link
@@ -231,6 +235,13 @@ save x, text 10 # create
 save y, move x # move
 save z, loan y # borrow
 save w, read z # copy
+```
+
+Every variable is immutable by default, but you can specify it as mutable.
+
+```link
+save x, text 10
+  lock free
 ```
 
 #### Cast
@@ -357,6 +368,12 @@ task find-fibonacci-via-loop
   turn back, move g
 ```
 
+Tasks can be nested, creating each their own lexical scope.
+
+#### Fork
+
+The lexical scope (the "visible" scope, what you see when you look at the code) is called a fork. The forks form a stack, and their evolution forms a tree. These can be directly accessed at various places in the compiled term set. They can be accessed inside form definitions, as well as inside tasks.
+
 #### Call
 
 Tasks get applied with the call form.
@@ -426,6 +443,10 @@ load ../..
     take form read
     take form loan
 ```
+
+#### Lead
+
+A lead is returned when there is a potential error or value as options.
 
 #### File
 
@@ -519,6 +540,12 @@ mill bind
 To construct your own DSLs, you simply define a mine which parses the term tree (following the example mines for inspiration), and define a mill to convert the mines parsings into mesh.
 
 This gives us a way to transform text content to trees to meshes, and verify the transformation is correct.
+
+Don't consider the trees of terms and the resulting objects as really an inflexible syntax which defines opaque objects and types. These are simple data structures encoding object trees and graphs, not like functional languages. So you are free to "compile" the object to create and run computation however you see fit, which gives you great ability.
+
+### Project Cleanliness
+
+Parentheses are always avoided in our base style. All files are named `base.link` inside of a folder, along with an optional `test.link` test file. Certain folder collections are standard, like Ruby on Rails.
 
 ### License
 
