@@ -367,6 +367,32 @@ call check-gt
   bind head, text 0
 ```
 
+You can specify that the call is async with `wait`:
+
+```link
+call check-gt-async
+  wait rise
+  bind base, loan i
+  bind head, text 0
+```
+
+Likewise, you can define `wait` on the task to say that it is async.
+
+#### Hook
+
+Calls can be streams or loops, which emit events. This is implemented with `hook`.
+
+```link
+call if
+  hook test
+    call is-boolean
+      bind x, loan y
+  hook match
+    ...
+  hook fail
+    ...
+```
+
 #### Turn
 
 Calls automatically return a value without anything, but you can also return explicity.
