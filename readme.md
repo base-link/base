@@ -28,7 +28,7 @@
 
 Link Script is a little more than a markup language, tending toward a programming language. In fact, it can be used for a programming language. It is a way to model information and computation in an easy to read and write format, suitable for hierarchical note taking and other means of capturing data down into structured form.
 
-### Examples
+### Example
 
 Here are a few examples from existing code. The first is how you might define a "stack" (a "package" of Link code). The second is the first part of the Tao Te Ching captured in a tree, and the third how you might write a simple fibonacci function either iteratively or recursively. These examples are DSLs designed for a specific purposes. As you will see in the syntax section, the Link language is independent of a DSL and simply defines some simple idioms for defining trees of code and text.
 
@@ -53,7 +53,7 @@ deck @drumwork/base
 
 The first block of the Tao Te Ching:
 
-```
+```link
 head <道德经>
   head <第一章>
     text <道可道，非恆道；>
@@ -68,58 +68,9 @@ head <道德经>
     text <玄之又玄，眾妙之門。>
 ```
 
-And the fibonacci functions:
-
-```
-task find-fibonacci-via-loop
-  base i
-
-  host g, size 0
-  host o, size 1
-  host d
-
-  call walk
-    hook link
-      save d, link o
-      call add
-        bind base, link g
-        bind head, link d
-        save o
-      save g, link d
-      call decrement
-        bind integer, link i
-        save i
-
-  turn seed, link g
-
-task find-fibonacci-via-recursion
-  base i
-  base g, base 0
-  base o, base 1
-
-  test miss
-    bind blob, link i
-    hook like
-      turn seed, link g
-    hook miss
-      call subtract
-        bind base, link i
-        bind head, text 1
-        save d
-      call add
-        bind base, link o
-        bind head, link g
-        save t
-      call find-fibonacci-via-recursion
-        bind i, link d
-        bind g, link o
-        bind o, link t
-        turn seed
-```
-
 Now we will go into the actual specification of the syntax.
 
-### Syntax
+### Link Text Syntax
 
 The Link specification language is a minimal markup language that is transformable into code. It has the following syntax.
 
@@ -127,54 +78,17 @@ The Link specification language is a minimal markup language that is transformab
 
 The first thing to cover are _terms_. They are composed of _words_, separated by dashes, into what are called _keys_. A word is composed of lowercase ascii letters or numbers. So the following are all keys of a term.
 
-```
+```link
 xo
 hello-world
 foo-bar-baz
 ```
 
-They get compiled into objects, such as this one:
+You can nest them arbitrarily into trees. These are all trees.
 
-```json
-{
-  "type": "term",
-  "name": "hi"
-}
-```
-
-
-You can nest them arbitrarily into trees, and there are no rules on what can be nested into what else. You can nest whatever you need to do model your data in a nice and clean DSL.
-
-A more complex example is:
-
-```
+```link
 hello world
-```
-
-Getting compiled to:
-
-```json
-{
-  "type": "term",
-  "name": "hello",
-  "children": [
-    {
-      "type": "term",
-      "name": "world"
-    }
-  ]
-}
-```
-
-You can go as far as you want:
-
-```
 this is a tree
-```
-
-That is the same thing as this:
-
-```
 this
   is
     a
@@ -183,13 +97,13 @@ this
 
 You can write multiple nodes on a line separated by comma:
 
-```
+```link
 this is, also a tree, and a tree
 ```
 
 The same as:
 
-```
+```link
 this is
   also
     a tree
@@ -198,13 +112,13 @@ this is
 
 You can put things in parentheses too to make it easier to write on one line:
 
-```
+```link
 add(a, subtract(b, c))
 ```
 
 The same as:
 
-```
+```link
 add a, subtract b, c
 ```
 
@@ -212,33 +126,9 @@ add a, subtract b, c
 
 You can use numbers in the system too:
 
-```
+```link
 add 1, 2
-```
-
-Which is compiled to:
-
-```json
-{
-  "type": "term",
-  "name": "add",
-  "children": [
-    {
-      "type": "number",
-      "value": 1
-    },
-    {
-      "type": "number",
-      "value": 2
-    }
-  ]
-}
-```
-
-A more complex example would be:
-
-```
-add 1, subtract 2, 3
+add 1, subtract -2, 3
 ```
 
 #### Templates
@@ -247,33 +137,13 @@ A more complex structure is the _template_. They are composed of a weaving of _s
 
 A simple template composed only of a string is:
 
-```
+```link
 write <hello world>
-```
-
-Which gets compiled to:
-
-```json
-{
-  "type": "term",
-  "name": "write",
-  "children": [
-    {
-      "type": "template",
-      "children": [
-        {
-          "type": "string",
-          "value": "hello world"
-        }
-      ]
-    }
-  ]
-}
 ```
 
 Or multiline strings:
 
-```
+```link
 text
   <
     This is a long paragraph.
@@ -282,45 +152,21 @@ text
   >
 ```
 
-Note, there are no "comments" in the system. Comments are just strings we don't care about in code. So if you end up transforming Link into code, you would just get rid of any parts of the model with text nodes you consider "comments".
+Then we can add interpolation into the template, by referencing terms wrapped in angle brackets:
 
-Then we can add interpolation into the template, by referencing terms wrapped in colons:
-
-```
+```link
 write <{hello-world}>
-```
-
-That is compiled into:
-
-```json
-{
-  "type": "term",
-  "name": "write",
-  "children": [
-    {
-      "type": "template",
-      "children": [
-        {
-          "type": "term",
-          "name": "hello-world"
-        }
-      ]
-    }
-  ]
-}
 ```
 
 A more robust example might be:
 
-```
+```link
 moon <The moon has a period of roughly {bold(<28 days>)}.>
 ```
 
-The expression needs to be simple enough you can tell where it starts and end, otherwise it needs to be placed outside of the template.
-
 Note though, you can still use the angle bracket symbols in regular text without ambiguity, you just need to prefix them with backslashes.
 
-```
+```link
 i <am \<brackets\> included in the actual string>
 ```
 
@@ -328,179 +174,206 @@ i <am \<brackets\> included in the actual string>
 
 You can write specific code points, or _codes_, by prefixing the number sign / hash symbol along with a letter representing the code type, followed by the code.
 
-```
+```link
 i #b0101, am bits
 i #xaaaaaa, am hex
 i #o123, am octal
 ```
 
-```json
-{
-  "type": "code",
-  "variant": "b",
-  "value": "0101"
-}
-```
-
 These can also be used directly in a template:
 
-```
+```link
 i <am the symbol #x2665>
 ```
 
 This makes it so you can reference obscure symbols by their numerical value, or write bits and things like that. Note though, these just get compiled down to the following, so the code handler would need to resolve them properly in the proper context.
 
+#### Selectors
+
+Selectors are like drilling down into terms. They look like paths, but they are really drilling down into terms, if you think of it that way.
+
+```link
+get foo/bar
+```
+
+You can interpolate on these as well, like doing array index lookup.
+
+```link
+get node/children[i]/name
+```
+
+The interpolations can be nested as well, and chained. Here is a complex example:
+
+```link
+get foo/bar[x][o/children[i]/name]/value
+```
+
 #### Paths
 
 Because paths are so common in programming, they don't need to be treated as strings but can be written directly.
 
-```
+```link
 load @some/path
 load ./relative/path.png
 load /an-absolute/other/path.js
 ```
 
-Let's see how each of these are compiled:
-
-```json
-{
-  "type": "term",
-  "name": "load",
-  "children": [
-    {
-      "type": "template",
-      "children": [
-        {
-          "type": "string",
-          "value": "@some/path"
-        }
-      ]
-    }
-  ]
-}
-```
-
-```json
-{
-  "type": "term",
-  "name": "load",
-  "children": [
-    {
-      "type": "template",
-      "children": [
-        {
-          "type": "string",
-          "value": "./relative/path.png"
-        }
-      ]
-    }
-  ]
-}
-```
-
-```json
-{
-  "type": "term",
-  "name": "load",
-  "children": [
-    {
-      "type": "template",
-      "children": [
-        {
-          "type": "string",
-          "value": "/an-absolute/other/path.js"
-        }
-      ]
-    }
-  ]
-}
-```
-
 That is, they are just special strings. You can interpolate on them like strings as well with square brackets.
 
-#### Selectors
+### Mesh Type System
 
-Selectors are like drilling down into terms. They look like paths, but they are really drilling down into terms, if you think of it that way.
+Every object in the system is a mesh, a graphical node so to speak, with links and sites.
 
-```
-get foo/bar
-```
+These objects are owned (ownership types / affine types), and references are passed around in a structured way.
 
-This gets compiled to:
-
-```json
-{
-  "type": "term",
-  "name": "get",
-  "children": [
-    {
-      "type": "selector",
-      "children": [
-        {
-          "type": "node",
-          "name": "foo"
-        },
-        {
-          "type": "node",
-          "name": "bar"
-        }
-      ]
-    }
-  ]
-}
+```link
+save x, text 10 # create
+save y, move x # move
+save z, loan y # borrow
+save w, read z # copy
 ```
 
-You can interpolate on these as well, like doing array index lookup.
+#### Cast
 
-```
-get node/children[i]/name
-```
+All types of things are cast objects. These are subdivided into form cast and task cast.
 
-This gets compiled to:
+#### Form
 
-```json
-{
-  "type": "term",
-  "name": "get",
-  "children": [
-    {
-      "type": "selector",
-      "children": [
-        {
-          "type": "node",
-          "name": "node"
-        },
-        {
-          "type": "node",
-          "name": "children",
-          "children": [
-            {
-              "type": "node",
-              "name": "i"
-            }
-          ]
-        },
-        {
-          "type": "node",
-          "name": "name"
-        }
-      ]
-    }
-  ]
-}
+This is a record type. An instance is a mesh, a site with links.
+
+```link
+form bind
+  link term, form term
+  link code, form code
 ```
 
-The interpolations can be nested as well, and chained. Here is a complex example:
+There are also type types. And case types, which are an enumeration of many possibilities which the type can take on.
+
+```link
+form list
+  head seat, form form
+  link size, form size
+  link base
+    form site
+      bind seat, loan seat
+  link head
+    form site
+      bind seat, loan seat
+
+form site
+  head seat
+  link base
+    case loan seat
+    case void
+  link head
+    case loan seat
+    case void
+```
+
+You can have dependent types too (constraints on the type based on the mesh links).
+
+```link
+form date
+  link year, form natural-number
+  link month, form natural-number
+  link day, form natural-number
+
+  test is-between
+    loan month
+    size 1
+    size 12
+
+  scan loan month
+    case 1, test is-day-within, size 31
+    case 2
+      scan call modulo-year, size 0
+        case 0
+          scan call modulo-year, size 100
+            case 0
+              scan call modulo-year, size 400
+                case 0, test is-day-within, size 29
+                fall, test is-day-within, size 28
+            fall, test is-day-within, size 29
+        fall, test is-day-within, size 28
+    case 3, test is-day-within, size 31
+    case 4, test is-day-within, size 30
+    case 5, test is-day-within, size 31
+    case 6, test is-day-within, size 30
+    case 7, test is-day-within, size 31
+    case 8, test is-day-within, size 31
+    case 9, test is-day-within, size 30
+    case 10, test is-day-within, size 31
+    case 11, test is-day-within, size 30
+    case 12, test is-day-within, size 31
+
+  task modulo-year
+    hide rise
+    link size
+    call modulo
+      loan year
+      loan size
+
+  task is-day-within
+    hide rise
+    link size
+    test is-less-than-or-equal-to
+      loan day
+      loan size
+```
+
+#### Task
+
+Tasks are function definitions.
+
+```link
+task find-fibonacci-via-loop
+  link i, form natural-number
+
+  save g, size 0
+    lock free
+
+  save o, size 1
+    lock free
+
+  save d
+    lock free
+
+  call walk
+    hook test
+      call check-gt
+        bind base, loan i
+        bind head, text 0
+    hook link
+      save d, move o
+      save o
+        call add
+          bind base, loan g
+          bind head, loan d
+      save g, move d
+      save i
+        call decrement
+          bind integer, loan i
+
+  turn back, move g
+```
+
+#### Call
+
+Tasks get applied with the call cast.
+
+```link
+call check-gt
+  bind base, loan i
+  bind head, text 0
+```
+
+#### Turn
+
+Calls automatically return a value without anything, but you can also return explicity.
 
 ```
-get foo/bar[x][o/children[i]/name]/value
+turn back, text 0
 ```
-
-### Discussion
-
-With just these parts, you have a syntax for a robust programming language. Note, there are very little "special" syntaxes outside of the core term tree. There are no "operators" like binary operators such as `+` and `-`, or `&&`, or anything like that. There are just terms, templates, strings, numbers, codes, paths, and selectors.
-
-You can write code or data in the same way. The key is figuring out the right DSL, and how to transform it into a core data model. For the purposes of this repo, the compiler gives you a tree of JSON. You are then free to transform it however you'd like and make it into data, code, or whatever else. It is general enough to serve that purpose.
 
 ### License
 
