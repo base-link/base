@@ -385,6 +385,44 @@ make bind
   bind term, link term
 ```
 
+#### Load
+
+The load is the import of other modules or "files". Loads can be nested, and do pattern matching to select out object by type and name.
+
+```link
+load ../..
+  load /form/bind
+    take form bind
+
+  load /form/sift
+    take form link
+    take form move
+    take form read
+    take form loan
+```
+
+#### File
+
+A file is a module. It belongs to a deck, the package.
+
+#### Deck
+
+A deck is a package. It belongs to a host, or an organization/entity.
+
+#### Host
+
+The organization or entity which controls decks.
+
+#### Bind
+
+A bind is used to bind data, usually for passing to a call, but can also be used to construct arbitrary trees of content.
+
+```link
+bind hello, text <foo>
+bind world
+  bind bar, text <baz>
+```
+
 ### Custom DSLs
 
 You can build your own DSLs by defining a mine, mill, and mint which combines the two.
