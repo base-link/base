@@ -1,20 +1,20 @@
 
 name @drumwork/base
-head <Link Script Compiler>
-make <Link Script>
-make <Computation>
-make <Philosophy>
-make <Information>
-make <Platform>
-make <White Label>
-face <Lance Pollard>, site <lp@elk.fm>
-mark <0.0.1>
-dock line # the command loader
-dock task # the task loader
-dock code # the library loader
-dock host # the server loader
-dock face # the frontend loader
-dock door # the api
-read book # also a default
-term <Apache 2.0>
-line base # CLI name, otherwise named after project.
+  head <Link Script Compiler>
+  make <Link Script>
+  make <Computation>
+  make <Philosophy>
+  make <Information>
+  make <Platform>
+  make <White Label>
+  face <Lance Pollard>, site <lp@elk.fm>
+  mark <0.0.1>
+  dock line # the command loader
+  dock task # the task loader
+  dock code # the library loader
+  dock host # the server loader
+  dock face # the frontend loader
+  dock door # the api
+  read book # also a default
+  term <Apache 2.0>
+  line base # CLI name, otherwise named after project.
