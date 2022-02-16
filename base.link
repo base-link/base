@@ -1,5 +1,5 @@
 
-name @drumwork/base
+deck @drumwork/base
   head <Link Script Compiler>
   make <Link Script>
   make <Computation>

@@ -1,9 +1,0 @@
-
-task make
-  call find-deck-fold
-    save deck-fold
-  call find-make-hook-list
-    bind road, link <{deck-fold}/hook/make>
-    save hook-list
-  call call-make-hook
-    bind hook, link hook-list

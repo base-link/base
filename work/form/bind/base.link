@@ -1,6 +1,0 @@
-
-form bind
-  note <Assignment of value to a record base>
-  base base-make, form form
-  base base-mark, form text
-  base face, form face

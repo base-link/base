@@ -1,6 +1,5 @@
 
-load ../..
-  load /task/view
-    take task mount-example-view
+load ./task/mesh
+  take task mount-example-view
 
 test mount-example-view

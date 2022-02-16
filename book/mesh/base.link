@@ -73,19 +73,177 @@ A deed is a call instance.
   - head
   - face
 - leaf
-- show
+- test/show: a proof
 - view
 - look
 - tree
 - book
 - work
+- hold: a constraint, a have is an instance of a constraint
 
 A site is a node in the graph.
 
 band tool
   test <Log to console>
     show <hello world>
-    find console-had-log
-      bind text, text <hello world>
+    have console-had-log, text <hello world>
 
 The band is for grouping tests into suites.
+
+hold some-theorem
+  test
+  have
+  save
+  call
+
+show some-theorem
+
+A want is a goal, so proof constructs an initial set of wants and arrives at a final set of wants.
+
+At each step of the way, there is a type. So we transform one type into the next using show tasks.
+
+<A want tree is the final goal tree which gets solved. But what is the structure of the goal tree? How does it know to find the final goal? The final goal is a type, so we transform some initial state (axioms, definitions, theorems) to create the final type.>
+
+123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678
+
+Line length max before wrapping is 96 characters.
+
+So we have
+
+- want
+- show
+- hold
+- have
+
+The have can be used for loop invariants and such.
+
+save goal, make goal
+save goal, call reflex
+save goal
+  call introduce
+    link goal
+    term t-x
+    term t-y
+save goal
+  call reflex
+
+show some-theorem
+  move reflex
+  move introduce
+    term t-x
+    term t-y
+  move reflex
+
+You change the tree structure, moving stuff around. Say you moved some subtree around. The tool would find that subtree and say "it looks like this was moved, do you want to link it to the original IDs?" And in that way it would reference the original, and the migration would be to simply move it.
+
+Otherwise, as you live edit the "code", it keeps track of every move and deletion and addition and other updates, and so keeps the IDs in sync. You cut and paste a subtree somewhere else, but first paste it in another file. Then it loses the context of its IDs.
+
+You move some function from one file to another, it updates all references to the function by removing from original file and adding to new file.
+
+A link has a file-scoped ID, and the visual appearance is saved to the database as well.
+
+So there is also a stem mark (branch version id) and save mark (commit hash) for each link? This way if two branches add similar code trees, they will have different IDs entirely with no collisions, so it can tell they are different forks.
+
+Each file is limited to 65536 tree nodes. Take a new snapshot of the whole tree when it is edited, like Git. Diff the files to find differences. Turn some file diff tracking on, while by default it is off. (Off on data files, on for task files, for example). On commit, commit the diff and create the appropriate snapshots. Then compact.
+
+The snapshot consists of a tree of hashes. When a file changes, the deck hash changes. When the deck changes, the host changes. A branch links to the hash of the contents of the whole base.
+
+You can load only a single file or a pattern of files locally to work on, then when you commit them, sync them back to a remote fork. When you save the file, it stores the diff in reverse, so you can get back to past objects, yet the current object is most updated. By default it stores 1024 snapshots back, but you can configure this, and it optimizes as necessary into more compact representations.
+
+Or what if git was limited to small files like that, instead of entire repositories ("decks")? The moving of one file to a new location would delete it from one tree and add it to another tree, with a link to the previous tree. Then individual files can have diffs on them, but moving between files doesn't have diffs other than delete and add.
+
+When nothing is dependent on it anymore, it shifts out of the state.
+
+text <A block is like a C struct. It is a contiguous array of fields. It is a power of two in size up to 16, so it can be any of these sizes:>
+
+tree list
+  tree 1
+  tree 2
+  tree 4
+  tree 8
+  tree 16
+
+text <Each block begins with a shard identifier, which is the lowest 8-bits. The shard identifier can be any of the following values:>
+
+tree list
+  tree <count-24>
+  tree <count-56>
+  tree <write-3>
+  tree <write-7>
+  tree <block-4>
+  tree <block-8>
+  tree <block-16>
+  tree <stick>
+
+text <If the shard is a count, write, blank, or state shard, then we can determine its type directly from the shard. Otherwise it has a second field following the shard field, called the class field, which specifies the class. A shard of type block stores that many fields. Any block containing more than 16 fields automatically forms into a b-tree, with shard type stick.>
+
+text <A block 4 has 4 fields, 2 of which are the shard and class fields, and two of which can be custom. A block 8 has 6 custom fields, and block 16 has 14 custom fields.>
+
+text <Not all builds are blocks. The B+tree, for example, stores 16 element shard with no header information for its child array.>
+
+head 2, <The count shard>
+
+text <A count-24 shard is structured like this:>
+
+text <[24 bits of integer][8-bit shard header]>
+
+text <In little-endian form. This can store up to 16,777,216 integers, using only 1 32-bit slot.>
+
+text <Each count shard larger stores an additional 32, 96, 160, or 288 bits of integer, every 32-bits being a new element in the count computation.>
+
+head 2, <The write shard>
+
+text <The write-3 shard is structured like this:>
+
+text <[3 bytes of characters][8-bit shard header]>
+
+text <Each write shard adds more characters corresponding to its size. Writes larger than a 16-32 bit chunk are stored as block types. The largest block type is block-16, where 14 slots can hold pointers to write-38 blocks. For a total of 532 characters. Writes larger than this use a stick.>
+
+head 2, <The state shard>
+
+text <Lots of state can be held in the state shard, without it spilling over into a chain or stick.>
+
+head 2, <The block shard>
+
+text <Other than short strings and integers up to a certain size, blocks are the way most class instances are stored. Each record has a shard field, followed by a class field.>
+
+text <There's an overall limit of 2^32 classes allowed, or 4,294,967,296. These are in-memory locations of classes, not of globally unique IDs of them.>
+
+head 2, <Non-blocks>
+
+text <You can also store records so they are used in other contexts, like WebGL. These records are stored without the extra header information and are stored however is necessary.>
+
+The slate is the memory. The memory consists of 16 bins, increasing in powers of two from 32 to x. Memory is allocated from one of these bins to fit the size of the request, with max block record size of 16 32-bit slots, but other large chunks of memory can be consumed and used for things like WebGL.
+
+Each bin keeps track of the total for it.
+
+So then you preallocate some blocks as necessary, and you get new blocks from memory. But this works without the need of a call-stack.
+
+The tree classes are a set of B+tree classes implementing various B+trees for storing collections of items. They include:
+
+- list
+- lock
+- knit
+- mesh
+
+## The list tree
+
+The list tree is an index-based tree, like an array.
+
+## The lock tree
+
+The lock tree is a key-only tree, like a set data structure.
+
+## The knit tree
+
+The knit tree is a key-value tree, like a hash but instead using a tree.
+
+## The mesh tree
+
+This is a combination of list and knit tree.
+
+The array would be a B+tree to store the native values. When you remove values, they would go into another B+tree, and you would merge nodes when they are touching.
+
+So you would have [{ start: 1, count: 2 }] and then insert 3, and it would know to do [{ start: 1, count: 3 }]. The B+tree approach works for both addition and removal of the thing.
+
+A really complicated function with 10,000 local variables is going to have a tree to access the local variables. So `store-share` is a drive that fetches from the tree and stores the result in the local setting. So a call there is redirecting to a function, which calls to other functions, which returns back to the source. But that one it uses the other stack, the simple stack, for traversing the tree.

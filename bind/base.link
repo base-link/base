@@ -2,10 +2,19 @@
 Tree of settings.
 
 bind tint
-  bind fall, term black
-  bind fear, term red
-  bind tell, term yellow
-  bind calm, term blue
-  bind land, term green
-  bind seek, term purple
-  bind rise, term white
+  bind fall, code #x000000
+    note black
+  bind fear, code #x000000
+    note red
+  bind tell, code #x000000
+    note yellow
+  bind calm, code #x000000
+    note blue
+  bind tree, code #x000000
+    note green
+  bind seek, code #x000000
+    note purple
+  bind rise, code #x000000
+    note white
+  bind land
+    note brown

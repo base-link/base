@@ -7,16 +7,14 @@
 <br/>
 <br/>
 
-<h3 align='center'>base</h3>
+<h3 align='center'>load</h3>
 <p align='center'>
   The Link Text Compiler
 </p>
 
 <p align='center'>
   <a href='#welcome'>Welcome</a> •
-  <a href='#summary'>Summary</a> •
-  <a href='#history'>History</a> •
-  <a href='#contributing'>Contributing</a> •
+  <a href='#example'>Example</a> •
   <a href='#license'>License</a>
 </p>
 
@@ -244,9 +242,9 @@ save x, text 10
   lock free
 ```
 
-#### Cast
+#### Work
 
-All types of things are cast objects. These are subdivided into form cast and task cast.
+All types of things are work objects. These are subdivided into form work and task work.
 
 #### Form
 

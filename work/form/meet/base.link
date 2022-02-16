@@ -1,6 +1,0 @@
-
-form meet
-  note <Session>
-  base face, form face
-  base last-leaf, form text
-  base last-leaf-time, form time
