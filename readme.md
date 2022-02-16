@@ -24,7 +24,7 @@
 
 ### Welcome
 
-Link Script is a little more than a markup language, tending toward a programming language. In fact, it can be used for a programming language. It is a way to model information and computation in an easy to read and write format, suitable for hierarchical note taking and other means of capturing data down into structured form.
+Link Text is a little more than a markup language, tending toward a programming language. In fact, it can be used for a programming language. It is a way to model information and computation in an easy to read and write format, suitable for hierarchical note taking and other means of capturing data down into structured form.
 
 ### Example
 
@@ -33,7 +33,7 @@ Here are a few examples from existing code. The first is how you might define a 
 A package definition:
 
 ```link
-deck @drumwork/base
+deck @drumwork/load
   head <Link Text Compiler>
   make <Link Text>
   make <Computation>
