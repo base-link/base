@@ -1,0 +1,9 @@
+
+task make
+  host deck-fold
+    call find-deck-fold
+  host hook-list
+    call find-make-hook-list
+      bind road, text <{loan(deck-fold)}/hook/make>
+  call call-make-hook
+    bind hook, loan hook-list

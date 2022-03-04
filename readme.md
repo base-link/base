@@ -7,7 +7,7 @@
 <br/>
 <br/>
 
-<h3 align='center'>load</h3>
+<h3 align='center'>base</h3>
 <p align='center'>
   The Link Text Compiler
 </p>
@@ -174,8 +174,8 @@ You can write specific code points, or _codes_, by prefixing the number sign / h
 
 ```link
 i #b0101, am bits
-i #xaaaaaa, am hex
 i #o123, am octal
+i #xaaaaaa, am hex
 ```
 
 These can also be used directly in a template:
@@ -197,13 +197,13 @@ get foo/bar
 You can interpolate on these as well, like doing array index lookup.
 
 ```link
-get node/children[i]/name
+get node/children[~i]/name
 ```
 
 The interpolations can be nested as well, and chained. Here is a complex example:
 
 ```link
-get foo/bar[x][o/children[i]/name]/value
+get foo/bar[x][o/children[~i]/name]/value
 ```
 
 #### Paths
@@ -292,14 +292,14 @@ form date
     size 1
     size 12
 
-  scan loan month
+  seek loan month
     case 1, test is-day-within, size 31
     case 2
-      scan call modulo-year, size 0
+      seek call modulo-year, size 0
         case 0
-          scan call modulo-year, size 100
+          seek call modulo-year, size 100
             case 0
-              scan call modulo-year, size 400
+              seek call modulo-year, size 400
                 case 0, test is-day-within, size 29
                 fall, test is-day-within, size 28
             fall, test is-day-within, size 29
@@ -544,6 +544,28 @@ Don't consider the trees of terms and the resulting objects as really an inflexi
 ### Project Cleanliness
 
 Parentheses are always avoided in our base style. All files are named `base.link` inside of a folder, along with an optional `test.link` test file. Certain folder collections are standard, like Ruby on Rails.
+
+### Forever Undefined
+
+<em>Way back in a simpler time<br/>
+The great mother showed me<br/>
+A dark energy permeating us<br/>
+Vastness hidden in plain sight.<br/>
+
+Way deep in the great tree<br/>
+The base link urges me<br/>
+A dark energy permeating us<br/>
+Vastness hidden in plain sight.<br/>
+
+Way beyond our thoughts<br/>
+The great wonder is everpresent<br/>
+A dark energy permeating us<br/>
+Vastness hidden in plain sight.<br/>
+
+Way more undefined<br/>
+The base link springs forth<br/>
+A dark energy permeating us<br/>
+Vastness hidden in plain sight.</em>
 
 ### License
 

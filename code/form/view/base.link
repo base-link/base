@@ -1,0 +1,111 @@
+
+form view
+  link name, form term
+  link star, note <Point>
+  link fill-coat, note <Fill color>
+  link fill-fade, note <Fill opacity>
+  link side-coat, note <Edge color>
+  link side-fade, note <Edge opacity>
+  link side-fork-arch, note <Border radius>
+  link mark, note <ID>
+  link view, note <Image>
+  link hash, note <Shadow>
+  link rein, note <Constraints>
+  link hint, note <Alt text/title>
+  link hill-move, form size-work
+    note <y>
+  link land-move, form size-work
+    note <x>
+  link room-move, form size-work
+    note <z>
+  link land-size, form size-work
+    note <Width>
+  link hill-size, form size-work
+    note <Height>
+  link head-hill-rift-size
+    note <spacing above>
+  link base-hill-rift-size
+  link head-land-rift-size
+    note <spacing to the right>
+  link base-land-rift-size
+    note <spacing to the left>
+  link rift-size
+    note <spacing around>
+  link text-size, form size
+  link text-make, form term
+    note <font family>
+  link text-heft, form size
+    note <weight>
+  link text-tilt, form sink
+    note <italics>
+  link text, form text
+  link flow, form term
+    note <flow/layout choices>
+  link fold, form sink
+    note <wrap>
+  link look
+    note <theme/style>
+  link mint, form term
+    note <html tag>
+  link site
+    note <value>
+  link skew-hill, form size-work
+  link skew-land, form size-work
+  link turn, form size-work
+    note <rotation>
+  link blur, form size-work
+    note <blurring>
+  link hold, form text
+    note <Placeholder>
+
+  bond fade
+  bond fill
+
+  link feel, form task
+    note <touch/click>
+  link take, form task
+    note <drag>
+  link toss, form task
+    note <drop>
+  link move, form task
+    note <mouse>
+  link void, form task
+    note <stop mouse movement>
+  link mark, form task
+    note <focus>
+  link blur, form task
+    note <blur>
+  link dock, form task
+    note <select>
+  link face, form task
+    note <hover>
+  link seed, form task
+    note <copy>
+  link tack, form task
+    note <paste>
+  link load, form task
+    note <mount>
+  link free, form task
+    note <unmount>
+  link roll, form task
+    note <wheel>
+  link code, form task
+    note <type>
+  link code-head, form task
+  link code-base, form task
+  link dash, form task
+    note <scroll>
+  link tune, form task
+    note <animate>
+  link zoom-head, form task
+    note <Zoom in>
+  link zoom-base, form task
+    note <Zoom out>
+  link size, form task
+    note <resize>
+  link hook, form task
+    note <update>
+  link link, form task
+    note <browser connected>
+  link link-halt, form task
+    note <disconnected>

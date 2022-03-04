@@ -1,0 +1,31 @@
+
+form mine-list
+  link base-size, form size
+  link head-size, form size
+  link list, form mine
+
+  task mine, base mine-list
+
+task mine-list, cast mine
+  link site
+  link tool
+
+  host list
+
+  call walk
+    bind list, link site/list
+    hook head
+      link site
+
+      host find
+
+      save find
+        call site/mine
+          bind tool, link tool
+      call test
+        hook test
+          loan find
+        hook rise
+          call push
+            bind x, link list
+            bind x, link find

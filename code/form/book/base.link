@@ -1,0 +1,62 @@
+
+form zone
+
+form book
+  link head, form head
+  link zone, form list
+
+form word-seat
+  case text
+  case term
+
+form head
+  link name, form text
+  link face, list face
+  link date, form date
+  link mark
+    link base, form text
+    link line, form text
+    link head, form text
+  link text, form text
+  link word, list word-seat
+
+form lead
+  link text, form text
+  link look, form look
+    miss rise
+  link zone, list zone
+
+form flow
+  link text, form text
+  link look, form look
+
+form bank-seat
+  case list
+  case flow
+
+form bank
+  link zone, list bank-seat
+
+form list-seat
+  case list
+  case flow
+
+form list
+  link make, form term
+    take seed, term mark
+    take seed, term hand
+  link zone, list list-seat
+
+form look
+  link tilt, form sink
+    miss rise
+  link skew, form mark
+    miss rise
+  link bold, form mark
+    miss rise
+  link tint, form tint
+    miss rise
+  link code
+    take head
+      take form, form term
+      take form, form sink

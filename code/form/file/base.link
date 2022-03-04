@@ -1,0 +1,17 @@
+
+form file
+  link mark, form text
+  link name, form text
+  link text, form text
+  link size, form size
+  link make, form term
+    note <Extension>
+
+form view-halt-file, base file
+  link size-land, form size
+  link size-hill, form size
+
+form view-move-file, base file
+  link size-land, form size
+  link size-hill, form size
+  link band, form size

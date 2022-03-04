@@ -19,9 +19,9 @@ head title
   >
 
   surf <https://>, text <link title>
-  heft <bold text>
+  bold <bold text>
   tilt <italics text>
-  view <image>
+  view component
 
   word x
   cite <text>

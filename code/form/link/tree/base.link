@@ -1,0 +1,15 @@
+
+load ../..
+  load /list
+    take form list
+  load /term
+    take form term
+
+form link
+  link term, form term
+  link link
+    form list
+      bind seat, form link
+      bind seat, form link-text
+
+form link-text

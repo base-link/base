@@ -1,5 +1,5 @@
 
-cast create-session
+call create-session
   head link
   head token
   bind url

@@ -13,12 +13,12 @@ All properties are immutable in tasks by default. To make them mutable, add {cod
 - work: The main app logic.
 - host: The main server.
 - face: The frontend app.
-- head: The CLI.
+- line: The CLI.
 - task: Project commands.
 - bind: Settings and configuration.
 - dock: Platform specific bindings.
 - mint: Mapping file patterns to file object constructors.
-- read: Documentation
+- book: Documentation
 - make: Build outputs.
 - hook: Entrypoint
 
@@ -34,7 +34,7 @@ fork for this scope
 fork/head for parent
 fork/form for form
 
-case is a variable
+host is a variable
 
 Everything is a work (task and form).
 

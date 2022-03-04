@@ -1,0 +1,40 @@
+
+load @drumwork/load/code/form/task
+  take form task
+load @drumwork/load/code/form/link
+  take form link
+
+task make-lace-task
+  link lace, form lace
+
+  host task, form task
+    make task
+      bind name, text <lace-{read(lace/name)}>
+      bind link
+        make link
+          bind name, term lace
+          bind form, loan form lace
+        make link
+          bind name, term text
+          bind form, loan form text
+
+  walk lace/list
+    seek site/form
+      case form lace-text
+        call push-list
+          bind list, loan task/zone
+          bind bond
+            make call
+              bind name, term push-text
+              bind bind
+                make bind
+                  bind name, term text
+                  bind bond
+                    make loan
+                      bind name, term text
+                make bind
+                  bind name, term head
+                  bind bond, read site/text
+      test is-equal, loan form lace-form
+
+  move task

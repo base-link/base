@@ -1,0 +1,96 @@
+
+form size-void
+  note <Zero>
+  link code, size 0
+
+form size-rise
+  note <Natural number>
+  link code
+
+form size-fall
+  note <Negative number>
+  link code
+
+form size
+  case size-fall
+  case size-rise
+
+stem size-rise-8-head
+  call exponentiate
+    size 2
+    size 8
+stem size-rise-16-head
+  call exponentiate
+    size 2
+    size 16
+stem size-rise-32-head
+  call exponentiate
+    size 2
+    size 32
+
+stem size-fall-8-base
+  call subtract
+    size 1
+    call exponentiate
+      size 2
+      size 8
+stem size-fall-16-base
+  call subtract
+    size 1
+    call exponentiate
+      size 2
+      size 16
+stem size-fall-32-base
+  call subtract
+    size 1
+    call exponentiate
+      size 2
+      size 32
+
+form size-rise-lock
+  form size-rise
+
+  link lock, form size-rise
+
+  test less-than
+    bind base, loan code
+    bind head, loan lock
+
+form size-rise-8
+  form size-rise-lock
+    bind lock, loan size-rise-8-head
+
+form size-rise-16
+  form size-rise-lock
+    bind lock, loan size-rise-16-head
+
+form size-rise-32
+  form size-rise-lock
+    bind lock, loan size-rise-32-head
+
+form size-8
+  case size-void
+  case size-fall-8
+  case size-rise-8
+
+form size-16
+  case size-void
+  case size-fall-16
+  case size-rise-16
+
+form size-32
+  case size-void
+  case size-fall-32
+  case size-rise-32
+
+form size-fold
+  note <Ratio>
+
+form size-rank-32
+  note <Floating point>
+
+form size-room
+  note <Big Integer>
+
+form size-rank-room
+  note <Big number>

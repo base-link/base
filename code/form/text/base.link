@@ -1,0 +1,14 @@
+
+form text
+  note <String type>
+  case void
+  case stem
+
+  link size, form size-rise
+
+form stem
+  link base, form text-mark
+  link head, form text
+
+form text-mark
+  form mark-rise-16

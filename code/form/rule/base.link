@@ -1,0 +1,15 @@
+
+load ../test
+  take form test
+load ../link
+  take form link
+load ../toss
+  take form toss
+load ../turn
+  take form turn
+
+form rule
+  case test
+  case link
+  case toss
+  case turn

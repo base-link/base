@@ -1,0 +1,13 @@
+
+load ../text
+  take form text
+
+load ../term
+  take form term
+
+form deck
+  link mark, form text
+  link term, list term
+  link head, form text
+  link host, form text
+  link name, form text

@@ -1,6 +1,6 @@
 
 head <Part 1: The Code>
-  flow <Here we will build a dictionary app.>
+  flow <Here we will build a dictionary app, to demonstrate how you can customize for your own needs.>
   fuse ./note
   fuse ./form
   fuse ./mint

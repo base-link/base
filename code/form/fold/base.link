@@ -1,0 +1,15 @@
+
+form fold
+  link head, form fold
+    note <The link to the next node in the transformation series.>
+  link base, form fold
+    note <The link to the previous node in the transformation series.>
+    miss rise
+  link bond
+    note <The actual data.>
+
+form fold-text, base fold
+  link land, form size
+    note <The line number where this item occurs.>
+  link hill, form size
+    note <The column number where this item occurs.>

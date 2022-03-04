@@ -1,20 +1,20 @@
 
 Tree of settings.
 
-bind tint
-  bind fall, code #x000000
+stem tint
+  stem fall, code #x000000
     note black
-  bind fear, code #x000000
+  stem fear, code #x000000
     note red
-  bind tell, code #x000000
+  stem tell, code #x000000
     note yellow
-  bind calm, code #x000000
+  stem calm, code #x000000
     note blue
-  bind tree, code #x000000
+  stem tree, code #x000000
     note green
-  bind seek, code #x000000
+  stem seek, code #x000000
     note purple
-  bind rise, code #x000000
+  stem rise, code #x000000
     note white
-  bind land
+  stem land
     note brown

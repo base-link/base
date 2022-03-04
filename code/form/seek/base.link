@@ -1,0 +1,11 @@
+
+form seek
+  note <Maybe type>
+
+  head base, form form
+
+  case void
+  case find, loan base
+
+form find
+  head base, form form

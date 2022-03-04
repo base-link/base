@@ -1,6 +1,0 @@
-
-band tool
-  test <Log to console>
-    show <hello world>
-    find console-had-log
-      bind text, text <hello world>

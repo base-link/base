@@ -1,0 +1,47 @@
+
+form date
+  link year, form natural-number
+  link month, form natural-number
+  link day, form natural-number
+
+  hold is-between
+    loan month
+    size 1
+    size 12
+
+  seek month
+    case 1, test is-day-within, size 31
+    case 2
+      seek call modulo-year, size 0
+        case 0
+          seek call modulo-year, size 100
+            case 0
+              seek call modulo-year, size 400
+                case 0, test is-day-within, size 29
+                fall, test is-day-within, size 28
+            fall, test is-day-within, size 29
+        fall, test is-day-within, size 28
+    case 3, test is-day-within, size 31
+    case 4, test is-day-within, size 30
+    case 5, test is-day-within, size 31
+    case 6, test is-day-within, size 30
+    case 7, test is-day-within, size 31
+    case 8, test is-day-within, size 31
+    case 9, test is-day-within, size 30
+    case 10, test is-day-within, size 31
+    case 11, test is-day-within, size 30
+    case 12, test is-day-within, size 31
+
+  task modulo-year
+    hide rise
+    link size
+    call modulo
+      loan year
+      loan size
+
+  task is-day-within
+    hide rise
+    link size
+    test is-less-than-or-equal-to
+      loan day
+      loan size
