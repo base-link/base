@@ -1,7 +1,6 @@
 
-load @drumwork/base
-  load /work/task/make
-    take task make
+load @drumwork/base/work/task/make
+  find task make
 
 hook make
   task make

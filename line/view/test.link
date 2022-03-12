@@ -1,12 +1,12 @@
 
 load @drumwork/dock/code/javascript/console
-  take task log
+  find task log
 load @drumwork/base/code/dock/browser
-  take task make-base
-  take task bind-view
-  take task draw-view
+  find task make-base
+  find task bind-view
+  find task draw-view
 load @drumwork/base/code/dock/browser
-  take task make
+  find task make
 
 task mount-example-view
   save b
@@ -34,11 +34,11 @@ view check
 
 view example
   mesh h1
-    bind fill, text <#ff0000>
+    bind fill, text #xff0000
     bind text-fill, text <white>
     bind text, text <hello world>
     vibe hover
-      bind fill, text <#00ff00>
+      bind fill, text #x00ff00
     hook click
       base event
       call log

@@ -1,62 +1,61 @@
 
-load @drumwork/base/code/head
-  load /task/hook
-    take task void
-    take task bind-deck
-    take task halt
-    take task make-deck
-    take task make-face
-    take task make-host
-    take task load
-    take task save-seed
-    take task read-seed
+load @drumwork/base/code/head/task/hook
+  find task void
+  find task bind-deck
+  find task halt
+  find task make-deck
+  find task make-face
+  find task make-host
+  find task load
+  find task save-seed
+  find task read-seed
 
 hook make
   note <Create a new deck repository>
-  base name
-  base lead
+  take name
+  take lead
     lead <-t>
     lead <--title>
-  base host
+  take host
     lead <-a>
     lead <--author>
-  base mark
+  take mark
     lead <-v>
     lead <--version>
   task make-deck
 
   hook deck
     note <Create a new deck repository>
-    base name
-    base lead
+    take name
+    take lead
       lead <-t>
       lead <--title>
-    base host
+    take host
       lead <-a>
       lead <--author>
-    base mark
+    take mark
       lead <-v>
       lead <--version>
     task make-deck
 
   hook face
     note <Create a person user>
-    base name
+    take name
     task make-face
 
   hook host
     note <Create an organization>
-    base name
+    take name
     task make-host
 
 hook load
   note <Install a deck locally>
-  base name
+  take name
   task load
 
   hook deck
     note <Install a deck locally>
-    base name
+    take name
     task load
 
 hook link
@@ -67,28 +66,28 @@ hook link
 
 hook lock
   note <Login>
-  base cite
+  take cite
     note <Email>
-  base code, wait rise
+  take code, wait rise
     note <Password>
   task lock
 
   hook void
     note <Logout>
-    base cite
+    take cite
     task lock-void
 
 hook save
   hook seed
     note <Create an environment variable>
-    base name
-    base sift
+    take name
+    take sift
     task save-seed
 
 hook read
   hook seed
     note <Read environment variable>
-    base name
+    take name
     task read-seed
 
   hook note
@@ -107,14 +106,14 @@ hook halt
   task halt
 
 hook mark
-  base mark, form size
+  take mark, like size
     mint mint-size
   task mark
 
 hook move
   hook mark
     note <Bump to next version>
-    base link, form term
+    take link, like term
       case a
       case b
       case c

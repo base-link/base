@@ -1,5 +1,5 @@
 
 load @drumwork/base/work
-  take task head
+  find task head
 
 call head

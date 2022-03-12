@@ -14,3 +14,9 @@ boot [request]
   deed [method]
   seed [body]
   loot [response]
+
+loot [response]
+  code 200
+  hint
+  seed
+  free

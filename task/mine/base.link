@@ -1,8 +1,8 @@
 
 form mine-list
-  link base-size, form size
-  link head-size, form size
-  link list, form mine
+  take base-size, form size
+  take head-size, form size
+  take list, form mine
 
   task mine, base mine-list
 

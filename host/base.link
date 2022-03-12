@@ -1,2 +1,20 @@
 
-head <Server>
+Tree of settings.
+
+host tint
+  host fall, text #x000000
+    note black
+  host fear, text #x000000
+    note red
+  host tell, text #x000000
+    note yellow
+  host calm, text #x000000
+    note blue
+  host tree, text #x000000
+    note green
+  host seek, text #x000000
+    note purple
+  host rise, text #x000000
+    note white
+  host land
+    note brown

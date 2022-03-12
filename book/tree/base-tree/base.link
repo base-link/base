@@ -1,0 +1,458 @@
+
+head 3, text <The {code(<load>)}>
+
+flow <The load is for importing cards into this existing card.>
+
+code link, text <
+  load ./x
+    find form x
+      save form x-y
+>
+
+load [term as term]
+  find form x
+
+head 3, text <The form>
+
+form x
+  take a, like a
+
+form x
+  take a # two choices
+    like a
+    like b
+
+form x
+  take a, like list, head site, like x
+
+form x
+  take a, like w
+
+form y
+  like list
+    bind seat, like z
+
+form x
+  take a, like y
+
+form x
+  head a
+  take b, loan a
+
+take x, list y
+take x, fold y, term x
+take x, like text
+  void take
+  lock free
+
+The types of questions you can ask:
+
+- What is the exact form of this object?
+- What is the exact wear of this object?
+- What can this object be cast into?
+- What does this object look like?
+
+To check what an object looks like, you need to inspect the object and compare it against other objects.
+
+head 3, text <The like>
+
+like task
+  head x
+  take y
+  free z
+like list
+  like x
+like mesh
+  like text
+  like x
+like mesh
+  term [name]
+  like x
+mesh x, term [name]
+list x
+like sink # or/union
+  like x
+  like y
+  like z
+like link # and/intersection
+  like x
+  like y
+  like z
+like weed # maybe
+  like x
+like weed
+  bind seat
+    like x
+
+head 3, text <The task>
+
+task p
+  head x, like like
+    time m
+  take a, like x
+    time m
+  take b, like x
+    time m
+  free y, like x
+
+  call w
+    head x, like t
+    loan x
+    loan y
+    save z
+
+  hold is-true
+    [..bindings]
+
+  show loan a
+
+  foul <error>
+  halt <wont get here>
+
+form x
+  task p, base p
+
+Start the program with:
+
+hook boot
+
+task x
+  make a
+    head x, like y
+    bind m, size 10
+    save y
+  back y
+
+head 3, text <The link>
+
+code link, text <
+  loan a/b[c/d][e]/f[g[h[i/j]]]
+>
+
+code link, text <
+  loan a
+    site b
+    nest c
+      site d
+    nest e
+    site f
+    nest g
+      nest h
+        nest i
+          site j
+>
+
+loan a/~b
+
+loan a
+  site b, hash take
+
+loan a?[b]/c
+
+loan a, void take
+  nest b
+  site c
+
+loan *a[*b]/c
+
+loan a, dive take
+  nest b, dive take
+  site c
+
+loan *a
+
+loan a, dive take
+
+move x
+
+read x
+
+head 3, text <The call>
+
+call x
+
+call self/m
+
+call x
+  bind a, size 10
+
+call x
+  bind a, size 10
+  hook w
+    take x
+    take y
+
+call x
+  save a
+  save b
+
+call x
+  find x # skip
+  find y, save z
+
+call w
+  head x, like t
+  loan x
+  loan y
+
+head 3, text <The walk>
+
+walk list, loan x
+  name p
+  hook take
+    hold x
+    hold y
+  hook free
+    hold x
+    hold y
+  hook tick
+    take a, name w
+    call x
+    bust p
+
+walk band
+  size 3
+  size 10
+  hook tick
+    take i
+
+walk band
+  size 3
+  size 10
+  take i
+
+walk size, size 100
+  take i
+  show i
+
+walk test, fork name
+  test is-less
+  show <step>
+
+save *a/b, size 10
+
+head 3, text <The stem>
+
+The if/else statement:
+
+stem beat
+  stem test
+    test is-equal
+      size 10
+      size 20
+    hook take
+      show <weird>
+  stem test
+    test is-equal
+      size 10
+      size 10
+    hook take
+      show <normal>
+  hook free
+    show <nope>
+
+The and statement:
+
+stem link
+  test is-equal
+    size 20
+    size 20
+  test is-equal
+    size 10
+    size 10
+  hook take
+    show <made it>
+  hook free
+    show <didn't make it>
+
+The or statement:
+
+stem sink
+  test is-equal
+    size 10
+    size 20
+  test is-equal
+    size 10
+    size 30
+  test is-equal
+    size 10
+    size 10
+  hook take
+    show <made it>
+  hook free
+    show <didn't make it>
+
+That is short for this:
+
+stem sink
+  hook test
+    test is-equal
+      size 10
+      size 20
+  hook test
+    test is-equal
+      size 10
+      size 30
+  hook test
+    test is-equal
+      size 10
+      size 10
+  hook take
+    show <made it>
+  hook free
+    show <didn't make it>
+
+The if/else statement:
+
+stem beat
+  hook test
+    test is-equal
+      loan status
+      term success
+  hook take
+    show <success>
+  hook test
+    test is-equal
+      loan status
+      term failure
+  hook take
+    show <failure>
+
+The case statement:
+
+stem case
+  loan status
+  case term success
+    show <saved file>
+  case term failure
+    show <didn't save file>
+  hook free
+
+The case statement for checking the types:
+
+stem case
+  loan status/@/form
+  case like foo
+  case like bar
+
+head 3, text <The risk>
+
+The risk statement, like unsafe in rust.
+
+risk take
+  call save-file
+    wait take
+    text <path.txt>
+    text <content >
+      loan z
+      cord < more content>
+    save status
+
+head 3, text <The fork>
+
+Creating a new scope.
+
+fork foo
+  save a, size 10
+
+head 3, text <The suit>
+
+A suit is like a rust trait or an interface. You can do multiple inheritance of suits, but you just can't override methods calling super like in object-oriented languages. You can have a custom implementation, but that's it.
+
+form z
+  suit w
+
+suit r
+suit s
+
+suit w
+  base r
+  base s
+  head a
+  head b
+  take x
+  take y
+  task p
+  task q
+
+head 3, text <The host>
+
+Hosts are basically namespaces or bindings to values. Basically they are defining arbitrary objects.
+
+host foo
+  host bar
+    task x
+    form y
+    host z
+      host a, text <Foo>
+        note <Foo>
+    slot x
+    stem test
+      test is-equal
+        loan a
+        loan b
+      slot x
+        host w
+        host r
+
+head 3, text <The text>
+
+text <foo>
+
+text <hello {world}>
+
+text ./external
+
+text ./external
+  bind x, size 10
+  bind y, loan foo
+
+text loaded
+
+head 3, text <The fuse>
+
+The fuse should work in every context.
+
+fuse ./path
+
+fuse ./path
+  bind x, size 10
+
+load ./x
+  find tree foo
+
+form x
+  fuse foo
+    size 10
+    size 20
+
+tree foo
+  take x
+  take y
+
+  hook bind
+    take a, base loan x
+    take b, base loan y
+
+head 3, text <The clue>
+
+The clue is to switch parsing contexts, like you are in a separate file. Like you have CSS inside of HTML.
+
+clue book
+  head <Title>
+
+head 3, text <The slot>
+
+The slot term is for specifying a place where you can return to to inject content in.
+
+form x
+  slot sx
+  walk list
+    make list
+      term a
+      term b
+      term c
+    hook tick
+      take term
+      slot sx
+        take loan term

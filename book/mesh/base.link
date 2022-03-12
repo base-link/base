@@ -1,21 +1,23 @@
 
 head <Part 3: The Mesh>
-  flow <Here we describe how the system works internally.>
-  fuse ./browser
-  fuse ./node
-  fuse ./ios
-  fuse ./macos
-  fuse ./linux
-  fuse ./android
+
+flow <Here we describe how the system works internally.>
+
+fuse ./browser
+fuse ./node
+fuse ./ios
+fuse ./macos
+fuse ./linux
+fuse ./android
 
 All properties are immutable in tasks by default. To make them mutable, add {code <lock free>} to the case definition.
 
 - work: The main app logic.
-- host: The main server.
+- site: The main server.
 - face: The frontend app.
 - line: The CLI.
 - task: Project commands.
-- bind: Settings and configuration.
+- host: Settings and configuration.
 - dock: Platform specific bindings.
 - mint: Mapping file patterns to file object constructors.
 - book: Documentation
