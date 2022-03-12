@@ -42,45 +42,6 @@ A base is a record with links.
 
 A deed is a call instance.
 
-- cast
-  - form: A work of art
-  - task: To do work
-- call
-  - hook
-  - sift
-  - link
-  - make
-  - save
-- test
-- file
-  - load
-- deck
-- home
-- dock
-- base
-- mesh
-- mint
-  - mine
-  - mill
-  - file
-  - tree
-- lace
-  - file
-  - tree
-- feed
-- hook
-  - make
-  - head
-  - face
-- leaf
-- test/show: a proof
-- view
-- look
-- tree
-- book
-- work
-- hold: a constraint, a have is an instance of a constraint
-
 A site is a node in the graph.
 
 band tool

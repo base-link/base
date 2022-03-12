@@ -1,0 +1,28 @@
+
+like task
+  head x
+  take y
+  free z
+like list
+  like x
+like mesh
+  like text
+  like x
+like mesh
+  term [name]
+  like x
+mesh x, term [name]
+list x
+like sink # or/union
+  like x
+  like y
+  like z
+like link # and/intersection
+  like x
+  like y
+  like z
+like weed # maybe
+  like x
+like weed
+  bind seat
+    like x

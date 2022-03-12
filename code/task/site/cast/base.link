@@ -1,8 +1,0 @@
-
-task cast
-  note <Make request>
-  link cast, form cast
-  link site, form site
-
-task hook
-  note <Handle response>

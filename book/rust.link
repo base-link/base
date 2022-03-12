@@ -40,7 +40,7 @@ task mutate-value
   base num, form i32
     lock free
     loan bond
-  save find num
+  save dive num
     size 3
 
 head copy

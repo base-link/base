@@ -36,7 +36,7 @@ The lead is the result of side effect computation.
 task x
   wait take (is async)
 
-  fork call
+  fork name
     Creates a new scope.
 
 zone x
@@ -60,3 +60,28 @@ any type
 
 https://papl.cs.brown.edu/2015/Type_Inference.html
 https://www.infoq.com/articles/java-local-variable-type-inference/
+
+Types to consider:
+
+- And (link)
+- Or (sink)
+- Either (toss)
+- Decidable (side)
+- Maybe/Option (weed)
+  - Some (boom)
+  - None (bust)
+- Empty (void)
+- Any (cool)
+- Boolean (code)
+- Never (miss)
+- Not (turn)
+- Goal (want)
+- IO (lead)
+- Result (bill)
+- Unknown (mask)
+
+The definition of types is the public API. But the compiler may deal with them in special ways under the hood.
+
+task
+  take name, like name
+  free name

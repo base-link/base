@@ -1,29 +1,52 @@
 
-head title
-  mesh ...
-  tree list
-    text <something>
-    text <another>
-  tree mark (numbered list)
+head [number], text [title]
 
-  text <text>
-  text <text>
-    bind fill, hash #xff0000
-    make plugin
+list mark # ordered list
+  flow [text]
+  flow [text]
+list free # unordered list
+list mesh # table
+  bind head
+    flow [text]
+    flow [text]
+    flow [text]
+  bind base
+    bind line
+      flow [text]
+      flow [text]
+      flow [text]
+    bind line
 
-  list x
-    y
+flow [text]
+flow [text]
+  bind fill, hash [hash]
 
-  code link, <
-    code link
-  >
+walk [link]
+  [...zone]
 
-  surf <https://>, text <link title>
-  bold <bold text>
-  tilt <italics text>
-  view component
+code [name], [code]
 
-  word x
-  cite <text>
+surf [link], text [title]
+bold [text]
+tilt [text]
+draw [name] # view rendering
 
-  cast slab (new page)
+word x
+read [term]
+
+cast slab # new page
+cast line # line draw
+
+list turn # tabs
+  turn [name]
+    [...sift]
+
+hook cite
+  mate [term]
+    name [text]
+
+  cite [term]
+    date [date]
+    name [name]
+    site [text]
+    mate term

@@ -1,14 +1,14 @@
 
 find user-location
-  bond user
-    bond email
-    bond name
-    bond location
-      bond lat
-      bond lng
-  test match
+  take user
+    take email
+    take name
+    take location
+      take lat
+      take lng
+  hold match
     bind base, link user/email
     bind head, loan grammar
   sort user/email, rank head
   lead 100
-  base 10 (offset)
+  base 10 # offset

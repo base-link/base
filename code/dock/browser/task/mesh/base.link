@@ -1,8 +1,0 @@
-
-task make
-  link view, form view
-  save element
-    call create-element
-      bind tag, link view/tag
-
-task draw

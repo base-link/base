@@ -1,9 +1,0 @@
-
-call create-session
-  head link
-  head token
-  bind url
-    make lace url
-      bind domain, text <foo.com>
-  bind method, term post
-  bind <Authorization>, text <Basic: {token}>

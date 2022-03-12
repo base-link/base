@@ -1,0 +1,16 @@
+
+boot [request]
+  head
+  take
+  rank [protocol]
+  hint [header1]
+  hint [header2]
+  mate [user]
+  code [password]
+  host [domain]
+  dock [port]
+  line [path]
+  find [search-param]
+  deed [method]
+  seed [body]
+  loot [response]

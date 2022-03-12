@@ -3,10 +3,10 @@ mesh/base (parent)
 mesh/head (children)
 
 view table
-  head title
+  take title
 
-  host state
-  host state-2
+  save state
+  save state-2
 
   make filters
     bind search
@@ -57,7 +57,7 @@ view glyph-g
     halt lead
 
 view verse
-  head trace
+  take trace
 
   host is-title-visible
   host is-entering-title
@@ -70,7 +70,6 @@ view verse
         save x, link value
   tune y
     move fade-out
-
 
   hook mount-start
     save is-entering-title, link on

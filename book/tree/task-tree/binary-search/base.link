@@ -1,0 +1,131 @@
+
+flow <Here is a Dafny implementation of binary search>
+
+code dafny
+  text <
+    method BinarySearch(a: array\<int\>, key: int) returns (r: int)
+      requires forall i,j :: 0 \<= i \< j \< a.Length ==\> a[i] \<= a[j]
+      ensures 0 \<= r ==\> r \< a.Length && a[r] == key
+      ensures r \< 0 ==\> key !in a[..]
+    {
+      var lo, hi := 0, a.Length;
+      while lo \< hi
+        invariant 0 \<= lo \<= hi \<= a.Length
+        invariant key !in a[..lo] && key !in a[hi..]
+      {
+        var mid := (lo + hi) / 2;
+        if key \< a[mid] {
+          hi := mid;
+        } else if a[mid] \< key {
+          lo := mid + 1;
+        } else {
+          return mid;
+        }
+      }
+      return -1;
+    }
+  >
+
+flow <We can implement that like this:>
+
+code link
+  text <
+    task binary-search
+      take a, list int
+      take key, like int
+      free r, like int
+
+      hook take
+        rate list
+          take i
+          take j
+          stem link
+            test is-less-or-equal
+              size 0
+              loan i
+            test is-less
+              loan i
+              loan j
+            test is-less
+              loan j
+              loan a, site size
+            hook take
+              hold is-less-or-equal
+                loan a, nest i
+                loan a, nest j
+      hook free
+        stem test
+          test is-less-or-equal
+            size 0
+            loan r
+          hook take
+            hold is-less
+              loan r
+              loan a, site size
+            hold is-equal
+              loan a, nest r
+              loan key
+        stem test
+          test is-less
+            loan r
+            size 0
+          hook take
+            hold is-not
+              test is-in-list
+                loan key
+                loan a
+      save lo, size 0
+      save hi, loan a, site size
+
+      walk test
+        test is-less
+          loan lo
+          loan hi
+        hook tick
+          hold is-less-or-equal
+            size 0
+            loan lo
+          hold is-less-or-equal
+            loan lo
+            loan hi
+          hold is-less-or-equal
+            loan hi
+            loan a, site size
+          hold is-not
+            test is-in-list
+              loan key
+              call take-to
+                loan a
+                loan lo
+          hold is-not
+            test is-in-list
+              loan key
+              call take-from
+                loan a
+                loan hi
+          save mid
+            call divide
+              call add
+                loan lo
+                loan hi
+              size 2
+          stem beat
+            stem test
+              test is-less
+                loan key
+                loan a, nest mid
+              hook take
+                save hi, loan mid
+            stem test
+              test is-less
+                loan a, nest mid
+                loan key
+              hook take
+                save lo
+                  call add
+                    loan mid
+                    size 1
+            stem fall
+              back mid
+      back -1
+  >

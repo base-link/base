@@ -1,7 +1,0 @@
-
-load ../..
-  load /task
-    take task test-fibonacci-loop
-    take task test-read-file
-
-test test-fibonacci-loop
