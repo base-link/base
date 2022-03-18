@@ -33,7 +33,7 @@ Here are a few examples from existing code. The first is how you might define a 
 A package definition:
 
 ```link
-deck @drumwork/load
+deck @drumwork/base
   head <Link Text Compiler>
   make <Link Text>
   make <Computation>
@@ -41,7 +41,7 @@ deck @drumwork/load
   make <Information>
   make <Platform>
   make <White Label>
-  face <Lance Pollard>, site <lp@elk.fm>
+  mate <Lance Pollard>, site <lp@elk.fm>
   mark <0.0.1>
   dock head
   dock task
@@ -252,54 +252,54 @@ This is a record type. An instance is a mesh, a site with links.
 
 ```link
 form bind
-  link term, form term
-  link code, form code
+  take term, like term
+  take code, like code
 ```
 
 There are also type types. And case types, which are an enumeration of many possibilities which the type can take on.
 
 ```link
 form list
-  head seat, form form
-  link size, form size
-  link base
-    form site
+  head seat, like like
+  take size, like size
+  take base
+    like site
       bind seat, loan seat
-  link head
-    form site
+  take head
+    like site
       bind seat, loan seat
 
 form site
   head seat
-  link base
-    case loan seat
-    case void
-  link head
-    case loan seat
-    case void
+  take base
+    like loan seat
+    like void
+  take head
+    like loan seat
+    like void
 ```
 
 You can have dependent types too (constraints on the type based on the mesh links).
 
 ```link
 form date
-  link year, form natural-number
-  link month, form natural-number
-  link day, form natural-number
+  take year, form natural-number
+  take month, form natural-number
+  take day, form natural-number
 
-  test is-between
+  hold is-between
     loan month
     size 1
     size 12
 
-  seek loan month
+  stem case, loan month
     case 1, test is-day-within, size 31
     case 2
-      seek call modulo-year, size 0
+      stem case, call modulo-year, size 0
         case 0
-          seek call modulo-year, size 100
+          stem case, call modulo-year, size 100
             case 0
-              seek call modulo-year, size 400
+              stem case, call modulo-year, size 400
                 case 0, test is-day-within, size 29
                 fall, test is-day-within, size 28
             fall, test is-day-within, size 29
@@ -316,15 +316,15 @@ form date
     case 12, test is-day-within, size 31
 
   task modulo-year
-    hide rise
-    link size
+    hide take
+    take size
     call modulo
       loan year
       loan size
 
   task is-day-within
-    hide rise
-    link size
+    hide take
+    take size
     test is-less-than-or-equal-to
       loan day
       loan size
@@ -336,7 +336,7 @@ Tasks are function definitions.
 
 ```link
 task find-fibonacci-via-loop
-  link i, form natural-number
+  take i, form natural-number
 
   save g, size 0
     lock free
@@ -347,23 +347,23 @@ task find-fibonacci-via-loop
   save d
     lock free
 
-  call walk
+  walk test
     hook test
-      call check-gt
-        bind base, loan i
-        bind head, text 0
-    hook link
+      test is-gt
+        loan i
+        text 0
+    hook tick
       save d, move o
       save o
         call add
-          bind base, loan g
-          bind head, loan d
+          loan g
+          loan d
       save g, move d
       save i
         call decrement
-          bind integer, loan i
+          loan i
 
-  turn back, move g
+  back g
 ```
 
 Tasks can be nested, creating each their own lexical scope.
@@ -400,7 +400,7 @@ Calls can be streams or loops, which emit events. This is implemented with `hook
 ```link
 call if
   hook test
-    call is-boolean
+    test is-boolean
       bind x, loan y
   hook match
     ...
@@ -408,12 +408,12 @@ call if
     ...
 ```
 
-#### Turn
+#### Back
 
 Calls automatically return a value without anything, but you can also return explicity.
 
 ```
-turn back, text 0
+back 0
 ```
 
 #### Make
@@ -422,8 +422,8 @@ The make is the mesh constructor.
 
 ```link
 make bind
-  bind term, link term
-  bind term, link term
+  bind term, loan term
+  bind term, loan term
 ```
 
 #### Load
@@ -431,15 +431,11 @@ make bind
 The load is the import of other modules or "files". Loads can be nested, and do pattern matching to select out object by type and name.
 
 ```link
-load ../..
-  load /form/bind
-    take form bind
-
-  load /form/sift
-    take form link
-    take form move
-    take form read
-    take form loan
+load /form/sift
+  take form link
+  take form move
+  take form read
+  take form loan
 ```
 
 #### Lead
@@ -456,16 +452,12 @@ A deck is a package. It belongs to a host, or an organization/entity.
 
 #### Host
 
-The organization or entity which controls decks.
-
-#### Bind
-
-A bind is used to bind data, usually for passing to a call, but can also be used to construct arbitrary trees of content.
+A host is used to bind data, usually for passing to a call, but can also be used to construct arbitrary trees of content.
 
 ```link
-bind hello, text <foo>
-bind world
-  bind bar, text <baz>
+host hello, text <foo>
+host world
+  host bar, text <baz>
 ```
 
 ### Custom DSLs
