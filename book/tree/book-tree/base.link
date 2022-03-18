@@ -49,4 +49,4 @@ hook cite
     date [date]
     name [name]
     site [text]
-    mate term
+    mate [term]

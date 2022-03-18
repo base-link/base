@@ -5,6 +5,15 @@ This language is meant to build other languages on, like an intermediate represe
 
 There is a `want` type, which is the result of side-effectful computations. You then check the want.value to get the result, which could be an exception or a value, or a waiting thing, or something else. Or a lead. A lead is the result you get back which you can unpack.
 
+This is an experiment to see if you can write a simple language that is powerful enough to capture all your needs in programming. Then the simple base can be used to build more concise layers on top, but will be backed by this readable intermediate language.
+
+This is a "data modeling language". It is used primarily to model your data in an easy to read way. It can also be used to write programs, but it turns out that writing programs the same way you write your data models is a tad bit verbose, and could use some syntax niceties like binary / arithmetic operators or simpler function calling interfaces without the boilerplate. However, having this standard intermediate representation, which you can also use for modeling all kinds of stuff, is a useful step for cleaning up the software we write and standardizing it as much as possible.
+
+Another goal is to write algorithms and models in a simple and standard, from-the-textbook sort of way, not polluted by this or that compiler metadata or things of that nature.
+
+- Easy to write, like simple note taking abilities.
+- Easy to extend into custom DSLs.
+
 So you have the lead and the loan (borrow) or the host (owner). These govern side effects and mutable changes to state.
 
 The type inference flows through scope changes, so when you go through an if-statement, you extend the current scope into a new scope in the tree/branch. This tells you the typinig environment and what your type might be at that time.
