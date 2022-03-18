@@ -24,6 +24,8 @@
 
 ### Welcome
 
+_This is all just experimentation at this point, so buyer beware! But would love to bounce off ideas with anyone out there interested in programming language design and implementation._
+
 ### Base Type System
 
 Every object in the system is a mesh, a graphical node so to speak, with links and sites.
