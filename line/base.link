@@ -113,8 +113,9 @@ hook mark
 hook move
   hook mark
     note <Bump to next version>
-    take link, like term
-      case a
-      case b
-      case c
+    take link
+      like term
+        case a
+        case b
+        case c
     task move-mark

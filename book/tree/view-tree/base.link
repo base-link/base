@@ -1,6 +1,6 @@
 
-mesh/base (parent)
-mesh/head (children)
+slab/base (parent)
+slab/head (children)
 
 view table
   take title
@@ -16,8 +16,8 @@ view table
       bind list, link keywords
       lead base
 
-  mesh slab
-    mesh input
+  slab case
+    slab input
       bind fill, link black
       bind text
         bind make, link noto-sans
@@ -25,22 +25,22 @@ view table
       bind mint, link input
       bind site, link filters/search
       hook text, task search
-    mesh group
-      mesh input
+    slab group
+      slab input
         bind value, link filters/a
-      mesh input
+      slab input
         bind value, link filters/b
-      mesh input
+      slab input
         bind value, link filters/c
 
-  walk rows
-    mesh link base
+  walk list, loan rows
+    slab link base
 
-  mesh button
-    hook code, task save
+  slab button
+    hook click, task save
     bind text, text <Save>
-  mesh button
-    hook code, task cancel
+  slab button
+    hook click, task cancel
     bind text, text <Cancel>
 
 view glyph-g
@@ -79,7 +79,7 @@ view verse
   hook leave
     save is-title-visible, link off
 
-  mesh title
+  slab title
     test is-entering-title
       tune animate-opacity-and-width
         hook end

@@ -3,8 +3,8 @@ load @drumwork/mesh
   find mint test-file
   find mint task-file
 
-walk ./**/test.link
+list ./**/test.link
   mint test-file
 
-walk ./task/**/base.link
+list ./task/**/base.link
   mint task-file

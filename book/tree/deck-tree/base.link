@@ -1,6 +1,6 @@
 
-head <The {code(<deck-tree>)}>
-  flow <The {code(<deck-tree>)} is where it all begins.>
+head <The {code(<deck>)}>
+  flow <The {code(<deck>)} is where it all begins.>
 
 deck @drumwork/base
   head <Link Script Compiler>
