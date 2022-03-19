@@ -30,8 +30,6 @@ _This is all just experimentation at this point, so buyer beware! But would love
 
 Every object in the system is a mesh, a graphical node so to speak, with links and sites.
 
-Each mesh is given a mark, which is an ID relative to the organization, package, file, and type in which the record sits.
-
 #### Ownership
 
 These objects are owned (ownership types / affine types), and references are passed around in a structured way.
@@ -52,7 +50,7 @@ save x, text 10
 
 #### Work
 
-All types of things are work objects. These are subdivided into form work and task work.
+All types of abstract things are work objects. These are subdivided into form work and task work.
 
 #### Form
 
