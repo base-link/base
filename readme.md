@@ -248,9 +248,9 @@ load /form/sift
 
 A lead is returned when there is a potential error or value as options.
 
-#### File
+#### Card
 
-A file is a module. It belongs to a deck, the package.
+A card is a module. It belongs to a deck, the package.
 
 #### Deck
 
