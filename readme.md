@@ -7,6 +7,10 @@
 <br/>
 <br/>
 
+<p align='center'>
+  <img src='https://github.com/drumworkteam/base/blob/make/view/view.svg?raw=true' height='256'>
+</p>
+
 <h3 align='center'>base</h3>
 <p align='center'>
   The Link Text Compiler

@@ -357,17 +357,14 @@ Creating a new scope.
 fork foo
   save a, size 10
 
-head 3, text <The suit>
+head 3, text <The mask>
 
-A suit is like a rust trait or an interface. You can do multiple inheritance of suits, but you just can't override methods calling super like in object-oriented languages. You can have a custom implementation, but that's it.
+A mask is like a rust trait or an interface. You can do multiple inheritance of masks, but you just can't override methods calling super like in object-oriented languages. You can have a custom implementation, but that's it.
 
-form z
-  suit w
+mask r
+mask s
 
-suit r
-suit s
-
-suit w
+mask w
   base r
   base s
   head a
@@ -463,13 +460,13 @@ form x
 
 head 3, text <The feed>
 
-feed user-location
-  cull user
-    cull email
-    cull name
-    cull location
-      cull lat
-      cull lng
+cull user-location
+  feed user
+    feed email
+    feed name
+    feed location
+      feed lat
+      feed lng
   hold match
     bind base, link user/email
     bind head, loan grammar
@@ -572,4 +569,71 @@ tree ast-enum-of-structs
                                 beam like
                                   fuse loan rest
 
-Mark things with need work so it can crash if you don't handle it.
+Mark things which need work so it can crash if you don't handle it.
+
+calm variable is a constant, which the compiler can treat specially.
+
+**self
+
+loan size, dive take, size 2
+
+stem case
+  loan item
+  case like item-use
+    show loan item/a
+
+match item {
+  syn::Item::Use(x) => {
+    println!(x)
+
+pub fn inspect<F: FnOnce(&T)>(self, f: F) -> Self {
+  if let Ok(ref t) = self {
+    f(t);
+  }
+
+  self
+}
+
+task inspect
+  head f
+    like fn-once
+      like t
+        cite take
+  take self, like self
+  take f, like f
+  free self, like self
+
+  stem case
+    loan self
+    case like ok
+      call loan f
+        loan self/0
+
+The walk mask is an iterator trait. It allows you to define the walk method on a collection.
+
+The twin mask is the copy trait or clone trait. The clone trait is the boom-twin mask.
+
+The fall mask is the default trait.
+
+The text mask is for formatting for text display.
+
+suit iterator
+  fill a
+  fill b
+  fill c
+
+  fold a
+  fold b
+
+  wear form-iterator
+    fold c
+    task next
+
+That suits the iterator with the form-iterator mask.
+
+mask form-iterator
+  task next
+
+seed x # derive the stuff for the thing.
+
+cool x, enable a feature for the deck
