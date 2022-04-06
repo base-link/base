@@ -30,6 +30,10 @@
 
 _This is all just experimentation at this point, so buyer beware! But would love to bounce off ideas with anyone out there interested in programming language design and implementation._
 
+We are developing a suite of repositories for natural languages and programming languages.
+
+For the programming language, `link`, and it's compiler, `base`, we are making a language that works across devices (similar to Dart/Flutter), which will give you a minimal API footprint. That is, you will be able to learn the least amount possible to have the most possible power and so the biggest impact with the least effort. But at the same time, you will have direct access to the native objects in their original form, so you can have maximum optimization potential and use the underlying architecture's standard paradigms when necessary (such as pointers in the server-side/rust-like environment, which don't exist in JavaScript/browsers). This is possible thanks to the ownership ideas from the Rust community and the like, "move semantics" allow this to work.
+
 ### Base Type System
 
 Every object in the system is a mesh, a graphical node so to speak, with links and sites.
@@ -346,28 +350,6 @@ Don't consider the trees of terms and the resulting objects as really an inflexi
 ### Project Cleanliness
 
 Parentheses are always avoided in our base style. All files are named `base.link` inside of a folder, along with an optional `test.link` test file. Certain folder collections are standard, like Ruby on Rails.
-
-### Forever Undefined
-
-<em>Way back in a simpler time<br/>
-The great mother showed me<br/>
-A dark energy permeating us<br/>
-Vastness hidden in plain sight.<br/>
-
-Way deep in the great tree<br/>
-The base link urges me<br/>
-A dark energy permeating us<br/>
-Vastness hidden in plain sight.<br/>
-
-Way beyond our thoughts<br/>
-The great wonder is everpresent<br/>
-A dark energy permeating us<br/>
-Vastness hidden in plain sight.<br/>
-
-Way more undefined<br/>
-The base link springs forth<br/>
-A dark energy permeating us<br/>
-Vastness hidden in plain sight.</em>
 
 ### License
 
