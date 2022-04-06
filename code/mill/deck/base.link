@@ -1,0 +1,51 @@
+
+mill stack
+  mill road
+    base text
+    call hack-text
+      bind text, link text
+      bind bond, text </>
+      save list
+    save host, link list[0]
+    save name, link list[1]
+  mill lead
+    mill text
+      save lead
+  mill word
+    mill text
+      line word
+  mill face, form face
+    line face
+  mill link
+    mill road
+      save link
+  mill hook
+    mill road
+      save hook
+  mill read
+    mill road
+      save read
+  mill view
+    mill road
+      save view
+  mill mark
+    mill text
+      save mark
+  mill term
+    mill text
+      save term
+  make deck
+    bind host, link host
+    bind name, link name
+    bind lead, link lead
+    bind word, link word
+    bind face, link face
+    bind link, link link
+    bind hook, link hook
+    bind read, link read
+    bind view, link view
+    bind mark, link mark
+    bind term, link term
+    turn seed
+
+mill face

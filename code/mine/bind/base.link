@@ -1,0 +1,12 @@
+
+load ../sift
+  take mine sift
+
+mine bind
+  mine term, term bind
+    mine term
+      take name
+    mine room
+      make case
+        mine form, form sift
+          take sift

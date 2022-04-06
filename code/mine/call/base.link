@@ -1,0 +1,56 @@
+
+load ../bind
+  take mine bind
+
+load ../task
+  take mine task
+  take mine flow
+
+mine call
+  mine term, term call
+    mine term
+      take name
+    mine list
+      mine form, form bind
+        take bind
+    mine room
+      mine case
+        mine form, form save
+          take save
+        mine form, form turn
+          take turn
+    mine list
+      mine form, form hook
+        take hook
+
+mine save
+  mine term, term save
+    mine road
+      take road
+
+mine turn
+  mine term, term turn
+    mine term
+      take term
+
+mine hook
+  mine term, term hook
+    mine term
+      take name
+    mine room
+      mine form, form line
+        take line
+    mine list
+      mine form, form base
+        take base
+    mine list
+      mine form, form flow
+        take flow
+    mine list
+      mine form, form task
+        take task
+
+mine line
+  mine term, term line
+    mine term
+      take name

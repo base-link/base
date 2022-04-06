@@ -1,0 +1,54 @@
+
+load @drumwork/drive/hatch/latch
+  catch mine latch
+load @drumwork/drive/hatch/mount
+  catch mine mount
+
+mine view
+  mine term, term view
+    mine term
+      take term
+    mine list
+      mine form, form latch
+    mine tree, tree mine-view
+
+mine check
+  mine term, term check
+    mine term
+      take term
+    mine tree, tree mine-view
+
+mine list
+  mine term, term list
+    mine trace
+      take trace
+    mine list
+      mine form, form list-start
+        take start
+      mine tree, tree mine-view
+
+mine list-start
+  mine term, term start
+    mine term
+      take term
+    mine term, term term
+      mine term
+        take start
+
+mine mine-view
+  mine term, term view
+    mine term
+      take term
+    mine list
+      mine form, form mount
+    mine list
+      mine form, form watch
+    mine tree, tree mine-view
+
+mine watch
+  mine term, term watch
+    mine term
+      take name
+    mine list
+      mine form, form cause
+        take cause

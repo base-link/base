@@ -1,0 +1,23 @@
+
+mill load
+  mill road
+    save road
+  mill load, form load
+    line load
+  mill hook, form hook
+    line hook
+  make load
+    bind road, link road
+    bind load, link load
+    bind hook, link hook
+    turn seed
+
+mill hook
+  mill name
+    save name
+  mill save
+    line save
+  make hook
+    bind name, link name
+    bind save, link save
+    turn seed

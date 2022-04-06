@@ -1,0 +1,90 @@
+
+load ../load
+  take mine load
+
+mine book
+  mine list
+    mine form, form load
+      take load
+  mine term, term name
+    mine text
+      take name
+  mine term, term date
+    mine text
+      take name
+  mine form, form team
+  mine term, term mark
+    mine text
+      take mark
+  mine term, term talk
+    mine text
+      take talk
+        note <abstract>
+  mine list
+    mine form, form word
+      take word
+  mine list
+    mine head
+      mine form, form leaf
+        take leaf
+      mine form, form show
+        take show
+      mine form, form mesh
+        take mesh
+      mine form, form site
+        take site
+      mine form, form walk
+        take walk
+      mine form, form test
+        take test
+      mine form, form head
+        take head
+      mine form, form lead
+        take lead
+      mine form, form flow
+        take flow
+      mine form, form ease
+        take ease
+
+mine leaf
+  mine term, term leaf
+    mine term, term head
+
+mine show
+  mine term, term show
+    mine term
+      take name
+    mine list
+      mind form, form bind
+        take bind
+
+mine walk
+  mine term, term walk
+    mine sink
+      take sink
+    mine list
+      mine head
+        mine form, form leaf
+          take leaf
+        mine form, form show
+          take show
+        mine form, form mesh
+          take mesh
+        mine form, form site
+          take site
+        mine form, form walk
+          take walk
+        mine form, form test
+          take test
+        mine form, form lead
+          take lead
+        mine form, form flow
+          take flow
+        mine form, form ease
+          take ease
+
+mine test
+mine head
+mine lead
+mine flow
+mine ease

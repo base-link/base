@@ -1,0 +1,51 @@
+
+load ../../form/bind
+  take form bind
+
+load ../../form/sift
+  take form link
+  take form move
+  take form read
+  take form loan
+
+mill bind
+  mill term
+    save term
+  mill sift
+    mill text
+      save sift
+    mill link
+      mill road
+        base seed
+        make link
+          bind road, link seed
+          save sift
+    mill move
+      mill road
+        base seed
+        make move
+          bind road, link seed
+          save sift
+    mill read
+      mill road
+        base seed
+        make read
+          bind road, link seed
+          save sift
+    mill loan
+      mill road
+        base seed
+        make loan
+          bind road, link seed
+          save sift
+    mill make, form make
+      save sift
+    mill call, form call
+      save sift
+    mill task, form task
+      save sift
+    mill task, form form
+      save sift
+  make bind
+    bind term, link term
+    bind term, link term

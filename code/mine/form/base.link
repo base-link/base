@@ -1,0 +1,43 @@
+
+load <../case>
+  hook mine base
+  hook mine head
+
+load <../task>
+  hook mine task
+
+mine form
+  mine term, term form
+    mine term
+      take name
+    mine list
+      mine form, form head
+        take head
+    mine list
+      mine form, form base
+        take base
+    mine list
+      mine form, form bond
+        take bond
+    mine list
+      mine form, form rein
+        take rein
+    mine list
+      mine form, form task
+        take task
+
+mine rein
+  mine term, term rein
+    mine term
+      make task
+
+mine bond
+  mine term, term bond
+    mine term
+      take name
+    mine term, term line
+      mine term
+        take line
+    mine list
+      mine form, form call
+        take call

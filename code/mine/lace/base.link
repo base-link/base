@@ -1,0 +1,61 @@
+
+load <../case>
+  hook mine base
+
+load <../call>
+  hook mine call
+
+load <../task>
+  hook mine task
+
+mine lace
+  mine term, term lace
+    mine term
+      take name
+    mine list
+      mine form, form base
+        take base
+    mine list
+      mine form, form flow
+        take flow
+
+mine flow
+  mine head
+    mine form, form text
+    mine form, form walk
+    mine form, form test
+    mine form, form form
+    mine form, form call
+    mine form, form task
+
+mine text
+  mine term, term lace
+    mine term, term text
+    mine term, term text
+      mine text
+        take text
+
+mine walk
+  mine term, term walk
+    mine road
+      take road
+    mine list
+      mine form, form base
+        take base
+    mine list
+      mine form, form flow
+        take flow
+
+mine test
+  mine term, term test
+    mine road
+      take road
+    mine list
+      mine form, form bind
+        take bind
+    mine list
+      mine form, form flow
+        take flow
+    mine list
+      mine form, form hook
+        take hook

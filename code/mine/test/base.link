@@ -1,0 +1,18 @@
+
+mine test
+  mine term, term test
+    mine term
+      take name
+    mine form, form zone
+      take zone
+
+mine zone
+  mine case
+    mine form, form call
+      take call
+    mine form, form find
+      take find
+
+mine find
+  mine form, form call
+    bind term, term find

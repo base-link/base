@@ -1,0 +1,14 @@
+
+mine seed
+  mine term, term seed
+    mine term
+      take term
+    mine head
+      mine form, form seed
+        take seed
+      mine form, form task
+        take task
+      mine form, form make
+        take make
+      mine form, form sift
+        take sift

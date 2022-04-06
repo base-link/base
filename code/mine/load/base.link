@@ -1,0 +1,24 @@
+
+mine load
+  mine term, term load
+    mine text
+      take road
+    mine list
+      mine head
+        mine form, form hook
+          take hook
+        mine form, form load
+          take load
+
+mine hook
+  mine term, term hook
+    mine term
+      take name
+    mine list
+      mine form, form save
+        take save
+
+mine save
+  mine term, term save
+    mine term
+      take name

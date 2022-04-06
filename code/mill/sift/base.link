@@ -1,0 +1,50 @@
+
+load <../call>
+  hook mill call
+
+load <../make>
+  hook mill make
+
+mill sift
+  mill text
+    turn seed
+  mill link, form link
+    turn seed
+  mill move, form move
+    turn seed
+  mill read, form read
+    turn seed
+  mill loan, form loan
+    turn seed
+  mill make, form make
+    turn seed
+  mill call, form call
+    turn seed
+
+mill link
+  mill road
+    save road
+  make link
+    bind road, link road
+    turn seed
+
+mill move
+  mill road
+    save road
+  make move
+    bind road, link road
+    turn seed
+
+mill read
+  mill road
+    save road
+  make read
+    bind road, link road
+    turn seed
+
+mill loan
+  mill road
+    save road
+  make loan
+    bind road, link road
+    turn seed

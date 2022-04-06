@@ -1,0 +1,71 @@
+
+load <../case>
+  hook mine base
+  hook mine head
+
+load <../form>
+  hook mine rein
+
+mine task
+  mine name, name task
+    mine name
+      take name
+    mine list
+      mine form, form head
+        take head
+    mine list
+      mine form, form base
+        take base
+    mine list
+      mine form, form flow
+        take flow
+    mine list
+      mine form, form task
+        take task
+
+mine flow
+  mine head
+    mine form, form call
+      take call
+    mine form, form make
+      take make
+    mine form, form save
+      take save
+    mine form, form turn
+      take turn
+    mine form, form rein
+      take rein
+    mine form, form show
+      take show
+    mine form, form halt
+      take halt
+
+mine show
+  mine term, term show
+    mine form, form sift
+      take sift
+
+mine halt
+  mine term, term halt
+    mine term
+      take term
+
+mine save
+  mine term, term save
+    mine road
+      take base
+    make head
+      mine form, form sift
+        take sift
+
+mine turn
+  mine term, term turn
+    mine term
+      take name
+    mine room
+      mine head
+        mine form, form sift
+          take sift
+    mine room
+      mine form, form line
+        take line

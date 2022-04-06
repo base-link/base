@@ -1,0 +1,20 @@
+
+load <../bind>
+  hook mine bind
+
+load <../call>
+  hook mine call-save
+  hook mine call-turn
+
+mine make
+  mine term, term make
+    mine term
+      take name
+    mine list
+      mine form, form bind
+        take bind
+    make head
+      mine form, form call-save
+        take call-save
+      mine form, form call-turn
+        take call-turn

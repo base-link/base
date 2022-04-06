@@ -1,0 +1,9 @@
+
+load ../../load
+  hook mine load
+
+mine task-file
+  mine list
+    mine form, form load
+  mine list
+    mine form, form task

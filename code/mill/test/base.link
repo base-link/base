@@ -1,0 +1,41 @@
+
+load ../call
+  hook mill call
+  hook mill flow
+  load /hook
+    hook mill hook
+
+mill test
+  mill name
+    save name
+  mill zone, form zone
+    line zone
+
+mill zone
+  mill call, form call
+    turn seed
+  mill find, form find
+    turn seed
+
+mill find
+  mill name
+    save name
+  mill bind, form bind
+    line bind
+  mill flow, form flow
+    line flow
+  mill hook, form hook
+    knit hook, site name
+  make find
+    bind name, link name
+    bind bind, link bind
+    bind hook, link hook
+    turn seed
+
+mill flow
+  mill save, form save
+    turn seed
+  mill turn, form turn
+    turn seed
+  mill cast, form cast
+    turn seed
