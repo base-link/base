@@ -1,5 +1,13 @@
 
 head [number], text [title]
+mate [author]
+date [date]
+word <tag>
+
+host bundle
+  host font-size, size 14, code px
+
+look(bundle, text <text>)
 
 list mark # ordered list
   flow [text]
@@ -11,11 +19,11 @@ list mesh # table
     flow [text]
     flow [text]
   bind base
-    bind line
+    make line
       flow [text]
       flow [text]
       flow [text]
-    bind line
+    make line
 
 flow [text]
 flow [text]
@@ -34,12 +42,14 @@ draw [name] # view rendering
 word x
 read [term]
 
-cast slab # new page
-cast line # line draw
+cast page # new page
+cast vertical-space, size 1, code cm
 
 list turn # tabs
   turn [name]
     [...sift]
+
+tell x blockquote
 
 hook cite
   mate [term]
@@ -50,3 +60,11 @@ hook cite
     name [name]
     site [text]
     mate [term]
+
+font-size
+font-color
+font-family
+background-color
+underline
+
+wall 3 # 3 columns
