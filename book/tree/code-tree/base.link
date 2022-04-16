@@ -629,6 +629,19 @@ suit iterator
     fold c
     task next
 
+suit iterator
+  head a
+  head b
+  head c
+
+  hook bind
+    head a
+    head b
+
+    wear form-iterator
+      head c
+      task next
+
 That suits the iterator with the form-iterator mask.
 
 mask form-iterator
@@ -841,3 +854,182 @@ view verse
     test is-leaving-title
       tune leave
     test is-title-visible
+
+bind form
+  head a
+  head b
+  head c
+
+  suit iterator
+    head a
+    head b
+
+    wear form-iterator
+      head c
+      task next
+
+suit iterator
+  head a
+  head b
+
+  wear form-iterator
+    head c
+    task next
+
+# impl<T: Clone, A: Allocator> Vec<T, A>
+
+suit form
+  head item-type, base clone
+  head allocator, base allocator
+
+  coat list
+    head item-type
+    head allocator
+
+    task resize
+      take self
+      take size
+      take fill
+
+# impl<T: PartialEq, A: Allocator> Vec<T, A> {
+
+
+# impl<T: Clone, A: Allocator> Vec<T, A>
+
+suit form
+  head item, bind base, like clone
+  head allocator, bind base, like allocator
+
+  coat list
+    head item
+    head allocator
+
+    task resize
+      take self
+      take size
+      take fill
+
+# impl<T: PartialEq, A: Allocator> Vec<T, A> {
+
+suit form
+  head item, bind base, like equality
+  head allocator, bind base, like allocator
+
+  coat list
+    head item
+    head allocator
+
+    task deduplicate
+      take self, lock false
+
+# impl<T: Clone, A: Allocator + Clone> Clone for Vec<T, A>
+
+suit form
+  head item, bind base, like clone
+  head allocator
+    bind base
+      like and
+        like allocator
+        like clone
+
+  coat list
+    head item
+    head allocator
+
+    wear clone
+      task clone
+        take self, loan true
+
+# impl<T: Hash, A: Allocator> Hash for Vec<T, A>
+
+suit form
+  head item, bind base, like hash
+  head allocator, bind base, like allocator
+
+  coat list
+    head item
+    head allocator
+
+    wear hash
+      task hash
+        take self, loan true
+
+# impl<T, I: SliceIndex<[T]>, A: Allocator> Index<I> for Vec<T, A>
+#    type Output = I::Output;
+
+suit form
+  head item, bind base, like hash
+  head i, bind base, like slice-read, like line, like item
+  head allocator, bind base, like allocator
+
+  coat list
+    head item
+    head allocator
+
+    wear read
+      head i
+      take output, i/output
+
+      task read
+        take self
+        take read, like i
+        free self/output, loan true
+
+suit form
+  head item, bind base, like hash
+  head i, bind base, like slice-read, like line, like item
+  head allocator, bind base, like allocator
+
+  coat list
+    head item
+    head allocator
+
+    wear read-flex
+      head i
+      take output, i/output
+
+      task read
+        take self, flex true
+          loan true
+        take read, like i
+        free self/output, flex true
+          loan true
+
+# impl<T, A: Allocator> IntoIterator for Vec<T, A> {
+#     type Item = T;
+#     type IntoIter = IntoIter<T, A>;
+
+suit form
+  head item
+  head allocator, bind base, like allocator
+
+  coat list
+    head item
+    head allocator
+
+    wear becoming-iteratable
+      head i
+      take item, like item
+      take iterator
+        like becoming-iterator
+          like item
+          like allocator
+
+use firm for class tasks and bases
+mutable is flex
+comb is decimal
+
+base name
+  firm true
+
+use loan x to say that it is a borrowed reference
+
+The cite true is metadata saying it is a loan type
+
+The move is the specific one, the loan occurs by default.
+
+You can call it `read` then, and then `read x, move true`, or even `move x`.
+
+A lack is a none type.
+
+PartialOrder and TotalOrder
