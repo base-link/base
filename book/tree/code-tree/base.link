@@ -1033,3 +1033,34 @@ You can call it `read` then, and then `read x, move true`, or even `move x`.
 A lack is a none type.
 
 PartialOrder and TotalOrder
+
+call bitwise-or
+  call multiply
+    call math/abs
+      call math/sin
+        call add
+          loan i
+          mark 1
+    mark 4294967296
+  mark 0
+
+The chaining operator.
+
+call @bitwise-or
+  call @multiply
+    call @abs
+      call @sin
+        call i/add, mark 1
+    mark 4294967296
+  mark 0
+
+have i
+  call @add, mark 1
+  call @sin
+  call @multiply, mark 4294967296
+  call @bitwise-or, mark 0
+
+call i/add, mark 1
+  call @sin
+  call @multiply, mark 4294967296
+  call @bitwise-or, mark 0
