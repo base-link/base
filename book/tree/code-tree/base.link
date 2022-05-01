@@ -1064,3 +1064,85 @@ call i/add, mark 1
   call @sin
   call @multiply, mark 4294967296
   call @bitwise-or, mark 0
+
+a[z.w(1).x] = true
+
+call a/save
+  call z/w, mark 1
+    link x
+  read true
+
+call a/read, read z
+
+a.z = true
+
+save a/z, read true
+
+a.z(1).x = true
+
+call a/z, mark 1
+  link save, term x
+
+save
+  call a/z, mark 1
+    link x
+
+call a/z, mark 1
+  save x, read true
+
+t[1]
+
+call t/read, mark 1
+
+x = 10
+
+call x/save, mark 10
+save x, mark 10
+
+t[1].foo.bar = value
+
+save t[1]/foo/bar, read value
+
+call t/read, mark 1
+  link foo/bar/save, read value
+
+t[1][foo] = 10
+
+call t/read, mark 1
+  link save, read foo
+    mark 10
+
+t[1 + c][f | d] = 10
+
+call t/read, call 1/add, read c
+  link save
+    call f/bitwise-or, read d
+    mark 10
+
+save x, call t/read, call 1/add, read c
+call x/save
+  call f/bitwise-or, read d
+  mark 10
+
+save t[call 1/add, read c][call f/or, read d], mark 10
+
+save x, call 1/add, read c
+save y, call f/or, read d
+save t[x][y], mark 10
+
+t[0].x(a, b(c, 1)).y = 20
+
+call t[0]/x
+  read a
+  call b
+    read c
+    mark 1
+  link y/save, mark 20
+
+save p
+  call t[0]/x
+    read a
+    call b
+      read c
+      mark 1
+save p/y, mark 20
