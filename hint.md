@@ -231,7 +231,7 @@ A take is an input value (on a task) or public property (on a form). It takes a 
 
 ```
 take x, like mark
-  mark 0
+  base 0
 ```
 
 ### `head`
