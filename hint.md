@@ -178,6 +178,29 @@ form x
   case z
 ```
 
+A complex alias form is like this:
+
+```
+form return-type, name <ReturnType>
+  head t, like like-link-text
+    base task-link-text
+      take args, like native-any
+        rest true
+      free seed, like native-any
+
+  like test-link-text
+    stem roll
+      like t
+      like task-link-text
+        take args, like native-any
+          rest true
+        free seed, name r
+      hook true
+        like r
+      hook false
+        like native-any
+```
+
 ### `task`
 
 A task is a function.
@@ -237,6 +260,32 @@ This is a constructor function, like calling `new` in other programming language
 This is for importing other modules ("cards") into the current card.
 
 ### `tree`
+
+A tree is a reusable chunk of code, like a macro. There is a "bind hook" which puts you into the context of the thing where the tree is being _fused_. The tree fusion can take parameters as well.
+
+```
+form mark-8
+  fuse mark
+    bind size, mark 8
+
+tree mark
+  take size, like mark-8
+
+  hook bind
+    form mark-{size}
+      task seek-add
+        take a, like mark-{size}
+        take b, like mark-{size}
+        fuse free-result, like mark-{size}
+        save c
+          call add-js
+            read a
+            read b
+        fuse is-below-or-return-error
+          read c
+          mark 256
+        move c
+```
 
 ### `walk`
 
