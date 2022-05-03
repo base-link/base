@@ -5,14 +5,14 @@ flow <The load is for importing cards into this existing card.>
 
 code link, text <
   load ./x
-    find form x
-      save form x-y
+    find x
+      save x-y
 >
 
 turn x # not x
 
-load [term as term]
-  find form x
+load @foo/bar
+  find x, save y
 
 head 3, text <The form>
 
@@ -23,6 +23,10 @@ form x
   take a # two choices
     like a
     like b
+
+- Basic form defininig properties.
+- Alias form for a complex form (like).
+- Enum form
 
 form x
   take a, like list, head site, like x

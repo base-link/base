@@ -1,0 +1,285 @@
+
+# BaseLink Basic Guide
+
+Here is a brief, partial guide for BaseLink.
+
+1. First we show the _idioms_ (i.e. the how-to guide).
+2. Then we show the _keywords_ (i.e. the standard reference).
+3. Finally we show some _examples_, to demonstrate how you might write some common things.
+
+Overall this guide is meant to be more like a cheat sheet with basic explanations, to give you a sense of the full possibilities. Moreso than being an introductory tutorial.
+
+## Idioms
+
+BaseLink idioms are standard ways of doing common programming things. Here we show how to write BaseLink for common situations.
+
+### Defining a simple variable
+
+```
+# x = 10
+host x, mark 10
+# y = 3.14
+host y, comb 3.14
+# z = 'hello world'
+host z, text <hello world>
+```
+
+### Stopping a program
+
+To stop a program, there are two syntaxes:
+
+```
+halt flow, text <Message>
+halt <Message>
+```
+
+### Breaking out of a loop or block
+
+To break out of a loop or block, there are two syntaxes.
+
+```
+halt fork, fork term
+halt term
+```
+
+As long as `term` is not a special halt keyword like `fork` or `flow`.
+
+### Returning a value
+
+To return a value, there is one syntax.
+
+```
+back x
+```
+
+This sends a variable `x` back to the caller.
+
+_Otherwise, with no back being used, the last term in a block is returned implicitly._
+
+You can pass in more complex stuff in necessary, such as:
+
+```
+back make list
+```
+
+To pass a constructed list. But it is ideal to try and keep base only taking one flat term, so if possible make the return value into a local variable first.
+
+```
+host x, make list
+base x
+```
+
+### Setting a property/input default
+
+To set a default value, there are two syntaxes:
+
+```
+fall back, mark 1
+fall 1
+```
+
+### Defining a "class" function
+
+To define a class function, there is one form. You don't define them on the "form", you simply define a namespace, which is all that it really is in the end.
+
+```
+form user
+
+host user-site
+  task x
+  task y
+
+call user-site/x
+```
+
+### Defining a variable
+
+```
+# x = 10
+host x, mark 10
+```
+
+### Defining an integer
+
+Integers get a special term they are wrapped in typically, to make it clear to the compiler what is being passed.
+
+```
+mark 10
+```
+
+### Defining a decimal number
+
+Decimals (or "doubles" or "floats") get a special term they are wrapped in typically, to make it clear to the compiler what is being passed.
+
+```
+comb 3.14159265
+```
+
+### Defining a string
+
+In BaseLink, strings are called "text". They are typically wrapped when it helps with a term like integers and decimals.
+
+```
+text <This is some text.>
+```
+
+### Interpolate text
+
+### Interpolate a term
+
+```
+form mark-{size}
+```
+
+### Instantiate a class
+
+```
+make user
+```
+
+## Keywords
+
+### `form`
+
+A form is a class basically, something that instantiates an object.
+
+```
+form user
+  take email, like text
+
+  task login
+    take email
+    take password
+    call service/login
+      read email
+      read password
+```
+
+There are 3 syntaxes for forms, depending on what you want to do.
+
+1. **Basic forms**: These are defining constructors for objects.
+2. **Alias forms**: These are giving a new (typically shorter) API to an existing form with a potentially complex signature.
+3. **Enumerated forms**: These "enum forms" are lists of possible values a form can take. Each enum "case" is considered a type of this form, but you can also use the enum form directly to specify a form.
+
+The above is a _basic form_ (a "base form"). Next here is an _alias form_ (a "like form").
+
+```
+form x
+  like user
+```
+
+It uses the `like` to specify a potentially complex form inside.
+
+Finally the _enumeraed form_ is like this (the "case form").
+
+```
+form x
+  case y
+  case z
+```
+
+### `task`
+
+A task is a function.
+
+### `take`
+
+### `head`
+
+### `like`
+
+### `host`
+
+### `mark`
+
+### `comb`
+
+### `text`
+
+### `code`
+
+### `term`
+
+### `time`
+
+A time is a lifetime, as in Rust. It tells the compiler the lifetime of a variable.
+
+### `read`
+
+- `loan`: Whether or not the value is borrowed.
+- `move`: Whether or not to move the ownership.
+- `flex`: Whether or not it is mutable.
+
+### `call`
+
+A call is calling a task (function).
+
+Because a function always has named parameters, there are at least two ways to pass the parameters to the call.
+
+- **Implicit binding**: Pass the value directly, _without_ a name.
+- **Explicit binding**: Pass the value _with_ a name.
+
+```
+# implicit
+call 1/add, mark 2
+# explicit
+call 1/add, bind other, mark 2
+```
+
+Much of the time you can use implicit bindings to shorten your code. But sometimes it makes it more readable (and sometimes necessary due to task overloading possibilities) if you are explicit about naming the input parameter.
+
+### `make`
+
+This is a constructor function, like calling `new` in other programming languages.
+
+### `load`
+
+This is for importing other modules ("cards") into the current card.
+
+### `tree`
+
+### `walk`
+
+These are for doing loops. You can walk a list, or more generally any _iterator_. Or you can just loop until a condition is met, or loop indefinitely.
+
+```
+walk list
+```
+
+```
+walk test
+```
+
+```
+walk halt
+```
+
+You can give each of these walks a name, so we know what the loop is called and can break out of it.
+
+### `fork`
+
+A fork is a simple branch in code. These are used for if-statements and switch statements, but not loops. Loops are using `walk`.
+
+### `back`
+
+### `halt`
+
+### `risk`
+
+A risk tells if a particular task is unsafe (like in rust).
+
+### `coat`
+
+#### `suit`
+
+#### `wear`
+
+## Examples
+
+## Other DSLs
+
+### The deck card
+
+This is a special kind of file, the deck file, which allows you to define the structure of a deck.
+
+### The host card
