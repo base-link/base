@@ -24,6 +24,26 @@ host y, comb 3.14
 host z, text <hello world>
 ```
 
+### Digging into a variable
+
+You can read a variable or pass a variable using the read term.
+
+```
+read x
+```
+
+But you can also dig into an object sort of like a file path (instead of using `.` like many programming languages).
+
+```
+read x/foo
+```
+
+You can also interpolate the path like getting dynamically named properties.
+
+```
+read r/{a}/y
+```
+
 ### Stopping a program
 
 To stop a program, there are two syntaxes:
