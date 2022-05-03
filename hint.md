@@ -95,6 +95,16 @@ host x, make list
 base x
 ```
 
+### Calling a function
+
+```
+call x
+call foo/bar
+  mark 10
+```
+
+### Chaining function/property calls
+
 ### Setting a property/input default
 
 To set a default value, there are two syntaxes:
