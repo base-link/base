@@ -287,6 +287,22 @@ tree mark
         move c
 ```
 
+### `slot`
+
+A slot is a place which you can mark, which you can return to in future contexts within the code. You return to the slot with `beam`. An example of where you might use this is in a walk (iteration) over some value, to dynamically define a form.
+
+```
+form x
+  slot self
+  walk list, read something
+    hook step
+      take item
+      beam self
+        take {item/name}, like {item/type}
+```
+
+Here we dynamically define attributes on the form (`take`). The beam is required so we know what context we are using the DSL terms in.
+
 ### `walk`
 
 These are for doing loops. You can walk a list, or more generally any _iterator_. Or you can just loop until a condition is met, or loop indefinitely.
