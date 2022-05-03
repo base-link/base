@@ -207,7 +207,20 @@ A task is a function.
 
 ### `take`
 
+A take is an input value (on a task) or public property (on a form). It takes a type ("like"), and can take a default value.
+
+```
+take x, like mark
+  mark 0
+```
+
 ### `head`
+
+A head has the same syntax as a take, but it is used for "type generics".
+
+```
+head x, like mark
+```
 
 ### `like`
 
@@ -295,10 +308,10 @@ A slot is a place which you can mark, which you can return to in future contexts
 form x
   slot self
   walk list, read something
-    hook step
-      take item
+    hook tick
+      take site
       beam self
-        take {item/name}, like {item/type}
+        take {site/name}, like {site/type}
 ```
 
 Here we dynamically define attributes on the form (`take`). The beam is required so we know what context we are using the DSL terms in.
@@ -390,6 +403,16 @@ A risk tells if a particular task is unsafe (like in rust).
 #### `wear`
 
 ## Examples
+
+<img src="https://github.com/teamdrumwork/link/blob/make/view/tree.png?raw=true" />
+
+---
+
+<img src="https://github.com/teamdrumwork/link/blob/make/view/mine.png?raw=true" />
+
+---
+
+<img src="https://github.com/teamdrumwork/link/blob/make/view/lace.png?raw=true" />
 
 ## Other DSLs
 
