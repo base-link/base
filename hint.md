@@ -360,6 +360,7 @@ fork case, read status
     show <didn't save file>
   fall back
     show <something else>
+```
 
 The case statement for checking the types:
 
