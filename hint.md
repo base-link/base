@@ -495,6 +495,11 @@ Here is a list of standard types.
 | `walk` | `Iterator` |
 | `test` | `Assertion` |
 | `flow` | `Process` |
+| `maybe` | `Maybe`, `Option`, etc. |
+| `result` | `Result` |
+| `ok` | `Ok` |
+| `and` | `And` |
+| `or` | `Or` |
 
 ## Examples
 
