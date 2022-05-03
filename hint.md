@@ -24,6 +24,12 @@ host y, comb 3.14
 host z, text <hello world>
 ```
 
+### Updating a variable
+
+```
+save x, mark 20
+```
+
 ### Digging into a variable
 
 You can read a variable or pass a variable using the read term.
