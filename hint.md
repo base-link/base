@@ -325,6 +325,55 @@ You can give each of these walks a name, so we know what the loop is called and 
 
 A fork is a simple branch in code. These are used for if-statements and switch statements, but not loops. Loops are using `walk`.
 
+There are a few types of forks:
+
+- Simple If statement.
+- If/else/else... statement.
+- Switch statement.
+
+```
+fork test
+  call a/is-below, mark 10
+  hook true
+    show <is below!>
+```
+
+```
+fork roll
+  fork test
+    call a/is-below, mark 10
+    hook true
+      show <is below 10!>
+  fork test
+    call a/is-below, mark 100
+    hook true
+      show <is below 100!>
+  fall back
+    show <is not below 100!>
+```
+
+```
+fork case, read status
+  case term success
+    show <saved file>
+  case term failure
+    show <didn't save file>
+  fall back
+    show <something else>
+
+The case statement for checking the types:
+
+```
+fork case
+  loan status/@/form
+  case like foo
+  case like bar
+```
+
+### `show`
+
+This is a simple debug printing tool for the command-line.
+
 ### `back`
 
 ### `halt`
