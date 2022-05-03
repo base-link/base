@@ -496,14 +496,6 @@ Here is a list of standard types.
 | `test` | `Assertion` |
 | `flow` | `Process` |
 
-## Other Standard Naming
-
-| moon name | other unused names |
-|:---|:---|
-| `make` | `convert-to`, `transform-to` |
-| `is` | `detect`, `verify`, `test-if` |
-
-
 ## Examples
 
 <img src="https://github.com/teamdrumwork/link/blob/make/view/tree.png?raw=true" />
