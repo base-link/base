@@ -20,7 +20,7 @@ All properties are immutable in tasks by default. To make them mutable, add {cod
 - host: Settings and configuration.
 - dock: Platform specific bindings.
 - mint: Mapping file patterns to file object constructors.
-- book: Documentation
+- read: Documentation
 - make: Build outputs.
 - hook: Entrypoint
 
