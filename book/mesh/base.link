@@ -210,3 +210,9 @@ The array would be a B+tree to store the native values. When you remove values, 
 So you would have [{ start: 1, count: 2 }] and then insert 3, and it would know to do [{ start: 1, count: 3 }]. The B+tree approach works for both addition and removal of the thing.
 
 A really complicated function with 10,000 local variables is going to have a tree to access the local variables. So `store-share` is a drive that fetches from the tree and stores the result in the local setting. So a call there is redirecting to a function, which calls to other functions, which returns back to the source. But that one it uses the other stack, the simple stack, for traversing the tree.
+
+So then we go around all the modules and collect their imports. Then we build the nested DAG. Then we write the JavaScript for the modules in that order. The hash is for each of the nodes in the DAG.
+
+The server keeps track of what data has been built, so when you make a change, it only sends the changed file and its hook, which triggers a dependency update.
+
+The typechecking occurs on the server-level, perhaps somehow even in VSCode. The compiler takes the leaf tree and compiles it to a hold tree. The hold tree compiles to a mold mesh. The mold mesh is then written out in JavaScript.

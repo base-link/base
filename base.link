@@ -9,6 +9,7 @@ deck @treesurf/base
   make <White Label>
   face <Lance Pollard>, site <lp@elk.fm>
   mark <0.0.1>
+  dock mint
   dock task # the task loader
   dock code # the library loader
   read book # also a default
