@@ -1,5 +1,5 @@
 
-deck @drumwork/base
+deck @treesurf/base
   head <Link Script Compiler>
   make <Link Script>
   make <Computation>
@@ -12,4 +12,4 @@ deck @drumwork/base
   dock task # the task loader
   dock code # the library loader
   read book # also a default
-  term <Apache 2.0>
+  term <apache-2.0>

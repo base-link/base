@@ -1,11 +1,11 @@
 
-load @drumwork/dock/code/javascript/console
+load @treesurf/dock/code/javascript/console
   find task log
-load @drumwork/base/code/dock/browser
+load @treesurf/base/code/dock/browser
   find task make-base
   find task bind-view
   find task draw-view
-load @drumwork/base/code/dock/browser
+load @treesurf/base/code/dock/browser
   find task make
 
 task mount-example-view

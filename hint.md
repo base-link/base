@@ -1,4 +1,3 @@
-
 # BaseLink Basic Guide
 
 Here is a brief, partial guide for BaseLink.
@@ -121,11 +120,11 @@ To define a class function, there is one form. You don't define them on the "for
 ```
 form user
 
-host user-site
+host user-form
   task x
   task y
 
-call user-site/x
+call user-form/x
 ```
 
 ### Defining a variable
@@ -405,6 +404,11 @@ walk halt
 
 You can give each of these walks a name, so we know what the loop is called and can break out of it.
 
+```
+walk list, name foo
+  halt foo
+```
+
 ### `fork`
 
 A fork is a simple branch in code. These are used for if-statements and switch statements, but not loops. Loops are using `walk`.
@@ -449,8 +453,7 @@ fork case, read status
 The case statement for checking the types:
 
 ```
-fork case
-  loan status/@/form
+fork case, loan status/form
   case like foo
   case like bar
 ```
@@ -477,29 +480,29 @@ A risk tells if a particular task is unsafe (like in rust).
 
 Here is a list of standard types.
 
-| base name | traditional name |
-|:---|:---|
-| `mark` | `UInt`, `BigUInt`, etc. (unsigned integer) |
-| `diff` | `Int`, `BigInt` (signed integer) |
-| `comb` | `Decimal` (float, double, bignumber) |
-| `comb-32` | `Float` (signed decimal 32 bits, 7 precision) |
+| base name | traditional name                                |
+| :-------- | :---------------------------------------------- |
+| `mark`    | `UInt`, `BigUInt`, etc. (unsigned integer)      |
+| `diff`    | `Int`, `BigInt` (signed integer)                |
+| `comb`    | `Decimal` (float, double, bignumber)            |
+| `comb-32` | `Float` (signed decimal 32 bits, 7 precision)   |
 | `comb-64` | `Double` (signed decimal 64 bits, 15 precision) |
-| `text` | `String` |
-| `wave` | `Boolean` |
-| `line` | `Array`, `Slice`, etc. |
-| `foul` | `Error` |
-| `form` | `Class`, `Type` |
-| `task` | `Function`, `Closure` |
-| `suit` | `Mixin`, `Trait`, `Interface` |
-| `void` | `Null`, `Nil` |
-| `walk` | `Iterator` |
-| `test` | `Assertion` |
-| `flow` | `Process` |
-| `maybe` | `Maybe`, `Option`, etc. |
-| `result` | `Result` |
-| `ok` | `Ok` |
-| `and` | `And` |
-| `or` | `Or` |
+| `text`    | `String`                                        |
+| `wave`    | `Boolean`                                       |
+| `line`    | `Array`, `Slice`, etc.                          |
+| `foul`    | `Error`                                         |
+| `form`    | `Class`, `Type`                                 |
+| `task`    | `Function`, `Closure`                           |
+| `suit`    | `Mixin`, `Trait`, `Interface`                   |
+| `void`    | `Null`, `Nil`                                   |
+| `walk`    | `Iterator`                                      |
+| `test`    | `Assertion`                                     |
+| `flow`    | `Process`                                       |
+| `maybe`   | `Maybe`, `Option`, etc.                         |
+| `result`  | `Result`                                        |
+| `ok`      | `Ok`                                            |
+| `and`     | `And`                                           |
+| `or`      | `Or`                                            |
 
 ## Examples
 

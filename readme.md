@@ -15,12 +15,6 @@
   The Link Text Compiler
 </p>
 
-<p align='center'>
-  <a href='#welcome'>Welcome</a> •
-  <a href='#example'>Example</a> •
-  <a href='#license'>License</a>
-</p>
-
 <br/>
 <br/>
 <br/>
@@ -35,7 +29,7 @@ For the programming language, `link`, and it's compiler, `base`, we are making a
 
 ### Base Type System
 
-Every object in the system is a mesh, a graphical node so to speak, with links and sites.
+Every object in the system is a mesh, in a graph of nodes so to speak, with links and sites.
 
 #### Ownership
 
@@ -52,7 +46,7 @@ Every variable is immutable by default, but you can specify it as mutable.
 
 ```link
 save x, text 10
-  lock free
+  flex true
 ```
 
 #### Work
@@ -92,7 +86,7 @@ form site
     like void
 ```
 
-You can have dependent types too (constraints on the type based on the mesh links).
+You can have dependent types too (constraints on the type based on the site links).
 
 ```link
 form date
@@ -129,14 +123,14 @@ form date
     case 12, test is-day-within, size 31
 
   task modulo-year
-    hide take
+    hide true
     take size
     call modulo
       loan year
       loan size
 
   task is-day-within
-    hide take
+    hide true
     take size
     test is-less-than-or-equal-to
       loan day
@@ -150,15 +144,16 @@ Tasks are function definitions.
 ```link
 task find-fibonacci-via-loop
   take i, form natural-number
+  free natural-number
 
   save g, size 0
-    lock free
+    flex true
 
   save o, size 1
-    lock free
+    flex true
 
   save d
-    lock free
+    flex true
 
   walk test
     hook test
@@ -199,7 +194,7 @@ You can specify that the call is async with `wait`:
 
 ```link
 call check-gt-async
-  wait rise
+  wait true
   bind base, loan i
   bind head, text 0
 ```
@@ -236,15 +231,14 @@ The make is the mesh constructor.
 ```link
 make bind
   bind term, loan term
-  bind term, loan term
 ```
 
 #### Load
 
-The load is the import of other modules or "files". Loads can be nested, and do pattern matching to select out object by type and name.
+The load is the import of other modules or "cards". Loads can be nested, and do pattern matching to select out object by type and name.
 
 ```link
-load /form/sift
+load /form
   take form link
   take form move
   take form read
