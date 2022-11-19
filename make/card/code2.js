@@ -148,12 +148,12 @@ function parseCodeCard(link, text, linkTree, base) {
       }
     }
 
-    // const loadCard = base.card(load.link)
+    const loadCard = base.card(load.link)
 
-    // load.take.forEach(take => {
-    //   card.seed[`${take['save-like-name']}-mesh`][take['save-name']]
-    //     = loadCard.seed[`show-${take['like-name']}-mesh`][take.name]
-    // })
+    load.take.forEach(take => {
+      card.seed[`${take['save-like-name']}-mesh`][take['save-name']]
+        = loadCard.seed[`show-${take['like-name']}-mesh`][take.name]
+    })
   })
 
   card.seed['bear-list'].forEach(link => {

@@ -14,11 +14,36 @@ module.exports = {
   getCodeAsNumber,
   isMark,
   getMark,
+  copyObject,
+  addToTreeLink,
+  makeTreeLink,
+}
+
+function addToTreeLink(tree, link) {
+  tree.link.push(link)
+  if (link.like['tree-link']) {
+    tree.size++
+  }
+}
+
+function makeTreeLink(name) {
+  return {
+    like: 'tree-link',
+    name,
+    link: [],
+    size: 0
+  }
 }
 
 function getMark(nest) {
   const line = nest.line[0]
   return line.mark
+}
+
+function copyObject(a, b) {
+  Object.keys(a).forEach(key => {
+    b[key] = a[key]
+  })
 }
 
 function isMark(nest) {
