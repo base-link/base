@@ -119,7 +119,8 @@ function parse(list) {
         const site = {
           form: 'site',
           leaf: [],
-          site: []
+          site: [],
+          size: token.length
         }
         text.link.push(site)
         stack.push(site)

@@ -9,8 +9,8 @@ const termPatterns = [
   [/^\)/, 'close-parenthesis'],
   [/^</, 'open-text'],
   [/^>/, 'close-text'],
-  [/^\{/, 'open-interpolation'],
-  [/^\}/, 'close-interpolation'],
+  [/^\{+/, 'open-interpolation'],
+  [/^\}+/, 'close-interpolation'],
   [/^[a-z\-0-9]+/, 'term-part', true],
   [/^-/, 'term-part-separator', true],
   [/^\//, 'nest-separator', true],
@@ -22,7 +22,7 @@ const termPatterns = [
 ]
 
 const stringPatterns = [
-  [/^\{/, 'open-interpolation'],
+  [/^\{+/, 'open-interpolation'],
   [/^(?:\\[<>\{\}])+/, 'text', true, null, t => t.replace(/\\/g, '')],
   [/^[^\{>\\]+/, 'text', true],
   [/^>/, 'close-text'],
