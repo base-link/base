@@ -57,6 +57,9 @@ function parseCodeCard(link, text, linkTree, base) {
           break
         }
         case 'tree': {
+          const tree = parseTree(nest, card, dir)
+          seed['tree-mesh'][tree.name] = tree
+          seed['show-tree-mesh'][tree.name] = tree
           break
         }
         case 'face': {
@@ -118,6 +121,44 @@ function parseBear(nest, card, dir) {
   return shared.findPath(str.join(''), dir)
 }
 
+function parseTree(nest, card, dir) {
+  const name = shared.getSimpleTerm(nest.nest[0])
+  const tree = {
+    like: 'tree',
+    name,
+    take: [],
+    hook: {}
+  }
+  nest.nest.slice(1).forEach(nest => {
+    if (shared.isSimpleTerm(nest)) {
+      const term = shared.getSimpleTerm(nest)
+      switch (term) {
+        case 'take':
+          tree.take.push(parseTake(nest, card, dir))
+          break
+        case 'hook':
+          const hook = parseTreeHook(nest, card, dir)
+          tree.hook[hook.name] = hook
+          break
+        default:
+          throw new Error(`${term} - ${card.seed.link}`)
+      }
+    } else {
+      throw new Error(`${card.seed.link}`)
+    }
+  })
+  return tree
+}
+
+function parseTreeHook(nest, card, dir) {
+  const name = shared.getSimpleTerm(nest.nest[0])
+  const hook = {
+    name,
+    link: nest.nest.slice(1)
+  }
+  return hook
+}
+
 function parseLoad(nest, card, dir) {
   const load = {
     like: 'load',
@@ -137,7 +178,7 @@ function parseLoad(nest, card, dir) {
           const term = shared.getSimpleTerm(nest)
           switch (term) {
             case 'take':
-              const take = parseTake(nest)
+              const take = parseLoadTake(nest)
               load.take.push(take)
               break
             case 'load':
@@ -159,7 +200,37 @@ function parseLoad(nest, card, dir) {
   return load
 }
 
-function parseTake(nest) {
+function parseTake(nest, card, dir) {
+  const name = shared.getSimpleTerm(nest.nest[0])
+  const take = {
+    name,
+    like: undefined,
+    void: false,
+  }
+  nest.nest.slice(1).forEach(nest => {
+    if (shared.isSimpleTerm(nest)) {
+      const term = shared.getSimpleTerm(nest)
+      switch (term) {
+        case 'like':
+          // TODO
+          break
+        case 'void':
+          // TODO
+          const voidState = shared.getSimpleTerm(nest)
+          take.void = voidState === 'true'
+          break
+        default:
+          throw new Error(`${term} - ${card.seed.link}`)
+      }
+    } else {
+      throw new Error(card.seed.link)
+    }
+  })
+  console.log(take)
+  return take
+}
+
+function parseLoadTake(nest) {
   const scope = nest.nest[0]
   const scopeTerm = shared.getSimpleTerm(scope)
   const name = scope.nest[0]
