@@ -47,7 +47,7 @@ class Base {
     let card = this.card_mesh.get(hash)
 
     if (!card) {
-      card = new Card
+      card = new Card(hash)
       this.card_mesh.set(hash, card)
     }
 

@@ -3,57 +3,22 @@ const fs = require('fs')
 const parse = require('./parse')
 const Base = require('./base/base')
 const Card = require('./base/card')
+const shared = require('./shared')
+const parseDeckCard = require('./card/deck')
 
-const path = '../wolf.link/base.link'
-
-const content = fs.readFileSync(path, 'utf-8')
+const link = shared.findPath('@treesurf/wolf')
+const content = fs.readFileSync(link, 'utf-8')
 const base = new Base()
 
 const system = {
-  [path]: content
+  [link]: content
 }
 
-invoke(path, system, base)
+load(link, system, base)
 
-function invoke(link, system, base) {
+function load(link, system, base) {
   const linkTree = parse(system[link])
   const card = base.card(link)
-  card.bind({
-    text: system[path],
-    link
-  })
-
-  linkTree.site.forEach(site => {
-    const node = loadLeafList(card, site.leaf)
-    site.site.forEach(site => {
-
-    })
-  })
-  // compile(link, base)
+  return parseDeckCard(link, linkTree, system, base, card)
 }
 
-function loadLeafList(card, leafList) {
-  const node = {
-    hold: {
-      size: leafList.length,
-      link: []
-    }
-  }
-
-  leafList.forEach(leaf => {
-    if (leaf.form === 'term') {
-      node.hold.size--
-      node.hold.link.push(leaf.link[0].cord)
-    } else {
-      throw new Error(JSON.stringify(leaf))
-    }
-  })
-
-  if (!node.hold.size) {
-    const term = node.hold.link.join('')
-    node.form = term
-    node.hold = null
-  }
-
-  return node
-}

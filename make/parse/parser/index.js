@@ -3,34 +3,34 @@ module.exports = parse
 
 function parse(list) {
   const start = {
-    form: 'site',
-    leaf: [
+    like: 'nest',
+    line: [
       {
-        form: 'term',
+        like: 'term',
         link: [
           {
-            form: 'cord',
+            like: 'cord',
             cord: 'file'
           }
         ]
       }
     ],
-    site: []
+    nest: []
   }
   const stack = [ start ]
   let i = 0
 
   while (i < list.length) {
     const token = list[i++]
-    // console.log(token.form, stack)
+    // console.log(token.like, stack)
     switch (token.form) {
       case `term-open`: {
         const node = stack[stack.length - 1]
         const term = {
-          form: 'term',
+          like: 'term',
           link: []
         }
-        node.leaf.push(term)
+        node.line.push(term)
         stack.push(term)
         break
       }
@@ -40,13 +40,13 @@ function parse(list) {
       }
       case `open-parenthesis`: {
         const node = stack[stack.length - 1]
-        const site = {
-          form: 'site',
-          leaf: [],
-          site: []
+        const nest = {
+          like: 'nest',
+          line: [],
+          nest: []
         }
-        node.site.push(site)
-        stack.push(site)
+        node.nest.push(nest)
+        stack.push(nest)
         break
       }
       case `close-parenthesis`: {
@@ -57,24 +57,24 @@ function parse(list) {
         stack.pop()
         const node = stack[stack.length - 1]
 
-        const site = {
-          form: 'site',
-          leaf: [],
-          site: []
+        const nest = {
+          like: 'nest',
+          line: [],
+          nest: []
         }
-        node.site.push(site)
-        stack.push(site)
+        node.nest.push(nest)
+        stack.push(nest)
         break
       }
       case `term-part`: {
         const term = stack[stack.length - 1]
         const last = term.link[term.link.length - 1]
-        if (last && last.form === 'cord') {
+        if (last && last.like === 'cord') {
           last.cord += token.text
           last.end = token.end
         } else {
           term.link.push({
-            form: 'cord',
+            like: 'cord',
             cord: token.text,
             start: token.start,
             end: token.end,
@@ -87,13 +87,13 @@ function parse(list) {
       }
       case `open-nest`: {
         const node = stack[stack.length - 1]
-        const site = {
-          form: 'site',
-          leaf: [],
-          site: []
+        const nest = {
+          like: 'nest',
+          line: [],
+          nest: []
         }
-        node.leaf.push(site)
-        stack.push(site)
+        node.line.push(nest)
+        stack.push(nest)
         break
       }
       case `close-nest`: {
@@ -103,10 +103,10 @@ function parse(list) {
       case `open-text`: {
         const node = stack[stack.length - 1]
         const text = {
-          form: 'text',
+          like: 'text',
           link: []
         }
-        node.leaf.push(text)
+        node.line.push(text)
         stack.push(text)
         break
       }
@@ -116,14 +116,14 @@ function parse(list) {
       }
       case `open-interpolation`: {
         const text = stack[stack.length - 1]
-        const site = {
-          form: 'site',
-          leaf: [],
-          site: [],
-          size: token.length
+        const nest = {
+          like: 'nest',
+          line: [],
+          nest: [],
+          size: token.text.length
         }
-        text.link.push(site)
-        stack.push(site)
+        text.link.push(nest)
+        stack.push(nest)
         break
       }
       case `close-interpolation`: {
@@ -133,13 +133,13 @@ function parse(list) {
       case `text`: {
         const text = stack[stack.length - 1]
         const last = text.link[text.link.length - 1]
-        if (last && last.form === 'cord') {
+        if (last && last.like === 'cord') {
           last.cord += token.text
           last.end = token.end
         } else {
           text.link.push({
-            form: `cord`,
-            text: token.text,
+            like: `cord`,
+            cord: token.text,
             start: token.start,
             end: token.end
           })
@@ -151,41 +151,41 @@ function parse(list) {
         break
       }
       case `mark`: {
-        const site = stack[stack.length - 1]
+        const nest = stack[stack.length - 1]
         const mark = {
-          form: `mark`,
+          like: `mark`,
           mark: parseInt(token.text, 10),
           start: token.start,
           end: token.end
         }
-        site.leaf.push(mark)
+        nest.line.push(mark)
         break
       }
       case `code`: {
         const node = stack[stack.length - 1]
         token.text.match(/#(\w)(\w+)/)
-        let form = RegExp.$1
+        let like = RegExp.$1
         let val = RegExp.$2
-        if (!form.match(/[ubohx]/)) throw new Error(form)
+        if (!like.match(/[ubohx]/)) throw new Error(like)
         const code = {
-          form: 'code',
-          base: form,
+          like: 'code',
+          base: like,
           code: val,//String.fromCharCode(parseInt(val, 16))
           start: token.start,
           end: token.end
         }
-        node.leaf.push(code)
+        node.line.push(code)
         break
       }
       case `comb`: {
         const node = stack[stack.length - 1]
         const comb = {
-          form: `comb`,
+          like: `comb`,
           fill: parseFloat(token.text),
           start: token.start,
           end: token.end
         }
-        node.leaf.push(comb)
+        node.line.push(comb)
         break
       }
     }

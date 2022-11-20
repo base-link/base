@@ -1,6 +1,7 @@
 
 class Card {
-  constructor() {
+  constructor(hash) {
+    this.hash = hash
     this.seed = {}
   }
 
