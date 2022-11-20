@@ -9,10 +9,15 @@ module.exports = {
   isText,
   getText,
   findPath,
+  readNest,
 }
 
 function isText(nest) {
   if (nest.line.length > 1) {
+    return false
+  }
+
+  if (nest.line.length === 0) {
     return false
   }
 
@@ -24,17 +29,32 @@ function isText(nest) {
   return false
 }
 
-function getText(nest) {
+function getText(nest, card) {
   if (nest.line.length > 1) {
-    return false
+    return
   }
 
   let line = nest.line[0]
-  if (line.like === 'text') {
-    return line.link[0].cord
+  if (line.like !== 'text') {
+    return
   }
 
-  return false
+  const str = []
+  line.link.forEach(link => {
+    switch (link.like) {
+      case 'cord':
+        str.push(link.cord)
+        break
+      case 'nest':
+        const text = readNest(link, card)
+        str.push(text)
+        break
+      default:
+        throw new Error(card.seed.link)
+    }
+  })
+
+  return str.join('')
 }
 
 function getSimpleTerm(nest) {
@@ -59,6 +79,10 @@ function getSimpleTerm(nest) {
 
 function isSimpleTerm(nest) {
   if (nest.line.length > 1) {
+    return false
+  }
+
+  if (nest.line.length === 0) {
     return false
   }
 
@@ -99,10 +123,10 @@ function doesHaveFind(nest) {
 
 function findPath(link, context = process.cwd()) {
   if (link.startsWith('@treesurf')) {
-    link = link.replace(/@treesurf\/(\w+)/, (_, $1) => `../${$1}.link`)
+    link = pathResolve.resolve(link.replace(/@treesurf\/(\w+)/, (_, $1) => `../${$1}.link`))
+  } else {
+    link = pathResolve.join(context, link)
   }
-
-  link = pathResolve.join(context, link)
 
   if (fs.existsSync(`${link}/base.link`)) {
     link = `${link}/base.link`
@@ -113,4 +137,24 @@ function findPath(link, context = process.cwd()) {
   }
 
   return link
+}
+
+function readNest(nest, card) {
+  let value = card.seed
+
+  nest.line.forEach(line => {
+    switch (line.like) {
+      case 'term':
+        if (line.link.length > 1) {
+          throw new Error(card.seed.link)
+        } else {
+          const link = line.link[0]
+          value = value[link.cord]
+        }
+        break
+      default:
+        throw new Error(line.like + ' ' + card.seed.link)
+    }
+  })
+  return value
 }

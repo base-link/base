@@ -132,17 +132,34 @@ function parse(list) {
       }
       case `text`: {
         const text = stack[stack.length - 1]
-        const last = text.link[text.link.length - 1]
-        if (last && last.like === 'cord') {
-          last.cord += token.text
-          last.end = token.end
+        if (text.like === 'text') {
+          const last = text.link[text.link.length - 1]
+          if (last && last.like === 'cord') {
+            last.cord += token.text
+            last.end = token.end
+          } else {
+            text.link.push({
+              like: `cord`,
+              cord: token.text,
+              start: token.start,
+              end: token.end
+            })
+          }
         } else {
-          text.link.push({
-            like: `cord`,
-            cord: token.text,
-            start: token.start,
-            end: token.end
-          })
+          const node = stack[stack.length - 1]
+          const text = {
+            like: 'text',
+            link: [
+              {
+                like: `cord`,
+                cord: token.text,
+                start: token.start,
+                end: token.end
+              }
+            ]
+          }
+          node.line.push(text)
+          // stack.push(text)
         }
         break
       }

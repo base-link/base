@@ -16,8 +16,10 @@ const termPatterns = [
   [/^\//, 'nest-separator', true],
   [/^\[/, 'open-nest'],
   [/^\]/, 'close-nest'],
+  [/^[@\/\.][^\s]*/, 'text', true],
   [/^, /, 'slot'],
   [/^#\w+/, 'code', true],
+  [/^# .+/, 'comment'],
 ]
 
 const stringPatterns = [

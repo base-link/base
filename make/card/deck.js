@@ -5,11 +5,14 @@ const parse = require('../parse')
 const shared = require('../shared')
 const parseCodeCard = require('./code')
 
+parseCodeCard.parseDeckCard = parseDeckCard
+
 module.exports = parseDeckCard
 
-function parseDeckCard(link, linkTree, system, base, card) {
+function parseDeckCard(link, linkTree, base) {
+  const card = base.card(link)
   card.bind({
-    text: system[link],
+    text: base.system[link],
     link, // file path
     like: 'deck-card',
     base, // global environment, has `home` env vars.
@@ -38,6 +41,13 @@ function parseDeckCard(link, linkTree, system, base, card) {
     const bearText = fs.readFileSync(bearLink, 'utf-8')
     const bearLinkTree = parse(bearText)
     parseCodeCard(bearLink, bearText, bearLinkTree, base)
+  }
+
+  if (card.seed.deck.test) {
+    let testLink = shared.findPath(card.seed.deck.test, dir)
+    const testText = fs.readFileSync(testLink, 'utf-8')
+    const testLinkTree = parse(testText)
+    parseCodeCard(testLink, testText, testLinkTree, base)
   }
 }
 

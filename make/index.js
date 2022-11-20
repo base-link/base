@@ -9,6 +9,10 @@ const parseDeckCard = require('./card/deck')
 const link = shared.findPath('@treesurf/wolf')
 const content = fs.readFileSync(link, 'utf-8')
 const base = new Base()
+base.site = {
+  dock: 'javascript',
+  site: 'test',
+}
 
 const system = {
   [link]: content
@@ -17,8 +21,8 @@ const system = {
 load(link, system, base)
 
 function load(link, system, base) {
+  base.system = system
   const linkTree = parse(system[link])
-  const card = base.card(link)
-  return parseDeckCard(link, linkTree, system, base, card)
+  return parseDeckCard(link, linkTree, base)
 }
 
