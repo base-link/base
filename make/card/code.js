@@ -425,12 +425,28 @@ function parseTask(nest, card, dir) {
   return task
 }
 
-function parseCall(nest, card, dir) {
+function parseCall(nest, card, seed) {
   const name = shared.getSimpleTerm(nest.nest[0])
   const call = {
     name,
-    bind: []
+    bind: [],
+    hook: {}
   }
+
+  nest.nest.slice(1).forEach(nest => {
+    if (shared.isSimpleTerm(nest)) {
+      const term = shared.getSimpleTerm(nest)
+      switch (term) {
+        case 'hook':
+          const hook = parseHook(nest, card, seed)
+          call.hook[hook.name] = hook
+          break
+      }
+    } else {
+      throw new Error(`${card.seed.link}`)
+    }
+  })
+
   return call
 }
 
@@ -439,18 +455,24 @@ function parseTree(nest, card, dir) {
   const tree = {
     like: 'tree',
     name,
-    take: [],
-    hook: {}
+    take: {},
+    hook: {},
+    seed: {
+      base: card.seed,
+      site: {},
+    }
   }
   nest.nest.slice(1).forEach(nest => {
     if (shared.isSimpleTerm(nest)) {
       const term = shared.getSimpleTerm(nest)
       switch (term) {
         case 'take':
-          tree.take.push(parseTake(nest, card, dir))
+          const take = parseTake(nest, card, dir)
+          tree.take[take.name] = take
+          tree.seed.site[take.name] = take
           break
         case 'hook':
-          const hook = parseTreeHook(nest, card, dir)
+          const hook = parseTreeHook(nest, card, tree.seed)
           tree.hook[hook.name] = hook
           break
         default:
@@ -463,12 +485,47 @@ function parseTree(nest, card, dir) {
   return tree
 }
 
-function parseTreeHook(nest, card, dir) {
+function parseHook(nest, card, seed) {
   const name = shared.getSimpleTerm(nest.nest[0])
   const hook = {
     name,
-    link: nest.nest.slice(1)
+    take: {},
+    call: [],
+    seed: {
+      base: seed,
+      site: {},
+    }
   }
+
+  nest.nest.slice(1).forEach(nest => {
+    if (shared.isSimpleTerm(nest)) {
+      const term = shared.getSimpleTerm(nest)
+      switch (term) {
+        case 'take':
+          const take = parseTake(nest, card)
+          hook.take[take.name] = take
+          hook.seed.site[take.name] = take
+          break
+        case 'call':
+          break
+        default:
+          throw new Error(`${term} - ${card.seed.link}`)
+      }
+    } else {
+      throw new Error(`${card.seed.link}`)
+    }
+  })
+
+  return hook
+}
+
+function parseTreeHook(nest, card, seed) {
+  const name = shared.getSimpleTerm(nest.nest[0])
+  const hook = {
+    name,
+    link: nest.nest.slice(1),
+  }
+
   return hook
 }
 
