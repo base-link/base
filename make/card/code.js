@@ -64,8 +64,8 @@ function parseCodeCard(link, text, linkTree, base) {
         }
         case 'tree': {
           const tree = parseTree(nest, card, dir)
-          seed['tree-mesh'][tree.name] = tree
-          seed['show-tree-mesh'][tree.name] = tree
+          seed['tree-mesh'][tree.mesh.name] = tree
+          seed['show-tree-mesh'][tree.mesh.name] = tree
           break
         }
         case 'face': {
@@ -76,14 +76,14 @@ function parseCodeCard(link, text, linkTree, base) {
         }
         case 'host': {
           const host = parseHost(nest, card, dir)
-          seed['host-mesh'][host.name] = host
-          seed['show-host-mesh'][host.name] = host
+          seed['host-mesh'][host.mesh.name] = host
+          seed['show-host-mesh'][host.mesh.name] = host
           break
         }
         case 'form': {
           const form = parseForm(nest, card, dir)
-          seed['form-mesh'][form.name] = form
-          seed['show-form-mesh'][form.name] = form
+          seed['form-mesh'][form.mesh.name] = form
+          seed['show-form-mesh'][form.mesh.name] = form
           break
         }
         case 'suit': {
@@ -144,32 +144,32 @@ function parseBear(nest, card, dir) {
 
 function parseHost(nest, card, dir) {
   const name = shared.getSimpleTerm(nest.nest[0])
-  const host = {
+  const host = makeMeshLink({
     like: 'host',
     name,
     bond: undefined,
     like: undefined,
-  }
+  })
 
   nest.nest.slice(1).forEach(nest => {
     if (shared.isSimpleTerm(nest)) {
       const term = shared.getSimpleTerm(nest)
       switch (term) {
         case 'like':
-          host.like = parseLike(nest)
+          host.mesh.like = parseLike(nest)
           break
         case 'term':
           break
         case 'mark':
           const mark = parseMark(nest.nest[0])
-          host.bond = mark
+          host.mesh.bond = mark
           break
         case 'note':
           break
         case 'host':
-          host.bond ??= {}
+          host.mesh.bond ??= {}
           const host2 = parseHost(nest, card, dir)
-          host.bond[host2.name] = host2
+          host.mesh.bond[host2.mesh.name] = host2
           break
         case 'name':
           break
@@ -179,9 +179,9 @@ function parseHost(nest, card, dir) {
           throw new Error(`${term} - ${card.seed.link}`)
       }
     } else if (shared.isText(nest)) {
-      host.bond = shared.getText(nest)
+      host.mesh.bond = shared.getText(nest)
     } else if (shared.isMark(nest)) {
-      host.bond = shared.getMark(nest)
+      host.mesh.bond = shared.getMark(nest)
     } else {
       console.log(nest)
       throw new Error(`${card.seed.link}`)
@@ -227,14 +227,14 @@ function parseMark(nest) {
 
 function parseForm(nest, card, dir) {
   const name = shared.getSimpleTerm(nest.nest[0])
-  const form = {
+  const form = makeMeshLink({
     like: 'form',
     name,
-    head: {},
-    link: {},
-    wear: {},
-    task: {}
-  }
+    head: makeMeshLink({}),
+    link: makeMeshLink({}),
+    wear: makeMeshLink({}),
+    task: makeMeshLink({})
+  })
 
   nest.nest.slice(1).forEach(nest => {
     if (shared.isSimpleTerm(nest)) {
@@ -242,14 +242,15 @@ function parseForm(nest, card, dir) {
       switch (term) {
         case 'link':
           const link = parseTake(nest, card, dir)
-          form.link[link.name] = link
+          setMeshLink(form.mesh.link, link.name, link)
           break
         case 'task':
           const task = parseTask(nest, card, dir)
-          form.task[task.name] = task
+          setMeshLink(form.mesh.task, task.name, task)
           break
         case 'head':
-
+          const head = parseTake(nest, card, dir)
+          setMeshLink(form.mesh.link, head.name, head)
           break
         case 'wear':
 
@@ -355,15 +356,15 @@ function parseSuit(nest, card, dir) {
 
 function parseTask(nest, card, dir) {
   const name = shared.getSimpleTerm(nest.nest[0])
-  const task = {
+  const task = makeMeshLink({
     like: 'task',
     name,
-    head: {},
-    take: {},
-    free: {},
-    task: {},
+    head: makeMeshLink({}),
+    take: makeMeshLink({}),
+    free: makeMeshLink({}),
+    task: makeMeshLink({}),
     call: [],
-  }
+  })
 
   nest.nest.slice(1).forEach(nest => {
     if (shared.isSimpleTerm(nest)) {
@@ -371,23 +372,23 @@ function parseTask(nest, card, dir) {
       switch (term) {
         case 'take':
           const take = parseTake(nest, card, dir)
-          task.take[take.name] = take
+          makeMeshLink(task.mesh.take, take.name, take)
           break
         case 'task':
           const task2 = parseTask(nest, card, dir)
-          task.task[task2.name] = task2
+          makeMeshLink(task.mesh.task, task2.mesh.name, task2)
           break
         case 'head':
           const head = parseTake(nest, card, dir)
-          task.head[head.name] = head
+          makeMeshLink(task.mesh.head, head.name, head)
           break
         case 'free':
           const free = parseTake(nest, card, dir)
-          task.free[free.name] = free
+          makeMeshLink(task.mesh.free, free.name, free)
           break
         case 'call':
           const call = parseCall(nest, card, dir)
-          task.call.push(call)
+          task.mesh.call.push(call)
           break
         case 'save':
           break
@@ -450,30 +451,42 @@ function parseCall(nest, card, seed) {
   return call
 }
 
+function makeMeshLink(mesh) {
+  return {
+    like: 'mesh-link',
+    mesh,
+  }
+}
+
+function setMeshLink(meshLink, name, value) {
+  meshLink.mesh[name] = value
+}
+
 function parseTree(nest, card, dir) {
   const name = shared.getSimpleTerm(nest.nest[0])
-  const tree = {
+  const tree = makeMeshLink({
     like: 'tree',
     name,
-    take: {},
-    hook: {},
-    seed: {
+    take: makeMeshLink({}),
+    hook: makeMeshLink({}),
+    seed: makeMeshLink({
+      like: 'seed',
       base: card.seed,
-      site: {},
-    }
-  }
+      site: makeMeshLink({}),
+    })
+  })
   nest.nest.slice(1).forEach(nest => {
     if (shared.isSimpleTerm(nest)) {
       const term = shared.getSimpleTerm(nest)
       switch (term) {
         case 'take':
           const take = parseTake(nest, card, dir)
-          tree.take[take.name] = take
-          tree.seed.site[take.name] = take
+          setMeshLink(tree.mesh.take, take.name, take)
+          setMeshLink(tree.mesh.seed.mesh.site, take.name, take)
           break
         case 'hook':
           const hook = parseTreeHook(nest, card, tree.seed)
-          tree.hook[hook.name] = hook
+          setMeshLink(tree.mesh.hook, hook.name, hook)
           break
         default:
           throw new Error(`${term} - ${card.seed.link}`)
