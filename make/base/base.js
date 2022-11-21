@@ -7,6 +7,53 @@ class Base {
     this.hook_mesh = new Map()
     this.free_mesh = new Map()
     this.card_mesh = new Map()
+    this.wait_seek_mesh = new Map()
+    this.wait_find_mesh = new Map()
+  }
+
+  seek(hash, name, site, link) {
+    let seek = this.wait_seek_mesh.get(hash)
+    if (!seek) {
+      seek = new Map()
+      this.wait_seek_mesh.set(hash, seek)
+    }
+
+    let list = seek.get(name)
+    if (!list) {
+      list = []
+      seek.set(name, list)
+    }
+
+    list.push({ site, link })
+  }
+
+  find(hash, name, load) {
+    let find = this.wait_find_mesh.get(hash)
+    if (!find) {
+      find = new Map()
+      this.wait_find_mesh.set(hash, find)
+    }
+
+    find.set(name, load)
+  }
+
+  load() {
+    for (const [hash, find] of this.wait_find_mesh) {
+      for (const [name, load] of find) {
+        const seek = this.wait_seek_mesh.get(hash)
+        if (seek) {
+          const bind_list = seek.get(name)
+          if (bind_list) {
+            for (const bind of bind_list) {
+              bind.site[bind.link] = {
+                like: 'bind-link',
+                bind: load
+              }
+            }
+          }
+        }
+      }
+    }
   }
 
   link(hash, list) {
