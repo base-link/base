@@ -23,6 +23,7 @@ load(link, system, base)
 function load(link, system, base) {
   base.system = system
   const linkTree = parse(system[link])
-  return parseDeckCard(link, linkTree, base)
+  parseDeckCard(link, linkTree, base)
+  // console.log(base)
 }
 

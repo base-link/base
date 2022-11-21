@@ -10,6 +10,64 @@ module.exports = {
   getText,
   findPath,
   readNest,
+  isCode,
+  getCodeAsNumber,
+  isMark,
+  getMark,
+}
+
+function getMark(nest) {
+  const line = nest.line[0]
+  return line.mark
+}
+
+function isMark(nest) {
+  if (nest.line.length > 1) {
+    return false
+  }
+
+  if (nest.line.length === 0) {
+    return false
+  }
+
+  let line = nest.line[0]
+  if (line.like === 'mark') {
+    return true
+  }
+
+  return false
+}
+
+function getCodeAsNumber(nest) {
+  let line = nest.line[0]
+  let type = line.base
+  let rest = line.code
+
+  switch (type) {
+    case 'b': return parseInt(rest, 2)
+    case 'x': return parseInt(rest, 16)
+    case 'o': return parseInt(rest, 8)
+    case 'h': return parseInt(rest, 16)
+    default:
+      throw new Error(line.code)
+  }
+}
+
+function isCode(nest) {
+  if (nest.line.length > 1) {
+    return false
+  }
+
+  if (nest.line.length === 0) {
+    return false
+  }
+
+  let line = nest.line[0]
+  if (line.like === 'code') {
+    return true
+  }
+
+  return false
 }
 
 function isText(nest) {
