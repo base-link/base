@@ -9,7 +9,6 @@ module.exports = {
   isText,
   getText,
   findPath,
-  readNest,
   isCode,
   getCodeAsNumber,
   isMark,
@@ -112,7 +111,7 @@ function isText(nest) {
   return false
 }
 
-function getText(nest, card) {
+function getText(nest, seed) {
   if (nest.line.length > 1) {
     return
   }
@@ -129,11 +128,11 @@ function getText(nest, card) {
         str.push(link.cord)
         break
       case 'nest':
-        const text = readNest(link, card)
+        const text = readNest(link, seed)
         str.push(text)
         break
       default:
-        throw new Error(card.seed.link)
+        throw new Error(seed.link)
     }
   })
 
@@ -206,9 +205,9 @@ function doesHaveFind(nest) {
 
 function findPath(link, context = process.cwd()) {
   if (link.startsWith('@treesurf')) {
-    link = pathResolve.resolve(link.replace(/@treesurf\/(\w+)/, (_, $1) => `../${$1}.link`))
+    link = pathResolve.resolve(link.replace(/@treesurf\/(\w+)/, (_, $1) => `../${$1}.link`)).replace(/\/$/, '')
   } else {
-    link = pathResolve.join(context, link)
+    link = pathResolve.join(context, link).replace(/\/$/, '')
   }
 
   if (fs.existsSync(`${link}/base.link`)) {
@@ -220,24 +219,4 @@ function findPath(link, context = process.cwd()) {
   }
 
   return link
-}
-
-function readNest(nest, card) {
-  let value = card.seed
-
-  nest.line.forEach(line => {
-    switch (line.like) {
-      case 'term':
-        if (line.link.length > 1) {
-          throw new Error(card.seed.link)
-        } else {
-          const link = line.link[0]
-          value = value[link.cord]
-        }
-        break
-      default:
-        throw new Error(line.like + ' ' + card.seed.link)
-    }
-  })
-  return value
 }
