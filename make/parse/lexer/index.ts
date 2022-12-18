@@ -1,9 +1,38 @@
+module.exports = lex
 
-type FormTokenType = {
-  form: string
-}
+type LexerBasicTokenLikeType =
+  | 'line'
+  | 'open-indentation'
+  | 'close-indentation'
+  | 'term-open'
+  | 'term-close'
+  | 'end-slot'
 
-type DataTokenType = FormTokenType & {
+type LexerDataTokenLikeType =
+  | 'comb'
+  | 'mark'
+  | 'open-parenthesis'
+  | 'close-parenthesis'
+  | 'open-text'
+  | 'close-text'
+  | 'open-interpolation'
+  | 'close-interpolation'
+  | 'term-part'
+  | 'term-part-separator'
+  | 'nest-separator'
+  | 'open-nest'
+  | 'close-nest'
+  | 'text'
+  | 'slot'
+  | 'code'
+  | 'comment'
+
+type LexerPatternLikeType =
+  | LexerBasicTokenLikeType
+  | LexerDataTokenLikeType
+
+export type LexerDataTokenType = {
+  like: LexerDataTokenLikeType
   text: string
   start: number
   end: number
@@ -12,31 +41,169 @@ type DataTokenType = FormTokenType & {
   lineCharacterNumberEnd: number
 }
 
-export type TokenType = FormTokenType | DataTokenType
+type LexerPatternAType = [RegExp, LexerPatternLikeType]
 
-module.exports = lex
+type LexerPatternBType = [RegExp, LexerPatternLikeType, boolean]
 
-type PatternAType = [RegExp, string]
-
-type PatternBType = [RegExp, string, boolean]
-
-type PatternCType = [RegExp, string, boolean | null, boolean]
-
-type PatternDType = [
+type LexerPatternCType = [
   RegExp,
-  string,
+  LexerPatternLikeType,
+  boolean | null,
+  boolean,
+]
+
+type LexerPatternDType = [
+  RegExp,
+  LexerPatternLikeType,
   boolean,
   boolean | null,
   (t: string) => string,
 ]
 
-type PatternType =
-  | PatternAType
-  | PatternBType
-  | PatternCType
-  | PatternDType
+type LexerPatternType =
+  | LexerPatternAType
+  | LexerPatternBType
+  | LexerPatternCType
+  | LexerPatternDType
 
-const termPatterns: Array<PatternType> = [
+type LexerLineTokenType = {
+  like: 'line'
+}
+
+type LexerOpenIndentationTokenType = {
+  like: 'open-indentation'
+}
+
+type LexerCloseIndentationTokenType = {
+  like: 'close-indentation'
+}
+
+type LexerTermOpenTokenType = {
+  like: 'term-open'
+}
+
+type LexerTermCloseTokenType = {
+  like: 'term-close'
+}
+
+type LexerEndSlotTokenType = {
+  like: 'end-slot'
+}
+
+type LexerCombTokenType = LexerDataTokenType & {
+  like: 'comb'
+}
+
+type LexerMarkTokenType = LexerDataTokenType & {
+  like: 'mark'
+}
+
+type LexerOpenParenthesisTokenType = LexerDataTokenType & {
+  like: 'open-parenthesis'
+}
+
+type LexerCloseParenthesisTokenType = LexerDataTokenType & {
+  like: 'close-parenthesis'
+}
+
+type LexerOpenTextTokenType = LexerDataTokenType & {
+  like: 'open-text'
+}
+
+type LexerCloseTextTokenType = LexerDataTokenType & {
+  like: 'close-text'
+}
+
+type LexerOpenInterpolationTokenType = LexerDataTokenType & {
+  like: 'open-interpolation'
+}
+
+type LexerCloseInterpolationTokenType = LexerDataTokenType & {
+  like: 'close-interpolation'
+}
+
+type LexerTermPartTokenType = LexerDataTokenType & {
+  like: 'term-part'
+}
+
+type LexerTermPartSeparatorTokenType = LexerDataTokenType & {
+  like: 'term-part-separator'
+}
+
+type LexerNestSeparatorTokenType = LexerDataTokenType & {
+  like: 'nest-separator'
+}
+
+type LexerOpenNestTokenType = LexerDataTokenType & {
+  like: 'open-nest'
+}
+
+type LexerCloseNestTokenType = LexerDataTokenType & {
+  like: 'close-nest'
+}
+
+type LexerTextTokenType = LexerDataTokenType & {
+  like: 'text'
+}
+
+type LexerSlotTokenType = LexerDataTokenType & {
+  like: 'slot'
+}
+
+type LexerCodeTokenType = LexerDataTokenType & {
+  like: 'code'
+}
+
+type LexerCommentTokenType = LexerDataTokenType & {
+  like: 'comment'
+}
+
+export const LEXER_DATA_TOKEN_TYPE = [
+  'comb',
+  'mark',
+  'open-parenthesis',
+  'close-parenthesis',
+  'open-text',
+  'close-text',
+  'open-interpolation',
+  'close-interpolation',
+  'term-part',
+  'term-part-separator',
+  'nest-separator',
+  'open-nest',
+  'close-nest',
+  'text',
+  'slot',
+  'code',
+  'comment',
+]
+
+export type LexerTokenType =
+  | LexerCombTokenType
+  | LexerMarkTokenType
+  | LexerOpenParenthesisTokenType
+  | LexerCloseParenthesisTokenType
+  | LexerOpenTextTokenType
+  | LexerCloseTextTokenType
+  | LexerOpenInterpolationTokenType
+  | LexerCloseInterpolationTokenType
+  | LexerTermPartTokenType
+  | LexerTermPartSeparatorTokenType
+  | LexerNestSeparatorTokenType
+  | LexerOpenNestTokenType
+  | LexerCloseNestTokenType
+  | LexerTextTokenType
+  | LexerSlotTokenType
+  | LexerCodeTokenType
+  | LexerCommentTokenType
+  | LexerLineTokenType
+  | LexerOpenIndentationTokenType
+  | LexerCloseIndentationTokenType
+  | LexerTermOpenTokenType
+  | LexerTermCloseTokenType
+  | LexerEndSlotTokenType
+
+const termPatterns: Array<LexerPatternType> = [
   [/^-?\d+\.\d+/, 'comb', true],
   [/^-?\d+(?=[\s\n,\/\)\}])/, 'mark', true],
   [/^\(/, 'open-parenthesis'],
@@ -57,7 +224,7 @@ const termPatterns: Array<PatternType> = [
   [/^# .+/, 'comment'],
 ]
 
-const stringPatterns: Array<PatternType> = [
+const stringPatterns: Array<LexerPatternType> = [
   [/^\{+/, 'open-interpolation', true],
   [
     /^(?:\\[<>\{\}])+/,
@@ -70,15 +237,15 @@ const stringPatterns: Array<PatternType> = [
   [/^>/, 'close-text'],
 ]
 
-function lex(text: string): Array<TokenType> {
+function lex(text: string): Array<LexerTokenType> {
   let str = text
-  const tokens: Array<TokenType> = []
+  const tokens: Array<LexerTokenType> = []
 
   const indents = [0]
   let nesting = 0
   let matched = false
   let isString = false
-  const typeStack = ['tree']
+  const typeStack: Array<string> = ['tree']
 
   let lineNumber = 0
   let lineCharacterNumber = 0
@@ -107,13 +274,13 @@ function lex(text: string): Array<TokenType> {
       if (str.match(/^ *$/)) {
         while (nesting > 1) {
           tokens.push({
-            form: 'close-parenthesis',
+            like: 'close-indentation',
           })
           nesting--
         }
         while (indents.length) {
           tokens.push({
-            form: 'close-parenthesis',
+            like: 'close-indentation',
           })
           indents.pop()
         }
@@ -136,7 +303,7 @@ function lex(text: string): Array<TokenType> {
       if (newIndent === oldIndent) {
         while (nesting) {
           tokens.push({
-            form: 'close-parenthesis',
+            like: 'close-indentation',
           })
           nesting--
         }
@@ -144,12 +311,12 @@ function lex(text: string): Array<TokenType> {
         //   foo bar
         //   foo bar
         tokens.push({
-          form: 'line',
+          like: 'line',
         })
       } else if (newIndent > oldIndent) {
         while (nesting > 1) {
           tokens.push({
-            form: 'close-parenthesis',
+            like: 'close-indentation',
           })
           nesting--
         }
@@ -161,7 +328,7 @@ function lex(text: string): Array<TokenType> {
         //   foo bar baz
         //     foo bar
         tokens.push({
-          form: 'line',
+          like: 'line',
         })
         indents.push(newIndent)
         nesting = 0
@@ -171,20 +338,20 @@ function lex(text: string): Array<TokenType> {
         }
         while (nesting) {
           tokens.push({
-            form: 'close-parenthesis',
+            like: 'close-indentation',
           })
           nesting--
         }
         let diff = (oldIndent - newIndent) / 2
         while (diff) {
           tokens.push({
-            form: 'close-parenthesis',
+            like: 'close-indentation',
           })
           diff--
           indents.pop()
         }
         tokens.push({
-          form: 'line',
+          like: 'line',
         })
         // indents.push(newIndent)
       }
@@ -200,7 +367,7 @@ function lex(text: string): Array<TokenType> {
           const end = start + text.length
 
           const attrs = {
-            form: pattern[1],
+            like: pattern[1],
             text: '',
             start,
             end,
@@ -239,13 +406,13 @@ function lex(text: string): Array<TokenType> {
   }
   while (nesting > 1) {
     tokens.push({
-      form: 'close-parenthesis',
+      like: 'close-indentation',
     })
     nesting--
   }
   while (indents.length) {
     tokens.push({
-      form: 'close-parenthesis',
+      like: 'close-indentation',
     })
     indents.pop()
   }
@@ -253,59 +420,65 @@ function lex(text: string): Array<TokenType> {
   return normalize(tokens)
 }
 
-function normalize(list: Array<TokenType>): Array<TokenType> {
-  const out: Array<TokenType> = [{ form: 'open-parenthesis' }]
+function normalize(
+  list: Array<LexerTokenType>,
+): Array<LexerTokenType> {
+  const out: Array<LexerTokenType> = [
+    { like: 'open-indentation' },
+  ]
   let i = 0
   while (i < list.length) {
     const token = list[i++]
-    switch (token.form) {
-      case `open-parenthesis`: {
+    switch (token.like) {
+      case `open-parenthesis`:
+      case `open-indentation`: {
         out.push(token)
         break
       }
-      case `close-parenthesis`: {
+      case `close-parenthesis`:
+      case `close-indentation`: {
         out.push(token)
         break
       }
       case `term-part`: {
         const last = list[i - 2]
-        switch (last.form) {
+        switch (last.like) {
           case 'term-part':
           case 'term-part-separator':
           case 'close-interpolation':
             break
           default:
             out.push({
-              form: 'term-open',
+              like: 'term-open',
             })
             break
         }
         out.push(token)
         const next = list[i]
-        switch (next.form) {
+        switch (next.like) {
           case 'term-part':
           case 'term-part-separator':
           case 'open-interpolation':
             break
           default:
             out.push({
-              form: 'term-close',
+              like: 'term-close',
             })
             break
         }
         break
       }
       case 'term-part-separator': {
-        const typedToken = token as DataTokenType
-        const last = out[out.length - 1] as DataTokenType
-        if (last.form === 'term-part') {
+        const typedToken = token as LexerDataTokenType
+        const last = out[out.length - 1] as LexerDataTokenType
+        if (last.like === 'term-part') {
           last.text += typedToken.text
           last.end = typedToken.end
           last.lineCharacterNumberEnd =
             typedToken.lineCharacterNumberEnd
         } else {
           out.push({
-            form: 'term-part',
+            like: 'term-part',
             text: typedToken.text,
             start: typedToken.start,
             end: typedToken.end,
@@ -340,11 +513,12 @@ function normalize(list: Array<TokenType>): Array<TokenType> {
       }
       case `open-interpolation`: {
         const last = list[i - 2]
-        switch (last.form) {
+        switch (last.like) {
           case 'line':
-          case 'open-parenthesis': {
+          case 'open-parenthesis':
+          case 'open-indentation': {
             out.push({
-              form: 'term-open',
+              like: 'term-open',
             })
             break
           }
@@ -355,12 +529,12 @@ function normalize(list: Array<TokenType>): Array<TokenType> {
       case `close-interpolation`: {
         const last = list[i - 2]
 
-        switch (last.form) {
+        switch (last.like) {
           case 'close-text':
           case 'mark':
           case 'comb':
             out.push({
-              form: 'close-parenthesis',
+              like: 'close-indentation',
             })
             break
         }
@@ -369,13 +543,15 @@ function normalize(list: Array<TokenType>): Array<TokenType> {
 
         const next = list[i]
 
-        switch (next.form) {
+        switch (next.like) {
           case 'slot':
           case 'line':
           case 'open-parenthesis':
           case 'close-parenthesis':
+          case 'open-indentation':
+          case 'close-indentation':
             out.push({
-              form: 'term-close',
+              like: 'term-close',
             })
             break
         }
@@ -386,17 +562,15 @@ function normalize(list: Array<TokenType>): Array<TokenType> {
         break
       }
       case `slot`: {
-        out.push({
-          form: 'slot',
-        })
+        out.push(token)
         break
       }
       case `line`: {
-      // out.push({
-      //   form: 'close-parenthesis'
-      // })
+        // out.push({
+        //   like: 'close-parenthesis'
+        // })
         out.push({
-          form: 'slot',
+          like: 'end-slot',
         })
         break
       }
@@ -414,6 +588,6 @@ function normalize(list: Array<TokenType>): Array<TokenType> {
       }
     }
   }
-  out.push({ form: 'close-parenthesis' })
+  out.push({ like: 'close-indentation' })
   return out
 }

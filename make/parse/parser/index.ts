@@ -1,28 +1,81 @@
+import {
+  LexerTokenType,
+  LexerDataTokenType,
+  LEXER_DATA_TOKEN_TYPE,
+} from '../lexer'
 
-import { TokenType } from '../lexer'
-
-type TermType = {
-  like: string
-  link: Array<CordType>
+type ParserTokenNodeType = {
+  start: number
+  end: number
+  lineNumber: number
+  lineCharacterNumberStart: number
+  lineCharacterNumberEnd: number
 }
 
-type CordType = {
-  like: string
+type ParserTermNodeType = {
+  like: 'term'
+  link: Array<ParserCordNodeType | ParserTermNodeType>
+}
+
+type ParserTextNodeType = {
+  like: 'text'
+  link: Array<ParserCordNodeType | ParserSlotNodeType>
+}
+
+type ParserCordNodeType = ParserTokenNodeType & {
+  like: 'cord'
   cord: string
 }
 
-type NestType = {
-  like: string
-  line: Array<TermType>
-  nest: Array<NestType>
+type ParserCombNodeType = ParserTokenNodeType & {
+  like: 'comb'
+  comb: number
 }
 
-type ParseTokenType = TermType | CordType | NestType
+type ParserNestNodeType = {
+  like: 'nest'
+  line: Array<
+    | ParserTermNodeType
+    | ParserNestNodeType
+    | ParserTextNodeType
+    | ParserMarkNodeType
+    | ParserCodeNodeType
+    | ParserCombNodeType
+  >
+  nest: Array<ParserNestNodeType>
+}
+
+type ParserMarkNodeType = ParserTokenNodeType & {
+  like: 'mark'
+  mark: number
+}
+
+type ParserCodeNodeType = ParserTokenNodeType & {
+  like: 'code'
+  base: string
+  code: string
+}
+
+type ParserSlotNodeType = {
+  like: 'slot'
+  size: number
+  nest: ParserNestNodeType
+}
+
+type ParseNodeType =
+  | ParserTermNodeType
+  | ParserCordNodeType
+  | ParserNestNodeType
+  | ParserMarkNodeType
+  | ParserTextNodeType
+  | ParserSlotNodeType
+  | ParserCombNodeType
+  | ParserCodeNodeType
 
 module.exports = parse
 
-function parse(list: Array<TokenType>) {
-  const start = {
+function parse(list: Array<LexerTokenType>) {
+  const start: ParserNestNodeType = {
     like: 'nest',
     line: [
       {
@@ -30,27 +83,39 @@ function parse(list: Array<TokenType>) {
         link: [
           {
             like: 'cord',
-            cord: 'file'
-          }
-        ]
-      }
+            cord: 'file',
+            start: 0,
+            end: 0,
+            lineNumber: 0,
+            lineCharacterNumberStart: 0,
+            lineCharacterNumberEnd: 0,
+          },
+        ],
+      },
     ],
-    nest: []
+    nest: [],
   }
-  const stack: Array<ParseTokenType> = [ start ]
+
+  const stack: Array<ParseNodeType> = [start]
   let i = 0
 
   while (i < list.length) {
     const token = list[i++]
     // console.log(token.like, stack)
-    switch (token.form) {
+    switch (token.like) {
       case `term-open`: {
         const node = stack[stack.length - 1]
-        const term = {
+        const term: ParserTermNodeType = {
           like: 'term',
-          link: []
+          link: [],
         }
-        node.line.push(term)
+
+        if (node.like === 'nest') {
+          node.line.push(term)
+        } else {
+          throw new Error('Oops')
+        }
+
         stack.push(term)
         break
       }
@@ -58,49 +123,70 @@ function parse(list: Array<TokenType>) {
         stack.pop()
         break
       }
-      case `open-parenthesis`: {
+      case `open-parenthesis`:
+      case `open-indentation`: {
         const node = stack[stack.length - 1]
-        const nest = {
+        const nest: ParserNestNodeType = {
           like: 'nest',
           line: [],
-          nest: []
+          nest: [],
         }
-        node.nest.push(nest)
+
+        if (node.like === 'nest') {
+          node.nest.push(nest)
+        } else {
+          throw new Error('Oops')
+        }
+
         stack.push(nest)
         break
       }
-      case `close-parenthesis`: {
+      case `close-parenthesis`:
+      case `close-indentation`: {
         stack.pop()
         break
       }
-      case `slot`: {
+      case `slot`:
+      case `end-slot`: {
         stack.pop()
         const node = stack[stack.length - 1]
 
-        const nest = {
+        const nest: ParserNestNodeType = {
           like: 'nest',
           line: [],
-          nest: []
+          nest: [],
         }
-        node.nest.push(nest)
+
+        if (node.like === 'nest') {
+          node.nest.push(nest)
+        } else {
+          throw new Error('Oops')
+        }
+
         stack.push(nest)
         break
       }
       case `term-part`: {
         const term = stack[stack.length - 1]
-        const last = term.link[term.link.length - 1]
-        if (last && last.like === 'cord') {
-          last.cord += token.text
-          last.end = token.end
-        } else {
-          term.link.push({
-            like: 'cord',
-            cord: token.text,
-            start: token.start,
-            end: token.end,
-            lineNumberStart: token.lineNumberStart,
-            lineNumberEnd: token.lineNumberEnd,
-          })
+
+        if (term.like === 'term') {
+          const last = term.link[term.link.length - 1]
+          if (last.like === 'cord' && isDataTokenType(token)) {
+            last.cord += token.text
+            last.end = token.end
+          } else {
+            term.link.push({
+              like: 'cord',
+              cord: token.text,
+              start: token.start,
+              end: token.end,
+              lineNumber: token.lineNumber,
+              lineCharacterNumberStart:
+                token.lineCharacterNumberStart,
+              lineCharacterNumberEnd:
+                token.lineCharacterNumberEnd,
+            })
+          }
         }
         break
       }
@@ -109,12 +195,18 @@ function parse(list: Array<TokenType>) {
       }
       case `open-nest`: {
         const node = stack[stack.length - 1]
-        const nest = {
+        const nest: ParserNestNodeType = {
           like: 'nest',
           line: [],
-          nest: []
+          nest: [],
         }
-        node.line.push(nest)
+
+        if (node.like === 'nest') {
+          node.line.push(nest)
+        } else {
+          throw new Error('Oops')
+        }
+
         stack.push(nest)
         break
       }
@@ -124,11 +216,17 @@ function parse(list: Array<TokenType>) {
       }
       case `open-text`: {
         const node = stack[stack.length - 1]
-        const text = {
+        const text: ParserTextNodeType = {
           like: 'text',
-          link: []
+          link: [],
         }
-        node.line.push(text)
+
+        if (node.like === 'nest') {
+          node.line.push(text)
+        } else {
+          throw new Error('Oops')
+        }
+
         stack.push(text)
         break
       }
@@ -138,13 +236,23 @@ function parse(list: Array<TokenType>) {
       }
       case `open-interpolation`: {
         const text = stack[stack.length - 1]
-        const nest = {
+        const nest: ParserNestNodeType = {
           like: 'nest',
           line: [],
           nest: [],
-          size: token.text.length
         }
-        text.link.push(nest)
+        const slot: ParserSlotNodeType = {
+          like: 'slot',
+          size: token.text.length,
+          nest,
+        }
+
+        if (text.like === 'text') {
+          text.link.push(slot)
+        } else {
+          throw new Error('Oops')
+        }
+
         stack.push(nest)
         break
       }
@@ -156,7 +264,7 @@ function parse(list: Array<TokenType>) {
         const text = stack[stack.length - 1]
         if (text.like === 'text') {
           const last = text.link[text.link.length - 1]
-          if (last && last.like === 'cord') {
+          if (last.like === 'cord') {
             last.cord += token.text
             last.end = token.end
           } else {
@@ -165,13 +273,16 @@ function parse(list: Array<TokenType>) {
               cord: token.text,
               start: token.start,
               end: token.end,
-              lineNumberStart: token.lineNumberStart,
-              lineNumberEnd: token.lineNumberEnd,
+              lineNumber: token.lineNumber,
+              lineCharacterNumberStart:
+                token.lineCharacterNumberStart,
+              lineCharacterNumberEnd:
+                token.lineCharacterNumberEnd,
             })
           }
         } else {
           const node = stack[stack.length - 1]
-          const text = {
+          const text: ParserTextNodeType = {
             like: 'text',
             link: [
               {
@@ -179,13 +290,18 @@ function parse(list: Array<TokenType>) {
                 cord: token.text,
                 start: token.start,
                 end: token.end,
-                lineNumberStart: token.lineNumberStart,
-                lineNumberEnd: token.lineNumberEnd,
-              }
-            ]
+                lineNumber: token.lineNumber,
+                lineCharacterNumberStart:
+                  token.lineCharacterNumberStart,
+                lineCharacterNumberEnd:
+                  token.lineCharacterNumberEnd,
+              },
+            ],
           }
-          node.line.push(text)
-          // stack.push(text)
+
+          if (node.like === 'nest') {
+            node.line.push(text)
+          }
         }
         break
       }
@@ -195,15 +311,23 @@ function parse(list: Array<TokenType>) {
       }
       case `mark`: {
         const nest = stack[stack.length - 1]
-        const mark = {
+        const mark: ParserMarkNodeType = {
           like: `mark`,
           mark: parseInt(token.text, 10),
           start: token.start,
           end: token.end,
-          lineNumberStart: token.lineNumberStart,
-          lineNumberEnd: token.lineNumberEnd,
+          lineNumber: token.lineNumber,
+          lineCharacterNumberStart:
+            token.lineCharacterNumberStart,
+          lineCharacterNumberEnd: token.lineCharacterNumberEnd,
         }
-        nest.line.push(mark)
+
+        if (nest.like === 'nest') {
+          nest.line.push(mark)
+        } else {
+          throw new Error('Oops')
+        }
+
         break
       }
       case `code`: {
@@ -211,35 +335,60 @@ function parse(list: Array<TokenType>) {
         token.text.match(/#(\w)(\w+)/)
         let like = RegExp.$1
         let val = RegExp.$2
+
         if (!like.match(/[ubohx]/)) {
           throw new Error(like)
         }
-        const code = {
+
+        const code: ParserCodeNodeType = {
           like: 'code',
           base: like,
-          code: val,//String.fromCharCode(parseInt(val, 16))
+          code: val, //String.fromCharCode(parseInt(val, 16))
           start: token.start,
           end: token.end,
-          lineNumberStart: token.lineNumberStart,
-          lineNumberEnd: token.lineNumberEnd,
+          lineNumber: token.lineNumber,
+          lineCharacterNumberStart:
+            token.lineCharacterNumberStart,
+          lineCharacterNumberEnd: token.lineCharacterNumberEnd,
         }
-        node.line.push(code)
+
+        if (node.like === 'nest') {
+          node.line.push(code)
+        } else {
+          throw new Error('Oops')
+        }
+
         break
       }
       case `comb`: {
         const node = stack[stack.length - 1]
-        const comb = {
+        const comb: ParserCombNodeType = {
           like: `comb`,
-          fill: parseFloat(token.text),
+          comb: parseFloat(token.text),
           start: token.start,
           end: token.end,
-          lineNumberStart: token.lineNumberStart,
-          lineNumberEnd: token.lineNumberEnd,
+          lineNumber: token.lineNumber,
+          lineCharacterNumberStart:
+            token.lineCharacterNumberStart,
+          lineCharacterNumberEnd: token.lineCharacterNumberEnd,
         }
-        node.line.push(comb)
+
+        if (node.like === 'nest') {
+          node.line.push(comb)
+        } else {
+          throw new Error('Oops')
+        }
+
         break
       }
     }
   }
+
   return start
+}
+
+function isDataTokenType(
+  x: LexerTokenType,
+): x is LexerDataTokenType {
+  return LEXER_DATA_TOKEN_TYPE.includes(x.like)
 }
