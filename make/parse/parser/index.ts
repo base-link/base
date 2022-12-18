@@ -3,7 +3,7 @@ import { TokenType } from '../lexer'
 
 type TermType = {
   like: string
-  link: CordType[]
+  link: Array<CordType>
 }
 
 type CordType = {
@@ -13,15 +13,15 @@ type CordType = {
 
 type NestType = {
   like: string
-  line: TermType[]
-  nest: NestType[]
+  line: Array<TermType>
+  nest: Array<NestType>
 }
 
 type ParseTokenType = TermType | CordType | NestType
 
 module.exports = parse
 
-function parse(list: TokenType[]) {
+function parse(list: Array<TokenType>) {
   const start = {
     like: 'nest',
     line: [
@@ -37,7 +37,7 @@ function parse(list: TokenType[]) {
     ],
     nest: []
   }
-  const stack: ParseTokenType[] = [ start ]
+  const stack: Array<ParseTokenType> = [ start ]
   let i = 0
 
   while (i < list.length) {

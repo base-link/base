@@ -36,7 +36,7 @@ type PatternType =
   | PatternCType
   | PatternDType
 
-const termPatterns: PatternType[] = [
+const termPatterns: Array<PatternType> = [
   [/^-?\d+\.\d+/, 'comb', true],
   [/^-?\d+(?=[\s\n,\/\)\}])/, 'mark', true],
   [/^\(/, 'open-parenthesis'],
@@ -57,7 +57,7 @@ const termPatterns: PatternType[] = [
   [/^# .+/, 'comment'],
 ]
 
-const stringPatterns: PatternType[] = [
+const stringPatterns: Array<PatternType> = [
   [/^\{+/, 'open-interpolation', true],
   [
     /^(?:\\[<>\{\}])+/,
@@ -70,9 +70,9 @@ const stringPatterns: PatternType[] = [
   [/^>/, 'close-text'],
 ]
 
-function lex(text: string): TokenType[] {
+function lex(text: string): Array<TokenType> {
   let str = text
-  const tokens: TokenType[] = []
+  const tokens: Array<TokenType> = []
 
   const indents = [0]
   let nesting = 0
@@ -253,8 +253,8 @@ function lex(text: string): TokenType[] {
   return normalize(tokens)
 }
 
-function normalize(list: TokenType[]): TokenType[] {
-  const out: TokenType[] = [{ form: 'open-parenthesis' }]
+function normalize(list: Array<TokenType>): Array<TokenType> {
+  const out: Array<TokenType> = [{ form: 'open-parenthesis' }]
   let i = 0
   while (i < list.length) {
     const token = list[i++]
