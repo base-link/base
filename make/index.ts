@@ -1,6 +1,5 @@
-
-const Base = require('./base/server')
-const shared = require('./shared')
+import Base from './base/server'
+import shared from './shared'
 
 const link = shared.findPath('@treesurf/wolf')
 const base = new Base()

@@ -1,7 +1,27 @@
 
+import { TokenType } from '../lexer'
+
+type TermType = {
+  like: string
+  link: CordType[]
+}
+
+type CordType = {
+  like: string
+  cord: string
+}
+
+type NestType = {
+  like: string
+  line: TermType[]
+  nest: NestType[]
+}
+
+type ParseTokenType = TermType | CordType | NestType
+
 module.exports = parse
 
-function parse(list) {
+function parse(list: TokenType[]) {
   const start = {
     like: 'nest',
     line: [
@@ -17,7 +37,7 @@ function parse(list) {
     ],
     nest: []
   }
-  const stack = [ start ]
+  const stack: ParseTokenType[] = [ start ]
   let i = 0
 
   while (i < list.length) {
@@ -78,6 +98,8 @@ function parse(list) {
             cord: token.text,
             start: token.start,
             end: token.end,
+            lineNumberStart: token.lineNumberStart,
+            lineNumberEnd: token.lineNumberEnd,
           })
         }
         break
@@ -142,7 +164,9 @@ function parse(list) {
               like: `cord`,
               cord: token.text,
               start: token.start,
-              end: token.end
+              end: token.end,
+              lineNumberStart: token.lineNumberStart,
+              lineNumberEnd: token.lineNumberEnd,
             })
           }
         } else {
@@ -154,7 +178,9 @@ function parse(list) {
                 like: `cord`,
                 cord: token.text,
                 start: token.start,
-                end: token.end
+                end: token.end,
+                lineNumberStart: token.lineNumberStart,
+                lineNumberEnd: token.lineNumberEnd,
               }
             ]
           }
@@ -173,7 +199,9 @@ function parse(list) {
           like: `mark`,
           mark: parseInt(token.text, 10),
           start: token.start,
-          end: token.end
+          end: token.end,
+          lineNumberStart: token.lineNumberStart,
+          lineNumberEnd: token.lineNumberEnd,
         }
         nest.line.push(mark)
         break
@@ -183,13 +211,17 @@ function parse(list) {
         token.text.match(/#(\w)(\w+)/)
         let like = RegExp.$1
         let val = RegExp.$2
-        if (!like.match(/[ubohx]/)) throw new Error(like)
+        if (!like.match(/[ubohx]/)) {
+          throw new Error(like)
+        }
         const code = {
           like: 'code',
           base: like,
           code: val,//String.fromCharCode(parseInt(val, 16))
           start: token.start,
-          end: token.end
+          end: token.end,
+          lineNumberStart: token.lineNumberStart,
+          lineNumberEnd: token.lineNumberEnd,
         }
         node.line.push(code)
         break
@@ -200,7 +232,9 @@ function parse(list) {
           like: `comb`,
           fill: parseFloat(token.text),
           start: token.start,
-          end: token.end
+          end: token.end,
+          lineNumberStart: token.lineNumberStart,
+          lineNumberEnd: token.lineNumberEnd,
         }
         node.line.push(comb)
         break

@@ -32,15 +32,19 @@ module.exports = {
     const load = this.makeKnit({
       like: 'load',
       link: null,
-      take: []
+      bear: [],
+      take: [],
     }, fork.knit)
 
     fork.nest.nest[0]
 
     fork.tree.link.forEach((link, i) => {
       if (i === 0) {
-        link.text = shared.findPath(link.text, fork.card.mesh['link-host'])
-        load.link = link
+        const loadLink = {
+          like: 'cord',
+          cord: shared.findPath(link.text, fork.card.mesh['link-host'])
+        }
+        load.link = loadLink
       } else {
         load.take.push(link)
       }
@@ -61,6 +65,7 @@ module.exports = {
     const name = this.getTerm(nameFork)
 
     this.addToTreeLink(fuse, name)
+    fuse.mesh.name = name
 
     fork.nest.nest.slice(1).forEach(nest => {
       const nestFork = this.extendObject(fork, { nest })
@@ -87,6 +92,9 @@ module.exports = {
             fuse.mesh.bind.push(term)
             break
           }
+          case 'bind': {
+            break
+          }
           default:
             throw new Error(`${term} - ${card.seed.link}`)
         }
@@ -96,23 +104,23 @@ module.exports = {
     })
   },
 
-  mintCodeTreeMesh(nest, seed) {
+  mintCodeTree(fork) {
 
   },
 
-  mintCodeFaceMesh(nest, seed) {
+  mintCodeFace(fork) {
 
   },
 
-  mintCodeHostMesh(nest, seed) {
+  mintCodeHost(fork) {
 
   },
 
-  mintCodeSuitMesh(nest, seed) {
+  mintCodeSuit(fork) {
 
   },
 
-  mintCodeTaskMesh(nest, seed) {
+  mintCodeTask(fork) {
 
   },
 }

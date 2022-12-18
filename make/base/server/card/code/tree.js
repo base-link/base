@@ -56,8 +56,8 @@ module.exports = {
   mintCodeBear(fork) {
     const linkFork = this.extendObject(fork, { nest: fork.nest.nest[0] })
     const link = this.getTextNest(linkFork)
-    if (link.like === 'cord') {
-      link.cord = shared.findPath(link.cord, fork.card.mesh['link-host'].cord)
+    if (link.like.name === 'cord') {
+      link.cord = this.makeCord(shared.findPath(link.cord, fork.card.mesh['link-host'].cord))
     }
     this.addToTreeLink(fork.knit, link)
     fork.knit.mesh.link = this.loadLink(link)
@@ -112,7 +112,7 @@ module.exports = {
       const term = shared.getSimpleTerm(fork.nest)
       switch (term) {
         case 'take':
-          this.mintCodeLoadTakeNest(fork)
+          this.mintCodeLoadTake(fork)
           break
         case 'load':
           this.mintCodeLoad(fork)
@@ -123,7 +123,7 @@ module.exports = {
     }
   },
 
-  mintCodeLoadTakeNest(fork) {
+  mintCodeLoadTake(fork) {
 
   },
 

@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2020",
+    "lib": ["es2020"],
+    "outDir": "host",
+    "rootDir": "make",
+    "sourceMap": true,
+    "strictNullChecks": true
+  },
+  "include": ["make"],
+  "exclude": ["node_modules"]
+}

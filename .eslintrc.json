@@ -1,0 +1,30 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module",
+    "project": ["./tsconfig.json"]
+  },
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "extends": [],
+  "rules": {
+    "curly": 2,
+    "brace-style": ["error", "1tbs"],
+    "indent": ["error", 2, { "SwitchCase": 1 }],
+    "@typescript-eslint/quotes": [
+      "error",
+      "single",
+      {
+        "avoidEscape": true,
+        "allowTemplateLiterals": true
+      }
+    ],
+    "@typescript-eslint/no-unnecessary-condition": [2, {
+      "allowConstantLoopConditions": true
+    }]
+  }
+}

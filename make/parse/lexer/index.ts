@@ -1,7 +1,42 @@
 
+type FormTokenType = {
+  form: string
+}
+
+type DataTokenType = FormTokenType & {
+  text: string
+  start: number
+  end: number
+  lineNumber: number
+  lineCharacterNumberStart: number
+  lineCharacterNumberEnd: number
+}
+
+export type TokenType = FormTokenType | DataTokenType
+
 module.exports = lex
 
-const termPatterns = [
+type PatternAType = [RegExp, string]
+
+type PatternBType = [RegExp, string, boolean]
+
+type PatternCType = [RegExp, string, boolean | null, boolean]
+
+type PatternDType = [
+  RegExp,
+  string,
+  boolean,
+  boolean | null,
+  (t: string) => string,
+]
+
+type PatternType =
+  | PatternAType
+  | PatternBType
+  | PatternCType
+  | PatternDType
+
+const termPatterns: PatternType[] = [
   [/^-?\d+\.\d+/, 'comb', true],
   [/^-?\d+(?=[\s\n,\/\)\}])/, 'mark', true],
   [/^\(/, 'open-parenthesis'],
@@ -22,36 +57,49 @@ const termPatterns = [
   [/^# .+/, 'comment'],
 ]
 
-const stringPatterns = [
+const stringPatterns: PatternType[] = [
   [/^\{+/, 'open-interpolation', true],
-  [/^(?:\\[<>\{\}])+/, 'text', true, null, t => t.replace(/\\/g, '')],
+  [
+    /^(?:\\[<>\{\}])+/,
+    'text',
+    true,
+    null,
+    (t: string) => t.replace(/\\/g, ''),
+  ],
   [/^[^\{>\\]+/, 'text', true],
   [/^>/, 'close-text'],
 ]
 
-function lex(text) {
+function lex(text: string): TokenType[] {
   let str = text
-  const tokens = []
+  const tokens: TokenType[] = []
 
-  let indents = [0]
+  const indents = [0]
   let nesting = 0
   let matched = false
   let isString = false
-  let typeStack = ['tree']
+  const typeStack = ['tree']
+
+  let lineNumber = 0
+  let lineCharacterNumber = 0
 
   let offset = 0
 
   while (str.length) {
-    let type = typeStack[typeStack.length - 1]
+    const type = typeStack[typeStack.length - 1]
 
-    if (str[0] == '\n' && type === 'tree') {
-      str = str.substr(1)
+    if (str.startsWith('\n') && type === 'tree') {
+      str = str.slice(1)
+      lineNumber += 1
+      lineCharacterNumber = 0
       offset += 1
       while (true) {
-        let match = str.match(/^ *\n/)
-        if (match) {
-          str = str.substr(match[0].length)
+        const match = str.match(/^ *\n/)
+        if (match != null) {
+          str = str.slice(match[0].length)
           offset += match[0].length
+          lineNumber += 1
+          lineCharacterNumber = 0
         } else {
           break
         }
@@ -59,13 +107,13 @@ function lex(text) {
       if (str.match(/^ *$/)) {
         while (nesting > 1) {
           tokens.push({
-            form: 'close-parenthesis'
+            form: 'close-parenthesis',
           })
           nesting--
         }
         while (indents.length) {
           tokens.push({
-            form: 'close-parenthesis'
+            form: 'close-parenthesis',
           })
           indents.pop()
         }
@@ -74,18 +122,21 @@ function lex(text) {
       if (!matched) {
         continue
       }
-      let match = str.match(/^ +/)
-      let newIndent = match ? match[0].length : 0
+      const match = str.match(/^ +/)
+      const newIndent = match ? match[0].length : 0
       if (match) {
         offset += match[0].length
-        str = str.substr(match[0].length)
+        lineCharacterNumber += match[0].length
+        str = str.slice(match[0].length)
       }
-      if (newIndent % 2 != 0) throw new Error('Indentation error')
-      let oldIndent = indents[indents.length - 1]
+      if (newIndent % 2 != 0) {
+        throw new Error('Indentation error')
+      }
+      const oldIndent = indents[indents.length - 1]
       if (newIndent === oldIndent) {
         while (nesting) {
           tokens.push({
-            form: 'close-parenthesis'
+            form: 'close-parenthesis',
           })
           nesting--
         }
@@ -93,60 +144,70 @@ function lex(text) {
         //   foo bar
         //   foo bar
         tokens.push({
-          form: 'line'
+          form: 'line',
         })
       } else if (newIndent > oldIndent) {
         while (nesting > 1) {
           tokens.push({
-            form: 'close-parenthesis'
+            form: 'close-parenthesis',
           })
           nesting--
         }
-        if (newIndent - oldIndent != 2) throw new Error('Indentation error')
+
+        if (newIndent - oldIndent != 2) {
+          throw new Error('Indentation error')
+        }
         // foo bar
         //   foo bar baz
         //     foo bar
         tokens.push({
-          form: 'line'
+          form: 'line',
         })
         indents.push(newIndent)
         nesting = 0
       } else {
-        if (Math.abs(newIndent - oldIndent) % 2 != 0) throw new Error('Indentation error')
+        if (Math.abs(newIndent - oldIndent) % 2 != 0) {
+          throw new Error('Indentation error')
+        }
         while (nesting) {
           tokens.push({
-            form: 'close-parenthesis'
+            form: 'close-parenthesis',
           })
           nesting--
         }
         let diff = (oldIndent - newIndent) / 2
         while (diff) {
           tokens.push({
-            form: 'close-parenthesis'
+            form: 'close-parenthesis',
           })
           diff--
           indents.pop()
         }
         tokens.push({
-          form: 'line'
+          form: 'line',
         })
         // indents.push(newIndent)
       }
     } else {
-      let patterns = type === 'text' ? stringPatterns : termPatterns
-      x:
-      for (let pattern of patterns) {
-        let match = str.match(pattern[0])
+      const patterns =
+        type === 'text' ? stringPatterns : termPatterns
+      x: for (const pattern of patterns) {
+        const match = str.match(pattern[0])
         if (match) {
           matched = true
-          let text = match[0]
+          const text = match[0]
           const start = offset
           const end = start + text.length
 
-          let attrs = {
+          const attrs = {
             form: pattern[1],
+            text: '',
             start,
-            end
+            end,
+            lineNumber,
+            lineCharacterNumberStart: lineCharacterNumber,
+            lineCharacterNumberEnd:
+              lineCharacterNumber + text.length,
           }
           if (pattern[1] === 'open-text') {
             typeStack.push('text')
@@ -168,8 +229,9 @@ function lex(text) {
           }
 
           tokens.push(attrs)
-          str = str.substr(text.length)
+          str = str.slice(text.length)
           offset += text.length
+          lineCharacterNumber += text.length
           break x
         }
       }
@@ -177,21 +239,22 @@ function lex(text) {
   }
   while (nesting > 1) {
     tokens.push({
-      form: 'close-parenthesis'
+      form: 'close-parenthesis',
     })
     nesting--
   }
   while (indents.length) {
     tokens.push({
-      form: 'close-parenthesis'
+      form: 'close-parenthesis',
     })
     indents.pop()
   }
+
   return normalize(tokens)
 }
 
-function normalize(list) {
-  const out = [{ form: 'open-parenthesis' }]
+function normalize(list: TokenType[]): TokenType[] {
+  const out: TokenType[] = [{ form: 'open-parenthesis' }]
   let i = 0
   while (i < list.length) {
     const token = list[i++]
@@ -206,51 +269,51 @@ function normalize(list) {
       }
       case `term-part`: {
         const last = list[i - 2]
-        if (last) {
-          switch (last.form) {
-            case 'term-part':
-            case 'term-part-separator':
-            case 'close-interpolation':
-              break
-            default:
-              out.push({
-                form: 'term-open'
-              })
-              break
-          }
-        } else {
-          out.push({
-            form: 'term-open'
-          })
+        switch (last.form) {
+          case 'term-part':
+          case 'term-part-separator':
+          case 'close-interpolation':
+            break
+          default:
+            out.push({
+              form: 'term-open',
+            })
+            break
         }
         out.push(token)
         const next = list[i]
-        if (next) {
-          switch (next.form) {
-            case 'term-part':
-            case 'term-part-separator':
-            case 'open-interpolation':
-              break
-            default:
-              out.push({
-                form: 'term-close'
-              })
-              break
-          }
+        switch (next.form) {
+          case 'term-part':
+          case 'term-part-separator':
+          case 'open-interpolation':
+            break
+          default:
+            out.push({
+              form: 'term-close',
+            })
+            break
         }
         break
       }
-      case `term-part-separator`: {
-        const last = out[out.length - 1]
+      case 'term-part-separator': {
+        const typedToken = token as DataTokenType
+        const last = out[out.length - 1] as DataTokenType
         if (last.form === 'term-part') {
-          last.text += token.text
-          last.end = token.end
+          last.text += typedToken.text
+          last.end = typedToken.end
+          last.lineCharacterNumberEnd =
+            typedToken.lineCharacterNumberEnd
         } else {
           out.push({
             form: 'term-part',
-            text: token.text,
-            start: token.start,
-            end: token.end
+            text: typedToken.text,
+            start: typedToken.start,
+            end: typedToken.end,
+            lineNumber: typedToken.lineNumber,
+            lineCharacterNumberStart:
+              typedToken.lineCharacterNumberStart,
+            lineCharacterNumberEnd:
+              typedToken.lineCharacterNumberEnd,
           })
         }
         break
@@ -277,20 +340,14 @@ function normalize(list) {
       }
       case `open-interpolation`: {
         const last = list[i - 2]
-        if (last) {
-          switch (last.form) {
-            case 'line':
-            case 'open-parenthesis': {
-              out.push({
-                form: 'term-open'
-              })
-              break
-            }
+        switch (last.form) {
+          case 'line':
+          case 'open-parenthesis': {
+            out.push({
+              form: 'term-open',
+            })
+            break
           }
-        } else {
-          out.push({
-            form: 'term-open'
-          })
         }
         out.push(token)
         break
@@ -303,7 +360,7 @@ function normalize(list) {
           case 'mark':
           case 'comb':
             out.push({
-              form: 'close-parenthesis'
+              form: 'close-parenthesis',
             })
             break
         }
@@ -312,17 +369,15 @@ function normalize(list) {
 
         const next = list[i]
 
-        if (next) {
-          switch (next.form) {
-            case 'slot':
-            case 'line':
-            case 'open-parenthesis':
-            case 'close-parenthesis':
-              out.push({
-                form: 'term-close'
-              })
-              break
-          }
+        switch (next.form) {
+          case 'slot':
+          case 'line':
+          case 'open-parenthesis':
+          case 'close-parenthesis':
+            out.push({
+              form: 'term-close',
+            })
+            break
         }
         break
       }
@@ -332,16 +387,16 @@ function normalize(list) {
       }
       case `slot`: {
         out.push({
-          form: 'slot'
+          form: 'slot',
         })
         break
       }
       case `line`: {
-        // out.push({
-        //   form: 'close-parenthesis'
-        // })
+      // out.push({
+      //   form: 'close-parenthesis'
+      // })
         out.push({
-          form: 'slot'
+          form: 'slot',
         })
         break
       }

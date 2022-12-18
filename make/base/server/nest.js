@@ -20,8 +20,10 @@ module.exports = {
             throw new Error(seed.link)
           } else {
             const link = line.link[0]
-            if (value.hasOwnProperty(link.cord)) {
+            if (value && value.hasOwnProperty(link.cord)) {
               value = value[link.cord]
+            } else {
+              value = null
             }
           }
           break

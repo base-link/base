@@ -9,16 +9,16 @@ module.exports = {
   mintCodeCard(link) {
     const text = this.readTextFile(link)
     const textTree = this.parseTextIntoTree(text)
-    const card = this.card(link)
     const linkHost = this.getLinkHost(link)
+    const card = this.card(link)
     const knit = this.makeKnit({
       like: 'code-card',
       base: this,
       link: this.makeCord(link),
       'link-host': this.makeCord(linkHost),
       'text-tree': textTree,
-      'load-list': [],
-      'bear-list': [],
+      'load-list': this.makeList(),
+      'bear-list': this.makeList(),
       'tree-mesh': this.makeMesh(),
       'form-mesh': this.makeMesh(),
       'suit-mesh': this.makeMesh(),
@@ -49,9 +49,9 @@ module.exports = {
     const fork = {
       card: knit,
       knit,
-      fork: {
-        card: knit,
-      }
+      // this the scope passed into
+      // interpolation functions for lexical scope.
+      fork: knit
     }
 
     textTree.nest.forEach(nest => {
