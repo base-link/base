@@ -1,6 +1,10 @@
+type LikeableType = Object & {
+  like: string
+}
+
 export function extendObject<
-  X extends Object = Object,
+  X extends LikeableType = LikeableType,
   Y extends Object = Object,
->(x: X, y: Y): Omit<X, 'like'> & Y {
+>({ like, ...x }: X, y: Y): Omit<X, 'like'> & Y {
   return { ...x, ...y }
 }

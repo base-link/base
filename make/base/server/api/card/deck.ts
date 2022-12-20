@@ -167,13 +167,13 @@ export function mintDeck(fork: CompilerNestForkType): void {
     if (api.doesHaveSlot(nest)) {
       throw new Error('Oops ' + fork.card.mesh.link)
     } else if (shared.isText(nest) && i === 0) {
-      const nestFork = api.extendObject<CompilerNestForkType>(
-        fork,
-        {
-          like: 'nest-fork' as const,
-          nest,
-        },
-      )
+      const nestFork = api.extendObject<
+        CompilerNestForkType,
+        Omit<CompilerNestForkType, 'card' | 'knit'>
+      >(fork, {
+        like: 'nest-fork',
+        nest,
+      })
       const dependencyList = api.getTextDependencyList(
         nestFork.nest,
       )
