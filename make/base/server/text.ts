@@ -4,11 +4,14 @@ import parse, {
 } from '../../parse'
 import fs from 'fs'
 import pathResolve from 'path'
-import { ASTCordType, BaseTextMixin } from './type'
-import Base from './base'
+import {
+  ASTCordType,
+  BaseTextMixinType,
+  BaseType,
+} from './type'
 
-export default <BaseTextMixin>{
-  readTextFile(this: Base, link: string): string {
+export default <BaseTextMixinType>{
+  readTextFile(this: BaseType, link: string): string {
     return (
       this.text_mesh.get(link) ?? fs.readFileSync(link, 'utf-8')
     )

@@ -1,15 +1,24 @@
+import {
+  ASTKnitType,
+  ASTFormType,
+  BaseCardCodeMeshMixinType,
+  BaseType,
+} from '../../type'
 
-module.exports = {
-  mintCodeForm(fork) {
-    const form = this.makeKnit({
-      like: 'form',
-      name: null,
-      base: [],
-      link: this.makeMesh(),
-      task: this.makeMesh(),
-      wear: this.makeMesh(),
-      hook: this.makeMesh(),
-    }, fork.knit)
+export default <BaseCardCodeMeshMixinType>{
+  mintCodeForm(this: BaseType, fork): ASTKnitType<ASTFormType> {
+    const form: ASTKnitType<ASTFormType> = this.makeKnit(
+      {
+        like: 'form',
+        name: undefined,
+        base: this.makeList(),
+        link: this.makeMesh(),
+        task: this.makeMesh(),
+        wear: this.makeMesh(),
+        hook: this.makeMesh(),
+      },
+      fork.knit,
+    )
 
     return form
   },
@@ -29,12 +38,15 @@ module.exports = {
   },
 
   mintCodeLoad(fork) {
-    const load = this.makeKnit({
-      like: 'load',
-      link: null,
-      bear: [],
-      take: [],
-    }, fork.knit)
+    const load = this.makeKnit(
+      {
+        like: 'load',
+        link: null,
+        bear: [],
+        take: [],
+      },
+      fork.knit,
+    )
 
     fork.nest.nest[0]
 
@@ -42,7 +54,10 @@ module.exports = {
       if (i === 0) {
         const loadLink = {
           like: 'cord',
-          cord: shared.findPath(link.text, fork.card.mesh['link-host'])
+          cord: shared.findPath(
+            link.text,
+            fork.card.mesh['link-host'],
+          ),
         }
         load.link = loadLink
       } else {
@@ -55,13 +70,18 @@ module.exports = {
   },
 
   mintCodeFuseMesh(fork) {
-    const fuse = this.makeKnit({
-      like: 'fuse',
-      name: null,
-      bind: [],
-    }, fork.knit)
+    const fuse = this.makeKnit(
+      {
+        like: 'fuse',
+        name: null,
+        bind: [],
+      },
+      fork.knit,
+    )
 
-    const nameFork = this.extendObject(fork, { nest: fork.nest.nest[0] })
+    const nameFork = this.extendObject(fork, {
+      nest: fork.nest.nest[0],
+    })
     const name = this.getTerm(nameFork)
 
     this.addToTreeLink(fuse, name)
@@ -73,7 +93,9 @@ module.exports = {
         const term = shared.getTerm(nestFork)
         switch (term) {
           case 'loan': {
-            const loanFork = this.extendObject(nestFork, { nest: nest.nest[0] })
+            const loanFork = this.extendObject(nestFork, {
+              nest: nest.nest[0],
+            })
             const loan = shared.getTerm(loanFork)
             this.addToTreeLink(fuse, loan)
             fuse.mesh.bind.push(loan)
@@ -86,7 +108,9 @@ module.exports = {
             break
           }
           case 'term': {
-            const termFork = this.extendObject(nestFork, { nest: nest.nest[0] })
+            const termFork = this.extendObject(nestFork, {
+              nest: nest.nest[0],
+            })
             const term = shared.getTerm(termFork)
             this.addToTreeLink(fuse, term)
             fuse.mesh.bind.push(term)
@@ -104,23 +128,13 @@ module.exports = {
     })
   },
 
-  mintCodeTree(fork) {
+  mintCodeTree(fork) {},
 
-  },
+  mintCodeFace(fork) {},
 
-  mintCodeFace(fork) {
+  mintCodeHost(fork) {},
 
-  },
+  mintCodeSuit(fork) {},
 
-  mintCodeHost(fork) {
-
-  },
-
-  mintCodeSuit(fork) {
-
-  },
-
-  mintCodeTask(fork) {
-
-  },
+  mintCodeTask(fork) {},
 }

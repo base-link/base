@@ -1,5 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-require-imports
-const prettify = require('@lancejpollard/pretty-compact-json.js/1')
+import prettify from '@lancejpollard/pretty-compact-json.js/1'
 import parse from '.'
 import type { ParserNodeType } from '.'
 

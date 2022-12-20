@@ -1,8 +1,8 @@
+import shared from '../../../../shared'
+import { BaseCardCodeTreeMixinType } from '../../type'
 
-const shared = require('../../../../shared')
-
-module.exports = {
-  mintCodeCardNest(fork) {
+export default <BaseCardCodeTreeMixinType>{
+  mintCodeCardNest(fork): void {
     if (shared.doesHaveFind(fork.nest)) {
       throw new Error('Oops ' + fork.card.mesh.link)
     } else if (shared.isSimpleTerm(fork.nest)) {
@@ -53,11 +53,18 @@ module.exports = {
     }
   },
 
-  mintCodeBear(fork) {
-    const linkFork = this.extendObject(fork, { nest: fork.nest.nest[0] })
+  mintCodeBear(fork): void {
+    const linkFork = this.extendObject(fork, {
+      nest: fork.nest.nest[0],
+    })
     const link = this.getTextNest(linkFork)
     if (link.like.name === 'cord') {
-      link.cord = this.makeCord(shared.findPath(link.cord, fork.card.mesh['link-host'].cord))
+      link.cord = this.makeCord(
+        shared.findPath(
+          link.cord,
+          fork.card.mesh['link-host'].cord,
+        ),
+      )
     }
     this.addToTreeLink(fork.knit, link)
     fork.knit.mesh.link = this.loadLink(link)
@@ -75,11 +82,14 @@ module.exports = {
   },
 
   mintCodeLoad(fork) {
-    const knit = this.makeKnit({
-      like: 'load',
-      take: [],
-      bear: [],
-    }, fork.knit)
+    const knit = this.makeKnit(
+      {
+        like: 'load',
+        take: [],
+        bear: [],
+      },
+      fork.knit,
+    )
 
     const loadFork = this.extendObject(fork, { knit })
 
@@ -102,9 +112,7 @@ module.exports = {
     }
   },
 
-  mintTreeToMesh(tree) {
-
-  },
+  mintTreeToMesh(tree) {},
 
   mintCodeLoadNest(fork) {
     // this.expectSimpleTerm(nest, seed)
@@ -123,35 +131,19 @@ module.exports = {
     }
   },
 
-  mintCodeLoadTake(fork) {
+  mintCodeLoadTake(fork) {},
 
-  },
+  mintCodeFuse(fork) {},
 
-  mintCodeFuse(fork) {
+  mintCodeTree(fork) {},
 
-  },
+  mintCodeFace(fork) {},
 
-  mintCodeTree(fork) {
+  mintCodeHost(fork) {},
 
-  },
+  mintCodeForm(fork) {},
 
-  mintCodeFace(fork) {
+  mintCodeSuit(fork) {},
 
-  },
-
-  mintCodeHost(fork) {
-
-  },
-
-  mintCodeForm(fork) {
-
-  },
-
-  mintCodeSuit(fork) {
-
-  },
-
-  mintCodeTask(fork) {
-
-  },
+  mintCodeTask(fork) {},
 }

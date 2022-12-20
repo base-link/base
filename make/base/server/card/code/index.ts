@@ -1,12 +1,12 @@
+import { BaseCardCodeMixinType, BaseType } from '../../type'
+import mintMeshMixin from './mesh'
+import mintTreeMixin from './tree'
 
-const mintMeshMixin = require('./mesh')
-const mintTreeMixin = require('./tree')
-
-module.exports = {
+export default <BaseCardCodeMixinType>{
   ...mintMeshMixin,
   ...mintTreeMixin,
 
-  mintCodeCard(link) {
+  mintCodeCard(this: BaseType, link: string): void {
     const text = this.readTextFile(link)
     const textTree = this.parseTextIntoTree(text)
     const linkHost = this.getLinkHost(link)
@@ -51,13 +51,15 @@ module.exports = {
       knit,
       // this the scope passed into
       // interpolation functions for lexical scope.
-      fork: knit
+      fork: knit,
     }
 
-    textTree.nest.forEach(nest => {
-      const childFork = this.extendObject(fork, { nest })
-      this.mintCodeCardNest(childFork)
-    })
+    if (textTree.like === 'nest') {
+      textTree.nest.forEach(nest => {
+        const childFork = this.extendObject(fork, { nest })
+        this.mintCodeCardNest(childFork)
+      })
+    }
 
     // this.mintCodeCardMesh(fork)
   },

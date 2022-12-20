@@ -1,4 +1,4 @@
-import { ParserNodeType } from '../../parse'
+import { ParserNestNodeType, ParserNodeType } from '../../parse'
 import Card from './card'
 
 export type ASTTreeLinkType = {
@@ -15,30 +15,126 @@ export type ASTCordType = {
   cord: string
 }
 
-export type ASTKnitType = {
+export type ASTKnitType<
+  T extends Object,
+  B extends Object = Object,
+> = Object & {
   like: 'knit'
   slot: number
   size: number
   tree: Array<unknown>
-  mesh: Object
-  base?: ASTKnitType
+  mesh: T
+  base?: B
 }
 
-export type ASTMeshType = {
+export type ASTMeshType = Object & {
   like: 'mesh'
   mesh: Object
 }
 
-export type ASTListType = {
+export type ASTListType = Object & {
   like: 'list'
   list: Array<unknown>
 }
 
-export type BaseTextMixin = {
-  readTextFile: (link: string) => string
+export type ASTCardType = Object & {
+  base: BaseType
+  'link-text-line': Array<string>
+  'link-text-tree': ParserNodeType
+  link: ASTCordType
+  'link-host': ASTCordType
 }
 
-type BaseRequestParamsType = {
+export type ASTDeckType = Object & {
+  like: 'deck'
+  mark?: string // version
+  bear?: ASTCordType // entrypoint to library, tells us what to copy over.
+  site?: ASTCordType // entrypoint to app.
+  test?: ASTCordType // entrypoint to tests.
+  read?: ASTCordType
+  term: ASTListType // licenses
+  face: ASTListType // people
+}
+
+export type ASTFormType = Object & {
+  like: 'form'
+  name?: string
+  base: ASTListType
+  link: ASTMeshType
+  task: ASTMeshType
+  wear: ASTMeshType
+  hook: ASTMeshType
+}
+
+export type ASTCardDeckType = ASTCardType & {
+  like: 'deck-card'
+  deck: ASTKnitType<ASTDeckType>
+}
+
+export type BaseTextMixinType = {
+  readTextFile: (link: string) => string
+  getLinkHost: (link: string) => string
+  makeCord: (cord: string) => ASTCordType
+  parseTextIntoTree: (text: string) => ParserNodeType
+  isTextNest: (nest: ParserNestNodeType) => boolean
+}
+
+export type BaseTreeMixinType = {
+  makeTreeLink: (
+    name: string,
+    base: ASTTreeLinkType,
+  ) => ASTTreeLinkType
+}
+
+export type BaseNestMixinType = {
+  mintNestTree: (
+    nest: ParserNestNodeType,
+    seed: unknown,
+  ) => void
+  readNest: (fork: unknown) => string | undefined
+}
+
+export type BaseKnitMixinType = {
+  makeKnit: <T extends Object>(
+    mesh: T,
+    base?: T,
+  ) => ASTKnitType<T>
+  getPropertyValue: (
+    knit: ASTKnitType<Object>,
+    name: string,
+  ) => unknown
+  makeMesh: () => ASTMeshType
+  makeList: () => ASTListType
+}
+
+export type BaseForkMixinType = {
+  extendObject: (x: Object, a: Object) => Object
+}
+
+export type BaseCardDeckMixinType = {
+  doesHaveFind: (nest: ParserNestNodeType) => boolean
+  mintDeckCard: (this: BaseType, link: string) => void
+  mintDeck: (fork) => void
+}
+
+export type BaseCardCodeMixinType = {
+  mintCodeCard: (link: string) => void
+}
+
+export type BaseCardCodeTreeMixinType = {
+  mintCodeCardNest: (fork) => void
+  mintCodeBear: (fork) => void
+}
+
+export type BaseCardCodeMeshMixinType = {
+  mintCodeTree: (fork) => void
+  mintCodeFace: (fork) => void
+  mintCodeHost: (fork) => void
+  mintCodeSuit: (fork) => void
+  mintCodeTask: (fork) => void
+}
+
+export type BaseRequestParamsType = {
   hash: string
   like: string
   name: string
@@ -48,25 +144,25 @@ type BaseRequestParamsType = {
   hook: (site: string, fork: unknown) => void
 }
 
-type BaseCallbackType = {
+export type BaseCallbackType = {
   site: string
   link: string
   hook: (site: string, fork: unknown) => void
   fork: string
 }
 
-type BaseEncounterParamsType = {
+export type BaseEncounterParamsType = {
   hash: string
   like: string
   name: string
   load: string
 }
 
-type BaseFreeType = () => void
+export type BaseFreeType = () => void
 
-type BaseHookType = () => BaseFreeType
+export type BaseHookType = () => BaseFreeType
 
-type BasePublicAPIType = {
+export type BasePublicAPIType = {
   text_mesh: Map<string, string>
 
   link_mesh: Map<string, Array<string>>
@@ -103,4 +199,13 @@ type BasePublicAPIType = {
   sort: () => void
 }
 
-export type BaseType = BasePublicAPIType & BaseTextMixin
+export type BaseType = BasePublicAPIType &
+  BaseTextMixinType &
+  BaseTreeMixinType &
+  BaseNestMixinType &
+  BaseKnitMixinType &
+  BaseForkMixinType &
+  BaseCardDeckMixinType &
+  BaseCardCodeMixinType &
+  BaseCardCodeTreeMixinType &
+  BaseCardCodeMeshMixinType

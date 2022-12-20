@@ -1,7 +1,10 @@
-import { ASTTreeLinkType } from './type'
+import { ASTTreeLinkType, BaseTreeMixinType } from './type'
 
-export default {
-  makeTreeLink(name: string, base: ASTTreeLinkType) {
+export default <BaseTreeMixinType>{
+  makeTreeLink(
+    name: string,
+    base: ASTTreeLinkType,
+  ): ASTTreeLinkType {
     const link: ASTTreeLinkType = {
       like: 'tree-link',
       base,

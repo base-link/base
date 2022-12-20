@@ -1,9 +1,13 @@
 import type { ParserNestNodeType } from '../../parse'
 import shared from '../../shared'
-import Base from './base'
+import { BaseNestMixinType, BaseType } from './type'
 
-export default {
-  mintNestTree(this: Base, nest: ParserNestNodeType, seed) {
+export default <BaseNestMixinType>{
+  mintNestTree(
+    this: BaseType,
+    nest: ParserNestNodeType,
+    seed,
+  ): void {
     if (this.isTextNest(nest)) {
       return this.getTextNest(nest, seed)
     } else if (shared.isMark(nest)) {
@@ -11,7 +15,7 @@ export default {
     }
   },
 
-  readNest(fork) {
+  readNest(fork): string | undefined {
     let value = fork.fork
 
     fork.nest.line.forEach(line => {

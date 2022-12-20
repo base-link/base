@@ -1,14 +1,14 @@
 class Card {
   hash: string
 
-  seed: Record<string, unknown>
+  seed: Object
 
   constructor(hash: string) {
     this.hash = hash
     this.seed = {}
   }
 
-  bind(seed: Record<string, unknown>) {
+  bind(seed: Object) {
     // diff the values
     this.seed = seed
   }

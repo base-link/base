@@ -1,12 +1,20 @@
-import { ASTKnitType, ASTListType, ASTMeshType } from './type'
+import {
+  ASTKnitType,
+  ASTListType,
+  ASTMeshType,
+  BaseKnitMixinType,
+} from './type'
 
 const KNIT_LINK = ['tree', 'mesh', 'size', 'like']
 
-export default {
-  makeKnit(mesh: Object, base?: ASTKnitType) {
+export default <BaseKnitMixinType>{
+  makeKnit<T extends Object = Object>(
+    mesh: T,
+    base?: ASTKnitType<T>,
+  ): ASTKnitType<T> {
     const slot = base ? base.tree.length : 0
 
-    const knit: ASTKnitType = {
+    const knit: ASTKnitType<T> = {
       like: 'knit',
       base,
       slot,
@@ -22,7 +30,10 @@ export default {
     return knit
   },
 
-  getPropertyValue(knit: ASTKnitType, name: string): unknown {
+  getPropertyValue(
+    knit: ASTKnitType<Object>,
+    name: string,
+  ): unknown {
     if (knit == null) {
       return knit
     }
