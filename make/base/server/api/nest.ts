@@ -1,7 +1,6 @@
-import { api } from '..'
-import type { ParserNestNodeType } from '../../../parse'
-import shared from '../../../shared'
-import Base from '../base'
+import type { ParserNestNodeType } from '~parse'
+import { api, Base, CompilerNestForkType } from '~base/server'
+import shared from '~shared'
 
 export function mintNestTree(
   base: Base,
@@ -15,7 +14,9 @@ export function mintNestTree(
   }
 }
 
-export function readNest(fork): string | undefined {
+export function readNest(
+  fork: CompilerNestForkType,
+): string | undefined {
   let value = fork.fork
 
   fork.nest.line.forEach(line => {

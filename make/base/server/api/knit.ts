@@ -1,15 +1,20 @@
-import { ASTKnitType, ASTListType, ASTMeshType } from '../type'
+import {
+  ASTMeshType,
+  CompilerKnitType,
+  CompilerListType,
+  CompilerMeshType,
+} from '~base/server'
 
 const KNIT_LINK = ['tree', 'mesh', 'size', 'like']
 
-export function makeKnit<T extends Object = Object>(
-  mesh: T,
-  base?: ASTKnitType<T>,
-): ASTKnitType<T> {
-  const slot = base ? base.tree.length : 0
+export function makeKnit<
+  P extends ASTMeshType,
+  Q extends ASTMeshType = ASTMeshType,
+>(mesh: P, base?: CompilerKnitType<Q>): CompilerKnitType<P, Q> {
+  const slot: number = base ? base.tree.length : 0
 
-  const knit: ASTKnitType<T> = {
-    like: 'knit',
+  const knit: CompilerKnitType<P, Q> = {
+    like: 'compiler-knit',
     base,
     slot,
     size: 0,
@@ -25,7 +30,7 @@ export function makeKnit<T extends Object = Object>(
 }
 
 export function getPropertyValue(
-  knit: ASTKnitType<Object>,
+  knit: CompilerKnitType<ASTMeshType>,
   name: string,
 ): unknown {
   if (knit == null) {
@@ -52,17 +57,17 @@ export function getPropertyValue(
   // return value
 }
 
-export function makeMesh(): ASTMeshType {
+export function makeMesh<T>(): CompilerMeshType<T> {
   return {
-    like: 'mesh',
-    mesh: {},
+    like: 'compiler-mesh',
+    mesh: <T>{},
   }
 }
 
-export function makeList(): ASTListType {
+export function makeList<T>(): CompilerListType<T> {
   return {
-    like: 'list',
-    list: [],
+    like: 'compiler-list',
+    list: <Array<T>>[],
   }
 }
 

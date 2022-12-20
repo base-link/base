@@ -1,26 +1,32 @@
 import Card from './card'
-import {
-  readTextFile,
-  getLinkHost,
-  makeCord,
-  parseTextIntoTree,
-  isTextNest,
-  getTextNest,
-} from './mixin/text'
-import { extendObject } from './mixin/fork'
-import {
-  makeKnit,
-  getPropertyValue,
-  makeMesh,
-  makeList,
-} from './mixin/knit'
-import {
-  BaseCallbackType,
-  BaseEncounterParamsType,
-  BaseFreeType,
-  BaseHookType,
-  BaseRequestParamsType,
-} from './type'
+
+export type BaseRequestParamsType = {
+  hash: string
+  like: string
+  name: string
+  site: string
+  link: string
+  fork: string
+  hook: (site: string, fork: unknown) => void
+}
+
+export type BaseCallbackType = {
+  site: string
+  link: string
+  hook: (site: string, fork: unknown) => void
+  fork: string
+}
+
+export type BaseEncounterParamsType = {
+  hash: string
+  like: string
+  name: string
+  load: string
+}
+
+export type BaseFreeType = () => void
+
+export type BaseHookType = () => BaseFreeType
 
 class Base {
   text_mesh: Map<string, string>
@@ -39,34 +45,6 @@ class Base {
   >
 
   wait_find_mesh: Map<string, Map<string, Map<string, string>>>
-
-  // ./text
-
-  protected readTextFile = readTextFile
-
-  protected getLinkHost = getLinkHost
-
-  protected makeCord = makeCord
-
-  protected parseTextIntoTree = parseTextIntoTree
-
-  protected isTextNest = isTextNest
-
-  protected getTextNest = getTextNest
-
-  // ./fork
-
-  protected extendObject = extendObject
-
-  // ./knit
-
-  protected makeKnit = makeKnit
-
-  protected getPropertyValue = getPropertyValue
-
-  protected makeMesh = makeMesh
-
-  protected makeList = makeList
 
   constructor(text_mesh: Iterable<readonly [string, string]>) {
     this.text_mesh = new Map(text_mesh)

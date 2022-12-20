@@ -23,6 +23,7 @@
     "typescript": "^4.9.4"
   },
   "dependencies": {
-    "@lancejpollard/pretty-compact-json.js": "^0.2.0"
+    "@lancejpollard/pretty-compact-json.js": "^0.2.0",
+    "lodash": "^4.17.21"
   }
 }

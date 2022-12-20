@@ -8,7 +8,11 @@
     "sourceMap": true,
     "strictNullChecks": true,
     "esModuleInterop": true,
-    "noUncheckedIndexedAccess": true
+    "noUncheckedIndexedAccess": true,
+    "baseUrl": "./make",
+    "paths": {
+      "~*": ["./*"]
+    }
   },
   "include": ["make"],
   "exclude": ["node_modules"]

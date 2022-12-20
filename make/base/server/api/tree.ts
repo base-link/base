@@ -1,21 +1,19 @@
-import { ASTTreeLinkType, BaseTreeMixinType } from '../type'
+import { CompilerTreeType } from '../type/compiler'
 
-export default <BaseTreeMixinType>{
-  makeTreeLink(
-    name: string,
-    base: ASTTreeLinkType,
-  ): ASTTreeLinkType {
-    const link: ASTTreeLinkType = {
-      like: 'tree-link',
-      base,
-      slot: base.link.length,
-      name,
-      link: [],
-      size: 0,
-    }
+export function makeTreeLink(
+  name: string,
+  base: CompilerTreeType,
+): CompilerTreeType {
+  const link: CompilerTreeType = {
+    like: 'compiler-tree',
+    base,
+    slot: base.link.length,
+    name,
+    link: [],
+    size: 0,
+  }
 
-    base.link.push(link)
+  base.link.push(link)
 
-    return link
-  },
+  return link
 }

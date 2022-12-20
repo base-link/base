@@ -1,6 +1,9 @@
 import fs from 'fs'
 import pathResolve from 'path'
-import { ASTTreeLinkType } from './base/server/type'
+import {
+  ASTForkType,
+  ASTTreeLinkType,
+} from './base/server/type'
 import type {
   ParserNodeType,
   ParserNestNodeType,
@@ -131,42 +134,6 @@ function isText(nest: ParserNestNodeType): boolean {
   }
 
   return false
-}
-
-function getText(
-  nest: ParserNestNodeType,
-  fork,
-): string | undefined {
-  if (nest.line.length > 1) {
-    return
-  }
-
-  let line = nest.line[0]
-  if (!line) {
-    return
-  }
-
-  if (line.like !== 'text') {
-    return
-  }
-
-  const str: Array<string> = []
-
-  line.link.forEach(link => {
-    switch (link.like) {
-      case 'cord':
-        str.push(link.cord)
-        break
-      case 'slot':
-        const text: string = 'readNest(link, seed)'
-        str.push(text)
-        break
-      default:
-        throw new Error('Oops')
-    }
-  })
-
-  return str.join('')
 }
 
 function getSimpleTerm(

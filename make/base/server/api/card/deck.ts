@@ -1,14 +1,15 @@
-import { ParserNestNodeType } from '../../../../parse'
-import { api, Base } from '../..'
-import shared from '../../../../shared'
+import { ParserNestNodeType } from '~parse'
 import {
-  ASTCardDeckType,
-  ASTCardType,
+  api,
+  ASTDeckCardType,
   ASTDeckType,
-  ASTKnitType,
-} from '../../type'
+  Base,
+  CompilerCardForkType,
+  CompilerNestForkType,
+} from '~base/server'
+import shared from '~shared'
 
-export function doesHaveFind(
+export function doesHaveSlot(
   nest: ParserNestNodeType,
 ): boolean {
   for (let i = 0, n = nest.line.length; i < n; i++) {
@@ -35,37 +36,45 @@ export function mintDeckCard(base: Base, link: string): void {
   const tree = api.parseTextIntoTree(text)
   const linkHost = api.getLinkHost(link)
   const card = base.card(link)
-  const knit: ASTKnitType<ASTCardDeckType> =
-    api.makeKnit<ASTCardDeckType>({
-      like: 'deck-card',
-      base,
-      'link-text-line': text.split(/\n/),
-      'link-text-tree': tree,
-      link: api.makeCord(link),
-      'link-host': api.makeCord(linkHost),
-      deck: api.makeKnit<ASTDeckType>({
-        like: 'deck',
-        mark: undefined, // version
-        bear: undefined, // entrypoint to library, tells us what to copy over.
-        site: undefined, // entrypoint to app.
-        test: undefined, // entrypoint to tests.
-        read: undefined,
-        term: api.makeList(), // licenses
-        face: api.makeList(), // people
-      }),
-    })
+  const knit = api.makeKnit<ASTDeckCardType>({
+    like: 'deck-card',
+    base,
+    'link-text-line': text.split(/\n/),
+    'link-text-tree': tree,
+    link: api.makeCord(link),
+    'link-host': api.makeCord(linkHost),
+    deck: api.makeKnit<ASTDeckType>({
+      like: 'deck',
+      host: undefined,
+      name: undefined,
+      mark: undefined, // version
+      bear: undefined, // entrypoint to library, tells us what to copy over.
+      site: undefined, // entrypoint to app.
+      test: undefined, // entrypoint to tests.
+      read: undefined,
+      term: api.makeList(), // licenses
+      face: api.makeList(), // people
+    }),
+  })
 
   card.bind(knit)
 
-  const fork: ASTForkType<ASTCardType> = {
+  const fork: CompilerCardForkType = {
+    like: 'card-fork',
     knit: knit.mesh.deck,
     card: knit,
   }
 
   if (tree.like === 'nest') {
     tree.nest.forEach(nest => {
-      const nestFork = api.extendObject(fork, { nest })
-      if (api.doesHaveFind(nest)) {
+      const nestFork: CompilerNestForkType = api.extendObject(
+        fork,
+        {
+          like: 'nest-fork',
+          nest,
+        },
+      )
+      if (api.doesHaveSlot(nest)) {
         // TODO: throw a more helpful error with pointing to code.
         throw new Error('Oops ' + link)
       } else if (shared.isSimpleTerm(nest)) {
@@ -98,33 +107,101 @@ export function mintDeckCard(base: Base, link: string): void {
   // console.log(knit)
 }
 
-export function mintDeck(fork): void {
-  fork.nest.nest.forEach((nest, i) => {
-    if (shared.doesHaveFind(nest)) {
-      throw new Error('Oops ' + fork.card.mesh.link)
-    } else if (shared.isText(nest) && i === 0) {
-      const text = shared.getText(nest)
-      const [host, name] = text.slice(1).split('/')
-      const textHost = this.makeCord(host)
-      const textName = this.makeCord(name)
-      this.addToTreeLink(fork.knit, this.makeCord(text))
+export function prepareDeckLinkAsText(
+  fork: CompilerNestForkType,
+): void {}
+
+export function enqueueDependencyResolution<
+  T extends CompilerNestForkType,
+>(
+  dependencyList: Array<ParserNestNodeType>,
+  fork: T,
+  handle: (fork: T) => void,
+) {
+  // fork.card.mesh.base.request({
+  //   hash,
+  //   like,
+  //   name,
+  //   site,
+  //   link,
+  //   fork,
+  //   hook,
+  // })
+}
+
+export function processDependencyList<
+  T extends CompilerNestForkType,
+>(
+  dependencyList: Array<ParserNestNodeType>,
+  fork: T,
+  handle: (fork: T) => void,
+) {
+  if (dependencyList.length) {
+    api.enqueueDependencyResolution<T>(
+      dependencyList,
+      fork,
+      handle,
+    )
+  } else {
+    handle(fork)
+  }
+}
+
+export function handleDeckLinkAsText(
+  fork: CompilerNestForkType,
+) {
+  const text = api.getText(fork.nest, fork)
+  if (text) {
+    const [host, name] = text.slice(1).split('/')
+    const textHost = host ? api.makeCord(host) : undefined
+    const textName = name ? api.makeCord(name) : undefined
+    if (fork.knit.mesh.like === 'deck') {
       fork.knit.mesh.host = textHost
       fork.knit.mesh.name = textName
+    }
+  }
+}
+
+export function mintDeck(fork: CompilerNestForkType): void {
+  fork.nest.nest.forEach((nest, i) => {
+    if (api.doesHaveSlot(nest)) {
+      throw new Error('Oops ' + fork.card.mesh.link)
+    } else if (shared.isText(nest) && i === 0) {
+      const nestFork = api.extendObject<CompilerNestForkType>(
+        fork,
+        {
+          like: 'nest-fork' as const,
+          nest,
+        },
+      )
+      const dependencyList = api.getTextDependencyList(
+        nestFork.nest,
+      )
+      api.processDependencyList(
+        dependencyList,
+        nestFork,
+        handleDeckLinkAsText,
+      )
     } else if (i > 0 && shared.isSimpleTerm(nest)) {
       const term = shared.getSimpleTerm(nest)
       switch (term) {
         case 'bear': {
-          const textLink = shared.findPath(
-            shared.getText(nest.nest[0]),
-            fork.card.mesh['link-host'].cord,
-          )
-          const text = this.makeCord(textLink)
-          fork.knit.mesh.bear = text
-          this.addToTreeLink(fork.knit, {
-            like: 'term',
-            term: 'bear',
-            bond: text,
-          })
+          if (nest.nest[0]) {
+            const link = shared.getText(nest.nest[0], fork)
+            if (link) {
+              const textLink = shared.findPath(
+                link,
+                fork.card.mesh['link-host'].cord,
+              )
+              const text = textLink && api.makeCord(textLink)
+              fork.knit.mesh.bear = text
+              api.addToTreeLink(fork.knit, {
+                like: 'term',
+                term: 'bear',
+                bond: text,
+              })
+            }
+          }
           break
         }
         case 'test': {
