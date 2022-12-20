@@ -12,7 +12,8 @@
     "baseUrl": "./make",
     "paths": {
       "~*": ["./*"]
-    }
+    },
+    "noImplicitAny": true
   },
   "include": ["make"],
   "exclude": ["node_modules"]

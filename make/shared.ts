@@ -1,24 +1,23 @@
 import fs from 'fs'
 import pathResolve from 'path'
-import { ASTForkType, ASTTreeLinkType } from './server/type'
+
 import type {
-  ParserNodeType,
   ParserNestNodeType,
+  ParserNodeType,
 } from './parse'
+import { ASTForkType, ASTTreeLinkType } from './server/type'
 
 export default {
-  getSimpleTerm,
-  isSimpleTerm,
-  doesHaveFind,
-  isText,
-  getText,
-  findPath,
-  isCode,
-  getCodeAsNumber,
-  isMark,
-  getMark,
-  copyObject,
   addToTreeLink,
+  copyObject,
+  doesHaveFind,
+  findPath,
+  getCodeAsNumber,
+  getMark,
+  getSimpleTerm,
+  isCode,
+  isMark,
+  isSimpleTerm,
   makeTreeLink,
 }
 
@@ -35,8 +34,8 @@ function addToTreeLink(
 function makeTreeLink(name: string) {
   return {
     like: 'tree-link',
-    name,
     link: [],
+    name,
     size: 0,
   }
 }
@@ -110,23 +109,6 @@ function isCode(nest: ParserNestNodeType): boolean {
 
   let line = nest.line[0]
   if (line && line.like === 'code') {
-    return true
-  }
-
-  return false
-}
-
-function isText(nest: ParserNestNodeType): boolean {
-  if (nest.line.length > 1) {
-    return false
-  }
-
-  if (nest.line.length === 0) {
-    return false
-  }
-
-  let line = nest.line[0]
-  if (line && line.like === 'text') {
     return true
   }
 

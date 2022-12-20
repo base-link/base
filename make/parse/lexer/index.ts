@@ -29,15 +29,25 @@ type LexerPatternLikeType =
   | LexerBasicTokenLikeType
   | LexerDataTokenLikeType
 
-export type LexerDataTokenType = {
-  like: LexerDataTokenLikeType
-  text: string
-  start: number
-  end: number
-  lineNumber: number
-  lineCharacterNumberStart: number
-  lineCharacterNumberEnd: number
-}
+export const LEXER_DATA_TOKEN_TYPE = [
+  'comb',
+  'mark',
+  'open-parenthesis',
+  'close-parenthesis',
+  'open-text',
+  'close-text',
+  'open-interpolation',
+  'close-interpolation',
+  'term-part',
+  'term-part-separator',
+  'nest-separator',
+  'open-nest',
+  'close-nest',
+  'text',
+  'slot',
+  'code',
+  'comment',
+]
 
 type LexerPatternAType = [RegExp, LexerPatternLikeType]
 
@@ -156,25 +166,15 @@ type LexerCommentTokenType = LexerDataTokenType & {
   like: 'comment'
 }
 
-export const LEXER_DATA_TOKEN_TYPE = [
-  'comb',
-  'mark',
-  'open-parenthesis',
-  'close-parenthesis',
-  'open-text',
-  'close-text',
-  'open-interpolation',
-  'close-interpolation',
-  'term-part',
-  'term-part-separator',
-  'nest-separator',
-  'open-nest',
-  'close-nest',
-  'text',
-  'slot',
-  'code',
-  'comment',
-]
+export type LexerDataTokenType = {
+  end: number
+  like: LexerDataTokenLikeType
+  lineCharacterNumberEnd: number
+  lineCharacterNumberStart: number
+  lineNumber: number
+  start: number
+  text: string
+}
 
 export type LexerTokenType =
   | LexerCombTokenType
@@ -368,14 +368,14 @@ function lex(text: string): Array<LexerTokenType> {
           const end = start + text.length
 
           const attrs = {
-            like: pattern[1],
-            text: '',
-            start,
             end,
-            lineNumber,
-            lineCharacterNumberStart: lineCharacterNumber,
+            like: pattern[1],
             lineCharacterNumberEnd:
               lineCharacterNumber + text.length,
+            lineCharacterNumberStart: lineCharacterNumber,
+            lineNumber,
+            start,
+            text: '',
           }
           if (pattern[1] === 'open-text') {
             typeStack.push('text')
@@ -483,15 +483,15 @@ function normalize(
               typedToken.lineCharacterNumberEnd
           } else {
             out.push({
-              like: 'term-part',
-              text: typedToken.text,
-              start: typedToken.start,
               end: typedToken.end,
-              lineNumber: typedToken.lineNumber,
-              lineCharacterNumberStart:
-                typedToken.lineCharacterNumberStart,
+              like: 'term-part',
               lineCharacterNumberEnd:
                 typedToken.lineCharacterNumberEnd,
+              lineCharacterNumberStart:
+                typedToken.lineCharacterNumberStart,
+              lineNumber: typedToken.lineNumber,
+              start: typedToken.start,
+              text: typedToken.text,
             })
           }
           break

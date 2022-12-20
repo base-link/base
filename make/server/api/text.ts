@@ -1,24 +1,22 @@
 import fs from 'fs'
 import pathResolve from 'path'
-import parse, {
-  ParserNodeType,
-  ParserNestNodeType,
-} from '~parse'
-import {
-  Base,
-  ASTCordType,
-  CompilerNestForkType,
-} from '~server'
 
-export function readTextFile(base: Base, link: string): string {
-  return (
-    base.text_mesh.get(link) ?? fs.readFileSync(link, 'utf-8')
-  )
+import parse, {
+  ParserNestNodeType,
+  ParserNodeType,
+} from '~parse'
+
+import { ASTCordType, Base } from '~server'
+
+import { LexicalScope } from './scope'
+
+export function getLinkHost(link: string): string {
+  return pathResolve.dirname(link)
 }
 
 export function getText(
   nest: ParserNestNodeType,
-  fork: CompilerNestForkType,
+  scope: LexicalScope,
 ): string | undefined {
   if (nest.line.length > 1) {
     return
@@ -41,6 +39,7 @@ export function getText(
         str.push(link.cord)
         break
       case 'slot':
+        // TODO
         const text: string = 'readNest(link, seed)'
         str.push(text)
         break
@@ -85,40 +84,6 @@ export function getTextDependencyList(
   return array
 }
 
-export function getLinkHost(link: string): string {
-  return pathResolve.dirname(link)
-}
-
-export function makeCord(cord: string): ASTCordType {
-  return {
-    like: 'cord',
-    cord,
-  }
-}
-
-export function parseTextIntoTree(
-  text: string,
-): ParserNodeType {
-  return parse(text)
-}
-
-export function isTextNest(nest: ParserNestNodeType): boolean {
-  if (nest.line.length > 1) {
-    return false
-  }
-
-  if (nest.line.length === 0) {
-    return false
-  }
-
-  let line = nest.line[0]
-  if (line && line.like === 'text') {
-    return true
-  }
-
-  return false
-}
-
 export function getTextNest(fork) {
   if (fork.nest.line.length > 1) {
     return
@@ -137,8 +102,8 @@ export function getTextNest(fork) {
     switch (link.like) {
       case 'cord':
         knit.tree.push({
-          like: 'cord',
           cord: link.cord,
+          like: 'cord',
         })
         break
       case 'nest': {
@@ -163,4 +128,57 @@ export function getTextNest(fork) {
   }
 
   return tree
+}
+
+export function isText(nest: ParserNestNodeType): boolean {
+  if (nest.line.length > 1) {
+    return false
+  }
+
+  if (nest.line.length === 0) {
+    return false
+  }
+
+  let line = nest.line[0]
+  if (line && line.like === 'text') {
+    return true
+  }
+
+  return false
+}
+
+export function isTextNest(nest: ParserNestNodeType): boolean {
+  if (nest.line.length > 1) {
+    return false
+  }
+
+  if (nest.line.length === 0) {
+    return false
+  }
+
+  let line = nest.line[0]
+  if (line && line.like === 'text') {
+    return true
+  }
+
+  return false
+}
+
+export function makeCord(cord: string): ASTCordType {
+  return {
+    cord,
+    like: 'cord',
+  }
+}
+
+export function parseTextIntoTree(
+  text: string,
+): ParserNodeType {
+  return parse(text)
+}
+
+export function readTextFile(base: Base, link: string): string {
+  return (
+    base.text_mesh.get(link) ?? fs.readFileSync(link, 'utf-8')
+  )
 }

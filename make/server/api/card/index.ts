@@ -1,2 +1,2 @@
-export * from './deck'
 export * from './code'
+export * from './deck'

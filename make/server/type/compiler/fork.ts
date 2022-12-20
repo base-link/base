@@ -1,20 +1,22 @@
 import { ParserNestNodeType } from '~parse'
+
 import {
-  ASTDeckType,
-  ASTMeshType,
   ASTDeckCardType,
-} from '../ast'
-import { CompilerKnitType } from './base'
+  ASTDeckType,
+  NestedPartial,
+} from '~server'
+
+import './base'
 
 export type CompilerCardForkType = {
   like: 'card-fork'
-  knit: CompilerKnitType<ASTDeckType>
-  card: CompilerKnitType<ASTDeckCardType>
+  mesh: ASTDeckType
 }
 
-export type CompilerNestForkType = {
+export type CompilerNestForkType = Omit<
+  NestedPartial<ASTDeckCardType>,
+  'like'
+> & {
   like: 'nest-fork'
-  knit: CompilerKnitType<ASTMeshType>
-  card: CompilerKnitType<ASTDeckCardType>
   nest: ParserNestNodeType
 }

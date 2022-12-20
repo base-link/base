@@ -1,25 +1,23 @@
-import { ASTCordType, CompilerListType } from '~server'
-
-export type ASTDeckType = {
-  like: 'deck'
-  host?: ASTCordType
-  name?: ASTCordType
-  mark?: ASTCordType // version
-  bear?: ASTCordType // entrypoint to library, tells us what to copy over.
-  site?: ASTCordType // entrypoint to app.
-  test?: ASTCordType // entrypoint to tests.
-  read?: ASTCordType
-  term: CompilerListType<ASTDeckTermType> // licenses
-  face: CompilerListType<ASTDeckFaceType> // people
+export type ASTDeckFaceType = {
+  email?: string
+  like: 'deck-face'
+  name?: string
 }
 
 export type ASTDeckTermType = {
   like: 'deck-term'
-  name: ASTCordType
+  name: string
 }
 
-export type ASTDeckFaceType = {
-  like: 'deck-face'
-  name?: ASTCordType
-  email?: ASTCordType
+export type ASTDeckType = {
+  bear?: string
+  face: ASTDeckFaceType
+  host: string
+  like: 'deck'
+  mark: string
+  name: string
+  read?: string
+  site?: string
+  term: ASTDeckTermType
+  test?: string
 }

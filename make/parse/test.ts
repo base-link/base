@@ -1,4 +1,5 @@
 import prettify from '@lancejpollard/pretty-compact-json.js/1'
+
 import parse from '.'
 
 // const nest = form(`link 1, foo <bar>`)

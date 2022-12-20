@@ -1,38 +1,47 @@
-import { ParserNodeType } from '~parse'
-import { ASTMeshType } from '../ast'
+import type { ParserNestNodeType, ParserNodeType } from '~parse'
 
-export type CompilerTreeType = {
-  like: 'compiler-tree'
-  name: string
-  link: Array<ParserNodeType | CompilerTreeType>
-  size: number
-  base?: CompilerTreeType
-  slot?: number
-}
+import type { ASTMeshType } from '~server'
 
 export type CompilerCordType = {
-  like: 'compiler-cord'
   cord: string
+  like: 'compiler-cord'
+}
+
+export type CompilerDependencyWatcherType = {
+  like: 'compiler-dependency-watcher'
 }
 
 export type CompilerKnitType<
   P = ASTMeshType,
   Q = ASTMeshType,
 > = {
-  like: 'compiler-knit'
-  slot: number
-  size: number
-  tree: Array<unknown>
-  mesh: P
   base?: CompilerKnitType<Q>
+  like: 'compiler-knit'
+  mesh: P
+  size: number
+  slot: number
+  tree: Array<unknown>
 }
 
-export type CompilerMeshType<T> = {
-  like: 'compiler-mesh'
-  mesh: T
+export type CompilerTreeType = {
+  base?: CompilerTreeType
+  like: 'compiler-tree'
+  link: Array<ParserNodeType | CompilerTreeType>
+  name: string
+  size: number
+  slot?: number
 }
 
-export type CompilerListType<T> = {
-  like: 'compiler-list'
-  list: Array<T>
+export type LexicalScope<
+  P extends LexicalScopeDefaultType = LexicalScopeDefaultType,
+  Q extends LexicalScopeDefaultType = LexicalScopeDefaultType,
+> = {
+  data: P
+  parent?: LexicalScope<Q>
+}
+
+export type LexicalScopeDefaultType = Record<string, unknown>
+
+export type LexicalScopeNestAddonType = {
+  nest: ParserNestNodeType
 }

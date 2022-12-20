@@ -1,5 +1,71 @@
 import { ParserNestNodeType } from '~parse'
-import { CompilerListType, CompilerMeshType } from '~server'
+
+export type ASTBearType = {
+  like: 'bear'
+  link: string
+}
+
+export type ASTBindType = {
+  bond: ASTBondType
+  like: 'bind'
+  name: string
+}
+
+export type ASTBondType = ASTCordType | ASTMarkType
+
+export type ASTCordType = {
+  cord: string
+  like: 'cord'
+}
+
+export type ASTFaceType = {
+  like: 'face'
+}
+
+export type ASTFlexMixinType = {
+  flex: boolean
+}
+
+export type ASTFormType = {
+  base: ASTFormType
+  hook: Record<string, ASTHookType>
+  like: 'form'
+  link: Record<string, ASTTakeType>
+  name: string
+  task: Record<string, ASTTaskType>
+  wear: Record<string, ASTWearType>
+}
+
+export type ASTHoldType = {
+  like: 'hold'
+}
+
+export type ASTHookType = {
+  like: 'hook'
+}
+
+export type ASTHostType = {
+  like: 'host'
+}
+
+export type ASTLikeType = {
+  bind?: Record<string, ASTLikeType>
+  like: 'like'
+  name: string
+}
+
+export type ASTLoadTakeSaveType = {
+  form: string
+  like: 'load-take-save'
+  name: string
+}
+
+export type ASTLoadTakeType = {
+  form: string
+  like: 'load-take'
+  name: string
+  save?: ASTLoadTakeSaveType
+}
 
 export type ASTLoadType = {
   like: 'load'
@@ -7,83 +73,14 @@ export type ASTLoadType = {
   take: Array<ASTLoadTakeType>
 }
 
-export type ASTLoadTakeType = {
-  like: 'load-take'
-  form: string
-  name: string
-  save?: ASTLoadTakeSaveType
+export type ASTMarkType = {
+  like: 'mark'
+  mark: number
 }
 
-export type ASTLoadTakeSaveType = {
-  like: 'load-take-save'
-  form: string
-  name: string
-}
-
-export type ASTBearType = {
-  like: 'bear'
-  link: string
-}
-
-export type ASTTreeType = {
-  like: 'tree'
-  take: CompilerMeshType<Record<string, ASTTakeType>>
-}
-
-export type ASTTakeType = {
-  like: 'take'
-  name: string
-  takeLike: ASTLikeType
-}
-
-export type ASTLikeType = {
-  like: 'like'
-  name: string
-  bind?: CompilerMeshType<Record<string, ASTLikeType>>
-}
-
-export type ASTFormType = {
-  like: 'form'
-  name: string
-  base: CompilerListType<ASTFormType>
-  link: CompilerMeshType<Record<string, ASTTakeType>>
-  task: CompilerMeshType<Record<string, ASTTaskType>>
-  wear: CompilerMeshType<Record<string, ASTWearType>>
-  hook: CompilerMeshType<Record<string, ASTHookType>>
-}
-
-export type ASTWearType = {
-  like: 'wear'
-  name: string
-  link: CompilerMeshType<Record<string, ASTTakeType>>
-  task: CompilerMeshType<Record<string, ASTTaskType>>
-}
-
-export type ASTTaskType = {
-  like: 'task'
-  take: CompilerMeshType<Record<string, ASTTakeType>>
-  task: CompilerMeshType<Record<string, ASTTaskType>>
-  move: Array<ASTTaskFlowType>
-}
-
-export type ASTTaskCallType = {
-  like: 'call'
-  bind: CompilerMeshType<Record<string, ASTBindType>>
-}
-
-export type ASTBindType = {
-  like: 'bind'
-  name: string
-  bond: ASTBondType
-}
-
-export type ASTFlexMixinType = {
-  flex: boolean
-}
-
-// move
-export type ASTReadMoveType = ASTFlexMixinType & {
-  like: 'read-move'
+// clone
+export type ASTReadDrawType = ASTFlexMixinType & {
+  like: 'read-draw'
   link: ParserNestNodeType
 }
 
@@ -93,9 +90,9 @@ export type ASTReadLoanType = ASTFlexMixinType & {
   link: ParserNestNodeType
 }
 
-// clone
-export type ASTReadDrawType = ASTFlexMixinType & {
-  like: 'read-draw'
+// move
+export type ASTReadMoveType = ASTFlexMixinType & {
+  like: 'read-move'
   link: ParserNestNodeType
 }
 
@@ -104,61 +101,6 @@ export type ASTReadType =
   | ASTReadLoanType
   | ASTReadDrawType
 
-export type ASTCordType = {
-  like: 'cord'
-  cord: string
-}
-
-export type ASTMarkType = {
-  like: 'mark'
-  mark: number
-}
-
-export type ASTBondType = ASTCordType | ASTMarkType
-
-export type ASTTaskFlowType = ASTTaskCallType | ASTHoldType
-
-export type ASTSuitType = {
-  like: 'suit'
-  link: CompilerMeshType<Record<string, ASTTakeType>>
-  task: CompilerMeshType<Record<string, ASTSuitTaskType>>
-}
-
-export type ASTSuitTaskType = {
-  like: 'suit-task'
-}
-
-export type ASTHostType = {
-  like: 'host'
-}
-
-export type ASTFaceType = {
-  like: 'face'
-}
-
-export type ASTTestType = {
-  like: 'test'
-}
-
-export type ASTHookType = {
-  like: 'hook'
-}
-
-export type ASTZoneType = {
-  like: 'zone'
-  name: string
-  tool: Array<ASTZoneToolType>
-}
-
-export type ASTZoneToolType = {
-  like: 'zone-tool'
-  zone: ASTZoneType
-}
-
-export type ASTHoldType = {
-  like: 'hold'
-}
-
 // request handler
 export type ASTSeekType = {
   like: 'seek'
@@ -166,7 +108,64 @@ export type ASTSeekType = {
   task: ASTTaskType
 }
 
+export type ASTSuitTaskType = {
+  like: 'suit-task'
+}
+
+export type ASTSuitType = {
+  like: 'suit'
+  link: Record<string, ASTTakeType>
+  task: Record<string, ASTSuitTaskType>
+}
+
+export type ASTTakeType = {
+  like: 'take'
+  name: string
+  takeLike: ASTLikeType
+}
+
+export type ASTTaskCallType = {
+  bind: Record<string, ASTBindType>
+  like: 'call'
+}
+
+export type ASTTaskFlowType = ASTTaskCallType | ASTHoldType
+
+export type ASTTaskType = {
+  like: 'task'
+  move: Array<ASTTaskFlowType>
+  take: Record<string, ASTTakeType>
+  task: Record<string, ASTTaskType>
+}
+
 export type ASTTermType = {
   like: 'term'
   name: string
+}
+
+export type ASTTestType = {
+  like: 'test'
+}
+
+export type ASTTreeType = {
+  like: 'tree'
+  take: Record<string, ASTTakeType>
+}
+
+export type ASTWearType = {
+  like: 'wear'
+  link: Record<string, ASTTakeType>
+  name: string
+  task: Record<string, ASTTaskType>
+}
+
+export type ASTZoneToolType = {
+  like: 'zone-tool'
+  zone: ASTZoneType
+}
+
+export type ASTZoneType = {
+  like: 'zone'
+  name: string
+  tool: Array<ASTZoneToolType>
 }

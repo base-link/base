@@ -11,5 +11,15 @@
   "proseWrap": "always",
   "endOfLine": "lf",
   "singleAttributePerLine": true,
-  "prettierPath": "./node_modules/prettier"
+  "prettierPath": "./node_modules/prettier",
+  "importOrder": [
+    "^\\w(.*)$",
+    "^@(.*)$",
+    "^~parse(.*)$",
+    "~(.*)$",
+    "\\..(.*)$",
+    "\\.(.*)$"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true
 }

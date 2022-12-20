@@ -1,9 +1,6 @@
 import { ParserNodeType } from '~parse'
+
 import {
-  Base,
-  CompilerKnitType,
-  CompilerListType,
-  CompilerMeshType,
   ASTBearType,
   ASTDeckType,
   ASTFaceType,
@@ -16,69 +13,55 @@ import {
   ASTTestType,
   ASTTreeType,
   ASTZoneType,
-  ASTCordType,
+  Base,
+  CompilerDependencyWatcherType,
 } from '~server'
+
+export type ASTBookCardType = ASTCardBaseType & {
+  abstract: string
+  like: 'book-card'
+  tags: Array<string>
+  title: string
+  // text: Array<ASTBookSectionType>
+}
 
 export type ASTCardBaseType = {
   base: Base
-  'link-text-line': Array<string>
-  'link-text-tree': ParserNodeType
-  link: ASTCordType
-  'link-host': ASTCordType
-}
-
-export type ASTDeckCardType = ASTCardBaseType & {
-  like: 'deck-card'
-  deck: CompilerKnitType<ASTDeckType>
+  dependencyWatcherMap: Map<
+    string,
+    CompilerDependencyWatcherType
+  >
+  directory: string
+  parseTree: ParserNodeType
+  path: string
+  textByLine: Array<string>
 }
 
 export type ASTCodeCardType = ASTCardBaseType & {
+  allSuitMesh: Record<string, ASTSuitType>
+  allTaskMesh: Record<string, ASTTaskType>
+  allTestMesh: Record<string, ASTTestType>
+  allTextTree: ParserNodeType
+  allTreeMesh: Record<string, ASTTreeType>
+  allZoneMesh: Record<string, ASTZoneType>
+  bearList: Array<ASTBearType>
+  faceMesh: Record<string, ASTFaceType>
+  formMesh: Record<string, ASTFormType>
+  hookMesh: Record<string, ASTHookType>
+  hostMesh: Record<string, ASTHostType>
   like: 'code-card'
-  link: ASTCordType
-  'link-host': ASTCordType
-  'text-tree': ParserNodeType
-  'load-list': CompilerListType<ASTLoadType>
-  'bear-list': CompilerListType<ASTBearType>
-  'tree-mesh': CompilerMeshType<Record<string, ASTTreeType>>
-  'form-mesh': CompilerMeshType<Record<string, ASTFormType>>
-  'suit-mesh': CompilerMeshType<Record<string, ASTSuitType>>
-  'task-mesh': CompilerMeshType<Record<string, ASTTaskType>>
-  'host-mesh': CompilerMeshType<Record<string, ASTHostType>>
-  'face-mesh': CompilerMeshType<Record<string, ASTFaceType>>
-  'zone-mesh': CompilerMeshType<Record<string, ASTZoneType>>
-  'test-mesh': CompilerMeshType<Record<string, ASTTestType>>
-  'load-mesh': CompilerMeshType<Record<string, ASTLoadType>>
-  'show-tree-mesh': CompilerMeshType<
-    Record<string, ASTTreeType>
-  >
-  'show-form-mesh': CompilerMeshType<
-    Record<string, ASTFormType>
-  >
-  'show-suit-mesh': CompilerMeshType<
-    Record<string, ASTSuitType>
-  >
-  'show-task-mesh': CompilerMeshType<
-    Record<string, ASTTaskType>
-  >
-  'show-host-mesh': CompilerMeshType<
-    Record<string, ASTHostType>
-  >
-  'show-face-mesh': CompilerMeshType<
-    Record<string, ASTFaceType>
-  >
-  'show-test-mesh': CompilerMeshType<
-    Record<string, ASTTestType>
-  >
-  'show-zone-mesh': CompilerMeshType<
-    Record<string, ASTZoneType>
-  >
-  'hook-mesh': CompilerMeshType<Record<string, ASTHookType>>
+  loadList: Array<ASTLoadType>
+  publicFaceMesh: Record<string, ASTFaceType>
+  publicFormMesh: Record<string, ASTFormType>
+  publicHostMesh: Record<string, ASTHostType>
+  publicSuitMesh: Record<string, ASTSuitType>
+  publicTaskMesh: Record<string, ASTTaskType>
+  publicTestMesh: Record<string, ASTTestType>
+  publicTreeMesh: Record<string, ASTTreeType>
+  publicZoneMesh: Record<string, ASTZoneType>
 }
 
-export type ASTBookCardType = ASTCardBaseType & {
-  like: 'book-card'
-  title: ASTCordType
-  tags: Array<ASTCordType>
-  abstract: ASTCordType
-  // text: Array<ASTBookSectionType>
+export type ASTDeckCardType = ASTCardBaseType & {
+  deck: ASTDeckType
+  like: 'deck-card'
 }

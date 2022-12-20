@@ -1,32 +1,32 @@
 import Card from './card'
 
-export type BaseRequestParamsType = {
-  hash: string
-  like: string
-  name: string
-  site: string
-  link: string
-  fork: string
-  hook: (site: string, fork: unknown) => void
-}
-
 export type BaseCallbackType = {
-  site: string
-  link: string
-  hook: (site: string, fork: unknown) => void
   fork: string
+  hook: (site: string, fork: unknown) => void
+  link: string
+  site: string
 }
 
 export type BaseEncounterParamsType = {
   hash: string
   like: string
-  name: string
   load: string
+  name: string
 }
 
 export type BaseFreeType = () => void
 
 export type BaseHookType = () => BaseFreeType
+
+export type BaseRequestParamsType = {
+  fork: string
+  hash: string
+  hook: (site: string, fork: unknown) => void
+  like: string
+  link: string
+  name: string
+  site: string
+}
 
 class Base {
   text_mesh: Map<string, string>

@@ -1,37 +1,36 @@
 import {
-  LexerTokenType,
-  LexerDataTokenType,
   LEXER_DATA_TOKEN_TYPE,
+  LexerDataTokenType,
+  LexerTokenType,
 } from '../lexer'
 
 type ParserTokenNodeType = {
-  start: number
   end: number
-  lineNumber: number
-  lineCharacterNumberStart: number
   lineCharacterNumberEnd: number
+  lineCharacterNumberStart: number
+  lineNumber: number
+  start: number
 }
 
-export type ParserTermNodeType = {
-  like: 'term'
-  link: Array<
-    ParserCordNodeType | ParserTermNodeType | ParserSlotNodeType
-  >
-}
-
-export type ParserCordNodeType = ParserTokenNodeType & {
-  like: 'cord'
-  cord: string
-}
-
-export type ParserTextNodeType = {
-  like: 'text'
-  link: Array<ParserCordNodeType | ParserSlotNodeType>
+export type ParserCodeNodeType = ParserTokenNodeType & {
+  base: string
+  code: string
+  like: 'code'
 }
 
 export type ParserCombNodeType = ParserTokenNodeType & {
-  like: 'comb'
   comb: number
+  like: 'comb'
+}
+
+export type ParserCordNodeType = ParserTokenNodeType & {
+  cord: string
+  like: 'cord'
+}
+
+export type ParserMarkNodeType = ParserTokenNodeType & {
+  like: 'mark'
+  mark: number
 }
 
 export type ParserNestNodeType = {
@@ -47,23 +46,6 @@ export type ParserNestNodeType = {
   nest: Array<ParserNestNodeType>
 }
 
-export type ParserMarkNodeType = ParserTokenNodeType & {
-  like: 'mark'
-  mark: number
-}
-
-export type ParserCodeNodeType = ParserTokenNodeType & {
-  like: 'code'
-  base: string
-  code: string
-}
-
-export type ParserSlotNodeType = {
-  like: 'slot'
-  size: number
-  nest: ParserNestNodeType
-}
-
 export type ParserNodeType =
   | ParserTermNodeType
   | ParserCordNodeType
@@ -74,6 +56,24 @@ export type ParserNodeType =
   | ParserCombNodeType
   | ParserCodeNodeType
 
+export type ParserSlotNodeType = {
+  like: 'slot'
+  nest: ParserNestNodeType
+  size: number
+}
+
+export type ParserTermNodeType = {
+  like: 'term'
+  link: Array<
+    ParserCordNodeType | ParserTermNodeType | ParserSlotNodeType
+  >
+}
+
+export type ParserTextNodeType = {
+  like: 'text'
+  link: Array<ParserCordNodeType | ParserSlotNodeType>
+}
+
 function parse(list: Array<LexerTokenType>) {
   const start: ParserNestNodeType = {
     like: 'nest',
@@ -82,13 +82,13 @@ function parse(list: Array<LexerTokenType>) {
         like: 'term',
         link: [
           {
-            like: 'cord',
             cord: 'file',
-            start: 0,
             end: 0,
-            lineNumber: 0,
-            lineCharacterNumberStart: 0,
+            like: 'cord',
             lineCharacterNumberEnd: 0,
+            lineCharacterNumberStart: 0,
+            lineNumber: 0,
+            start: 0,
           },
         ],
       },
@@ -182,15 +182,15 @@ function parse(list: Array<LexerTokenType>) {
               last.end = token.end
             } else {
               term.link.push({
-                like: 'cord',
                 cord: token.text,
-                start: token.start,
                 end: token.end,
-                lineNumber: token.lineNumber,
-                lineCharacterNumberStart:
-                  token.lineCharacterNumberStart,
+                like: 'cord',
                 lineCharacterNumberEnd:
                   token.lineCharacterNumberEnd,
+                lineCharacterNumberStart:
+                  token.lineCharacterNumberStart,
+                lineNumber: token.lineNumber,
+                start: token.start,
               })
             }
           }
@@ -249,8 +249,8 @@ function parse(list: Array<LexerTokenType>) {
           }
           const slot: ParserSlotNodeType = {
             like: 'slot',
-            size: token.text.length,
             nest,
+            size: token.text.length,
           }
 
           if (text && text.like === 'text') {
@@ -275,15 +275,15 @@ function parse(list: Array<LexerTokenType>) {
               last.end = token.end
             } else {
               text.link.push({
-                like: `cord`,
                 cord: token.text,
-                start: token.start,
                 end: token.end,
-                lineNumber: token.lineNumber,
-                lineCharacterNumberStart:
-                  token.lineCharacterNumberStart,
+                like: `cord`,
                 lineCharacterNumberEnd:
                   token.lineCharacterNumberEnd,
+                lineCharacterNumberStart:
+                  token.lineCharacterNumberStart,
+                lineNumber: token.lineNumber,
+                start: token.start,
               })
             }
           } else {
@@ -292,15 +292,15 @@ function parse(list: Array<LexerTokenType>) {
               like: 'text',
               link: [
                 {
-                  like: `cord`,
                   cord: token.text,
-                  start: token.start,
                   end: token.end,
-                  lineNumber: token.lineNumber,
-                  lineCharacterNumberStart:
-                    token.lineCharacterNumberStart,
+                  like: `cord`,
                   lineCharacterNumberEnd:
                     token.lineCharacterNumberEnd,
+                  lineCharacterNumberStart:
+                    token.lineCharacterNumberStart,
+                  lineNumber: token.lineNumber,
+                  start: token.start,
                 },
               ],
             }
@@ -318,15 +318,15 @@ function parse(list: Array<LexerTokenType>) {
         case `mark`: {
           const nest = stack[stack.length - 1]
           const mark: ParserMarkNodeType = {
-            like: `mark`,
-            mark: parseInt(token.text, 10),
-            start: token.start,
             end: token.end,
-            lineNumber: token.lineNumber,
-            lineCharacterNumberStart:
-              token.lineCharacterNumberStart,
+            like: `mark`,
             lineCharacterNumberEnd:
               token.lineCharacterNumberEnd,
+            lineCharacterNumberStart:
+              token.lineCharacterNumberStart,
+            lineNumber: token.lineNumber,
+            mark: parseInt(token.text, 10),
+            start: token.start,
           }
 
           if (nest && nest.like === 'nest') {
@@ -348,16 +348,16 @@ function parse(list: Array<LexerTokenType>) {
           }
 
           const code: ParserCodeNodeType = {
-            like: 'code',
             base: like,
             code: val, //String.fromCharCode(parseInt(val, 16))
-            start: token.start,
             end: token.end,
-            lineNumber: token.lineNumber,
-            lineCharacterNumberStart:
-              token.lineCharacterNumberStart,
+            like: 'code',
             lineCharacterNumberEnd:
               token.lineCharacterNumberEnd,
+            lineCharacterNumberStart:
+              token.lineCharacterNumberStart,
+            lineNumber: token.lineNumber,
+            start: token.start,
           }
 
           if (node && node.like === 'nest') {
@@ -371,15 +371,15 @@ function parse(list: Array<LexerTokenType>) {
         case `comb`: {
           const node = stack[stack.length - 1]
           const comb: ParserCombNodeType = {
-            like: `comb`,
             comb: parseFloat(token.text),
-            start: token.start,
             end: token.end,
-            lineNumber: token.lineNumber,
-            lineCharacterNumberStart:
-              token.lineCharacterNumberStart,
+            like: `comb`,
             lineCharacterNumberEnd:
               token.lineCharacterNumberEnd,
+            lineCharacterNumberStart:
+              token.lineCharacterNumberStart,
+            lineNumber: token.lineNumber,
+            start: token.start,
           }
 
           if (node && node.like === 'nest') {
