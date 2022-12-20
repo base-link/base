@@ -1,12 +1,12 @@
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-require-imports
 const prettify = require('@lancejpollard/pretty-compact-json.js/1')
 import parse from '.'
-import type { ParseNodeType } from '.'
+import type { ParserNodeType } from '.'
 
 // const nest = form(`link 1, foo <bar>`)
 // const nest = form(`link <./{code/ball}>`)
 // const nest = form(`link {a}-x-{y/z}, foo <bar>`)
-const nest: ParseNodeType = parse(`
+const nest: ParserNodeType = parse(`
 
 load @treesurf/wolf/code
   load /shared/result

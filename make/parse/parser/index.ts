@@ -64,7 +64,7 @@ export type ParserSlotNodeType = {
   nest: ParserNestNodeType
 }
 
-export type ParseNodeType =
+export type ParserNodeType =
   | ParserTermNodeType
   | ParserCordNodeType
   | ParserNestNodeType
@@ -96,7 +96,7 @@ function parse(list: Array<LexerTokenType>) {
     nest: [],
   }
 
-  const stack: Array<ParseNodeType> = [start]
+  const stack: Array<ParserNodeType> = [start]
   let i = 0
 
   while (i < list.length) {

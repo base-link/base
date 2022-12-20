@@ -1,18 +1,20 @@
+import { ParserNestNodeType } from '../../../parse'
+import shared from '../../../shared'
 
-const shared = require('../../../shared')
-
-module.exports = {
-  doesHaveFind(nest) {
+export default {
+  doesHaveFind(nest: ParserNestNodeType) {
     for (let i = 0, n = nest.line.length; i < n; i++) {
       let line = nest.line[i]
-      if (line.like !== 'term') {
-        continue
-      }
+      if (line) {
+        if (line.like !== 'term') {
+          continue
+        }
 
-      for (let j = 0, m = line.link.length; j < m; j++) {
-        let link = line.link[j]
-        if (link.like === 'nest' && link.size === 1) {
-          return true
+        for (let j = 0, m = line.link.length; j < m; j++) {
+          let link = line.link[j]
+          if (link && link.like === 'slot' && link.size === 1) {
+            return true
+          }
         }
       }
     }
@@ -20,7 +22,7 @@ module.exports = {
     return false
   },
 
-  mintDeckCard(link) {
+  mintDeckCard(link: string) {
     const text = this.readTextFile(link)
     const tree = this.parseTextIntoTree(text)
     const linkHost = this.getLinkHost(link)
@@ -48,7 +50,7 @@ module.exports = {
 
     const fork = {
       knit: knit.mesh.deck,
-      card: knit
+      card: knit,
     }
 
     tree.nest.forEach(nest => {
@@ -101,7 +103,10 @@ module.exports = {
         const term = shared.getSimpleTerm(nest)
         switch (term) {
           case 'bear': {
-            const textLink = shared.findPath(shared.getText(nest.nest[0]), fork.card.mesh['link-host'].cord)
+            const textLink = shared.findPath(
+              shared.getText(nest.nest[0]),
+              fork.card.mesh['link-host'].cord,
+            )
             const text = this.makeCord(textLink)
             fork.knit.mesh.bear = text
             this.addToTreeLink(fork.knit, {
@@ -112,7 +117,10 @@ module.exports = {
             break
           }
           case 'test': {
-            const textLink = shared.findPath(shared.getText(nest.nest[0]), fork.card.mesh['link-host'].cord)
+            const textLink = shared.findPath(
+              shared.getText(nest.nest[0]),
+              fork.card.mesh['link-host'].cord,
+            )
             const text = this.makeCord(textLink)
             fork.knit.mesh.test = text
             this.addToTreeLink(fork.knit, {
@@ -123,7 +131,9 @@ module.exports = {
             break
           }
           default:
-            throw new Error(`${term}: ${fork.card.mesh.link.cord}`)
+            throw new Error(
+              `${term}: ${fork.card.mesh.link.cord}`,
+            )
         }
       } else {
         throw new Error(`${fork.card.mesh.link.cord}`)

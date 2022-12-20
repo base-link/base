@@ -1,29 +1,6 @@
-import type { ASTTreeLinkType } from '../../shared'
-import Base from './base'
+import { ASTKnitType, ASTListType, ASTMeshType } from './type'
 
 const KNIT_LINK = ['tree', 'mesh', 'size', 'like']
-const KNIT_FORM = {
-  name: 'knit',
-}
-
-type ASTKnitType = {
-  like: 'knit'
-  slot: number
-  size: number
-  tree: Array<unknown>
-  mesh: Object
-  base?: ASTKnitType
-}
-
-type ASTMeshType = {
-  like: 'mesh'
-  mesh: Object
-}
-
-type ASTListType = {
-  like: 'list'
-  list: Array<unknown>
-}
 
 export default {
   makeKnit(mesh: Object, base?: ASTKnitType) {

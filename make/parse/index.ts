@@ -1,7 +1,7 @@
 import lex from './lexer'
 import parse from './parser'
 import type {
-  ParseNodeType,
+  ParserNodeType,
   ParserTermNodeType,
   ParserTextNodeType,
   ParserCordNodeType,
@@ -12,12 +12,12 @@ import type {
   ParserSlotNodeType,
 } from './parser'
 
-function form(str: string): ParseNodeType {
+function form(str: string): ParserNodeType {
   return parse(lex(str))
 }
 
 export type {
-  ParseNodeType,
+  ParserNodeType,
   ParserTermNodeType,
   ParserTextNodeType,
   ParserCordNodeType,

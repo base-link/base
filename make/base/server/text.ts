@@ -1,30 +1,35 @@
-import parse from '../../parse'
+import parse, {
+  ParserNodeType,
+  ParserNestNodeType,
+} from '../../parse'
 import fs from 'fs'
 import pathResolve from 'path'
+import { ASTCordType, BaseTextMixin } from './type'
+import Base from './base'
 
-module.exports = {
-  readTextFile(link) {
+export default <BaseTextMixin>{
+  readTextFile(this: Base, link: string): string {
     return (
       this.text_mesh.get(link) ?? fs.readFileSync(link, 'utf-8')
     )
   },
 
-  getLinkHost(link) {
+  getLinkHost(link: string): string {
     return pathResolve.dirname(link)
   },
 
-  makeCord(cord) {
+  makeCord(cord: string): ASTCordType {
     return {
       like: 'cord',
       cord,
     }
   },
 
-  parseTextIntoTree(text) {
+  parseTextIntoTree(text: string): ParserNodeType {
     return parse(text)
   },
 
-  isTextNest(nest) {
+  isTextNest(nest: ParserNestNodeType): boolean {
     if (nest.line.length > 1) {
       return false
     }
@@ -34,7 +39,7 @@ module.exports = {
     }
 
     let line = nest.line[0]
-    if (line.like === 'text') {
+    if (line && line.like === 'text') {
       return true
     }
 

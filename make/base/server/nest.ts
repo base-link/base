@@ -1,8 +1,9 @@
 import type { ParserNestNodeType } from '../../parse'
 import shared from '../../shared'
+import Base from './base'
 
 export default {
-  mintNestTree(nest: ParserNestNodeType, seed) {
+  mintNestTree(this: Base, nest: ParserNestNodeType, seed) {
     if (this.isTextNest(nest)) {
       return this.getTextNest(nest, seed)
     } else if (shared.isMark(nest)) {

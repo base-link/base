@@ -1,6 +1,10 @@
 import fs from 'fs'
 import pathResolve from 'path'
-import type { ParseNodeType, ParserNestNodeType } from './parse'
+import { ASTTreeLinkType } from './base/server/type'
+import type {
+  ParserNodeType,
+  ParserNestNodeType,
+} from './parse'
 
 export default {
   getSimpleTerm,
@@ -18,16 +22,9 @@ export default {
   makeTreeLink,
 }
 
-export type ASTTreeLinkType = {
-  like: 'tree-link'
-  name: string
-  link: Array<ParseNodeType>
-  size: number
-}
-
 function addToTreeLink(
   tree: ASTTreeLinkType,
-  link: ParseNodeType,
+  link: ParserNodeType,
 ): void {
   tree.link.push(link)
   if (link.like['tree-link']) {
