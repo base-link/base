@@ -1,5 +1,6 @@
 import { ParserNestNodeType, ParserNodeType } from '../../parse'
 import Card from './card'
+import Base from './base'
 
 export type ASTTreeLinkType = {
   like: 'tree-link'
@@ -38,7 +39,7 @@ export type ASTListType = Object & {
 }
 
 export type ASTCardType = Object & {
-  base: BaseType
+  base: Base
   'link-text-line': Array<string>
   'link-text-tree': ParserNodeType
   link: ASTCordType
@@ -69,6 +70,32 @@ export type ASTFormType = Object & {
 export type ASTCardDeckType = ASTCardType & {
   like: 'deck-card'
   deck: ASTKnitType<ASTDeckType>
+}
+
+export type ASTCardCodeType = ASTCardType & {
+  like: 'code-card'
+  link: ASTCordType
+  'link-host': ASTCordType
+  'text-tree': ParserNodeType
+  'load-list': ASTListType
+  'bear-list': ASTListType
+  'tree-mesh': ASTMeshType
+  'form-mesh': ASTMeshType
+  'suit-mesh': ASTMeshType
+  'task-mesh': ASTMeshType
+  'host-mesh': ASTMeshType
+  'face-mesh': ASTMeshType
+  'test-mesh': ASTMeshType
+  'load-mesh': ASTMeshType
+  'show-tree-mesh': ASTMeshType
+  'show-form-mesh': ASTMeshType
+  'show-suit-mesh': ASTMeshType
+  'show-task-mesh': ASTMeshType
+  'show-host-mesh': ASTMeshType
+  'show-face-mesh': ASTMeshType
+  'show-test-mesh': ASTMeshType
+  'find-mesh': ASTMeshType
+  'hook-mesh': ASTMeshType
 }
 
 export type BaseTextMixinType = {

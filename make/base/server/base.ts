@@ -1,5 +1,20 @@
 import Card from './card'
 import {
+  readTextFile,
+  getLinkHost,
+  makeCord,
+  parseTextIntoTree,
+  isTextNest,
+  getTextNest,
+} from './mixin/text'
+import { extendObject } from './mixin/fork'
+import {
+  makeKnit,
+  getPropertyValue,
+  makeMesh,
+  makeList,
+} from './mixin/knit'
+import {
   BaseCallbackType,
   BaseEncounterParamsType,
   BaseFreeType,
@@ -24,6 +39,34 @@ class Base {
   >
 
   wait_find_mesh: Map<string, Map<string, Map<string, string>>>
+
+  // ./text
+
+  protected readTextFile = readTextFile
+
+  protected getLinkHost = getLinkHost
+
+  protected makeCord = makeCord
+
+  protected parseTextIntoTree = parseTextIntoTree
+
+  protected isTextNest = isTextNest
+
+  protected getTextNest = getTextNest
+
+  // ./fork
+
+  protected extendObject = extendObject
+
+  // ./knit
+
+  protected makeKnit = makeKnit
+
+  protected getPropertyValue = getPropertyValue
+
+  protected makeMesh = makeMesh
+
+  protected makeList = makeList
 
   constructor(text_mesh: Iterable<readonly [string, string]>) {
     this.text_mesh = new Map(text_mesh)

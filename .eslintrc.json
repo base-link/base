@@ -17,8 +17,8 @@
   "extends": [],
   "rules": {
     "curly": 2,
-    "brace-style": ["error", "1tbs"],
-    "indent": ["error", 2, { "SwitchCase": 1 }],
+    // "brace-style": ["error", "1tbs"],
+    // "indent": ["error", 2, { "SwitchCase": 1 }],
     "@typescript-eslint/quotes": [
       "error",
       "single",

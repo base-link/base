@@ -1,4 +1,4 @@
-import { ASTTreeLinkType, BaseTreeMixinType } from './type'
+import { ASTTreeLinkType, BaseTreeMixinType } from '../type'
 
 export default <BaseTreeMixinType>{
   makeTreeLink(
