@@ -1,30 +1,52 @@
+import Card from './card'
 
-const treeMixin = require('./tree')
-const forkMixin = require('./fork')
-const nestMixin = require('./nest')
-const knitMixin = require('./knit')
-const textMixin = require('./text')
-const cardDeckMixin = require('./card/deck')
-const cardCodeMixin = require('./card/code')
-
-class Card {
-  constructor(hash) {
-    this.hash = hash
-    this.seed = {}
-  }
-
-  bind(seed) {
-    // diff the values
-    this.seed = seed
-  }
-
-  free() {
-    this.seed = {}
-  }
+type BaseRequestParamsType = {
+  hash: string
+  like: string
+  name: string
+  site: string
+  link: string
+  fork: string
+  hook: (site: string, fork: unknown) => void
 }
 
+type BaseCallbackType = {
+  site: string
+  link: string
+  hook: (site: string, fork: unknown) => void
+  fork: string
+}
+
+type BaseEncounterParamsType = {
+  hash: string
+  like: string
+  name: string
+  load: string
+}
+
+type BaseFreeType = () => void
+
+type BaseHookType = () => BaseFreeType
+
 class Base {
-  constructor(text_mesh) {
+  text_mesh: Map<string, string>
+
+  link_mesh: Map<string, Array<string>>
+
+  hook_mesh: Map<string, BaseHookType>
+
+  free_mesh: Map<string, BaseFreeType>
+
+  card_mesh: Map<string, Card>
+
+  wait_seek_mesh: Map<
+    string,
+    Map<string, Map<string, Array<BaseCallbackType>>>
+  >
+
+  wait_find_mesh: Map<string, Map<string, Map<string, string>>>
+
+  constructor(text_mesh: Iterable<readonly [string, string]>) {
     this.text_mesh = new Map(text_mesh)
     this.link_mesh = new Map()
     this.hook_mesh = new Map()
@@ -42,7 +64,7 @@ class Base {
     link,
     fork,
     hook,
-  }) {
+  }: BaseRequestParamsType) {
     let like_mesh = this.wait_seek_mesh.get(hash)
     if (!like_mesh) {
       like_mesh = new Map()
@@ -69,7 +91,7 @@ class Base {
     like,
     name,
     load,
-  }) {
+  }: BaseEncounterParamsType) {
     let like_mesh = this.wait_find_mesh.get(hash)
     if (!like_mesh) {
       like_mesh = new Map()
@@ -108,7 +130,7 @@ class Base {
           for (const bind of bind_list) {
             bind.site[bind.link] = {
               like: 'bind-link',
-              bind: load
+              bind: load,
             }
             bind.hook(bind.site, bind.fork)
           }
@@ -152,42 +174,43 @@ class Base {
     }
   }
 
-  link(hash, list) {
+  link(hash: string, list: Array<string>) {
     this.link_mesh.set(hash, list)
   }
 
-  free(hash) {
+  free(hash: string) {
     this.link_mesh.delete(hash)
+
     const free = this.free_mesh.get(hash)
     if (free) {
       free()
     }
+
     this.free_mesh.delete(hash)
     this.hook_mesh.delete(hash)
   }
 
-  hook(hash, call) {
+  hook(hash: string, call: BaseHookType) {
     this.hook_mesh.set(hash, call)
   }
 
-  bind(hash) {
-    const list = this.sort(hash)
-
-    for (const link of list) {
-      const free = this.free_mesh.get(hash)
-      if (free) {
-        free()
-      }
-
-      const call = this.hook_mesh.get(link)
-      const free_head = call()
-
-      this.free_mesh.set(hash, free_head)
-    }
+  bind(hash: string) {
+    // const list = this.sort()
+    // for (const link of list) {
+    //   const free = this.free_mesh.get(hash)
+    //   if (free) {
+    //     free()
+    //   }
+    //   const call = this.hook_mesh.get(link)
+    //   if (call) {
+    //     const free_head = call()
+    //     this.free_mesh.set(hash, free_head)
+    //   }
+    // }
   }
 
-  card(hash) {
-    let card = this.card_mesh.get(hash)
+  card(hash: string) {
+    let card: Card | undefined = this.card_mesh.get(hash)
 
     if (!card) {
       card = new Card(hash)
@@ -199,49 +222,34 @@ class Base {
 
   sort() {
     // Calcuate the incoming degree of each vertex
-    const hash_list = [...this.link_mesh.keys()]
-    const head_size = {}
-    for (const hash of hash_list) {
-      const link_list = this.link_mesh[hash]
-
-      if (link_list) {
-        for (const link of link_list) {
-          head_size[link] = head_size[link] + 1 || 1
-        }
-      }
-    }
-
-    const head = hash_list.filter((v) => !head_size[v])
-    const list = []
-
-    while (head.length) {
-      const hash = head.shift()
-      const link_list = this.link_mesh[hash]
-
-      list.push(hash)
-
-      // adjust the incoming degree of its neighbors
-      if (link_list) {
-        for (const link of link_list) {
-          head_size[link]--
-
-          if (head_size[link] === 0) {
-            head.push(link)
-          }
-        }
-      }
-    }
-
-    return list
+    // const hash_list = [...this.link_mesh.keys()]
+    // const head_size = {}
+    // for (const hash of hash_list) {
+    //   const link_list = this.link_mesh[hash]
+    //   if (link_list) {
+    //     for (const link of link_list) {
+    //       head_size[link] = head_size[link] + 1 || 1
+    //     }
+    //   }
+    // }
+    // const head = hash_list.filter(v => !head_size[v])
+    // const list = []
+    // while (head.length) {
+    //   const hash = head.shift()
+    //   const link_list = this.link_mesh[hash]
+    //   list.push(hash)
+    //   // adjust the incoming degree of its neighbors
+    //   if (link_list) {
+    //     for (const link of link_list) {
+    //       head_size[link]--
+    //       if (head_size[link] === 0) {
+    //         head.push(link)
+    //       }
+    //     }
+    //   }
+    // }
+    // return list
   }
 }
 
-Object.assign(Base.prototype, treeMixin)
-Object.assign(Base.prototype, forkMixin)
-Object.assign(Base.prototype, nestMixin)
-Object.assign(Base.prototype, knitMixin)
-Object.assign(Base.prototype, textMixin)
-Object.assign(Base.prototype, cardCodeMixin)
-Object.assign(Base.prototype, cardDeckMixin)
-
-module.exports = Base
+export default Base

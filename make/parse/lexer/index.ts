@@ -1,5 +1,3 @@
-module.exports = lex
-
 type LexerBasicTokenLikeType =
   | 'line'
   | 'open-indentation'
@@ -300,60 +298,63 @@ function lex(text: string): Array<LexerTokenType> {
         throw new Error('Indentation error')
       }
       const oldIndent = indents[indents.length - 1]
-      if (newIndent === oldIndent) {
-        while (nesting) {
-          tokens.push({
-            like: 'close-indentation',
-          })
-          nesting--
-        }
-        // foo bar
-        //   foo bar
-        //   foo bar
-        tokens.push({
-          like: 'line',
-        })
-      } else if (newIndent > oldIndent) {
-        while (nesting > 1) {
-          tokens.push({
-            like: 'close-indentation',
-          })
-          nesting--
-        }
 
-        if (newIndent - oldIndent != 2) {
-          throw new Error('Indentation error')
-        }
-        // foo bar
-        //   foo bar baz
-        //     foo bar
-        tokens.push({
-          like: 'line',
-        })
-        indents.push(newIndent)
-        nesting = 0
-      } else {
-        if (Math.abs(newIndent - oldIndent) % 2 != 0) {
-          throw new Error('Indentation error')
-        }
-        while (nesting) {
+      if (oldIndent != null) {
+        if (newIndent === oldIndent) {
+          while (nesting) {
+            tokens.push({
+              like: 'close-indentation',
+            })
+            nesting--
+          }
+          // foo bar
+          //   foo bar
+          //   foo bar
           tokens.push({
-            like: 'close-indentation',
+            like: 'line',
           })
-          nesting--
-        }
-        let diff = (oldIndent - newIndent) / 2
-        while (diff) {
+        } else if (newIndent > oldIndent) {
+          while (nesting > 1) {
+            tokens.push({
+              like: 'close-indentation',
+            })
+            nesting--
+          }
+
+          if (newIndent - oldIndent != 2) {
+            throw new Error('Indentation error')
+          }
+          // foo bar
+          //   foo bar baz
+          //     foo bar
           tokens.push({
-            like: 'close-indentation',
+            like: 'line',
           })
-          diff--
-          indents.pop()
+          indents.push(newIndent)
+          nesting = 0
+        } else {
+          if (Math.abs(newIndent - oldIndent) % 2 != 0) {
+            throw new Error('Indentation error')
+          }
+          while (nesting) {
+            tokens.push({
+              like: 'close-indentation',
+            })
+            nesting--
+          }
+          let diff = (oldIndent - newIndent) / 2
+          while (diff) {
+            tokens.push({
+              like: 'close-indentation',
+            })
+            diff--
+            indents.pop()
+          }
+          tokens.push({
+            like: 'line',
+          })
+          // indents.push(newIndent)
         }
-        tokens.push({
-          like: 'line',
-        })
-        // indents.push(newIndent)
       }
     } else {
       const patterns =
@@ -429,165 +430,178 @@ function normalize(
   let i = 0
   while (i < list.length) {
     const token = list[i++]
-    switch (token.like) {
-      case `open-parenthesis`:
-      case `open-indentation`: {
-        out.push(token)
-        break
-      }
-      case `close-parenthesis`:
-      case `close-indentation`: {
-        out.push(token)
-        break
-      }
-      case `term-part`: {
-        const last = list[i - 2]
-        switch (last.like) {
-          case 'term-part':
-          case 'term-part-separator':
-          case 'close-interpolation':
-            break
-          default:
-            out.push({
-              like: 'term-open',
-            })
-            break
+
+    if (token) {
+      switch (token.like) {
+        case `open-parenthesis`:
+        case `open-indentation`: {
+          out.push(token)
+          break
         }
-        out.push(token)
-        const next = list[i]
-        switch (next.like) {
-          case 'term-part':
-          case 'term-part-separator':
-          case 'open-interpolation':
-            break
-          default:
-            out.push({
-              like: 'term-close',
-            })
-            break
+        case `close-parenthesis`:
+        case `close-indentation`: {
+          out.push(token)
+          break
         }
-        break
-      }
-      case 'term-part-separator': {
-        const typedToken = token as LexerDataTokenType
-        const last = out[out.length - 1] as LexerDataTokenType
-        if (last.like === 'term-part') {
-          last.text += typedToken.text
-          last.end = typedToken.end
-          last.lineCharacterNumberEnd =
-            typedToken.lineCharacterNumberEnd
-        } else {
-          out.push({
-            like: 'term-part',
-            text: typedToken.text,
-            start: typedToken.start,
-            end: typedToken.end,
-            lineNumber: typedToken.lineNumber,
-            lineCharacterNumberStart:
-              typedToken.lineCharacterNumberStart,
-            lineCharacterNumberEnd:
-              typedToken.lineCharacterNumberEnd,
-          })
-        }
-        break
-      }
-      case `nest-separator`: {
-        out.push(token)
-        break
-      }
-      case `open-nest`: {
-        out.push(token)
-        break
-      }
-      case `close-nest`: {
-        out.push(token)
-        break
-      }
-      case `open-text`: {
-        out.push(token)
-        break
-      }
-      case `close-text`: {
-        out.push(token)
-        break
-      }
-      case `open-interpolation`: {
-        const last = list[i - 2]
-        switch (last.like) {
-          case 'line':
-          case 'open-parenthesis':
-          case 'open-indentation': {
-            out.push({
-              like: 'term-open',
-            })
-            break
+        case `term-part`: {
+          const last = list[i - 2]
+          switch (last && last.like) {
+            case 'term-part':
+            case 'term-part-separator':
+            case 'close-interpolation':
+              break
+            default:
+              out.push({
+                like: 'term-open',
+              })
+              break
           }
+          out.push(token)
+          const next = list[i]
+          if (next) {
+            switch (next.like) {
+              case 'term-part':
+              case 'term-part-separator':
+              case 'open-interpolation':
+                break
+              default:
+                out.push({
+                  like: 'term-close',
+                })
+                break
+            }
+          }
+          break
         }
-        out.push(token)
-        break
-      }
-      case `close-interpolation`: {
-        const last = list[i - 2]
-
-        switch (last.like) {
-          case 'close-text':
-          case 'mark':
-          case 'comb':
+        case 'term-part-separator': {
+          const typedToken = token as LexerDataTokenType
+          const last = out[out.length - 1] as LexerDataTokenType
+          if (last.like === 'term-part') {
+            last.text += typedToken.text
+            last.end = typedToken.end
+            last.lineCharacterNumberEnd =
+              typedToken.lineCharacterNumberEnd
+          } else {
             out.push({
-              like: 'close-indentation',
+              like: 'term-part',
+              text: typedToken.text,
+              start: typedToken.start,
+              end: typedToken.end,
+              lineNumber: typedToken.lineNumber,
+              lineCharacterNumberStart:
+                typedToken.lineCharacterNumberStart,
+              lineCharacterNumberEnd:
+                typedToken.lineCharacterNumberEnd,
             })
-            break
+          }
+          break
         }
-
-        out.push(token)
-
-        const next = list[i]
-
-        switch (next.like) {
-          case 'slot':
-          case 'line':
-          case 'open-parenthesis':
-          case 'close-parenthesis':
-          case 'open-indentation':
-          case 'close-indentation':
-            out.push({
-              like: 'term-close',
-            })
-            break
+        case `nest-separator`: {
+          out.push(token)
+          break
         }
-        break
-      }
-      case `text`: {
-        out.push(token)
-        break
-      }
-      case `slot`: {
-        out.push(token)
-        break
-      }
-      case `line`: {
-        // out.push({
-        //   like: 'close-parenthesis'
-        // })
-        out.push({
-          like: 'end-slot',
-        })
-        break
-      }
-      case `mark`: {
-        out.push(token)
-        break
-      }
-      case `code`: {
-        out.push(token)
-        break
-      }
-      case `comb`: {
-        out.push(token)
-        break
+        case `open-nest`: {
+          out.push(token)
+          break
+        }
+        case `close-nest`: {
+          out.push(token)
+          break
+        }
+        case `open-text`: {
+          out.push(token)
+          break
+        }
+        case `close-text`: {
+          out.push(token)
+          break
+        }
+        case `open-interpolation`: {
+          const last = list[i - 2]
+          if (last) {
+            switch (last.like) {
+              case 'line':
+              case 'open-parenthesis':
+              case 'open-indentation': {
+                out.push({
+                  like: 'term-open',
+                })
+                break
+              }
+            }
+          }
+          out.push(token)
+          break
+        }
+        case `close-interpolation`: {
+          const last = list[i - 2]
+
+          if (last) {
+            switch (last.like) {
+              case 'close-text':
+              case 'mark':
+              case 'comb':
+                out.push({
+                  like: 'close-indentation',
+                })
+                break
+            }
+          }
+
+          out.push(token)
+
+          const next = list[i]
+
+          if (next) {
+            switch (next.like) {
+              case 'slot':
+              case 'line':
+              case 'open-parenthesis':
+              case 'close-parenthesis':
+              case 'open-indentation':
+              case 'close-indentation':
+                out.push({
+                  like: 'term-close',
+                })
+                break
+            }
+          }
+          break
+        }
+        case `text`: {
+          out.push(token)
+          break
+        }
+        case `slot`: {
+          out.push(token)
+          break
+        }
+        case `line`: {
+          // out.push({
+          //   like: 'close-parenthesis'
+          // })
+          out.push({
+            like: 'end-slot',
+          })
+          break
+        }
+        case `mark`: {
+          out.push(token)
+          break
+        }
+        case `code`: {
+          out.push(token)
+          break
+        }
+        case `comb`: {
+          out.push(token)
+          break
+        }
       }
     }
   }
   out.push({ like: 'close-indentation' })
   return out
 }
+
+export default lex

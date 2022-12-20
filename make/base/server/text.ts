@@ -1,11 +1,12 @@
-
-const parse = require('../../parse')
-const fs = require('fs')
-const pathResolve = require('path')
+import parse from '../../parse'
+import fs from 'fs'
+import pathResolve from 'path'
 
 module.exports = {
   readTextFile(link) {
-    return this.text_mesh.get(link) ?? fs.readFileSync(link, 'utf-8')
+    return (
+      this.text_mesh.get(link) ?? fs.readFileSync(link, 'utf-8')
+    )
   },
 
   getLinkHost(link) {
@@ -63,7 +64,9 @@ module.exports = {
           })
           break
         case 'nest': {
-          const nestFork = this.extendObject(fork, { nest: link })
+          const nestFork = this.extendObject(fork, {
+            nest: link,
+          })
           const read = this.readNest(nestFork)
           this.addToTreeLink(knit, read)
           break

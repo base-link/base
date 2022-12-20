@@ -1,12 +1,12 @@
+import type { ParserNestNodeType } from '../../parse'
+import shared from '../../shared'
 
-module.exports = {
-  mintNestTree(nest, seed) {
+export default {
+  mintNestTree(nest: ParserNestNodeType, seed) {
     if (this.isTextNest(nest)) {
       return this.getTextNest(nest, seed)
     } else if (shared.isMark(nest)) {
-
     } else if (shared.isSimpleTerm(nest)) {
-
     }
   },
 

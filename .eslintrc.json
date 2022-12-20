@@ -23,17 +23,21 @@
         "allowTemplateLiterals": true
       }
     ],
-    "@typescript-eslint/no-unnecessary-condition": [2, {
-      "allowConstantLoopConditions": true
-    }],
-    "@typescript-eslint/array-type": [2, {
-      "default": "generic"
-    }],
+    "@typescript-eslint/no-unnecessary-condition": 0,
+    "@typescript-eslint/array-type": [
+      2,
+      {
+        "default": "generic"
+      }
+    ],
     "@typescript-eslint/await-thenable": "error",
-    "@typescript-eslint/consistent-type-definitions": [2, "type"],
+    "@typescript-eslint/consistent-type-definitions": [
+      2,
+      "type"
+    ],
     "@typescript-eslint/consistent-type-exports": "error",
     "@typescript-eslint/method-signature-style": "error",
-    "@typescript-eslint/naming-convention": "error",
+    "@typescript-eslint/naming-convention": 0,
     "@typescript-eslint/no-explicit-any": "error",
     "@typescript-eslint/no-for-in-array": "error",
     "@typescript-eslint/no-namespace": "error",
@@ -64,7 +68,13 @@
       }
     ],
     "space-before-blocks": "off",
-    "@typescript-eslint/space-before-blocks": ["error", "always"],
-    "@typescript-eslint/type-annotation-spacing": ["error", { "after": true }]
+    "@typescript-eslint/space-before-blocks": [
+      "error",
+      "always"
+    ],
+    "@typescript-eslint/type-annotation-spacing": [
+      "error",
+      { "after": true }
+    ]
   }
 }

@@ -6,7 +6,9 @@
     "outDir": "host",
     "rootDir": "make",
     "sourceMap": true,
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "esModuleInterop": true,
+    "noUncheckedIndexedAccess": true
   },
   "include": ["make"],
   "exclude": ["node_modules"]
