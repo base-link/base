@@ -1,4 +1,4 @@
-import { ASTCordType, CompilerListType } from '~base/server'
+import { ASTCordType, CompilerListType } from '~server'
 
 export type ASTDeckType = {
   like: 'deck'

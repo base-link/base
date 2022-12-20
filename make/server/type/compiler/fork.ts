@@ -4,7 +4,7 @@ import {
   ASTMeshType,
   ASTDeckCardType,
 } from '../ast'
-import { CompilerKnitType } from '../compiler/base'
+import { CompilerKnitType } from './base'
 
 export type CompilerCardForkType = {
   like: 'card-fork'

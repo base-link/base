@@ -1,9 +1,6 @@
 import fs from 'fs'
 import pathResolve from 'path'
-import {
-  ASTForkType,
-  ASTTreeLinkType,
-} from './base/server/type'
+import { ASTForkType, ASTTreeLinkType } from './server/type'
 import type {
   ParserNodeType,
   ParserNestNodeType,

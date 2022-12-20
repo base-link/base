@@ -8,7 +8,7 @@ import {
   Base,
   ASTCordType,
   CompilerNestForkType,
-} from '~base/server'
+} from '~server'
 
 export function readTextFile(base: Base, link: string): string {
   return (

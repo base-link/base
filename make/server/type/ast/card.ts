@@ -17,7 +17,7 @@ import {
   ASTTreeType,
   ASTZoneType,
   ASTCordType,
-} from '~base/server'
+} from '~server'
 
 export type ASTCardBaseType = {
   base: Base

@@ -3,7 +3,7 @@ import {
   CompilerKnitType,
   CompilerListType,
   CompilerMeshType,
-} from '~base/server'
+} from '~server'
 
 const KNIT_LINK = ['tree', 'mesh', 'size', 'like']
 

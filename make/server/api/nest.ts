@@ -1,5 +1,5 @@
 import type { ParserNestNodeType } from '~parse'
-import { api, Base, CompilerNestForkType } from '~base/server'
+import { api, Base, CompilerNestForkType } from '~server'
 import shared from '~shared'
 
 export function mintNestTree(

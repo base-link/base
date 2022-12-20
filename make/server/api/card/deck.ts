@@ -6,7 +6,7 @@ import {
   Base,
   CompilerCardForkType,
   CompilerNestForkType,
-} from '~base/server'
+} from '~server'
 import shared from '~shared'
 
 export function doesHaveSlot(

@@ -1,4 +1,4 @@
-import { CompilerTreeType } from '../type/compiler'
+import { CompilerTreeType } from '~server'
 
 export function makeTreeLink(
   name: string,

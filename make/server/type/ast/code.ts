@@ -1,8 +1,5 @@
 import { ParserNestNodeType } from '~parse'
-import {
-  CompilerListType,
-  CompilerMeshType,
-} from '~base/server'
+import { CompilerListType, CompilerMeshType } from '~server'
 
 export type ASTLoadType = {
   like: 'load'

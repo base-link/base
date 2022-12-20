@@ -1,4 +1,4 @@
-import Base from './base/server'
+import Base from './server'
 import shared from './shared'
 
 const link = shared.findPath('@treesurf/wolf')
