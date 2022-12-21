@@ -3,6 +3,7 @@ import type { ParserNestNodeType, ParserNodeType } from '~parse'
 import type {
   ASTCodeCardType,
   ASTDeckCardType,
+  ASTFormType,
   ASTMeshType,
   PickPartial,
 } from '~server'
@@ -40,6 +41,7 @@ export type CompilerTreeType = {
 export enum Scope {
   CodeCard = 'code-card',
   DeckCard = 'deck-card',
+  Form = 'form',
   Nest = 'nest',
 }
 
@@ -68,6 +70,18 @@ export type ScopeDeckCardDataType = PickPartial<
   }
 >
 
+export type ScopeFormDataType = PickPartial<
+  ASTFormType,
+  {
+    base: 1
+    hook: 1
+    like: 1
+    link: 1
+    task: 1
+    wear: 1
+  }
+>
+
 export type ScopeNestDataType = {
   index: number
   nest: ParserNestNodeType
@@ -76,6 +90,7 @@ export type ScopeNestDataType = {
 export type ScopeTableType = {
   'code-card': ScopeCodeCardDataType
   'deck-card': ScopeDeckCardDataType
+  form: ScopeFormDataType
   nest: ScopeNestDataType
 }
 
