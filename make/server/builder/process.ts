@@ -1,17 +1,11 @@
 import { ParserNestNodeType } from '~parse'
 
-import { Base, api } from '~server'
-import type {
-  LexicalScope,
-  LexicalScopeNestAddonType,
-} from '~server'
+import { Base, Scope, ScopeType, api } from '~server'
 
-export function enqueueDependencyResolution<
-  T extends LexicalScope,
->(
+export function enqueueDependencyResolution(
   dependencyList: Array<ParserNestNodeType>,
-  scope: T,
-  handle: (scope: T) => void,
+  scope: ScopeType,
+  handle: (scope: ScopeType) => void,
 ) {
   const base = api.getPropertyValueFromScope(
     scope,
@@ -50,7 +44,7 @@ export function processDependencyList<T extends LexicalScope>(
 // export function processSimpleTerm(scope: CompilerNestForkType, callback: (scope: CompilerNestForkType) => void): void {
 // }
 export function processTextDependencyList(
-  scope: LexicalScope<LexicalScopeNestAddonType>,
+  scope: ScopeType<Scope.Nest>,
   handle: () => void,
 ): void {
   const dependencyList = api.getTextDependencyList(

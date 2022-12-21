@@ -1,8 +1,4 @@
-import {
-  LexicalScope,
-  LexicalScopeNestAddonType,
-  api,
-} from '~server'
+import { Scope, ScopeType, api } from '~server'
 import ERROR from '~server/config/error'
 
 type ErrorType = {
@@ -14,7 +10,7 @@ type ErrorType = {
 }
 
 export function generateUnhandledNestCaseError(
-  scope: LexicalScope<LexicalScopeNestAddonType>,
+  scope: ScopeType<Scope.Nest>,
   type: string,
 ): ErrorType {
   const path = api.getPropertyValueFromScope(scope, 'path')
@@ -27,10 +23,10 @@ export function generateUnhandledNestCaseError(
 }
 
 export function generateUnhandledTermCaseError(
-  scope: LexicalScope<LexicalScopeNestAddonType>,
+  scope: ScopeType<Scope.Nest>,
 ): ErrorType | undefined {
   const path = api.getPropertyValueFromScope(scope, 'path')
-  const name = api.resolveStaticTerm(scope.data.nest)
+  const name = api.resolveStaticTerm(scope)
   if (ERROR['0002'] && name) {
     return {
       code: `0002`,
@@ -42,7 +38,7 @@ export function generateUnhandledTermCaseError(
 }
 
 export function generateUnhandledTermInterpolationError(
-  scope: LexicalScope,
+  scope: ScopeType<Scope.Nest>,
 ): ErrorType {
   const path = api.getPropertyValueFromScope(scope, 'path')
   return {
@@ -54,7 +50,7 @@ export function generateUnhandledTermInterpolationError(
 }
 
 export function generateUnknownTermError(
-  scope: LexicalScope<LexicalScopeNestAddonType>,
+  scope: ScopeType<Scope.Nest>,
 ): ErrorType {
   const path = api.getPropertyValueFromScope(scope, 'path')
   return {

@@ -1,10 +1,7 @@
-import {
-  LexicalScope,
-  LexicalScopeNestAddonType,
-} from '~server/type'
+import { Scope, ScopeType } from '~server/type'
 
 export function resolveStaticTerm(
-  scope: LexicalScope<LexicalScopeNestAddonType>,
+  scope: ScopeType<Scope.Nest>,
 ): string | undefined {
   const nest = scope.data.nest
 
@@ -32,5 +29,5 @@ export function resolveStaticTerm(
 }
 
 export function termIsInterpolated(
-  scope: LexicalScope<LexicalScopeNestAddonType>,
+  scope: ScopeType<Scope.Nest>,
 ): boolean {}

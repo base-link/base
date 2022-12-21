@@ -1,11 +1,7 @@
-import {
-  LexicalScope,
-  LexicalScopeNestAddonType,
-  api,
-} from '~server'
+import { Scope, ScopeType, api } from '~server'
 
 export function determineNestType(
-  scope: LexicalScope<LexicalScopeNestAddonType>,
+  scope: ScopeType<Scope.Nest>,
 ): string {
   if (api.nestIsTerm(scope)) {
     if (api.termIsInterpolated(scope)) {
@@ -33,7 +29,7 @@ export function determineNestType(
 }
 
 export function nestIsCode(
-  scope: LexicalScope<LexicalScopeNestAddonType>,
+  scope: ScopeType<Scope.Nest>,
 ): boolean {
   const nest = scope.data.nest
 
@@ -54,7 +50,7 @@ export function nestIsCode(
 }
 
 export function nestIsMark(
-  scope: LexicalScope<LexicalScopeNestAddonType>,
+  scope: ScopeType<Scope.Nest>,
 ): boolean {
   const nest = scope.data.nest
 
@@ -75,7 +71,7 @@ export function nestIsMark(
 }
 
 export function nestIsTerm(
-  scope: LexicalScope<LexicalScopeNestAddonType>,
+  scope: ScopeType<Scope.Nest>,
 ): boolean {
   const nest = scope.data.nest
 
@@ -109,7 +105,7 @@ export function nestIsTerm(
 }
 
 export function nestIsText(
-  scope: LexicalScope<LexicalScopeNestAddonType>,
+  scope: ScopeType<Scope.Nest>,
 ): boolean {
   const nest = scope.data.nest
 

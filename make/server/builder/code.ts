@@ -1,8 +1,10 @@
-import { ParserNestNodeType } from '~parse'
+import { Scope, ScopeType } from '~server/type'
 
-export function getCodeAsNumber(
-  nest: ParserNestNodeType,
+export function resolveCodeAsNumber(
+  scope: ScopeType<Scope.Nest>,
 ): number {
+  const nest = scope.data.nest
+
   let line = nest.line[0]
 
   if (line && line.like === 'code') {

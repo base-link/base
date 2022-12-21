@@ -1,10 +1,11 @@
-import { ASTDeckType, Base, api } from '~server'
-import type {
-  ASTDeckCardType,
-  LexicalScope,
-  LexicalScopeNestAddonType,
-  NestedPartial,
+import {
+  ASTDeckType,
+  Base,
+  Scope,
+  ScopeType,
+  api,
 } from '~server'
+import type { ASTDeckCardType, NestedPartial } from '~server'
 
 export * from './deck'
 
@@ -29,30 +30,31 @@ export function process_deckCard(
   const tree = api.parseTextIntoTree(text)
   const linkHost = api.getLinkHost(link)
   const card = base.card(link)
-  const partialScope: LexicalScope<
-    NestedPartial<ASTDeckCardType>
-  > = api.extendScope({
-    base,
-    deck: {
-      face: [],
-      host: undefined,
-      like: 'deck',
-      name: undefined,
-      term: [],
-    } as NestedPartial<ASTDeckType>,
-    dependencyWatcherMap: new Map(),
-    directory: linkHost,
-    like: 'deck-card',
-    parseTree: tree,
-    path: link,
-    textByLine: text.split(/\n/),
-  })
+  const deck: Partial<ASTDeckType> = {
+    face: [],
+    host: undefined,
+    like: 'deck',
+    name: undefined,
+    term: [],
+  }
+  const partialScope: ScopeType<Scope.DeckCard> =
+    api.extendScope(Scope.DeckCard, {
+      base,
+      deck,
+      dependencyWatcherMap: new Map(),
+      directory: linkHost,
+      like: Scope.DeckCard,
+      parseTree: tree,
+      path: link,
+      textByLine: text.split(/\n/),
+    })
+
   card.bind(partialScope)
 
   if (tree.like === 'nest') {
     tree.nest.forEach(nest => {
-      const nestedPartialScope = api.extendScope(
-        { like: 'nest-fork', nest },
+      const nestedPartialScope = api.extendScope<Scope.Nest>(
+        { like: Scope.Nest, nest },
         partialScope,
       )
       api.process_deckCard_nestedChildren(nestedPartialScope)
@@ -61,10 +63,7 @@ export function process_deckCard(
 }
 
 export function process_deckCard_nestedChildren(
-  scope: LexicalScope<
-    LexicalScopeNestAddonType,
-    NestedPartial<ASTDeckCardType>
-  >,
+  scope: ScopeType<Scope.Nest>,
 ): void {
   const type = api.determineNestType(scope)
   switch (type) {

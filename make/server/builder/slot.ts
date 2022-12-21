@@ -1,10 +1,7 @@
-import {
-  LexicalScope,
-  LexicalScopeNestAddonType,
-} from '~server/type'
+import { Scope, ScopeType } from '~server/type'
 
 export function nestHasSlot(
-  scope: LexicalScope<LexicalScopeNestAddonType>,
+  scope: ScopeType<Scope.Nest>,
 ): boolean {
   const nest = scope.data.nest
 

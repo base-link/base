@@ -1,6 +1,7 @@
-import { ParserNestNodeType } from '~parse'
+import { Scope, ScopeType } from '~server/type'
 
-export function getMark(nest: ParserNestNodeType) {
+export function getMark(scope: ScopeType<Scope.Nest>) {
+  const nest = scope.data.nest
   const line = nest.line[0]
 
   if (line && line.like === 'mark') {

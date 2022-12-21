@@ -1,15 +1,11 @@
-import {
-  LexicalScope,
-  LexicalScopeNestAddonType,
-  api,
-} from '~server'
+import { Scope, ScopeType, api } from '~server'
 
 export * from './bear'
 export * from './link'
 export * from './test'
 
 export function process_deckCard_deck(
-  scope: LexicalScope<LexicalScopeNestAddonType>,
+  scope: ScopeType<Scope.Nest>,
 ): void {
   scope.data.nest.nest.forEach((nest, i) => {
     const nestedScope = api.extendScope({ i, nest }, scope)
@@ -18,7 +14,7 @@ export function process_deckCard_deck(
 }
 
 export function process_deckCard_deck_nestedChildren(
-  scope: LexicalScope<LexicalScopeNestAddonType>,
+  scope: ScopeType<Scope.Nest>,
 ): void {
   const nest = scope.data.nest
 
@@ -44,7 +40,7 @@ export function process_deckCard_deck_nestedChildren(
 }
 
 export function process_deckCard_deck_nestedTerm(
-  scope: LexicalScope<LexicalScopeNestAddonType>,
+  scope: ScopeType<Scope.Nest>,
 ): void {
   const term = api.resolveStaticTerm(scope)
   switch (term) {

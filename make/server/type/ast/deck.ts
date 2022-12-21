@@ -11,13 +11,13 @@ export type ASTDeckTermType = {
 
 export type ASTDeckType = {
   bear?: string
-  face: ASTDeckFaceType
+  face: Array<ASTDeckFaceType>
   host: string
   like: 'deck'
   mark: string
   name: string
   read?: string
   site?: string
-  term: ASTDeckTermType
+  term: Array<ASTDeckTermType>
   test?: string
 }

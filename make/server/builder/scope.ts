@@ -1,15 +1,17 @@
 import {
   ASTMeshType,
-  LexicalScope,
-  LexicalScopeDefaultType,
   NestedPartial,
+  Scope,
+  ScopeTableType,
+  ScopeType,
 } from '~server/type'
 
-export function extendScope<
-  T extends LexicalScopeDefaultType,
-  P extends LexicalScope = LexicalScope,
->(data: T, parent?: P): LexicalScope<T> {
-  return { data, parent }
+export function extendScope<L extends Scope>(
+  like: L,
+  data: ScopeTableType[L],
+  parent?: unknown,
+): ScopeType<L> {
+  return { data, like, parent }
 }
 
 export function getPropertyValueFromScope(

@@ -1,6 +1,10 @@
 import type { ParserNestNodeType, ParserNodeType } from '~parse'
 
-import type { ASTMeshType } from '~server'
+import type {
+  ASTDeckCardType,
+  ASTMeshType,
+  NestedPartial,
+} from '~server'
 
 export type CompilerCordType = {
   cord: string
@@ -32,16 +36,48 @@ export type CompilerTreeType = {
   slot?: number
 }
 
-export type LexicalScope<
-  P extends LexicalScopeDefaultType = LexicalScopeDefaultType,
-  Q extends LexicalScopeDefaultType = LexicalScopeDefaultType,
-> = {
-  data: P
-  parent?: LexicalScope<Q>
+export enum Scope {
+  DeckCard = 'partial-deck-card',
+  Nest = 'nest',
 }
 
-export type LexicalScopeDefaultType = Record<string, unknown>
+export type ScopeChainType = {
+  data: Object
+  parent?: ScopeChainType
+}
 
-export type LexicalScopeNestAddonType = {
+export type ScopeDeckCardDataType =
+  NestedPartial<ASTDeckCardType>
+
+export type ScopeNestDataType = {
   nest: ParserNestNodeType
 }
+
+export type ScopeTableType = {
+  nest: ScopeNestDataType
+  'partial-deck-card': ScopeDeckCardDataType
+}
+
+export type ScopeType<
+  A extends Scope | undefined | unknown = undefined,
+  B extends
+    | ScopeType<A | undefined | unknown>
+    | unknown
+    | undefined = undefined,
+> = A extends Scope
+  ? B extends ScopeType
+    ? {
+        data: ScopeTableType[A]
+        like: A
+        parent?: B
+      }
+    : {
+        data: ScopeTableType[A]
+        like: A
+        parent?: unknown
+      }
+  : {
+      data: object
+      like: unknown
+      parent?: unknown
+    }

@@ -3,10 +3,7 @@ import parse, {
   ParserNodeType,
 } from '~parse'
 
-import {
-  LexicalScope,
-  LexicalScopeNestAddonType,
-} from '~server'
+import { Scope, ScopeType } from '~server'
 
 export function parseTextIntoTree(
   text: string,
@@ -15,9 +12,10 @@ export function parseTextIntoTree(
 }
 
 export function resolveText(
-  nest: ParserNestNodeType,
-  scope: LexicalScope,
+  scope: ScopeType<Scope.Nest>,
 ): string | undefined {
+  const nest = scope.data.nest
+
   if (nest.line.length > 1) {
     return
   }
@@ -85,5 +83,5 @@ export function resolveTextDependencyList(
 }
 
 export function textIsInterpolated(
-  scope: LexicalScope<LexicalScopeNestAddonType>,
+  scope: ScopeType<Scope.Nest>,
 ): boolean {}

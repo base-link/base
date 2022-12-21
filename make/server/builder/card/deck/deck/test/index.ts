@@ -1,5 +1,5 @@
-import { LexicalScope } from '~server/builder/scope'
+import { Scope, ScopeType } from '~server/type'
 
 export function process_deckCard_deck_testTerm(
-  scope: LexicalScope,
+  scope: ScopeType<Scope.Nest>,
 ): void {}

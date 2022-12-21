@@ -15,6 +15,7 @@ import {
   ASTZoneType,
   Base,
   CompilerDependencyWatcherType,
+  Scope,
 } from '~server'
 
 export type ASTBookCardType = ASTCardBaseType & {
@@ -63,5 +64,5 @@ export type ASTCodeCardType = ASTCardBaseType & {
 
 export type ASTDeckCardType = ASTCardBaseType & {
   deck: ASTDeckType
-  like: 'deck-card'
+  like: Scope.DeckCard
 }
