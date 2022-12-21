@@ -5,7 +5,7 @@ export * from './link'
 export * from './test'
 
 export function process_deckCard_deck(
-  scope: ScopeType<Scope.Nest>,
+  scope: ScopeType<Scope.Nest, ScopeType<Scope.DeckCard>>,
 ): void {
   scope.data.nest.nest.forEach((nest, index) => {
     const nestedScope = api.extendNest(scope, nest, index)

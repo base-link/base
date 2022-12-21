@@ -1,18 +1,23 @@
 import { Scope, ScopeType, api } from '~server'
-import shared from '~shared'
 
 export * from './bear'
 export * from './take'
 
 export function process_codeCard_load(
   scope: ScopeType<Scope.Nest>,
-): void {}
+): void {
+  scope.data.nest.nest.forEach((nest, index) => {
+    const nestedScope = api.extendNest(scope, nest, index)
+    process_codeCard_load_nestedChildren(nestedScope)
+  })
+}
 
 export function process_codeCard_load_nestedChildren(
   scope: ScopeType<Scope.Nest>,
 ) {
-  if (shared.isSimpleTerm(scope.data.nest)) {
-    const term = shared.getSimpleTerm(scope.data.nest)
+  const type = api.determineNestType(scope)
+  if (type === 'static-term') {
+    const term = api.resolveStaticTerm(scope)
     switch (term) {
       case 'take':
         api.process_codeCard_load_take(scope)
@@ -26,5 +31,9 @@ export function process_codeCard_load_nestedChildren(
       default:
         api.throwError(api.generateUnknownTermError(scope))
     }
+  } else {
+    api.throwError(
+      api.generateUnhandledNestCaseError(scope, type),
+    )
   }
 }

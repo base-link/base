@@ -5,11 +5,7 @@ export function process_codeCard_task(
   scope: ScopeType<Scope.Nest>,
 ): void {
   scope.data.nest.nest.forEach((nest, index) => {
-    const nestedScope = api.extendScope(
-      Scope.Nest,
-      { index, nest },
-      scope,
-    )
+    const nestedScope = api.extendNest(scope, nest, index)
     if (shared.isSimpleTerm(nest)) {
       const term = shared.getSimpleTerm(nest)
       switch (term) {
@@ -17,10 +13,10 @@ export function process_codeCard_task(
           api.process_codeCard_formLink(nestedScope)
           break
         case 'task':
-          api.process_codeCard_taskTask(nestedScope)
+          api.process_codeCard_task(nestedScope)
           break
         case 'head':
-          api.process_codeCard_formHead(nestedScope)
+          api.process_codeCard_head(nestedScope)
           break
         case 'free':
           api.process_codeCard_taskFree(nestedScope)

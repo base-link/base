@@ -30,10 +30,26 @@ export type NestedPartial<T> = T extends
       [K in keyof T]?: NestedPartial<T[K]>
     }
 
-export type PickPartial<T, M> = Partial<Omit<T, keyof M>> & {
+export type PartialOptionalObject<T, M> = Partial<
+  Omit<T, keyof M>
+>
+
+export type PickPartial<T, M> = PartialOptionalObject<T, M> &
+  RequiredObject<T, M>
+
+export type RecursiveRequired<T, M> = {
   [K in keyof T & keyof M]: M[K] extends object
     ? PickPartial<T[K], M[K]>
     : T[K]
-} extends infer O
-  ? { [K in keyof O]: O[K] }
+}
+
+export type RequiredKeyList<O> = {
+  [K in keyof O]: O[K]
+}
+
+export type RequiredObject<T, M> = RecursiveRequired<
+  T,
+  M
+> extends infer O
+  ? RequiredKeyList<O>
   : never

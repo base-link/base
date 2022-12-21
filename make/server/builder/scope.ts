@@ -8,32 +8,32 @@ import {
   ScopeValueType,
 } from '~server/type'
 
-export function extendScope<L extends Scope>(
-  like: L,
-  data: ScopeTableType[L],
-  parent?: unknown,
-): ScopeType<L> {
+export function extendScope<
+  S extends Scope | unknown = unknown,
+  P extends unknown | undefined = unknown,
+>(
+  like: S,
+  data: S extends Scope
+    ? ScopeTableType[S]
+    : Record<string, unknown>,
+  parent?: P extends ScopeType<infer T, infer Q>
+    ? ScopeType<T, Q>
+    : never,
+): ScopeType<S, P> {
   return { data, like, parent }
 }
 
-export function getPropertyValueFromScope(
-  scope: ScopeType<Scope>,
-  path: Array<string> | string,
+export function getPropertyValueFromScope<S extends ScopeType>(
+  scope: S,
+  path: ScopeKeyListType<S>,
 ): unknown {
-  if (typeof path === 'string') {
-    path = [path]
-  }
+  let source: S | undefined = scope
 
-  let name = path[0]
-  let source: ScopeType<Scope> | undefined | unknown = scope
-
-  if (name) {
-    while (source) {
-      if (source.data.hasOwnProperty(name)) {
-        break
-      } else {
-        source = source.parent
-      }
+  while (source) {
+    if (source.data.hasOwnProperty(path)) {
+      break
+    } else {
+      source = source.parent
     }
   }
 
@@ -41,25 +41,7 @@ export function getPropertyValueFromScope(
     return
   }
 
-  let record: LexicalScopeDefaultType = source.data
-
-  path.slice(0, -1).forEach(node => {
-    if (record && typeof record[node] === 'object') {
-      record = record[node] as LexicalScopeDefaultType
-    }
-  })
-
-  if (!record) {
-    return
-  }
-
-  const last = path[path.length - 1]
-
-  if (!last) {
-    return
-  }
-
-  return record[last]
+  return source.data[path]
 }
 
 export function resolveScope<S extends ASTMeshType>(
@@ -73,7 +55,7 @@ export function resolveScope<S extends ASTMeshType>(
 }
 
 export function setPropertyValueOnScope<
-  S extends ScopeType<Scope>,
+  S extends ScopeType,
   K extends ScopeKeyListType<S>,
 >(scope: S, property: K, value: ScopeValueType<S, K>): void {
   if (property in scope.data) {

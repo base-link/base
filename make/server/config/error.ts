@@ -1,18 +1,3 @@
-type ErrorType = {
-  code: string
-  hint?: string
-  note: (props: Object) => string
-  text?: string
-}
-
-type NamePropsType = {
-  name: string
-}
-
-type TermPropsType = {
-  term: string
-}
-
 const ERROR: Record<string, ErrorType> = [
   {
     code: '0002',
@@ -33,4 +18,19 @@ function reducer(m: Record<string, ErrorType>, x: ErrorType) {
     ...m,
     [x.code]: x,
   }
+}
+
+type ErrorType = {
+  code: string
+  hint?: string
+  note: (props: Object) => string
+  text?: string
+}
+
+type NamePropsType = {
+  name: string
+}
+
+type TermPropsType = {
+  term: string
 }

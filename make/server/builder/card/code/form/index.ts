@@ -1,8 +1,6 @@
 import { api } from '~server'
 import { Scope, ScopeType } from '~server/type'
 
-export * from '../head'
-export * from '../hold'
 export * from './base'
 export * from './case'
 export * from './like'

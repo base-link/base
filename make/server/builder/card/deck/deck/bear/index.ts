@@ -5,7 +5,7 @@ export function finalize_deckCard_deck_bear(
 ): void {
   const nest = scope.data.nest.nest[0]
   if (nest) {
-    const text = api.resolveText(nest, scope)
+    const text = api.resolveText(scope)
     if (scope.parent) {
       scope.parent.data.deck.bear = text
     }
