@@ -1,10 +1,7 @@
-import { ASTDeckCardType, Scope, ScopeType, api } from '~server'
+import { Scope, ScopeType, api } from '~server'
 
-export function finalize_deckCard_deck_bearTerm(
-  scope: LexicalScope<
-    LexicalScopeNestAddonType,
-    ASTDeckCardType
-  >,
+export function finalize_deckCard_deck_bear(
+  scope: ScopeType<Scope.Nest, ScopeType<Scope.DeckCard>>,
 ): void {
   const nest = scope.data.nest.nest[0]
   if (nest) {
@@ -15,11 +12,8 @@ export function finalize_deckCard_deck_bearTerm(
   }
 }
 
-export function process_deckCard_deck_bearTerm(
-  scope: LexicalScope<
-    LexicalScopeNestAddonType,
-    ASTDeckCardType
-  >,
+export function process_deckCard_deck_bear(
+  scope: ScopeType<Scope.Nest, ScopeType<Scope.DeckCard>>,
 ): void {
   const nest = scope.data.nest.nest[0]
   if (nest) {
@@ -27,7 +21,7 @@ export function process_deckCard_deck_bearTerm(
     api.processDependencyList(
       dependencyList,
       scope,
-      api.finalize_deckCard_deck_bearTerm,
+      api.finalize_deckCard_deck_bear,
     )
   }
 }

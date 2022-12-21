@@ -46,10 +46,10 @@ export function process_deckCard(
 
   if (tree.like === 'nest') {
     tree.nest.forEach((nest, index) => {
-      const nestedPartialScope = api.extendScope(
-        Scope.Nest,
-        { index, nest },
+      const nestedPartialScope = api.extendNest(
         partialScope,
+        nest,
+        index,
       )
       api.process_deckCard_nestedChildren(nestedPartialScope)
     })

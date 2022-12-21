@@ -4,9 +4,12 @@ export * from './bear'
 export * from './face'
 export * from './form'
 export * from './fuse'
+export * from './head'
+export * from './hold'
 export * from './host'
 export * from './load'
 export * from './note'
+export * from './stem'
 export * from './suit'
 export * from './task'
 export * from './tree'
@@ -76,12 +79,12 @@ export function process_codeCard_nestedChildren(
       )
       break
     case 'static-term':
-      api.process_codeCard_nestedChildren_simpleTerm(scope)
+      api.process_codeCard_nestedChildren_staticTerm(scope)
       break
   }
 }
 
-export function process_codeCard_nestedChildren_simpleTerm(
+export function process_codeCard_nestedChildren_staticTerm(
   scope: ScopeType<Scope.Nest>,
 ): void {
   const term = api.resolveStaticTerm(scope)

@@ -2,8 +2,10 @@ import {
   ASTMeshType,
   NestedPartial,
   Scope,
+  ScopeKeyListType,
   ScopeTableType,
   ScopeType,
+  ScopeValueType,
 } from '~server/type'
 
 export function extendScope<L extends Scope>(
@@ -70,10 +72,15 @@ export function resolveScope<S extends ASTMeshType>(
   }
 }
 
-export function setPropertyValueOnScope(
-  scope: ScopeType<Scope>,
-  path: string,
-  value: unknown,
-): void {
-  scope.data[path] = value
+export function setPropertyValueOnScope<
+  S extends ScopeType<Scope>,
+  K extends ScopeKeyListType<S>,
+>(scope: S, property: K, value: ScopeValueType<S, K>): void {
+  if (property in scope.data) {
+    scope.data[property] = value
+  } else if (scope.parent) {
+    setPropertyValueOnScope(scope.parent, property, value)
+  } else {
+    throw new Error(`Property not defined on scope`)
+  }
 }

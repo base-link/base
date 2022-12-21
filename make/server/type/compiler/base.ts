@@ -82,6 +82,11 @@ export type ScopeFormDataType = PickPartial<
   }
 >
 
+export type ScopeKeyListType<T extends ScopeType<Scope>> =
+  T['parent'] extends ScopeType<Scope>
+    ? (keyof T['data'] & string) | ScopeKeyListType<T['parent']>
+    : keyof T['data'] & string
+
 export type ScopeNestDataType = {
   index: number
   nest: ParserNestNodeType
@@ -102,3 +107,12 @@ export type ScopeType<
   like: A
   parent?: B
 }
+
+export type ScopeValueType<
+  T extends ScopeType<Scope>,
+  K extends string,
+> = T['data'] extends { [key in K]: unknown }
+  ? T['data'][K]
+  : T['parent'] extends ScopeType<Scope>
+  ? ScopeValueType<T['parent'], K>
+  : never

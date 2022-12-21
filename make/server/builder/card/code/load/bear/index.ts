@@ -1,17 +1,23 @@
-import { Scope, ScopeType, api } from '~server'
-import shared from '~shared'
+import { api } from '~server'
+import { Scope, ScopeType } from '~server/type'
 
-export function process_codeCard_load_bear(
+export function process_codeCard_loadBear(
   scope: ScopeType<Scope.Nest>,
 ): void {
-  scope.data.nest.nest.forEach(nest => {
-    const nestedScope = api.extendScope({ nest }, scope)
-    if (shared.isSimpleTerm(nest)) {
-      const term = shared.getSimpleTerm(nest)
-    } else {
-      api.throwError(
-        api.generateUnhandledTermCaseError(nestedScope),
-      )
-    }
+  scope.data.nest.nest.forEach((nest, index) => {
+    const nestedScope = api.extendNest(scope, nest, index)
+    process_codeCard_loadBear_nestedChildren(nestedScope)
   })
+}
+
+export function process_codeCard_loadBear_nestedChildren(
+  scope: ScopeType<Scope.Nest>,
+): void {
+  const type = api.determineNestType(scope)
+  switch (type) {
+    case 'text':
+      break
+    default:
+      api.throwError(api.generateUnhandledTermCaseError(scope))
+  }
 }

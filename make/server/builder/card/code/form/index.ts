@@ -1,21 +1,12 @@
 import { api } from '~server'
-import {
-  ASTFormType,
-  NestedPartial,
-  PickPartial,
-  Scope,
-  ScopeType,
-} from '~server/type'
+import { Scope, ScopeType } from '~server/type'
 
+export * from '../head'
+export * from '../hold'
 export * from './base'
 export * from './case'
-export * from './fuse'
-export * from './head'
-export * from './hold'
 export * from './like'
 export * from './link'
-export * from './note'
-export * from './stem'
 export * from './task'
 export * from './wear'
 
@@ -63,7 +54,7 @@ export function process_codeCard_form_nestedChildren(
         api.process_codeCard_formTask(scope)
         break
       case 'head':
-        api.process_codeCard_formHead(scope)
+        api.process_codeCard_head(scope)
         break
       case 'wear':
         api.process_codeCard_formWear(scope)
@@ -75,16 +66,16 @@ export function process_codeCard_form_nestedChildren(
         api.process_codeCard_formCase(scope)
         break
       case 'fuse':
-        api.process_codeCard_formFuse(scope)
+        api.process_codeCard_fuse(scope)
         break
       case 'hold':
-        api.process_codeCard_formHold(scope)
+        api.process_codeCard_hold(scope)
         break
       case 'stem':
-        api.process_codeCard_formStem(scope)
+        api.process_codeCard_stem(scope)
         break
       case 'note':
-        api.process_codeCard_formNote(scope)
+        api.process_codeCard_note(scope)
         break
       case 'like':
         api.process_codeCard_formLike(scope)

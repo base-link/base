@@ -26,7 +26,7 @@ export function process_codeCard_zone_nestedChildren(
         api.process_codeCard_zoneHook(scope)
         break
       case 'head':
-        api.process_codeCard_formHead(scope)
+        api.process_codeCard_head(scope)
         break
       default:
         api.throwError(api.generateUnknownTermError(scope))
