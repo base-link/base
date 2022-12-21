@@ -1,12 +1,7 @@
 import {
-  ASTCodeCardType,
-  LexicalScope,
-  LexicalScopeNestAddonType,
+  ASTCodeCardType,Scope,ScopeType,
 } from '~server/type'
 
 export function process_codeCard_host(
-  scope: LexicalScope<
-    LexicalScopeNestAddonType,
-    ASTCodeCardType
-  >,
+  scope: ScopeType<Scope.Nest>,
 ): void {}

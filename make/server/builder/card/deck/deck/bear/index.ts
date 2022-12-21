@@ -1,9 +1,4 @@
-import {
-  ASTDeckCardType,
-  LexicalScope,
-  LexicalScopeNestAddonType,
-  api,
-} from '~server'
+import { ASTDeckCardType, Scope, ScopeType, api } from '~server'
 
 export function finalize_deckCard_deck_bearTerm(
   scope: LexicalScope<

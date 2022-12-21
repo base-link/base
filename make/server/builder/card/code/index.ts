@@ -1,9 +1,9 @@
 import { Base, api } from '~server'
 import type {
   ASTCodeCardType,
-  LexicalScope,
-  LexicalScopeNestAddonType,
   NestedPartial,
+  Scope,
+  ScopeType,
 } from '~server'
 import shared from '~shared'
 
@@ -69,10 +69,7 @@ export function process_codeCard(
 }
 
 export function process_codeCard_nestedChildren(
-  scope: LexicalScope<
-    LexicalScopeNestAddonType,
-    ASTCodeCardType
-  >,
+  scope: ScopeType<Scope.Nest>,
 ): void {
   if (api.nestHasSlot(scope.data.nest)) {
     api.throwError(
@@ -84,10 +81,7 @@ export function process_codeCard_nestedChildren(
 }
 
 export function process_codeCard_nestedChildren_simpleTerm(
-  scope: LexicalScope<
-    LexicalScopeNestAddonType,
-    ASTCodeCardType
-  >,
+  scope: ScopeType<Scope.Nest>,
 ): void {
   const term = shared.getSimpleTerm(scope.data.nest)
   switch (term) {

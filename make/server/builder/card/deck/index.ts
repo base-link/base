@@ -1,10 +1,4 @@
-import {
-  ASTDeckType,
-  Base,
-  Scope,
-  ScopeType,
-  api,
-} from '~server'
+import { Base, Scope, ScopeType, api } from '~server'
 import type { ASTDeckCardType, NestedPartial } from '~server'
 
 export * from './deck'

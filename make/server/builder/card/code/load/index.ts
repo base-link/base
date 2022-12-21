@@ -1,26 +1,15 @@
-import {
-  ASTCodeCardType,
-  LexicalScope,
-  LexicalScopeNestAddonType,
-  api,
-} from '~server'
+import { Scope, ScopeType, api } from '~server'
 import shared from '~shared'
 
 export * from './bear'
 export * from './take'
 
 export function process_codeCard_load(
-  scope: LexicalScope<
-    LexicalScopeNestAddonType,
-    ASTCodeCardType
-  >,
+  scope: ScopeType<Scope.Nest>,
 ): void {}
 
 export function process_codeCard_load_nestedChildren(
-  scope: LexicalScope<
-    LexicalScopeNestAddonType,
-    ASTCodeCardType
-  >,
+  scope: ScopeType<Scope.Nest>,
 ) {
   if (shared.isSimpleTerm(scope.data.nest)) {
     const term = shared.getSimpleTerm(scope.data.nest)

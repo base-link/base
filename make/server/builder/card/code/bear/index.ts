@@ -1,18 +1,15 @@
 import { api } from '~server'
-import {
-  ASTCodeCardType,
-  LexicalScope,
-  LexicalScopeNestAddonType,
-} from '~server/type'
+import { Scope, ScopeType } from '~server/type'
 
 export function process_codeCard_bear(
-  scope: LexicalScope<
-    LexicalScopeNestAddonType,
-    ASTCodeCardType
-  >,
+  scope: ScopeType<Scope.Nest>,
 ): void {
-  scope.data.nest.nest.forEach(nest => {
-    const nestedScope = api.extendScope({ nest }, scope)
+  scope.data.nest.nest.forEach((nest, index) => {
+    const nestedScope = api.extendScope(
+      Scope.Nest,
+      { index, nest },
+      scope,
+    )
     if (api.nestIsText(nestedScope)) {
     } else {
       api.throwError(

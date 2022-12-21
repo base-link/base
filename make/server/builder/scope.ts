@@ -23,7 +23,7 @@ export function getPropertyValueFromScope(
   }
 
   let name = path[0]
-  let source: LexicalScope | undefined = scope
+  let source: ScopeType<Scope> | undefined | unknown = scope
 
   if (name) {
     while (source) {
@@ -71,7 +71,7 @@ export function resolveScope<S extends ASTMeshType>(
 }
 
 export function setPropertyValueOnScope(
-  scope: LexicalScope,
+  scope: ScopeType<Scope>,
   path: string,
   value: unknown,
 ): void {

@@ -1,16 +1,8 @@
-import {
-  ASTCodeCardType,
-  LexicalScope,
-  LexicalScopeNestAddonType,
-  api,
-} from '~server'
+import { Scope, ScopeType, api } from '~server'
 import shared from '~shared'
 
 export function process_codeCard_load_bear(
-  scope: LexicalScope<
-    LexicalScopeNestAddonType,
-    ASTCodeCardType
-  >,
+  scope: ScopeType<Scope.Nest>,
 ): void {
   scope.data.nest.nest.forEach(nest => {
     const nestedScope = api.extendScope({ nest }, scope)

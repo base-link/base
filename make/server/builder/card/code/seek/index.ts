@@ -1,15 +1,8 @@
 import { api } from '~server'
-import {
-  ASTCodeCardType,
-  LexicalScope,
-  LexicalScopeNestAddonType,
-} from '~server/type'
+import { Scope, ScopeType } from '~server/type'
 
 export function process_codeCard_seek(
-  scope: LexicalScope<
-    LexicalScopeNestAddonType,
-    ASTCodeCardType
-  >,
+  scope: ScopeType<Scope.Nest>,
 ): void {
   scope.data.nest.nest.forEach(nest => {
     const nestedScope = api.extendScope({ nest }, scope)

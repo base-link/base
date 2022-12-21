@@ -2,9 +2,9 @@ import { api } from '~server'
 import {
   ASTCodeCardType,
   ASTFormType,
-  LexicalScope,
-  LexicalScopeNestAddonType,
   NestedPartial,
+  Scope,
+  ScopeType,
 } from '~server/type'
 import shared from '~shared'
 
@@ -21,10 +21,7 @@ export * from './task'
 export * from './wear'
 
 export function process_codeCard_form(
-  scope: LexicalScope<
-    LexicalScopeNestAddonType,
-    ASTCodeCardType
-  >,
+  scope: ScopeType<Scope.Nest>,
 ): void {
   const form: NestedPartial<ASTFormType> = {
     base: [],
