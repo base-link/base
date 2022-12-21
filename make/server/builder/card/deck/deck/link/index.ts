@@ -14,12 +14,7 @@ export function process_deckCard_deck_link(
     const text = api.resolveText(nest, scope)
     if (text) {
       const [host, name] = text.slice(1).split('/')
-      if (
-        scope.parent &&
-        scope.parent.data.deck &&
-        host &&
-        name
-      ) {
+      if (scope.parent && host && name) {
         scope.parent.data.deck.host = host
         scope.parent.data.deck.name = name
       }

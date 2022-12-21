@@ -30,17 +30,16 @@ export function process_deckCard(
   const tree = api.parseTextIntoTree(text)
   const linkHost = api.getLinkHost(link)
   const card = base.card(link)
-  const deck: Partial<ASTDeckType> = {
-    face: [],
-    host: undefined,
-    like: 'deck',
-    name: undefined,
-    term: [],
-  }
   const partialScope: ScopeType<Scope.DeckCard> =
     api.extendScope(Scope.DeckCard, {
       base,
-      deck,
+      deck: {
+        face: [],
+        host: undefined,
+        like: 'deck',
+        name: undefined,
+        term: [],
+      },
       dependencyWatcherMap: new Map(),
       directory: linkHost,
       like: Scope.DeckCard,

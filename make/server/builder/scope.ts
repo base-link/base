@@ -15,7 +15,7 @@ export function extendScope<L extends Scope>(
 }
 
 export function getPropertyValueFromScope(
-  scope: LexicalScope,
+  scope: ScopeType<Scope>,
   path: Array<string> | string,
 ): unknown {
   if (typeof path === 'string') {

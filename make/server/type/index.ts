@@ -29,3 +29,9 @@ export type NestedPartial<T> = T extends
   : {
       [K in keyof T]?: NestedPartial<T[K]>
     }
+
+export type PickPartial<T, M> = Partial<Omit<T, keyof M>> & {
+  [K in keyof T & keyof M]: M[K] extends object
+    ? PickPartial<T[K], M[K]>
+    : T[K]
+}

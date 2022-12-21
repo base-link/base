@@ -4,6 +4,7 @@ import type {
   ASTDeckCardType,
   ASTMeshType,
   NestedPartial,
+  PickPartial,
 } from '~server'
 
 export type CompilerCordType = {
@@ -46,8 +47,23 @@ export type ScopeChainType = {
   parent?: ScopeChainType
 }
 
-export type ScopeDeckCardDataType =
-  NestedPartial<ASTDeckCardType>
+export type ScopeDeckCardDataType = PickPartial<
+  ASTDeckCardType,
+  {
+    base: 1
+    deck: {
+      face: 1
+      like: 1
+      term: 1
+    }
+    dependencyWatcherMap: 1
+    directory: 1
+    like: 1
+    parseTree: 1
+    path: 1
+    textByLine: 1
+  }
+>
 
 export type ScopeNestDataType = {
   index: number
