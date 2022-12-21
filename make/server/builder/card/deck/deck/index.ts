@@ -7,8 +7,12 @@ export * from './test'
 export function process_deckCard_deck(
   scope: ScopeType<Scope.Nest>,
 ): void {
-  scope.data.nest.nest.forEach((nest, i) => {
-    const nestedScope = api.extendScope({ i, nest }, scope)
+  scope.data.nest.nest.forEach((nest, index) => {
+    const nestedScope = api.extendScope(
+      Scope.Nest,
+      { index, nest },
+      scope,
+    )
     api.process_deckCard_deck_nestedChildren(nestedScope)
   })
 }
@@ -16,26 +20,17 @@ export function process_deckCard_deck(
 export function process_deckCard_deck_nestedChildren(
   scope: ScopeType<Scope.Nest>,
 ): void {
-  const nest = scope.data.nest
-
   if (api.nestHasSlot(scope)) {
-    api.generateUnhandledTermInterpolationError(
-      api.extendScope({ nest }, scope),
-    )
-  } else if (api.nestIsText(scope) && i === 0) {
-    api.process_deckCard_deck_link(
-      api.extendScope({ nest }, scope),
-    )
-  } else if (i > 0 && api.nestIsStaticTerm(scope)) {
-    api.process_deckCard_deck_nestedTerm(
-      api.extendScope({ nest }, scope),
-    )
+    api.generateUnhandledTermInterpolationError(scope)
+  } else if (api.nestIsText(scope) && scope.data.index === 0) {
+    api.process_deckCard_deck_link(scope)
+  } else if (
+    scope.data.index > 0 &&
+    api.nestIsStaticTerm(scope)
+  ) {
+    api.process_deckCard_deck_nestedTerm(scope)
   } else {
-    api.throwError(
-      api.generateUnhandledTermCaseError(
-        api.extendScope({ nest }, scope),
-      ),
-    )
+    api.throwError(api.generateUnhandledTermCaseError(scope))
   }
 }
 

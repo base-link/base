@@ -1,17 +1,9 @@
 import { ParserNestNodeType } from '~parse'
 
-import {
-  ASTDeckCardType,
-  LexicalScope,
-  LexicalScopeNestAddonType,
-  api,
-} from '~server'
+import { Scope, ScopeType, api } from '~server'
 
 export function process_deckCard_deck_link(
-  scope: LexicalScope<
-    LexicalScopeNestAddonType,
-    ASTDeckCardType
-  >,
+  scope: ScopeType<Scope.Nest, ScopeType<Scope.DeckCard>>,
 ) {
   const nest = api.getPropertyValueFromScope(
     scope,
@@ -22,7 +14,12 @@ export function process_deckCard_deck_link(
     const text = api.resolveText(nest, scope)
     if (text) {
       const [host, name] = text.slice(1).split('/')
-      if (scope.parent && host && name) {
+      if (
+        scope.parent &&
+        scope.parent.data.deck &&
+        host &&
+        name
+      ) {
         scope.parent.data.deck.host = host
         scope.parent.data.deck.name = name
       }

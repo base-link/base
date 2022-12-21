@@ -50,6 +50,7 @@ export type ScopeDeckCardDataType =
   NestedPartial<ASTDeckCardType>
 
 export type ScopeNestDataType = {
+  index: number
   nest: ParserNestNodeType
 }
 
@@ -59,25 +60,10 @@ export type ScopeTableType = {
 }
 
 export type ScopeType<
-  A extends Scope | undefined | unknown = undefined,
-  B extends
-    | ScopeType<A | undefined | unknown>
-    | unknown
-    | undefined = undefined,
-> = A extends Scope
-  ? B extends ScopeType
-    ? {
-        data: ScopeTableType[A]
-        like: A
-        parent?: B
-      }
-    : {
-        data: ScopeTableType[A]
-        like: A
-        parent?: unknown
-      }
-  : {
-      data: object
-      like: unknown
-      parent?: unknown
-    }
+  A extends Scope,
+  B extends ScopeType<Scope> | unknown = unknown,
+> = {
+  data: ScopeTableType[A]
+  like: A
+  parent?: B
+}
