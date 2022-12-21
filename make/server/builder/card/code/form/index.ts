@@ -1,12 +1,11 @@
 import { api } from '~server'
 import {
-  ASTCodeCardType,
   ASTFormType,
   NestedPartial,
+  PickPartial,
   Scope,
   ScopeType,
 } from '~server/type'
-import shared from '~shared'
 
 export * from './base'
 export * from './case'
@@ -23,12 +22,21 @@ export * from './wear'
 export function process_codeCard_form(
   scope: ScopeType<Scope.Nest>,
 ): void {
-  const form: NestedPartial<ASTFormType> = {
+  const form: PickPartial<
+    ASTFormType,
+    {
+      base: 1
+      hook: 1
+      like: 1
+      link: 1
+      task: 1
+      wear: 1
+    }
+  > = {
     base: [],
     hook: {},
     like: 'form',
     link: {},
-    name: '',
     task: {},
     wear: {},
   }

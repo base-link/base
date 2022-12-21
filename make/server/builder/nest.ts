@@ -1,3 +1,5 @@
+import { ParserNestNodeType } from '~parse'
+
 import { Scope, ScopeType, api } from '~server'
 
 export function determineNestType(
@@ -26,6 +28,14 @@ export function determineNestType(
   }
 
   return ''
+}
+
+export function extendNest(
+  scope: ScopeType<Scope>,
+  nest: ParserNestNodeType,
+  index: number,
+): ScopeType<Scope.Nest> {
+  return api.extendScope(Scope.Nest, { index, nest }, scope)
 }
 
 export function nestIsCode(

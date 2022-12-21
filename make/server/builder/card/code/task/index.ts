@@ -1,12 +1,15 @@
 import { api } from '~server'
 import { Scope, ScopeType } from '~server/type'
-import shared from '~shared'
 
 export function process_codeCard_task(
   scope: ScopeType<Scope.Nest>,
 ): void {
-  scope.data.nest.nest.forEach(nest => {
-    const nestedScope = api.extendScope({ nest }, scope)
+  scope.data.nest.nest.forEach((nest, index) => {
+    const nestedScope = api.extendScope(
+      Scope.Nest,
+      { index, nest },
+      scope,
+    )
     if (shared.isSimpleTerm(nest)) {
       const term = shared.getSimpleTerm(nest)
       switch (term) {

@@ -1,11 +1,4 @@
-import { Base, api } from '~server'
-import type {
-  ASTCodeCardType,
-  NestedPartial,
-  Scope,
-  ScopeType,
-} from '~server'
-import shared from '~shared'
+import { Base, Scope, ScopeType, api } from '~server'
 
 export * from './bear'
 export * from './face'
@@ -27,23 +20,24 @@ export function process_codeCard(
   const textTree = api.parseTextIntoTree(text)
   const linkHost = api.getLinkHost(link)
   const card = base.card(link)
-  const scope: LexicalScope<NestedPartial<ASTCodeCardType>> =
-    api.extendScope({
+  const scope: ScopeType<Scope.CodeCard> = api.extendScope(
+    Scope.CodeCard,
+    {
       allSuitMesh: {},
       allTaskMesh: {},
       allTestMesh: {},
       allTreeMesh: {},
+      allZoneMesh: {},
       base,
       bearList: [],
+      dependencyWatcherMap: new Map(),
       directory: linkHost,
       faceMesh: {},
-      findMesh: {},
       formMesh: {},
       hookMesh: {},
       hostMesh: {},
       like: 'code-card',
       loadList: [],
-      loadMesh: {},
       parseTree: textTree,
       path: link,
       publicFaceMesh: {},
@@ -53,14 +47,16 @@ export function process_codeCard(
       publicTaskMesh: {},
       publicTestMesh: {},
       publicTreeMesh: {},
+      publicZoneMesh: {},
       textByLine: text.split('\n'),
-    })
+    },
+  )
 
   card.bind(scope)
 
   if (textTree.like === 'nest') {
-    textTree.nest.forEach(nest => {
-      const nestedScope = api.extendScope({ nest }, scope)
+    textTree.nest.forEach((nest, index) => {
+      const nestedScope = api.extendNest(scope, nest, index)
       api.process_codeCard_nestedChildren(nestedScope)
     })
   }
@@ -71,19 +67,24 @@ export function process_codeCard(
 export function process_codeCard_nestedChildren(
   scope: ScopeType<Scope.Nest>,
 ): void {
-  if (api.nestHasSlot(scope.data.nest)) {
-    api.throwError(
-      api.generateUnhandledTermInterpolationError(scope),
-    )
-  } else if (shared.isSimpleTerm(scope.data.nest)) {
-    api.process_codeCard_nestedChildren_simpleTerm(scope)
+  const type = api.determineNestType(scope)
+  switch (type) {
+    case 'dynamic-text':
+    case 'dynamic-term':
+      api.throwError(
+        api.generateUnhandledTermInterpolationError(scope),
+      )
+      break
+    case 'static-term':
+      api.process_codeCard_nestedChildren_simpleTerm(scope)
+      break
   }
 }
 
 export function process_codeCard_nestedChildren_simpleTerm(
   scope: ScopeType<Scope.Nest>,
 ): void {
-  const term = shared.getSimpleTerm(scope.data.nest)
+  const term = api.resolveStaticTerm(scope)
   switch (term) {
     case 'bear': {
       api.process_codeCard_bear(scope)

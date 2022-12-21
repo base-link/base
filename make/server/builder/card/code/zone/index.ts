@@ -1,35 +1,37 @@
 import { api } from '~server'
 import { Scope, ScopeType } from '~server/type'
-import shared from '~shared'
 
 export * from './hook'
 
 export function process_codeCard_zone(
   scope: ScopeType<Scope.Nest>,
 ): void {
-  scope.data.nest.nest.forEach(nest => {
-    const nestedScope = api.extendScope({ nest }, scope)
-    if (shared.isSimpleTerm(nest)) {
-      const term = shared.getSimpleTerm(nest)
-      switch (term) {
-        case 'take':
-          api.process_codeCard_formLink(nestedScope)
-          break
-        case 'hook':
-          api.process_codeCard_zoneHook(nestedScope)
-          break
-        case 'head':
-          api.process_codeCard_formHead(nestedScope)
-          break
-        default:
-          api.throwError(
-            api.generateUnknownTermError(nestedScope),
-          )
-      }
-    } else {
-      api.throwError(
-        api.generateUnhandledTermCaseError(nestedScope),
-      )
-    }
+  scope.data.nest.nest.forEach((nest, index) => {
+    const nestedScope = api.extendNest(scope, nest, index)
+    api.process_codeCard_zone_nestedChildren(nestedScope)
   })
+}
+
+export function process_codeCard_zone_nestedChildren(
+  scope: ScopeType<Scope.Nest>,
+): void {
+  const type = api.determineNestType(scope)
+  if (type === 'static-term') {
+    const term = api.resolveStaticTerm(scope)
+    switch (term) {
+      case 'take':
+        api.process_codeCard_formLink(scope)
+        break
+      case 'hook':
+        api.process_codeCard_zoneHook(scope)
+        break
+      case 'head':
+        api.process_codeCard_formHead(scope)
+        break
+      default:
+        api.throwError(api.generateUnknownTermError(scope))
+    }
+  } else {
+    api.throwError(api.generateUnhandledTermCaseError(scope))
+  }
 }

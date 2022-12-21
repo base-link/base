@@ -1,9 +1,9 @@
 import type { ParserNestNodeType, ParserNodeType } from '~parse'
 
 import type {
+  ASTCodeCardType,
   ASTDeckCardType,
   ASTMeshType,
-  NestedPartial,
   PickPartial,
 } from '~server'
 
@@ -38,7 +38,8 @@ export type CompilerTreeType = {
 }
 
 export enum Scope {
-  DeckCard = 'partial-deck-card',
+  CodeCard = 'code-card',
+  DeckCard = 'deck-card',
   Nest = 'nest',
 }
 
@@ -46,6 +47,8 @@ export type ScopeChainType = {
   data: Object
   parent?: ScopeChainType
 }
+
+export type ScopeCodeCardDataType = ASTCodeCardType
 
 export type ScopeDeckCardDataType = PickPartial<
   ASTDeckCardType,
@@ -71,8 +74,9 @@ export type ScopeNestDataType = {
 }
 
 export type ScopeTableType = {
+  'code-card': ScopeCodeCardDataType
+  'deck-card': ScopeDeckCardDataType
   nest: ScopeNestDataType
-  'partial-deck-card': ScopeDeckCardDataType
 }
 
 export type ScopeType<
