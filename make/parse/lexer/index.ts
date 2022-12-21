@@ -242,7 +242,6 @@ function lex(text: string): Array<LexerTokenType> {
   const indents = [0]
   let nesting = 0
   let matched = false
-  let isString = false
   const typeStack: Array<string> = ['tree']
 
   let lineNumber = 0
@@ -381,7 +380,6 @@ function lex(text: string): Array<LexerTokenType> {
             typeStack.push('text')
           }
           if (pattern[1] === 'close-text') {
-            isString = false
             typeStack.pop()
           } else if (pattern[1] === 'open-interpolation') {
             typeStack.push('tree')

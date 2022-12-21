@@ -27,7 +27,7 @@ export type ASTFlexMixinType = {
 }
 
 export type ASTFormType = {
-  base: ASTFormType
+  base: Array<ASTFormType>
   hook: Record<string, ASTHookType>
   like: 'form'
   link: Record<string, ASTTakeType>
@@ -41,7 +41,10 @@ export type ASTHoldType = {
 }
 
 export type ASTHookType = {
+  flow: Array<ASTTaskFlowType>
   like: 'hook'
+  name: string
+  take: Record<string, ASTTakeType>
 }
 
 export type ASTHostType = {

@@ -1,6 +1,6 @@
-import * as api from './api'
 import Base from './base'
+import * as api from './builder'
 
 export * from './type'
 
-export { api, Base }
+export { Base, api }
