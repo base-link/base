@@ -3,8 +3,6 @@ import { Scope, ScopeType } from '~server/type'
 
 export * from './base'
 export * from './case'
-export * from './like'
-export * from './link'
 export * from './task'
 export * from './wear'
 
@@ -86,7 +84,7 @@ export function process_codeCard_form_nestedChildren(
         api.process_codeCard_note(scope)
         break
       case 'like':
-        api.process_codeCard_formLike(scope)
+        api.process_codeCard_like(scope)
         break
       default:
         api.throwError(api.generateUnknownTermError(scope))

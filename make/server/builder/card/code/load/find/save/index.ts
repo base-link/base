@@ -1,17 +1,17 @@
 import { Scope, ScopeType, api } from '~server'
 
-export function process_codeCard_load_take_save(
+export function process_codeCard_load_find_save(
   scope: ScopeType<Scope.Nest>,
 ): void {
   scope.data.nest.nest.forEach((nest, index) => {
     const nestedScope = api.extendNest(scope, nest, index)
-    api.process_codeCard_load_take_save_nestedChildren(
+    api.process_codeCard_load_find_save_nestedChildren(
       nestedScope,
     )
   })
 }
 
-export function process_codeCard_load_take_save_nestedChildren(
+export function process_codeCard_load_find_save_nestedChildren(
   scope: ScopeType<Scope.Nest>,
 ): void {
   const type = api.determineNestType(scope)

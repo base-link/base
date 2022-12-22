@@ -1,7 +1,7 @@
 import { Scope, ScopeType, api } from '~server'
 
 export * from './bear'
-export * from './take'
+export * from './find'
 
 export function process_codeCard_load(
   scope: ScopeType<Scope.Nest>,
@@ -19,8 +19,8 @@ export function process_codeCard_load_nestedChildren(
   if (type === 'static-term') {
     const term = api.resolveStaticTerm(scope)
     switch (term) {
-      case 'take':
-        api.process_codeCard_load_take(scope)
+      case 'find':
+        api.process_codeCard_load_find(scope)
         break
       case 'load':
         api.process_codeCard_load(scope)

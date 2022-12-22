@@ -1,21 +1,22 @@
 import { api } from '~server'
-import { Scope, ScopeType } from '~server/type'
+import { Nest, Scope, ScopeType } from '~server/type'
 
-export function process_codeCard_formLike(
+export function process_codeCard_time(
   scope: ScopeType<Scope.Nest>,
 ): void {
   scope.data.nest.nest.forEach((nest, index) => {
     const nestedScope = api.extendNest(scope, nest, index)
-    process_codeCard_formLike_nestedChildren(nestedScope)
+    process_codeCard_time_nestedChildren(nestedScope)
   })
 }
 
-export function process_codeCard_formLike_nestedChildren(
+export function process_codeCard_time_nestedChildren(
   scope: ScopeType<Scope.Nest>,
 ): void {
   const type = api.determineNestType(scope)
   switch (type) {
-    case 'text':
+    case Nest.StaticTerm:
+      const term = api.resolveStaticTerm(scope)
       break
     default:
       api.throwError(api.generateUnhandledTermCaseError(scope))

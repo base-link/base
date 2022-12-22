@@ -1,17 +1,6 @@
 import { Base, Scope, ScopeType, api } from '~server'
-import type { ASTDeckCardType, NestedPartial } from '~server'
 
 export * from './deck'
-
-export function check_deckCard_scope(
-  scope: NestedPartial<ASTDeckCardType>,
-): boolean {
-  if (scope) {
-    return true
-  }
-
-  return false
-}
 
 /**
  * Entrypoint function.

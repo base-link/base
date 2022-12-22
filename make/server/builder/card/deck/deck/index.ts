@@ -1,8 +1,9 @@
-import { Scope, ScopeType, api } from '~server'
-import { Nest } from '~server/builder/nest'
+import { Nest, Scope, ScopeType, api } from '~server'
 
 export * from './bear'
+export * from './face'
 export * from './link'
+export * from './term'
 export * from './test'
 
 export function process_deckCard_deck(

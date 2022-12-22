@@ -10,8 +10,8 @@ export type ParentScopeType<S> = S extends ScopeType<
   infer X,
   infer Y
 >
-  ? S
-  : S
+  ? S | ParentScopeType<Y>
+  : never
 
 enum ScopeCardData {
   CodeCard = 'code-card',

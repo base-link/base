@@ -3,16 +3,16 @@ import { Scope, ScopeType, api } from '~server'
 export * from './bear'
 export * from './save'
 
-export function process_codeCard_load_take(
+export function process_codeCard_load_find(
   scope: ScopeType<Scope.Nest>,
 ): void {
   scope.data.nest.nest.forEach((nest, index) => {
     const nestedScope = api.extendNest(scope, nest, index)
-    api.process_codeCard_load_take_nestedChildren(nestedScope)
+    api.process_codeCard_load_find_nestedChildren(nestedScope)
   })
 }
 
-export function process_codeCard_load_take_nestedChildren(
+export function process_codeCard_load_find_nestedChildren(
   scope: ScopeType<Scope.Nest>,
 ): void {
   const type = api.determineNestType(scope)
@@ -20,10 +20,10 @@ export function process_codeCard_load_take_nestedChildren(
     const term = api.resolveStaticTerm(scope)
     switch (term) {
       case 'save':
-        api.process_codeCard_load_take_save(scope)
+        api.process_codeCard_load_find_save(scope)
         break
       case 'bear':
-        api.process_codeCard_load_take_bear(scope)
+        api.process_codeCard_load_find_bear(scope)
         break
       default:
         api.throwError(api.generateUnknownTermError(scope))

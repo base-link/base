@@ -1,5 +1,5 @@
 import { api } from '~server'
-import { Scope, ScopeType } from '~server/type'
+import { Nest, Scope, ScopeType } from '~server/type'
 
 export function process_codeCard_fuse(
   scope: ScopeType<Scope.Nest>,
@@ -15,7 +15,7 @@ export function process_codeCard_fuse_nestedChildren(
 ): void {
   const type = api.determineNestType(scope)
   switch (type) {
-    case 'text':
+    case Nest.StaticText:
       break
     default:
       api.throwError(api.generateUnhandledTermCaseError(scope))
