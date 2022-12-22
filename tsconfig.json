@@ -11,7 +11,8 @@
     "noUncheckedIndexedAccess": true,
     "baseUrl": "./make",
     "paths": {
-      "~*": ["./*"]
+      "~*": ["./*"],
+      "~": ["."]
     },
     "noImplicitAny": true
   },

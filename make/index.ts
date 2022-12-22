@@ -1,10 +1,5 @@
-import Base from './server'
-import shared from './shared'
+import * as api from './api'
 
-const link = shared.findPath('@treesurf/wolf')
-const base = new Base()
-base.site = {
-  dock: 'javascript',
-  site: 'test',
-}
-base.mintDeckCard(link)
+export * from './api'
+
+export { api }
