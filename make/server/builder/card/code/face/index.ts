@@ -1,4 +1,5 @@
 import { api } from '~server'
+import { Nest } from '~server/builder/nest'
 import { Scope, ScopeType } from '~server/type'
 
 export function process_codeCard_face(
@@ -15,7 +16,7 @@ export function process_codeCard_face_nestedChildren(
 ): void {
   const type = api.determineNestType(scope)
   switch (type) {
-    case 'text':
+    case Nest.StaticText:
       break
     default:
       api.throwError(api.generateUnhandledTermCaseError(scope))

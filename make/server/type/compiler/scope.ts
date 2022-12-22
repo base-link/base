@@ -44,7 +44,7 @@ export type ScopeKeyListType<
 > = T['parent'] extends infer O
   ? O extends ScopeType<infer X>
     ? (keyof T['data'] & string) | ScopeKeyListType<X, O>
-    : never
+    : keyof T['data']
   : never
 
 export type ScopeNestDataType = {
@@ -65,7 +65,7 @@ export type ScopeTableType = {
 
 export type ScopeType<
   S extends Scope | unknown = unknown,
-  P extends unknown | undefined = unknown,
+  P extends unknown = unknown,
 > = {
   data: S extends Scope ? ScopeTableType[S] : unknown
   like: S

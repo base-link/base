@@ -41,11 +41,11 @@ export function determineNestType(
 }
 
 export function extendNest(
-  scope: ScopeType,
+  scope: ScopeType<Scope>,
   nest: ParserNestNodeType,
   index: number,
 ): ScopeType<Scope.Nest> {
-  return api.extendScope<Scope.Nest>(
+  return api.extendScope<Scope.Nest, typeof scope>(
     Scope.Nest,
     { index, nest },
     scope,

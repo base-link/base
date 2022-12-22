@@ -1,6 +1,4 @@
 import {
-  ASTMeshType,
-  NestedPartial,
   Scope,
   ScopeKeyListType,
   ScopeSetType,
@@ -11,7 +9,7 @@ import {
 
 export function extendScope<
   S extends Scope,
-  P extends unknown | undefined = unknown,
+  P extends unknown = unknown,
 >(
   like: S,
   data: S extends Scope ? ScopeTableType[S] : unknown,
@@ -42,16 +40,6 @@ export function getPropertyValueFromScope<
   }
 
   return source.data[path]
-}
-
-export function resolveScope<S extends ASTMeshType>(
-  scope: NestedPartial<S>,
-  check: (scope: NestedPartial<S>) => boolean,
-  finalize: (scope: NestedPartial<S>) => void,
-): void {
-  if (check(scope)) {
-    finalize(scope)
-  }
 }
 
 export function setPropertyValueOnScope<

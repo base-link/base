@@ -9,9 +9,12 @@ export * from './task'
 export * from './wear'
 
 export function process_codeCard_form(
-  scope: ScopeType<Scope.Nest>,
+  scope: ScopeType<Scope.Nest, ScopeType<Scope.CodeCard>>,
 ): void {
-  const formScope: ScopeType<Scope.Form> = api.extendScope(
+  const formScope: ScopeType<Scope.Form> = api.extendScope<
+    Scope.Form,
+    typeof scope
+  >(
     Scope.Form,
     {
       form: {

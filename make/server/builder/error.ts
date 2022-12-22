@@ -9,6 +9,22 @@ type ErrorType = {
   text: string
 }
 
+export function generateUnhandledNestCaseBaseError(
+  scope: ScopeType<Scope.Nest>,
+): ErrorType {
+  const path = api.getPropertyValueFromScope<
+    Scope.Nest,
+    ScopeType<Scope.Nest, ScopeType<Scope.CodeCard>>,
+    'card'
+  >(scope, 'card')
+  return {
+    code: `0005`,
+    file: `${path}`,
+    note: `We haven't implemented handling this type of nest yet.`,
+    text: '',
+  }
+}
+
 export function generateUnhandledNestCaseError(
   scope: ScopeType<Scope.Nest>,
   type: string,
