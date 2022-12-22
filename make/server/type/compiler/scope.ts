@@ -7,11 +7,11 @@ import {
 } from '..'
 
 export type ParentScopeType<S> = S extends ScopeType<
-  unknown,
-  infer PS
+  infer X,
+  infer Y
 >
-  ? PS | ParentScopeType<PS>
-  : never
+  ? S
+  : S
 
 enum ScopeCardData {
   CodeCard = 'code-card',
@@ -24,6 +24,8 @@ export enum Scope {
   Form = 'form',
   Nest = 'nest',
 }
+
+export type ScopeAliasType<S> = ParentScopeType<S>
 
 export type ScopeCardDataTableType = {
   'code-card': InitialCodeCardType
@@ -39,12 +41,12 @@ export type ScopeFormDataType = {
 }
 
 export type ScopeKeyListType<
-  L extends Scope | unknown,
+  L extends Scope,
   T extends ScopeType<L>,
 > = T['parent'] extends infer O
   ? O extends ScopeType<infer X>
     ? (keyof T['data'] & string) | ScopeKeyListType<X, O>
-    : keyof T['data']
+    : keyof T['data'] & string
   : never
 
 export type ScopeNestDataType = {
@@ -52,9 +54,12 @@ export type ScopeNestDataType = {
   nest: ParserNestNodeType
 }
 
-export type ScopeSetType<S extends ScopeType> =
-  | S
-  | ParentScopeType<S>
+export type ScopeSetType<S> = S extends ScopeType<
+  infer P extends Scope,
+  infer Q
+>
+  ? S | ParentScopeType<S>
+  : never
 
 export type ScopeTableType = {
   'code-card': ScopeCardDataType<ScopeCardData.CodeCard>
@@ -64,18 +69,18 @@ export type ScopeTableType = {
 }
 
 export type ScopeType<
-  S extends Scope | unknown = unknown,
+  S extends Scope,
   P extends unknown = unknown,
 > = {
-  data: S extends Scope ? ScopeTableType[S] : unknown
+  data: ScopeTableType[S]
   like: S
   parent?: P extends ScopeType<infer T extends Scope, infer Q>
-    ? ScopeType<T, Q>
+    ? P
     : never
 }
 
 export type ScopeValueType<
-  L extends Scope | unknown,
+  L extends Scope,
   T extends ScopeType<L>,
   K extends ScopeKeyListType<L, T>,
 > = T['data'] extends { [key in K]: unknown }

@@ -1,5 +1,6 @@
 import {
   Scope,
+  ScopeAliasType,
   ScopeKeyListType,
   ScopeSetType,
   ScopeTableType,
@@ -12,7 +13,7 @@ export function extendScope<
   P extends unknown = unknown,
 >(
   like: S,
-  data: S extends Scope ? ScopeTableType[S] : unknown,
+  data: ScopeTableType[S],
   parent?: P extends ScopeType<infer T extends Scope, infer Q>
     ? ScopeType<T, Q>
     : never,
@@ -25,7 +26,7 @@ export function getPropertyValueFromScope<
   S extends ScopeType<L>,
   K extends ScopeKeyListType<L, S>,
 >(scope: S, path: K): ScopeValueType<L, S, K> | undefined {
-  let source: ScopeSetType<S> | undefined = scope
+  let source: ScopeAliasType<S> | undefined = scope
 
   while (source) {
     if (path in source.data) {

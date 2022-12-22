@@ -1,5 +1,6 @@
 export * from './ast'
 export * from './compiler'
+export * from './nest'
 
 export type NestedPartial<T> = T extends
   | string

@@ -12,11 +12,11 @@ type ErrorType = {
 export function generateUnhandledNestCaseBaseError(
   scope: ScopeType<Scope.Nest>,
 ): ErrorType {
-  const path = api.getPropertyValueFromScope<
+  const card = api.getPropertyValueFromScope<
     Scope.Nest,
     ScopeType<Scope.Nest, ScopeType<Scope.CodeCard>>,
-    'card'
-  >(scope, 'card')
+    'nest'
+  >(scope, 'nest')
   return {
     code: `0005`,
     file: `${path}`,

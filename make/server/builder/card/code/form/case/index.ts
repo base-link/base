@@ -1,5 +1,4 @@
-import { api } from '~server'
-import { Scope, ScopeType } from '~server/type'
+import { Nest, Scope, ScopeType, api } from '~server'
 
 export function process_codeCard_formCase(
   scope: ScopeType<Scope.Nest>,
@@ -15,7 +14,7 @@ export function process_codeCard_formCase_nestedChildren(
 ): void {
   const type = api.determineNestType(scope)
   switch (type) {
-    case 'text':
+    case Nest.StaticText:
       break
     default:
       api.throwError(api.generateUnhandledTermCaseError(scope))

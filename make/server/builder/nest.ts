@@ -1,16 +1,6 @@
 import { ParserNestNodeType } from '~parse'
 
-import { Scope, ScopeType, api } from '~server'
-
-export enum Nest {
-  Code = 'code',
-  DynamicTerm = 'dynamic-term',
-  DynamicText = 'dynamic-text',
-  Empty = '',
-  Mark = 'mark',
-  StaticTerm = 'static-term',
-  StaticText = 'static-text',
-}
+import { Nest, Scope, ScopeType, api } from '~server'
 
 export function determineNestType(
   scope: ScopeType<Scope.Nest>,
