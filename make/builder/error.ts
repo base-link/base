@@ -1,5 +1,4 @@
-import ERROR from '~config/error'
-import { AST, Scope, ScopeType, api } from '~tool'
+import { Mesh, ERROR, Scope, ScopeType, api } from '~'
 
 type ErrorType = {
   code: string
@@ -33,27 +32,25 @@ export function generateInvalidNestChildrenLengthError(
   }
 }
 
-export function generateObjectNotASTNodeError(
-  like: AST,
+export function generateObjectNotMeshNodeError(
+  like: Mesh,
 ): ErrorType {
   return {
     code: `0007`,
     file: ``,
-    note: `Object isn't AST node '${like}'.`,
+    note: `Object isn't Mesh node '${like}'.`,
     text: '',
   }
 }
+
+export function generateObjectNotMeshNodeError(): ErrorType {}
 
 export function generateTermMissingChildError(): void {}
 
 export function generateUnhandledNestCaseBaseError(
   scope: ScopeType<Scope>,
 ): ErrorType {
-  const card = api.getPropertyValueFromScope<
-    Scope.Nest,
-    ScopeType<Scope.Nest, ScopeType<Scope.CodeCard>>,
-    'nest'
-  >(scope, 'nest')
+  const card = api.getPropertyValueFromScope(scope, 'nest')
   return {
     code: `0005`,
     file: `${path}`,

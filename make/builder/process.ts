@@ -1,11 +1,9 @@
-import { ParserNestNodeType } from '~parser'
-
-import { Base, Scope, ScopeType, api } from '~tool'
+import { Base, Scope, ScopeType, TreeNestType, api } from '~'
 
 export function enqueueDependencyResolution(
-  dependencyList: Array<ParserNestNodeType>,
-  scope: ScopeType,
-  handle: (scope: ScopeType) => void,
+  dependencyList: Array<TreeNestType>,
+  scope: ScopeType<Scope>,
+  handle: (scope: ScopeType<Scope>) => void,
 ) {
   const base = api.getPropertyValueFromScope(
     scope,
@@ -26,7 +24,7 @@ export function enqueueDependencyResolution(
 }
 
 export function processDependencyList<T extends LexicalScope>(
-  dependencyList: Array<ParserNestNodeType>,
+  dependencyList: Array<TreeNestType>,
   scope: T,
   handle: (fork: T) => void,
 ) {

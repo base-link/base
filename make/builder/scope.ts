@@ -1,12 +1,4 @@
-import { api } from '~tool'
-import {
-  ParentScopeType,
-  Scope,
-  ScopeKeyListType,
-  ScopeTableType,
-  ScopeType,
-  ScopeValueType,
-} from '~type'
+import { Scope, ScopeTableType, ScopeType, api } from '~'
 
 export function extendScope<
   S extends Scope,

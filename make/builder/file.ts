@@ -1,7 +1,7 @@
 import fs from 'fs'
 import pathResolve from 'path'
 
-import Base from '~client/base'
+import { Base } from '~'
 
 export function findPath(
   link: string,

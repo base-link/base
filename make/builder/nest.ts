@@ -1,6 +1,11 @@
-import { ParserNestNodeType } from '~parser'
-
-import { Nest, Scope, ScopeType, api } from '~tool'
+import {
+  Nest,
+  Scope,
+  ScopeType,
+  Tree,
+  TreeNestType,
+  api,
+} from '~'
 
 export function assertNestChildrenLength(
   scope: ScopeType<Scope.Nest>,
@@ -43,7 +48,7 @@ export function determineNestType(
 
 export function extendNest(
   scope: ScopeType<Scope>,
-  nest: ParserNestNodeType,
+  nest: TreeNestType,
   index: number,
 ): ScopeType<Scope.Nest> {
   return api.extendScope<Scope.Nest, typeof scope>(
@@ -67,7 +72,7 @@ export function nestIsCode(
   }
 
   let line = nest.line[0]
-  if (line && line.like === 'code') {
+  if (line && line.like === Tree.Code) {
     return true
   }
 
@@ -88,7 +93,7 @@ export function nestIsMark(
   }
 
   let line = nest.line[0]
-  if (line && line.like === 'mark') {
+  if (line && line.like === Tree.Mark) {
     return true
   }
 
@@ -113,7 +118,7 @@ export function nestIsTerm(
     return false
   }
 
-  if (line.like !== 'term') {
+  if (line.like !== Tree.Term) {
     return false
   }
 
@@ -122,7 +127,7 @@ export function nestIsTerm(
   }
 
   let link = line.link[0]
-  if (link && link.like === 'cord') {
+  if (link && link.like === Tree.Cord) {
     return true
   }
 
@@ -143,7 +148,7 @@ export function nestIsText(
   }
 
   let line = nest.line[0]
-  if (line && line.like === 'text') {
+  if (line && line.like === Tree.Text) {
     return true
   }
 

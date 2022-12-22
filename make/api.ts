@@ -1,4 +1,6 @@
+export * from './builder'
 export * from './client'
 export * from './config'
+export * from './exporter/node'
 export * from './parser'
 export * from './type'

@@ -1,5 +1,4 @@
-import { api } from '~tool'
-import { Nest, Scope, ScopeType } from '~type'
+import { Nest, Scope, ScopeType, api } from '~'
 
 export function process_deckCard_deck_test(
   scope: ScopeType<Scope.Nest>,

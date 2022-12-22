@@ -1,6 +1,6 @@
 import prettify from '@lancejpollard/pretty-compact-json.js/1'
 
-import parse from '.'
+import { parseLinkText as parse } from '.'
 
 // const nest = form(`link 1, foo <bar>`)
 // const nest = form(`link <./{code/ball}>`)

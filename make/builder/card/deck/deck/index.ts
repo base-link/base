@@ -1,4 +1,4 @@
-import { Nest, Scope, ScopeType, api } from '~tool'
+import { Nest, Scope, ScopeType, api } from '~'
 
 export * from './bear'
 export * from './face'

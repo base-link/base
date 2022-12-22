@@ -1,4 +1,4 @@
-import { Scope, ScopeType } from '~type'
+import { Scope, ScopeType, Tree } from '~'
 
 export function nestHasSlot(
   scope: ScopeType<Scope.Nest>,
@@ -8,13 +8,17 @@ export function nestHasSlot(
   for (let i = 0, n = nest.line.length; i < n; i++) {
     let line = nest.line[i]
     if (line) {
-      if (line.like !== 'term') {
+      if (line.like !== Tree.Term) {
         continue
       }
 
       for (let j = 0, m = line.link.length; j < m; j++) {
         let link = line.link[j]
-        if (link && link.like === 'slot' && link.size === 1) {
+        if (
+          link &&
+          link.like === Tree.Slot &&
+          link.size === 1
+        ) {
           return true
         }
       }

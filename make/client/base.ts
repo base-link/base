@@ -1,4 +1,4 @@
-import Card from './card'
+import { Card } from '~'
 
 export { Base }
 
@@ -17,8 +17,6 @@ export type BaseEncounterParamsType = {
 }
 
 export type BaseFreeType = () => void
-
-export type BaseHookType = () => BaseFreeType
 
 class Base {
   text_mesh: Map<string, string>
@@ -120,11 +118,11 @@ class Base {
           }
 
           for (const bind of bind_list) {
-            bind.site[bind.link] = {
-              bind: load,
-              like: 'bind-link',
-            }
-            bind.hook(bind.site, bind.fork)
+            // bind.site[bind.link] = {
+            //   bind: load,
+            //   like: 'bind-link',
+            // }
+            // bind.hook(bind.site, bind.fork)
           }
         }
       }
@@ -243,6 +241,8 @@ class Base {
     // return list
   }
 }
+
+export type BaseHookType = () => BaseFreeType
 
 export type BaseRequestParamsType = {
   fork: string

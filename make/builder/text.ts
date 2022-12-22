@@ -1,14 +1,14 @@
-import parse, {
-  ParserNestNodeType,
-  ParserNodeType,
-} from '~parser'
+import {
+  Scope,
+  ScopeType,
+  Tree,
+  TreeNestType,
+  TreeNodeType,
+  api,
+} from '~'
 
-import { Scope, ScopeType } from '~tool'
-
-export function parseTextIntoTree(
-  text: string,
-): ParserNodeType {
-  return parse(text)
+export function parseTextIntoTree(text: string): TreeNodeType {
+  return api.parseLinkText(text)
 }
 
 export function resolveText(
@@ -25,7 +25,7 @@ export function resolveText(
     return
   }
 
-  if (line.like !== 'text') {
+  if (line.like !== Tree.Text) {
     return
   }
 
@@ -33,10 +33,10 @@ export function resolveText(
 
   line.link.forEach(link => {
     switch (link.like) {
-      case 'cord':
+      case Tree.Cord:
         str.push(link.cord)
         break
-      case 'slot':
+      case Tree.Slot:
         // TODO
         const text: string = 'readNest(link, seed)'
         str.push(text)
@@ -50,8 +50,8 @@ export function resolveText(
 }
 
 export function resolveTextDependencyList(
-  nest: ParserNestNodeType,
-): Array<ParserNestNodeType> {
+  nest: TreeNestType,
+): Array<TreeNestType> {
   if (nest.line.length > 1) {
     return []
   }
@@ -61,17 +61,17 @@ export function resolveTextDependencyList(
     return []
   }
 
-  if (line.like !== 'text') {
+  if (line.like !== Tree.Text) {
     return []
   }
 
-  const array: Array<ParserNestNodeType> = []
+  const array: Array<TreeNestType> = []
 
   line.link.forEach(link => {
     switch (link.like) {
-      case 'cord':
+      case Tree.Cord:
         break
-      case 'slot':
+      case Tree.Slot:
         array.push(link.nest)
         break
       default:

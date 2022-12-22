@@ -1,4 +1,4 @@
-import { Scope, ScopeType } from '~type'
+import { Scope, ScopeType, Tree } from '~'
 
 export function resolveStaticTerm(
   scope: ScopeType<Scope.Nest>,
@@ -14,7 +14,7 @@ export function resolveStaticTerm(
     return
   }
 
-  if (line.like !== 'term') {
+  if (line.like !== Tree.Term) {
     return
   }
 
@@ -23,7 +23,7 @@ export function resolveStaticTerm(
   }
 
   let link = line.link[0]
-  if (link && link.like === 'cord') {
+  if (link && link.like === Tree.Cord) {
     return link.cord
   }
 }

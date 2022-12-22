@@ -1,4 +1,4 @@
-import { Scope, ScopeType } from '~type'
+import { Scope, ScopeType, Tree } from '~'
 
 export function resolveCodeAsNumber(
   scope: ScopeType<Scope.Nest>,
@@ -7,7 +7,7 @@ export function resolveCodeAsNumber(
 
   let line = nest.line[0]
 
-  if (line && line.like === 'code') {
+  if (line && line.like === Tree.Code) {
     let type = line.base
     let rest = line.code
 

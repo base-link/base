@@ -1,4 +1,4 @@
-import { AST, Base, Scope, ScopeType, api } from '~tool'
+import { Base, Mesh, Scope, ScopeType, Tree, api } from '~'
 
 export * from './deck'
 
@@ -21,7 +21,7 @@ export function process_deckCard(
         deck: {
           face: [],
           host: undefined,
-          like: AST.Deck,
+          like: Mesh.Deck,
           name: undefined,
           term: [],
         },
@@ -37,7 +37,7 @@ export function process_deckCard(
 
   card.bind(scope.data.card)
 
-  if (tree.like === 'nest') {
+  if (tree.like === Tree.Nest) {
     tree.nest.forEach((nest, index) => {
       const nestedScope = api.extendNest(scope, nest, index)
       api.process_deckCard_nestedChildren(nestedScope)

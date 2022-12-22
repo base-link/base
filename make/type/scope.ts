@@ -1,10 +1,9 @@
-import { ParserNestNodeType } from '~parser'
-
 import {
-  InitialCodeCardType,
-  InitialDeckCardType,
-  InitialFormType,
-} from '../tool'
+  InitialMeshCodeCardType,
+  InitialMeshDeckCardType,
+  InitialMeshFormType,
+  TreeNestType,
+} from '~'
 
 export type ParentScopeType<S> =
   | S
@@ -27,8 +26,8 @@ export enum Scope {
 }
 
 export type ScopeCardDataTableType = {
-  'code-card': InitialCodeCardType
-  'deck-card': InitialDeckCardType
+  'code-card': InitialMeshCodeCardType
+  'deck-card': InitialMeshDeckCardType
 }
 
 export type ScopeCardDataType<S extends ScopeCardData> = {
@@ -36,7 +35,7 @@ export type ScopeCardDataType<S extends ScopeCardData> = {
 }
 
 export type ScopeFormDataType = {
-  form: InitialFormType
+  form: InitialMeshFormType
 }
 
 export type ScopeKeyListType<
@@ -48,7 +47,7 @@ export type ScopeKeyListType<
 
 export type ScopeNestDataType = {
   index: number
-  nest: ParserNestNodeType
+  nest: TreeNestType
 }
 
 export type ScopeTableType = {
