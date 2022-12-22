@@ -3,34 +3,34 @@ import {
   NestedPartial,
   Scope,
   ScopeKeyListType,
+  ScopeSetType,
   ScopeTableType,
   ScopeType,
   ScopeValueType,
 } from '~server/type'
 
 export function extendScope<
-  S extends Scope | unknown = unknown,
+  S extends Scope,
   P extends unknown | undefined = unknown,
 >(
   like: S,
-  data: S extends Scope
-    ? ScopeTableType[S]
-    : Record<string, unknown>,
-  parent?: P extends ScopeType<infer T, infer Q>
+  data: S extends Scope ? ScopeTableType[S] : unknown,
+  parent?: P extends ScopeType<infer T extends Scope, infer Q>
     ? ScopeType<T, Q>
     : never,
 ): ScopeType<S, P> {
   return { data, like, parent }
 }
 
-export function getPropertyValueFromScope<S extends ScopeType>(
-  scope: S,
-  path: ScopeKeyListType<S>,
-): unknown {
-  let source: S | undefined = scope
+export function getPropertyValueFromScope<
+  L extends Scope,
+  S extends ScopeType<L>,
+  K extends ScopeKeyListType<L, S>,
+>(scope: S, path: K): ScopeValueType<L, S, K> | undefined {
+  let source: ScopeSetType<S> | undefined = scope
 
   while (source) {
-    if (source.data.hasOwnProperty(path)) {
+    if (path in source.data) {
       break
     } else {
       source = source.parent
@@ -55,9 +55,10 @@ export function resolveScope<S extends ASTMeshType>(
 }
 
 export function setPropertyValueOnScope<
-  S extends ScopeType,
-  K extends ScopeKeyListType<S>,
->(scope: S, property: K, value: ScopeValueType<S, K>): void {
+  L extends Scope,
+  S extends ScopeType<L>,
+  K extends ScopeKeyListType<L, S>,
+>(scope: S, property: K, value: ScopeValueType<L, S, K>): void {
   if (property in scope.data) {
     scope.data[property] = value
   } else if (scope.parent) {

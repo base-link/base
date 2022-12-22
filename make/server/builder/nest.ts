@@ -2,40 +2,54 @@ import { ParserNestNodeType } from '~parse'
 
 import { Scope, ScopeType, api } from '~server'
 
+export enum Nest {
+  Code = 'code',
+  DynamicTerm = 'dynamic-term',
+  DynamicText = 'dynamic-text',
+  Empty = '',
+  Mark = 'mark',
+  StaticTerm = 'static-term',
+  StaticText = 'static-text',
+}
+
 export function determineNestType(
   scope: ScopeType<Scope.Nest>,
-): string {
+): Nest {
   if (api.nestIsTerm(scope)) {
     if (api.termIsInterpolated(scope)) {
-      return `dynamic-term`
+      return Nest.DynamicTerm
     } else {
-      return `static-term`
+      return Nest.StaticTerm
     }
   } else if (api.nestIsText(scope)) {
     if (api.textIsInterpolated(scope)) {
-      return `dynamic-text`
+      return Nest.DynamicText
     } else {
-      return `static-text`
+      return Nest.StaticText
     }
   } else if (api.nestIsMark(scope)) {
-    return `mark`
+    return Nest.Mark
   } else if (api.nestIsCode(scope)) {
-    return `code`
+    return Nest.Code
   } else {
     api.throwError(
       api.generateUnhandledNestCaseBaseError(scope),
     )
   }
 
-  return ''
+  return Nest.Empty
 }
 
 export function extendNest(
-  scope: ScopeType<Scope>,
+  scope: ScopeType,
   nest: ParserNestNodeType,
   index: number,
 ): ScopeType<Scope.Nest> {
-  return api.extendScope(Scope.Nest, { index, nest }, scope)
+  return api.extendScope<Scope.Nest>(
+    Scope.Nest,
+    { index, nest },
+    scope,
+  )
 }
 
 export function nestIsCode(

@@ -1,4 +1,5 @@
 import { Scope, ScopeType, api } from '~server'
+import { Nest } from '~server/builder/nest'
 
 export * from './bear'
 export * from './link'
@@ -16,17 +17,28 @@ export function process_deckCard_deck(
 export function process_deckCard_deck_nestedChildren(
   scope: ScopeType<Scope.Nest, ScopeType<Scope.DeckCard>>,
 ): void {
-  if (api.nestHasSlot(scope)) {
-    api.generateUnhandledTermInterpolationError(scope)
-  } else if (api.nestIsText(scope) && scope.data.index === 0) {
-    api.process_deckCard_deck_link(scope)
-  } else if (
-    scope.data.index > 0 &&
-    api.nestIsStaticTerm(scope)
-  ) {
-    api.process_deckCard_deck_nestedTerm(scope)
-  } else {
-    api.throwError(api.generateUnhandledTermCaseError(scope))
+  const type = api.determineNestType(scope)
+  switch (type) {
+    case Nest.DynamicTerm:
+    case Nest.DynamicText:
+      api.throwError(
+        api.generateUnhandledNestCaseError(scope, type),
+      )
+      break
+    case Nest.StaticText:
+      if (scope.data.index === 0) {
+        api.process_deckCard_deck_link(scope)
+      } else {
+        throw new Error('Unhandled text.')
+      }
+      break
+    case Nest.StaticTerm:
+      if (scope.data.index > 0) {
+        api.process_deckCard_deck_nestedTerm(scope)
+      } else {
+        throw new Error('Unhandled term.')
+      }
+      break
   }
 }
 

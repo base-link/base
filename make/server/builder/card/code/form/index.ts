@@ -11,28 +11,35 @@ export * from './wear'
 export function process_codeCard_form(
   scope: ScopeType<Scope.Nest>,
 ): void {
-  const form: ScopeType<Scope.Form> = {
-    base: [],
-    hook: {},
-    like: 'form',
-    link: {},
-    task: {},
-    wear: {},
-  }
-
-  const nestedScope = api.extendScope(
+  const formScope: ScopeType<Scope.Form> = api.extendScope(
     Scope.Form,
-    { form },
+    {
+      form: {
+        base: [],
+        hook: {},
+        like: 'form',
+        link: {},
+        task: {},
+        wear: {},
+      },
+    },
     scope,
   )
 
   scope.data.nest.nest.forEach((nest, index) => {
-    const nestedScope = api.extendNest(scope, nest, index)
+    const nestedScope = api.extendNest(formScope, nest, index)
     api.process_codeCard_form_nestedChildren(nestedScope)
   })
 
   if (scope.parent) {
-    if (form.name && scope.parent.data.publicFormMesh) {
+    const mesh = api.getPropertyValueFromScope<Scope.Form>(
+      formScope,
+      'card',
+    )
+    if (
+      formScope.data.form.name &&
+      scope.parent.data.publicFormMesh
+    ) {
       scope.parent.data.publicFormMesh[form.name] = form
     }
   }

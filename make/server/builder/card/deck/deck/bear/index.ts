@@ -7,7 +7,7 @@ export function finalize_deckCard_deck_bear(
   if (nest) {
     const text = api.resolveText(scope)
     if (scope.parent) {
-      scope.parent.data.deck.bear = text
+      scope.parent.data.card.deck.bear = text
     }
   }
 }
