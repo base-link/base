@@ -36,6 +36,7 @@ export function processDynamicTextNest(
   const dependencyList = api.resolveTextDependencyList(input)
   const valueList = dependencyList.filter(nest => {})
   // TODO: figure out when to re-evaluate a dependency.
+  job(input)
 }
 
 export function processTextNest(
@@ -56,6 +57,31 @@ export function processTextNest(
         api.generateUnhandledNestCaseError(input, type),
       )
   }
+}
+
+export function readNest(input: NestInputType): unknown {
+  let value: unknown = input.fork.data
+
+  input.nest.line.forEach(nest => {
+    switch (nest.like) {
+      case Tree.Term:
+        const name = api.resolveStaticTerm({
+          ...input,
+          term: nest,
+        })
+
+        api.assertString(name)
+
+        if (api.isRecord(value)) {
+          value = value[name]
+        }
+        break
+      default:
+        throw new Error(nest.like)
+    }
+  })
+
+  return value
 }
 
 export function resolveNestDependencyList(
@@ -112,7 +138,7 @@ export function resolveText(
     return
   }
 
-  const str: Array<string> = []
+  const str: Array<unknown> = []
 
   line.link.forEach(link => {
     switch (link.like) {
@@ -121,7 +147,12 @@ export function resolveText(
         break
       case Tree.Slot:
         // TODO
-        const text: string = 'readNest(link, seed)'
+        const text = api.readNest({
+          ...input,
+          index: 0,
+          nest: link.nest,
+        })
+
         str.push(text)
         break
       default:

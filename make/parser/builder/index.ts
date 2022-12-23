@@ -4,19 +4,6 @@ import {
   LexerTokenType,
 } from '../tokenizer'
 
-export type CombTreeType = TreeMappingType & {
-  comb: number
-  like: Tree.Comb
-}
-
-type TreeMappingType = {
-  end: number
-  lineCharacterNumberEnd: number
-  lineCharacterNumberStart: number
-  lineNumber: number
-  start: number
-}
-
 export enum Tree {
   Code = 'tree-code',
   Comb = 'tree-comb',
@@ -28,10 +15,23 @@ export enum Tree {
   Text = 'tree-text',
 }
 
+type TreeMappingType = {
+  end: number
+  lineCharacterNumberEnd: number
+  lineCharacterNumberStart: number
+  lineNumber: number
+  start: number
+}
+
 export type TreeCodeType = TreeMappingType & {
   base: string
   code: string
   like: Tree.Code
+}
+
+export type TreeCombType = TreeMappingType & {
+  comb: number
+  like: Tree.Comb
 }
 
 export type TreeCordType = TreeMappingType & {
@@ -52,7 +52,8 @@ export type TreeNestType = {
     | TreeTextType
     | TreeMarkType
     | TreeCodeType
-    | CombTreeType
+    | TreeCombType
+    | TreeCordType
   >
   nest: Array<TreeNestType>
 }
@@ -64,7 +65,7 @@ export type TreeNodeType =
   | TreeMarkType
   | TreeTextType
   | TreeSlotType
-  | CombTreeType
+  | TreeCombType
   | TreeCodeType
 
 export type TreeSlotType = {
@@ -379,7 +380,7 @@ export function buildParseTree(list: Array<LexerTokenType>) {
         }
         case `comb`: {
           const node = stack[stack.length - 1]
-          const comb: CombTreeType = {
+          const comb: TreeCombType = {
             comb: parseFloat(token.text),
             end: token.end,
             like: Tree.Comb,

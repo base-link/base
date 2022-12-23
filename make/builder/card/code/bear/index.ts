@@ -1,9 +1,26 @@
-import { Nest, NestInputType, api } from '~'
+import { Mesh, Nest, NestInputType, api } from '~'
 
 export function finalize_codeCard_bear_nestedChildren(
   input: NestInputType,
 ): void {
-  console.log('here')
+  const text = api.resolveText(input)
+
+  api.assertString(text)
+
+  const card = api.getProperty(input, 'card')
+
+  api.assertMesh(card, Mesh.CodeCard)
+
+  const path = api.resolveModulePath(
+    input,
+    text,
+    card.directory,
+  )
+
+  card.bearList.push({
+    like: Mesh.Bear,
+    link: path,
+  })
 }
 
 export function process_codeCard_bear(
@@ -28,6 +45,7 @@ export function process_codeCard_bear_nestedChildren(
   const type = api.determineNestType(input)
   switch (type) {
     case Nest.StaticText:
+      api.finalize_codeCard_bear_nestedChildren(input)
       break
     case Nest.DynamicText:
       api.processDynamicTextNest(
@@ -46,4 +64,23 @@ export function process_codeCard_bear_nestedChildren(
     default:
       api.throwError(api.generateUnhandledTermCaseError(input))
   }
+}
+
+export function resolveModulePath(
+  input: NestInputType,
+  text: string,
+  context: string,
+): string {
+  const card = api.getProperty(input, 'card')
+  api.assertCard(card)
+
+  const path = api.findPath(text, card.directory)
+
+  if (!path) {
+    api.throwError(undefined)
+  }
+
+  api.assertString(path)
+
+  return path
 }
