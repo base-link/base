@@ -1,37 +1,39 @@
-import { api } from '~tool'
-import { Scope, ScopeType } from '~type'
+import { NestInputType, api } from '~'
 
 export * from './hook'
 
 export function process_codeCard_zone(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
 ): void {
-  scope.data.nest.nest.forEach((nest, index) => {
-    const nestedScope = api.extendNest(scope, nest, index)
-    api.process_codeCard_zone_nestedChildren(nestedScope)
+  input.nest.nest.forEach((nest, index) => {
+    api.process_codeCard_zone_nestedChildren({
+      ...input,
+      index,
+      nest,
+    })
   })
 }
 
 export function process_codeCard_zone_nestedChildren(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
 ): void {
-  const type = api.determineNestType(scope)
+  const type = api.determineNestType(input)
   if (type === 'static-term') {
-    const term = api.resolveStaticTerm(scope)
+    const term = api.resolveStaticTerm(input)
     switch (term) {
       case 'take':
-        api.process_codeCard_formLink(scope)
+        api.process_codeCard_link(input)
         break
       case 'hook':
-        api.process_codeCard_zoneHook(scope)
+        api.process_codeCard_zoneHook(input)
         break
       case 'head':
-        api.process_codeCard_head(scope)
+        api.process_codeCard_head(input)
         break
       default:
-        api.throwError(api.generateUnknownTermError(scope))
+        api.throwError(api.generateUnknownTermError(input))
     }
   } else {
-    api.throwError(api.generateUnhandledTermCaseError(scope))
+    api.throwError(api.generateUnhandledTermCaseError(input))
   }
 }

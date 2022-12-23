@@ -1,4 +1,4 @@
-import { Nest, Scope, ScopeType, api } from '~'
+import { Nest, NestInputType, api } from '~'
 
 export * from './bear'
 export * from './face'
@@ -7,41 +7,38 @@ export * from './term'
 export * from './test'
 
 export function process_deckCard_deck(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
 ): void {
-  scope.data.nest.nest.forEach((nest, index) => {
-    if (scope.parent) {
-      const nestedScope = api.extendScope(
-        Scope.Nest,
-        { index, nest },
-        scope.parent,
-      )
-      api.process_deckCard_deck_nestedChildren(nestedScope)
-    }
+  input.nest.nest.forEach((nest, index) => {
+    api.process_deckCard_deck_nestedChildren({
+      ...input,
+      index,
+      nest,
+    })
   })
 }
 
 export function process_deckCard_deck_nestedChildren(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
 ): void {
-  const type = api.determineNestType(scope)
+  const type = api.determineNestType(input)
   switch (type) {
     case Nest.DynamicTerm:
     case Nest.DynamicText:
       api.throwError(
-        api.generateUnhandledNestCaseError(scope, type),
+        api.generateUnhandledNestCaseError(input, type),
       )
       break
     case Nest.StaticText:
-      if (scope.data.index === 0) {
-        api.process_deckCard_deck_link(scope)
+      if (input.index === 0) {
+        api.process_deckCard_deck_link(input)
       } else {
         throw new Error('Unhandled text.')
       }
       break
     case Nest.StaticTerm:
-      if (scope.data.index > 0) {
-        api.process_deckCard_deck_nestedTerm(scope)
+      if (input.index > 0) {
+        api.process_deckCard_deck_nestedTerm(input)
       } else {
         throw new Error('Unhandled term.')
       }
@@ -50,20 +47,20 @@ export function process_deckCard_deck_nestedChildren(
 }
 
 export function process_deckCard_deck_nestedTerm(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
 ): void {
-  const term = api.resolveStaticTerm(scope)
+  const term = api.resolveStaticTerm(input)
   switch (term) {
     case 'bear': {
-      api.process_deckCard_deck_bear(scope)
+      api.process_deckCard_deck_bear(input)
       break
     }
     case 'test': {
-      api.process_deckCard_deck_test(scope)
+      api.process_deckCard_deck_test(input)
       break
     }
     default: {
-      api.throwError(api.generateUnknownTermError(scope))
+      api.throwError(api.generateUnknownTermError(input))
     }
   }
 }

@@ -1,17 +1,17 @@
-import { AST, Scope, ScopeType, api } from '~tool'
+import { Mesh, NestInputType, api } from '~'
 
 export function process_deckCard_deck_link(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
 ) {
-  const text = api.resolveText(scope)
+  const text = api.resolveText(input)
   if (text) {
     const [host, name] = text.slice(1).split('/')
     if (!host || !name) {
-      api.throwError(api.generateInvalidDeckLink(scope, text))
+      api.throwError(api.generateInvalidDeckLink(input, text))
     }
 
-    const card = api.getPropertyValueFromScope(scope, 'card')
-    api.assertAST(card, AST.DeckCard)
+    const card = api.getForkProperty(input.fork, 'card')
+    api.assertMesh(card, Mesh.DeckCard)
     if (host && name) {
       card.deck.host = host
       card.deck.name = name

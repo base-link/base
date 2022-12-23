@@ -1,34 +1,39 @@
-import { Mesh, ERROR, Scope, ScopeType, api } from '~'
+import { ERROR, Mesh, NestInputType, api } from '~'
 
 type ErrorType = {
   code: string
-  file: string
+  file?: string
   hint?: string
   note: string
-  text: string
+  text?: string
+}
+
+export function generateForkMissingPropertyError(
+  property: string,
+): ErrorType {
+  return {
+    code: `0010`,
+    note: `Scope is missing property '${property}'.`,
+  }
 }
 
 export function generateInvalidDeckLink(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
   link: string,
 ): ErrorType {
   return {
     code: `0008`,
-    file: ``,
     note: `Invalid deck link '${link}'.`,
-    text: '',
   }
 }
 
 export function generateInvalidNestChildrenLengthError(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
   length: number,
 ): ErrorType {
   return {
     code: `0009`,
-    file: ``,
     note: `Term doesn't have ${length} children.`,
-    text: '',
   }
 }
 
@@ -37,50 +42,49 @@ export function generateObjectNotMeshNodeError(
 ): ErrorType {
   return {
     code: `0007`,
-    file: ``,
     note: `Object isn't Mesh node '${like}'.`,
-    text: '',
   }
 }
-
-export function generateObjectNotMeshNodeError(): ErrorType {}
 
 export function generateTermMissingChildError(): void {}
 
 export function generateUnhandledNestCaseBaseError(
-  scope: ScopeType<Scope>,
+  input: NestInputType,
 ): ErrorType {
-  const card = api.getPropertyValueFromScope(scope, 'nest')
+  const card = api.getForkProperty(input.fork, 'card')
+  api.assertCard(card)
   return {
     code: `0005`,
-    file: `${path}`,
+    file: `${card.path}`,
     note: `We haven't implemented handling this type of nest yet.`,
     text: '',
   }
 }
 
 export function generateUnhandledNestCaseError(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
   type: string,
 ): ErrorType {
-  const path = api.getPropertyValueFromScope(scope, 'path')
+  const card = api.getForkProperty(input.fork, 'card')
+  api.assertCard(card)
   return {
     code: `0004`,
-    file: `${path}`,
+    file: `${card.path}`,
     note: `We haven't implemented handling ${type} nests yet.`,
     text: '',
   }
 }
 
 export function generateUnhandledTermCaseError(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
 ): ErrorType | undefined {
-  const path = api.getPropertyValueFromScope(scope, 'path')
-  const name = api.resolveStaticTerm(scope)
+  const card = api.getForkProperty(input.fork, 'card')
+  api.assertCard(card)
+  const name = api.resolveStaticTerm(input)
   if (ERROR['0002'] && name) {
     return {
       code: `0002`,
-      file: `${path}`,
+      file: `${card.path}`,
       note: ERROR['0002'].note({ name }),
       text: '',
     }
@@ -88,24 +92,27 @@ export function generateUnhandledTermCaseError(
 }
 
 export function generateUnhandledTermInterpolationError(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
 ): ErrorType {
-  const path = api.getPropertyValueFromScope(scope, 'path')
+  const card = api.getForkProperty(input.fork, 'card')
+  api.assertCard(card)
   return {
     code: `0001`,
-    file: `${path}`,
+    file: `${card.path}`,
     note: `We haven't implemented handling term interpolation yet.`,
     text: '',
   }
 }
 
 export function generateUnknownTermError(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
 ): ErrorType {
-  const path = api.getPropertyValueFromScope(scope, 'path')
+  const card = api.getForkProperty(input.fork, 'card')
+  api.assertCard(card)
+  const name = api.resolveStaticTerm(input)
   return {
     code: `0003`,
-    file: `${path}`,
+    file: `${card.path}`,
     note: `Unknown term ${name}.`,
     text: '',
   }
@@ -126,11 +133,17 @@ export function throwError(error: ErrorType | undefined): void {
   text.push(``)
   text.push(`  note <${error.note}>`)
   text.push(`  code <${error.code}>`)
-  text.push(`  text <${error.file}>, <`)
-  error.text.split('\n').forEach(line => {
-    text.push(`    ${line}`)
-  })
-  text.push(`  >`)
+  if (error.file) {
+    if (error.text) {
+      text.push(`  text <${error.file}>, <`)
+      error.text.split('\n').forEach(line => {
+        text.push(`    ${line}`)
+      })
+      text.push(`  >`)
+    } else {
+      text.push(`  text <${error.file}>`)
+    }
+  }
   text.push(``)
 
   throw new Error(text.join('\n'))

@@ -23,7 +23,7 @@ function reducer(m: Record<string, ErrorType>, x: ErrorType) {
 type ErrorType = {
   code: string
   hint?: string
-  note: (props: Object) => string
+  note: (props: Record<string, unknown>) => string
   text?: string
 }
 

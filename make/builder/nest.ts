@@ -1,5 +1,6 @@
 import {
   Nest,
+  NestInputType,
   Scope,
   ScopeType,
   Tree,
@@ -7,61 +8,63 @@ import {
   api,
 } from '~'
 
+export function assertNest(
+  object: unknown,
+): asserts object is TreeNestType {
+  if (!api.isNest(object)) {
+    api.throwError(undefined)
+  }
+}
+
 export function assertNestChildrenLength(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
   length: number,
 ): void {
-  if (scope.data.nest.nest.length !== length) {
+  if (input.nest.nest.length !== length) {
     api.throwError(
-      api.generateInvalidNestChildrenLengthError(scope, length),
+      api.generateInvalidNestChildrenLengthError(input, length),
     )
   }
 }
 
-export function determineNestType(
-  scope: ScopeType<Scope.Nest>,
-): Nest {
-  if (api.nestIsTerm(scope)) {
-    if (api.termIsInterpolated(scope)) {
+export function determineNestType(input: NestInputType): Nest {
+  if (api.nestIsTerm(input)) {
+    if (api.termIsInterpolated(input)) {
       return Nest.DynamicTerm
     } else {
       return Nest.StaticTerm
     }
-  } else if (api.nestIsText(scope)) {
-    if (api.textIsInterpolated(scope)) {
+  } else if (api.nestIsText(input)) {
+    if (api.textIsInterpolated(input)) {
       return Nest.DynamicText
     } else {
       return Nest.StaticText
     }
-  } else if (api.nestIsMark(scope)) {
+  } else if (api.nestIsMark(input)) {
     return Nest.Mark
-  } else if (api.nestIsCode(scope)) {
+  } else if (api.nestIsCode(input)) {
     return Nest.Code
   } else {
     api.throwError(
-      api.generateUnhandledNestCaseBaseError(scope),
+      api.generateUnhandledNestCaseBaseError(input),
     )
   }
 
   return Nest.Empty
 }
 
-export function extendNest(
-  scope: ScopeType<Scope>,
-  nest: TreeNestType,
-  index: number,
-): ScopeType<Scope.Nest> {
-  return api.extendScope<Scope.Nest, typeof scope>(
-    Scope.Nest,
-    { index, nest },
-    scope,
+export function isNest(
+  object: unknown,
+): object is TreeNestType {
+  return (
+    api.isObject(object) &&
+    'like' in object &&
+    (object as TreeNestType).like === Tree.Nest
   )
 }
 
-export function nestIsCode(
-  scope: ScopeType<Scope.Nest>,
-): boolean {
-  const nest = scope.data.nest
+export function nestIsCode(input: NestInputType): boolean {
+  const nest = input.nest
 
   if (nest.line.length > 1) {
     return false
@@ -79,10 +82,8 @@ export function nestIsCode(
   return false
 }
 
-export function nestIsMark(
-  scope: ScopeType<Scope.Nest>,
-): boolean {
-  const nest = scope.data.nest
+export function nestIsMark(input: NestInputType): boolean {
+  const nest = input.nest
 
   if (nest.line.length > 1) {
     return false
@@ -100,10 +101,8 @@ export function nestIsMark(
   return false
 }
 
-export function nestIsTerm(
-  scope: ScopeType<Scope.Nest>,
-): boolean {
-  const nest = scope.data.nest
+export function nestIsTerm(input: NestInputType): boolean {
+  const nest = input.nest
 
   if (nest.line.length > 1) {
     return false
@@ -134,10 +133,8 @@ export function nestIsTerm(
   return false
 }
 
-export function nestIsText(
-  scope: ScopeType<Scope.Nest>,
-): boolean {
-  const nest = scope.data.nest
+export function nestIsText(input: NestInputType): boolean {
+  const nest = input.nest
 
   if (nest.line.length > 1) {
     return false

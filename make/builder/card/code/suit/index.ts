@@ -1,35 +1,37 @@
-import { api } from '~tool'
-import { Scope, ScopeType } from '~type'
+import { NestInputType, api } from '~'
 
 export function process_codeCard_suit(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
 ): void {
-  scope.data.nest.nest.forEach((nest, index) => {
-    const nestedScope = api.extendNest(scope, nest, index)
-    api.process_codeCard_suit_nestedChildren(nestedScope)
+  input.nest.nest.forEach((nest, index) => {
+    api.process_codeCard_suit_nestedChildren({
+      ...input,
+      index,
+      nest,
+    })
   })
 }
 
 export function process_codeCard_suit_nestedChildren(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
 ): void {
-  const type = api.determineNestType(scope)
+  const type = api.determineNestType(input)
   if (type === 'static-term') {
-    const term = api.resolveStaticTerm(scope)
+    const term = api.resolveStaticTerm(input)
     switch (term) {
       case 'link':
-        api.process_codeCard_formLink(scope)
+        api.process_codeCard_formLink(input)
         break
       case 'task':
-        api.process_codeCard_formTask(scope)
+        api.process_codeCard_formTask(input)
         break
       case 'head':
-        api.process_codeCard_head(scope)
+        api.process_codeCard_head(input)
         break
       default:
-        api.throwError(api.generateUnknownTermError(scope))
+        api.throwError(api.generateUnknownTermError(input))
     }
   } else {
-    api.throwError(api.generateUnhandledTermCaseError(scope))
+    api.throwError(api.generateUnhandledTermCaseError(input))
   }
 }

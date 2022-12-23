@@ -36,7 +36,5 @@ export function getLinkHost(link: string): string {
 }
 
 export function readTextFile(base: Base, link: string): string {
-  return (
-    base.text_mesh.get(link) ?? fs.readFileSync(link, 'utf-8')
-  )
+  return base.text_mesh[link] ?? fs.readFileSync(link, 'utf-8')
 }

@@ -1,71 +1,73 @@
-import { api } from '~tool'
-import { Nest, Scope, ScopeType } from '~type'
+import { Nest, NestInputType, api } from '~'
 
 export function process_codeCard_like(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
 ): void {
-  scope.data.nest.nest.forEach((nest, index) => {
-    const nestedScope = api.extendNest(scope, nest, index)
-    process_codeCard_like_nestedChildren(nestedScope)
+  input.nest.nest.forEach((nest, index) => {
+    process_codeCard_like_nestedChildren({
+      ...input,
+      index,
+      nest,
+    })
   })
 }
 
 export function process_codeCard_like_free(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
 ): void {}
 
 export function process_codeCard_like_head(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
 ): void {}
 
 export function process_codeCard_like_list(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
 ): void {}
 
 export function process_codeCard_like_mesh(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
 ): void {}
 
 export function process_codeCard_like_nestedChildren(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
 ): void {
-  const type = api.determineNestType(scope)
+  const type = api.determineNestType(input)
   switch (type) {
     case Nest.StaticTerm:
-      const term = api.resolveStaticTerm(scope)
+      const term = api.resolveStaticTerm(input)
       switch (term) {
         case 'head':
-          api.process_codeCard_like_head(scope)
+          api.process_codeCard_like_head(input)
           break
         case 'like':
-          api.process_codeCard_like(scope)
+          api.process_codeCard_like(input)
           break
         case 'list':
-          api.process_codeCard_like_list(scope)
+          api.process_codeCard_like_list(input)
           break
         case 'mesh':
-          api.process_codeCard_like_mesh(scope)
+          api.process_codeCard_like_mesh(input)
           break
         case 'take':
-          api.process_codeCard_like_take(scope)
+          api.process_codeCard_like_take(input)
           break
         case 'free':
-          api.process_codeCard_like_free(scope)
+          api.process_codeCard_like_free(input)
           break
         case 'term':
-          api.process_codeCard_like_term(scope)
+          api.process_codeCard_like_term(input)
           break
       }
       break
     default:
-      api.throwError(api.generateUnhandledTermCaseError(scope))
+      api.throwError(api.generateUnhandledTermCaseError(input))
   }
 }
 
 export function process_codeCard_like_take(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
 ): void {}
 
 export function process_codeCard_like_term(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
 ): void {}

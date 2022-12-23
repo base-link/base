@@ -1,4 +1,12 @@
-import { Base, Scope, ScopeType, api } from '~tool'
+import {
+  Base,
+  Mesh,
+  MeshCodeCardInputType,
+  MeshCodeCardType,
+  NestInputType,
+  Tree,
+  api,
+} from '~'
 
 export * from './bear'
 export * from './bind'
@@ -32,116 +40,121 @@ export function process_codeCard(
   const textTree = api.parseTextIntoTree(text)
   const linkHost = api.getLinkHost(link)
   const card = base.card(link)
-  const scope: ScopeType<Scope.CodeCard> = api.extendScope(
-    Scope.CodeCard,
-    {
-      card: {
-        allSuitMesh: {},
-        allTaskMesh: {},
-        allTestMesh: {},
-        allTreeMesh: {},
-        allZoneMesh: {},
-        base,
-        bearList: [],
-        dependencyWatcherMap: new Map(),
-        directory: linkHost,
-        faceMesh: {},
-        formMesh: {},
-        hookMesh: {},
-        hostMesh: {},
-        like: 'code-card',
-        loadList: [],
-        parseTree: textTree,
-        path: link,
-        publicFaceMesh: {},
-        publicFormMesh: {},
-        publicHostMesh: {},
-        publicSuitMesh: {},
-        publicTaskMesh: {},
-        publicTestMesh: {},
-        publicTreeMesh: {},
-        publicZoneMesh: {},
-        textByLine: text.split('\n'),
-      },
-    },
-  )
-
-  card.bind(scope.data.card)
-
-  if (textTree.like === 'nest') {
-    textTree.nest.forEach((nest, index) => {
-      const nestedScope = api.extendNest(scope, nest, index)
-      api.process_codeCard_nestedChildren(nestedScope)
-    })
+  const seed: MeshCodeCardType = {
+    allSuitMesh: {},
+    allTaskMesh: {},
+    allTestMesh: {},
+    allTreeMesh: {},
+    allZoneMesh: {},
+    base,
+    bearList: [],
+    dependencyWatcherMap: new Map(),
+    directory: linkHost,
+    faceMesh: {},
+    formMesh: {},
+    hookMesh: {},
+    hostMesh: {},
+    like: Mesh.CodeCard,
+    loadList: [],
+    parseTree: textTree,
+    path: link,
+    publicFaceMesh: {},
+    publicFormMesh: {},
+    publicHostMesh: {},
+    publicSuitMesh: {},
+    publicTaskMesh: {},
+    publicTestMesh: {},
+    publicTreeMesh: {},
+    publicZoneMesh: {},
+    textByLine: text.split('\n'),
   }
+  const input: MeshCodeCardInputType = {
+    card: seed,
+    fork: {
+      data: seed,
+      like: Mesh.Fork,
+    },
+  }
+
+  card.bind(seed)
+
+  api.assertNest(textTree)
+
+  textTree.nest.forEach((nest, index) => {
+    api.process_codeCard_nestedChildren({
+      ...input,
+      index,
+      nest,
+    })
+  })
 
   // this.mintCodeCardMesh(fork)
 }
 
 export function process_codeCard_nestedChildren(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
 ): void {
-  const type = api.determineNestType(scope)
+  const type = api.determineNestType(input)
   switch (type) {
     case 'dynamic-text':
     case 'dynamic-term':
       api.throwError(
-        api.generateUnhandledTermInterpolationError(scope),
+        api.generateUnhandledTermInterpolationError(input),
       )
       break
     case 'static-term':
-      api.process_codeCard_nestedChildren_staticTerm(scope)
+      api.process_codeCard_nestedChildren_staticTerm(input)
       break
   }
 }
 
 export function process_codeCard_nestedChildren_staticTerm(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
 ): void {
-  const term = api.resolveStaticTerm(scope)
+  const term = api.resolveStaticTerm(input)
   switch (term) {
     case 'bear': {
-      api.process_codeCard_bear(scope)
+      api.process_codeCard_bear(input)
       break
     }
     case 'load': {
-      api.process_codeCard_load(scope)
+      api.process_codeCard_load(input)
       break
     }
     case 'fuse': {
-      api.process_codeCard_fuse(scope)
+      api.process_codeCard_fuse(input)
       break
     }
     case 'tree': {
-      api.process_codeCard_tree(scope)
+      api.process_codeCard_tree(input)
       break
     }
     case 'face': {
-      api.process_codeCard_face(scope)
+      api.process_codeCard_face(input)
       break
     }
     case 'host': {
-      api.process_codeCard_host(scope)
+      api.process_codeCard_host(input)
       break
     }
     case 'form': {
-      api.process_codeCard_form(scope)
+      api.process_codeCard_form(input)
       break
     }
     case 'suit': {
-      api.process_codeCard_suit(scope)
+      api.process_codeCard_suit(input)
       break
     }
     case 'task': {
-      api.process_codeCard_task(scope)
+      api.process_codeCard_task(input)
       break
     }
     case 'note': {
-      api.process_codeCard_note(scope)
+      api.process_codeCard_note(input)
       break
     }
     default: {
-      api.throwError(api.generateUnknownTermError(scope))
+      api.throwError(api.generateUnknownTermError(input))
     }
   }
 }

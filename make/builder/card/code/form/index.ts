@@ -1,5 +1,4 @@
-import { api } from '~tool'
-import { AST, Scope, ScopeType } from '~type'
+import { AST, NestInputType, api } from '~'
 
 export * from './base'
 export * from './case'
@@ -7,7 +6,7 @@ export * from './task'
 export * from './wear'
 
 export function process_codeCard_form(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
 ): void {
   const formScope: ScopeType<Scope.Form> = api.extendScope(
     Scope.Form,
@@ -24,63 +23,70 @@ export function process_codeCard_form(
     scope,
   )
 
-  scope.data.nest.nest.forEach((nest, index) => {
-    const nestedScope = api.extendNest(formScope, nest, index)
-    api.process_codeCard_form_nestedChildren(nestedScope)
+  input.nest.nest.forEach((nest, index) => {
+    const {
+      ...input,
+      index,
+      nest,
+    } = api.extendNest(formScope, nest, index)
+    api.process_codeCard_form_nestedChildren({
+      ...input,
+      index,
+      nest,
+    })
   })
 
   const card = api.getPropertyValueFromScope(scope, 'card')
 
   api.assertAST(card, AST.CodeCard)
 
-  if (formScope.data.form.name && card.publicFormMesh) {
-    card.publicFormMesh[formScope.data.form.name] =
-      formScope.data.form
+  if (forminput.form.name && card.publicFormMesh) {
+    card.publicFormMesh[forminput.form.name] = forminput.form
   }
 }
 
 export function process_codeCard_form_nestedChildren(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
 ): void {
-  const type = api.determineNestType(scope)
+  const type = api.determineNestType(input)
   if (type === 'static-term') {
-    const term = api.resolveStaticTerm(scope)
+    const term = api.resolveStaticTerm(input)
     switch (term) {
       case 'link':
-        api.process_codeCard_link(scope)
+        api.process_codeCard_link(input)
         break
       case 'task':
-        api.process_codeCard_formTask(scope)
+        api.process_codeCard_formTask(input)
         break
       case 'head':
-        api.process_codeCard_head(scope)
+        api.process_codeCard_head(input)
         break
       case 'wear':
-        api.process_codeCard_formWear(scope)
+        api.process_codeCard_formWear(input)
         break
       case 'base':
-        api.process_codeCard_formBase(scope)
+        api.process_codeCard_formBase(input)
         break
       case 'case':
-        api.process_codeCard_formCase(scope)
+        api.process_codeCard_formCase(input)
         break
       case 'fuse':
-        api.process_codeCard_fuse(scope)
+        api.process_codeCard_fuse(input)
         break
       case 'hold':
-        api.process_codeCard_hold(scope)
+        api.process_codeCard_hold(input)
         break
       case 'stem':
-        api.process_codeCard_stem(scope)
+        api.process_codeCard_stem(input)
         break
       case 'note':
-        api.process_codeCard_note(scope)
+        api.process_codeCard_note(input)
         break
       case 'like':
-        api.process_codeCard_like(scope)
+        api.process_codeCard_like(input)
         break
       default:
-        api.throwError(api.generateUnknownTermError(scope))
+        api.throwError(api.generateUnknownTermError(input))
     }
   } else {
     api.throwError(

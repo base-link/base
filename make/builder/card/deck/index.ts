@@ -1,4 +1,12 @@
-import { Base, Mesh, Scope, ScopeType, Tree, api } from '~'
+import {
+  Base,
+  InitialMeshDeckCardType,
+  Mesh,
+  MeshDeckCardInputType,
+  NestInputType,
+  Tree,
+  api,
+} from '~'
 
 export * from './deck'
 
@@ -13,57 +21,62 @@ export function process_deckCard(
   const tree = api.parseTextIntoTree(text)
   const linkHost = api.getLinkHost(link)
   const card = base.card(link)
-  const scope: ScopeType<Scope.DeckCard> = api.extendScope(
-    Scope.DeckCard,
-    {
-      card: {
-        base,
-        deck: {
-          face: [],
-          host: undefined,
-          like: Mesh.Deck,
-          name: undefined,
-          term: [],
-        },
-        dependencyWatcherMap: new Map(),
-        directory: linkHost,
-        like: Scope.DeckCard,
-        parseTree: tree,
-        path: link,
-        textByLine: text.split(/\n/),
-      },
+  const seed: InitialMeshDeckCardType = {
+    base,
+    deck: {
+      face: [],
+      host: undefined,
+      like: Mesh.Deck,
+      name: undefined,
+      term: [],
     },
-  )
+    dependencyWatcherMap: new Map(),
+    directory: linkHost,
+    like: Mesh.DeckCard,
+    parseTree: tree,
+    path: link,
+    textByLine: text.split(/\n/),
+  }
+  const input: MeshDeckCardInputType = {
+    card: seed,
+    fork: {
+      data: seed,
+      like: Mesh.Fork,
+    },
+  }
 
-  card.bind(scope.data.card)
+  card.bind(seed)
 
   if (tree.like === Tree.Nest) {
     tree.nest.forEach((nest, index) => {
-      const nestedScope = api.extendNest(scope, nest, index)
-      api.process_deckCard_nestedChildren(nestedScope)
+      api.process_deckCard_nestedChildren({
+        ...input,
+        index,
+        nest,
+      })
     })
   }
 }
 
 export function process_deckCard_nestedChildren(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
 ): void {
-  const type = api.determineNestType(scope)
+  const type = api.determineNestType(input)
   switch (type) {
     case 'static-term': {
-      const term = api.resolveStaticTerm(scope)
+      const term = api.resolveStaticTerm(input)
       switch (term) {
         case 'deck':
-          api.process_deckCard_deck(scope)
+          api.process_deckCard_deck(input)
           break
         default:
-          api.throwError(api.generateUnknownTermError(scope))
+          api.throwError(api.generateUnknownTermError(input))
       }
       break
     }
     default:
       api.throwError(
-        api.generateUnhandledNestCaseError(scope, type),
+        api.generateUnhandledNestCaseError(input, type),
       )
   }
 }

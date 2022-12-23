@@ -1,11 +1,9 @@
-import { Scope, ScopeType, Tree } from '~'
+import { NestInputType, Tree } from '~'
 
 export function resolveCodeAsNumber(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
 ): number {
-  const nest = scope.data.nest
-
-  let line = nest.line[0]
+  let line = input.nest.line[0]
 
   if (line && line.like === Tree.Code) {
     let type = line.base

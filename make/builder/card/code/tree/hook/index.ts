@@ -1,7 +1,5 @@
-import shared from '~shared'
-import { api } from '~tool'
-import { Scope, ScopeType } from '~type'
+import { NestInputType, api } from '~'
 
 export function process_codeCard_treeHook(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
 ): void {}

@@ -1,35 +1,37 @@
-import { api } from '~tool'
-import { Nest, Scope, ScopeType } from '~type'
+import { Nest, NestInputType, api } from '~'
 
 export function process_codeCard_bear(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
 ): void {
-  scope.data.nest.nest.forEach((nest, index) => {
-    const nestedScope = api.extendNest(scope, nest, index)
-    api.process_codeCard_bear_nestedChildren(nestedScope)
+  input.nest.nest.forEach((nest, index) => {
+    api.process_codeCard_bear_nestedChildren({
+      ...input,
+      index,
+      nest,
+    })
   })
 }
 
 export function process_codeCard_bear_hide(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
 ): void {}
 
 export function process_codeCard_bear_nestedChildren(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
 ): void {
-  const type = api.determineNestType(scope)
+  const type = api.determineNestType(input)
   switch (type) {
     case Nest.StaticText:
       break
     case Nest.StaticTerm:
-      const term = api.resolveStaticTerm(scope)
+      const term = api.resolveStaticTerm(input)
       switch (term) {
         case 'hide':
-          api.process_codeCard_bear_hide(scope)
+          api.process_codeCard_bear_hide(input)
           break
       }
       break
     default:
-      api.throwError(api.generateUnhandledTermCaseError(scope))
+      api.throwError(api.generateUnhandledTermCaseError(input))
   }
 }

@@ -1,9 +1,7 @@
-import { Scope, ScopeType, Tree } from '~'
+import { NestInputType, Tree } from '~'
 
-export function nestHasSlot(
-  scope: ScopeType<Scope.Nest>,
-): boolean {
-  const nest = scope.data.nest
+export function nestHasSlot(input: NestInputType): boolean {
+  const nest = input.nest
 
   for (let i = 0, n = nest.line.length; i < n; i++) {
     let line = nest.line[i]

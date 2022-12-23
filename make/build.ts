@@ -5,4 +5,4 @@ const base = new Base({
   dock: 'javascript',
   site: 'test',
 })
-base.mintDeckCard(link)
+api.process_deckCard(base, link)

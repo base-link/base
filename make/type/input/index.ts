@@ -1,5 +1,6 @@
 import {
   InitialMeshCodeCardType,
+  InitialMeshDeckCardType,
   InitialMeshFormType,
   MeshForkType,
   TreeNestType,
@@ -9,14 +10,19 @@ export type ForkInputType = {
   fork: MeshForkType
 }
 
-export type FormInputType = {
+export type FormInputType = ForkInputType & {
   form: InitialMeshFormType
 }
 
-export type MeshCodeCardInputType = {
+export type MeshCodeCardInputType = ForkInputType & {
   card: InitialMeshCodeCardType
 }
 
-export type NestInputType = {
+export type MeshDeckCardInputType = ForkInputType & {
+  card: InitialMeshDeckCardType
+}
+
+export type NestInputType = ForkInputType & {
+  index: number
   nest: TreeNestType
 }

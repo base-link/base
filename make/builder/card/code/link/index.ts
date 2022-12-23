@@ -1,45 +1,47 @@
-import { api } from '~tool'
-import { Nest, Scope, ScopeType } from '~type'
+import { Nest, NestInputType, api } from '~'
 
 export function process_codeCard_link(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
 ): void {
-  scope.data.nest.nest.forEach((nest, index) => {
-    const nestedScope = api.extendNest(scope, nest, index)
-    process_codeCard_link_nestedChildren(nestedScope)
+  input.nest.nest.forEach((nest, index) => {
+    process_codeCard_link_nestedChildren({
+      ...input,
+      index,
+      nest,
+    })
   })
 }
 
 export function process_codeCard_link_base(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
 ): void {}
 
 export function process_codeCard_link_nestedChildren(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
 ): void {
-  const type = api.determineNestType(scope)
+  const type = api.determineNestType(input)
   switch (type) {
     case Nest.StaticTerm:
-      const term = api.resolveStaticTerm(scope)
+      const term = api.resolveStaticTerm(input)
       switch (term) {
         case 'like':
-          api.process_codeCard_like(scope)
+          api.process_codeCard_like(input)
           break
         case 'list':
-          api.process_codeCard_like_list(scope)
+          api.process_codeCard_like_list(input)
           break
         case 'mesh':
-          api.process_codeCard_like_mesh(scope)
+          api.process_codeCard_like_mesh(input)
           break
         case 'time':
-          api.process_codeCard_time(scope)
+          api.process_codeCard_time(input)
           break
         case 'base':
-          api.process_codeCard_link_base(scope)
+          api.process_codeCard_link_base(input)
           break
       }
       break
     default:
-      api.throwError(api.generateUnhandledTermCaseError(scope))
+      api.throwError(api.generateUnhandledTermCaseError(input))
   }
 }

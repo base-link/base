@@ -14,8 +14,16 @@ import {
   MeshTestType,
   MeshTreeType,
   MeshZoneType,
-  TreeNestType,
+  TreeNodeType,
 } from '~'
+
+export const CARD_TYPE = [
+  Mesh.CodeCard,
+  Mesh.BookCard,
+  Mesh.DeckCard,
+] as const
+
+export type Card = Mesh.CodeCard | Mesh.DeckCard
 
 export type MeshBookCardType = MeshCardBaseType & {
   abstract: string
@@ -32,10 +40,12 @@ export type MeshCardBaseType = {
     InternalDependencyWatcherType
   >
   directory: string
-  parseTree: TreeNestType
+  parseTree: TreeNodeType
   path: string
   textByLine: Array<string>
 }
+
+export type MeshCardType = MeshCodeCardType | MeshDeckCardType
 
 export type MeshCodeCardType = MeshCardBaseType & {
   allSuitMesh: Record<string, MeshSuitType>
@@ -50,7 +60,6 @@ export type MeshCodeCardType = MeshCardBaseType & {
   hostMesh: Record<string, MeshHostType>
   like: Mesh.CodeCard
   loadList: Array<MeshLoadType>
-  parseTree: TreeNestType
   publicFaceMesh: Record<string, MeshFaceType>
   publicFormMesh: Record<string, MeshFormType>
   publicHostMesh: Record<string, MeshHostType>

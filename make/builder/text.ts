@@ -1,6 +1,5 @@
 import {
-  Scope,
-  ScopeType,
+  NestInputType,
   Tree,
   TreeNestType,
   TreeNodeType,
@@ -12,9 +11,9 @@ export function parseTextIntoTree(text: string): TreeNodeType {
 }
 
 export function resolveText(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
 ): string | undefined {
-  const nest = scope.data.nest
+  const nest = input.nest
 
   if (nest.line.length > 1) {
     return
@@ -83,5 +82,7 @@ export function resolveTextDependencyList(
 }
 
 export function textIsInterpolated(
-  scope: ScopeType<Scope.Nest>,
-): boolean {}
+  input: NestInputType,
+): boolean {
+  return false
+}

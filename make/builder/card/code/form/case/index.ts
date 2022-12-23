@@ -1,22 +1,25 @@
-import { Nest, Scope, ScopeType, api } from '~tool'
+import { Nest, NestInputType, api } from '~'
 
 export function process_codeCard_formCase(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
 ): void {
-  scope.data.nest.nest.forEach((nest, index) => {
-    const nestedScope = api.extendNest(scope, nest, index)
-    process_codeCard_formCase_nestedChildren(nestedScope)
+  input.nest.nest.forEach((nest, index) => {
+    process_codeCard_formCase_nestedChildren({
+      ...input,
+      index,
+      nest,
+    })
   })
 }
 
 export function process_codeCard_formCase_nestedChildren(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
 ): void {
-  const type = api.determineNestType(scope)
+  const type = api.determineNestType(input)
   switch (type) {
     case Nest.StaticText:
       break
     default:
-      api.throwError(api.generateUnhandledTermCaseError(scope))
+      api.throwError(api.generateUnhandledTermCaseError(input))
   }
 }

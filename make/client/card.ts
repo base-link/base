@@ -1,4 +1,4 @@
-class Card {
+class BaseCard {
   hash: string
 
   seed: Object
@@ -18,4 +18,4 @@ class Card {
   }
 }
 
-export { Card }
+export { BaseCard }

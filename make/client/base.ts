@@ -1,4 +1,4 @@
-import { Card } from '~'
+import { BaseCard } from '~'
 
 export { Base }
 
@@ -19,7 +19,7 @@ export type BaseEncounterParamsType = {
 export type BaseFreeType = () => void
 
 class Base {
-  text_mesh: Map<string, string>
+  text_mesh: Record<string, string>
 
   link_mesh: Map<string, Array<string>>
 
@@ -27,7 +27,7 @@ class Base {
 
   free_mesh: Map<string, BaseFreeType>
 
-  card_mesh: Map<string, Card>
+  card_mesh: Map<string, BaseCard>
 
   wait_seek_mesh: Map<
     string,
@@ -36,8 +36,8 @@ class Base {
 
   wait_find_mesh: Map<string, Map<string, Map<string, string>>>
 
-  constructor(text_mesh: Iterable<readonly [string, string]>) {
-    this.text_mesh = new Map(text_mesh)
+  constructor(text_mesh: Record<string, string>) {
+    this.text_mesh = text_mesh
     this.link_mesh = new Map()
     this.hook_mesh = new Map()
     this.free_mesh = new Map()
@@ -200,10 +200,10 @@ class Base {
   }
 
   card(hash: string) {
-    let card: Card | undefined = this.card_mesh.get(hash)
+    let card: BaseCard | undefined = this.card_mesh.get(hash)
 
     if (!card) {
-      card = new Card(hash)
+      card = new BaseCard(hash)
       this.card_mesh.set(hash, card)
     }
 

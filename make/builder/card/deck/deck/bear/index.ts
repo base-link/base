@@ -1,27 +1,27 @@
-import { AST, Scope, ScopeType, api } from '~tool'
+import { Mesh, NestInputType, api } from '~'
 
 export function finalize_deckCard_deck_bear(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
 ): void {
-  api.assertNestChildrenLength(scope, 1)
+  api.assertNestChildrenLength(input, 1)
 
-  const text = api.resolveText(scope)
-  const card = api.getPropertyValueFromScope(scope, 'card')
-  api.assertAST(card, AST.DeckCard)
+  const text = api.resolveText(input)
+  const card = api.getForkProperty(input.fork, 'card')
+  api.assertMesh(card, Mesh.DeckCard)
   card.deck.bear = text
 }
 
 export function process_deckCard_deck_bear(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
 ): void {
-  api.assertNestChildrenLength(scope, 1)
+  api.assertNestChildrenLength(input, 1)
 
-  const nest = scope.data.nest.nest[0]
+  const nest = input.nest.nest[0]
   if (nest) {
     const dependencyList = api.resolveTextDependencyList(nest)
     api.processDependencyList(
       dependencyList,
-      scope,
+      input,
       api.finalize_deckCard_deck_bear,
     )
   }

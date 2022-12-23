@@ -1,9 +1,9 @@
-import { Scope, ScopeType, Tree } from '~'
+import { NestInputType, Tree } from '~'
 
 export function resolveStaticTerm(
-  scope: ScopeType<Scope.Nest>,
+  input: NestInputType,
 ): string | undefined {
-  const nest = scope.data.nest
+  const nest = input.nest
 
   if (nest.line.length > 1) {
     return
@@ -29,5 +29,7 @@ export function resolveStaticTerm(
 }
 
 export function termIsInterpolated(
-  scope: ScopeType<Scope.Nest>,
-): boolean {}
+  input: NestInputType,
+): boolean {
+  return false
+}
