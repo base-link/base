@@ -1,7 +1,7 @@
 import fs from 'fs'
 import pathResolve from 'path'
 
-import { Base } from '~'
+import { Base, NestInputType, api } from '~'
 
 export function findPath(
   link: string,
@@ -37,4 +37,22 @@ export function getLinkHost(link: string): string {
 
 export function readTextFile(base: Base, link: string): string {
   return base.text_mesh[link] ?? fs.readFileSync(link, 'utf-8')
+}
+
+export function resolveModulePath(
+  input: NestInputType,
+  text: string,
+): string {
+  const card = api.getProperty(input, 'card')
+  api.assertCard(card)
+
+  const path = api.findPath(text, card.directory)
+
+  if (!path) {
+    api.throwError(undefined)
+  }
+
+  api.assertString(path)
+
+  return path
 }

@@ -11,11 +11,7 @@ export function finalize_codeCard_bear_nestedChildren(
 
   api.assertMesh(card, Mesh.CodeCard)
 
-  const path = api.resolveModulePath(
-    input,
-    text,
-    card.directory,
-  )
+  const path = api.resolveModulePath(input, text)
 
   card.bearList.push({
     like: Mesh.Bear,
@@ -64,23 +60,4 @@ export function process_codeCard_bear_nestedChildren(
     default:
       api.throwError(api.generateUnhandledTermCaseError(input))
   }
-}
-
-export function resolveModulePath(
-  input: NestInputType,
-  text: string,
-  context: string,
-): string {
-  const card = api.getProperty(input, 'card')
-  api.assertCard(card)
-
-  const path = api.findPath(text, card.directory)
-
-  if (!path) {
-    api.throwError(undefined)
-  }
-
-  api.assertString(path)
-
-  return path
 }

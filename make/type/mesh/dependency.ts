@@ -1,13 +1,13 @@
-import { Mesh } from './list'
+import { ForkInputType } from '~'
 
-export type MeshBindableCallbackType<T> = (value: T) => void
+import { Mesh } from './list'
 
 export type MeshBindableObjectType = {
   // callbacks to the dependency handler
   // then the dependency handler calls back to
   // the original source compiler handler
   callbackList: Array<
-    MeshBindableCallbackType<Record<string, unknown>>
+    MeshInputCallbackType<Record<string, unknown>>
   >
   data: Record<string, unknown>
   like: Mesh.BindableObject
@@ -15,7 +15,7 @@ export type MeshBindableObjectType = {
 }
 
 export type MeshBindableStringType = {
-  callbackList: Array<MeshBindableCallbackType<string>>
+  callbackList: Array<MeshInputCallbackType<string>>
   data: string
   like: Mesh.BindableString
   parent?: MeshBindableObjectType
@@ -36,7 +36,11 @@ export type MeshDependencyPartType = {
 }
 
 export type MeshDependencyType = {
+  callbackList: Array<MeshInputCallbackType<ForkInputType>>
+  context: ForkInputType
   like: Mesh.Dependency
   met: boolean
   path: Array<MeshDependencyPartType>
 }
+
+export type MeshInputCallbackType<T> = (value: T) => void

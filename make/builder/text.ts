@@ -21,6 +21,41 @@ export function assertString(
   }
 }
 
+export function checkDependency(
+  dependency: MeshDependencyType,
+): void {
+  let value: unknown = dependency.context.fork.data
+
+  if (dependency.met) {
+    return
+  }
+
+  let i = 0
+  while (i < dependency.path.length) {
+    const part = dependency.path[i]
+
+    if (
+      part &&
+      api.isRecord(value) &&
+      value &&
+      part.name in value
+    ) {
+      part.met = true
+
+      if (i === dependency.path.length - 1) {
+        dependency.met = true
+        return
+      } else {
+        value = value[part.name]
+      }
+    } else {
+      return
+    }
+
+    i++
+  }
+}
+
 export function isString(object: unknown): object is string {
   return api.isNativeString(object)
 }
@@ -33,10 +68,27 @@ export function processDynamicTextNest(
   input: NestInputType,
   job: (i: NestInputType) => void,
 ): void {
-  const dependencyList = api.resolveTextDependencyList(input)
-  const valueList = dependencyList.filter(nest => {})
-  // TODO: figure out when to re-evaluate a dependency.
-  job(input)
+  const dependencyList = api.resolveTextDependencyList(
+    input,
+    job,
+  )
+
+  const card = api.getProperty(input, 'card')
+  api.assertCard(card)
+
+  card.dependencyList.push(...dependencyList)
+
+  dependencyList.forEach(dep => {
+    api.checkDependency(dep)
+  })
+
+  const metDependencyList = dependencyList.filter(
+    dep => dep.met,
+  )
+
+  if (!metDependencyList.length) {
+    job(input)
+  }
 }
 
 export function processTextNest(
@@ -57,6 +109,25 @@ export function processTextNest(
         api.generateUnhandledNestCaseError(input, type),
       )
   }
+}
+
+export function readDependency(
+  input: unknown,
+  dependency: MeshDependencyType,
+): unknown {
+  let value = input
+
+  if (dependency.met) {
+    dependency.path.forEach(part => {
+      if (api.isRecord(value)) {
+        value = value[part.name]
+      }
+    })
+  } else {
+    value = undefined
+  }
+
+  return value
 }
 
 export function readNest(input: NestInputType): unknown {
@@ -86,9 +157,12 @@ export function readNest(input: NestInputType): unknown {
 
 export function resolveNestDependencyList(
   input: NestInputType,
+  job: (i: NestInputType) => void,
 ): Array<MeshDependencyType> {
   const array: Array<MeshDependencyType> = []
   const dependency: MeshDependencyType = {
+    callbackList: [job],
+    context: input,
     like: Mesh.Dependency,
     met: false,
     path: [],
@@ -165,6 +239,7 @@ export function resolveText(
 
 export function resolveTextDependencyList(
   input: NestInputType,
+  job: (i: NestInputType) => void,
 ): Array<MeshDependencyType> {
   const nest = input.nest
 
@@ -188,11 +263,14 @@ export function resolveTextDependencyList(
       case Tree.Cord:
         break
       case Tree.Slot:
-        const dependencies = api.resolveNestDependencyList({
-          ...input,
-          index: 0,
-          nest: link.nest,
-        })
+        const dependencies = api.resolveNestDependencyList(
+          {
+            ...input,
+            index: 0,
+            nest: link.nest,
+          },
+          job,
+        )
         array.push(...dependencies)
         break
       default:
