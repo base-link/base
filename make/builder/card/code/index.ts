@@ -172,5 +172,8 @@ export function resolve_codeCard(
   api.assertMesh(card.seed, Mesh.CodeCard)
 
   card.seed.loadList.forEach(load => {})
-  card.seed.bearList.forEach(bear => {})
+  card.seed.bearList.forEach(bear => {
+    api.process_codeCard(base, bear.link)
+    api.resolve_codeCard(base, bear.link)
+  })
 }

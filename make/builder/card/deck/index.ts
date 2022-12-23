@@ -94,5 +94,6 @@ export function resolve_deckCard(
 
   if (deck.bear) {
     api.process_codeCard(base, deck.bear)
+    api.resolve_codeCard(base, deck.bear)
   }
 }

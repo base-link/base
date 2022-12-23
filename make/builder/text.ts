@@ -82,11 +82,11 @@ export function processDynamicTextNest(
     api.checkDependency(dep)
   })
 
-  const metDependencyList = dependencyList.filter(
-    dep => dep.met,
+  const unmetDependencyList = dependencyList.filter(
+    dep => !dep.met,
   )
 
-  if (!metDependencyList.length) {
+  if (!unmetDependencyList.length) {
     job(input)
   }
 }
