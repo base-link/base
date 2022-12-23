@@ -2,4 +2,6 @@
 
 export function exportNodeJS(): void {}
 
-export function generateNodeJS(): string {}
+export function generateNodeJS(): string {
+  return ''
+}

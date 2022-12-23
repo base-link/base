@@ -1,12 +1,4 @@
-import {
-  Nest,
-  NestInputType,
-  Scope,
-  ScopeType,
-  Tree,
-  TreeNestType,
-  api,
-} from '~'
+import { Nest, NestInputType, Tree, TreeNestType, api } from '~'
 
 export function assertNest(
   object: unknown,

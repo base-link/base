@@ -51,7 +51,7 @@ export type MeshForkType = {
   parent?: MeshForkType
 }
 
-export type MeshNodeMapType = {
+export type MeshNodeMappingType = {
   'mesh-bear': MeshBearType
   'mesh-bind': MeshBindType
   'mesh-bond': MeshBondType
@@ -92,4 +92,4 @@ export type MeshNodeMapType = {
   'mesh-zone-tool': MeshZoneToolType
 }
 
-export type MeshType<T extends Mesh> = MeshNodeMapType[T]
+export type MeshType<T extends Mesh> = MeshNodeMappingType[T]

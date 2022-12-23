@@ -1,10 +1,10 @@
 import { Nest, NestInputType, api } from '~'
 
-export function process_codeCard_note(
+export function process_codeCard_task_free(
   input: NestInputType,
 ): void {
   input.nest.nest.forEach((nest, index) => {
-    process_codeCard_note_nestedChildren({
+    process_codeCard_task_free_nestedChildren({
       ...input,
       index,
       nest,
@@ -12,7 +12,7 @@ export function process_codeCard_note(
   })
 }
 
-export function process_codeCard_note_nestedChildren(
+export function process_codeCard_task_free_nestedChildren(
   input: NestInputType,
 ): void {
   const type = api.determineNestType(input)

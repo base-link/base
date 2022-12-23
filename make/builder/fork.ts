@@ -1,11 +1,4 @@
-import {
-  Mesh,
-  MeshForkType,
-  Scope,
-  ScopeTableType,
-  ScopeType,
-  api,
-} from '~'
+import { Mesh, MeshForkType, api } from '~'
 
 export function getForkProperty(
   fork: MeshForkType,
@@ -38,6 +31,17 @@ export function isFork(
     'like' in object &&
     (object as MeshForkType).like === Mesh.Fork
   )
+}
+
+export function makeFork(
+  parent: MeshForkType,
+  data: Record<string, unknown>,
+): MeshForkType {
+  return {
+    data,
+    like: Mesh.Fork,
+    parent,
+  }
 }
 
 export function setForkProperty(

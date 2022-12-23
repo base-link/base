@@ -20,7 +20,7 @@ export function process_codeCard_suit_nestedChildren(
     const term = api.resolveStaticTerm(input)
     switch (term) {
       case 'link':
-        api.process_codeCard_formLink(input)
+        api.process_codeCard_link(input)
         break
       case 'task':
         api.process_codeCard_formTask(input)

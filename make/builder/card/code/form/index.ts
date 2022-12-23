@@ -1,4 +1,10 @@
-import { AST, NestInputType, api } from '~'
+import {
+  FormInputType,
+  InitialMeshFormType,
+  Mesh,
+  NestInputType,
+  api,
+} from '~'
 
 export * from './base'
 export * from './case'
@@ -8,40 +14,34 @@ export * from './wear'
 export function process_codeCard_form(
   input: NestInputType,
 ): void {
-  const formScope: ScopeType<Scope.Form> = api.extendScope(
-    Scope.Form,
-    {
-      form: {
-        base: [],
-        hook: {},
-        like: AST.Form,
-        link: {},
-        task: {},
-        wear: {},
-      },
-    },
-    scope,
-  )
+  const formData: InitialMeshFormType = {
+    base: [],
+    hook: {},
+    like: Mesh.Form,
+    link: {},
+    task: {},
+    wear: {},
+  }
+  const formInput: FormInputType & NestInputType = {
+    ...input,
+    fork: api.makeFork(input.fork, {}),
+    form: formData,
+  }
 
-  input.nest.nest.forEach((nest, index) => {
-    const {
-      ...input,
-      index,
-      nest,
-    } = api.extendNest(formScope, nest, index)
+  formInput.nest.nest.forEach((nest, index) => {
     api.process_codeCard_form_nestedChildren({
-      ...input,
+      ...formInput,
       index,
       nest,
     })
   })
 
-  const card = api.getPropertyValueFromScope(scope, 'card')
+  const card = api.getForkProperty(input.fork, 'card')
 
-  api.assertAST(card, AST.CodeCard)
+  api.assertMesh(card, Mesh.CodeCard)
 
-  if (forminput.form.name && card.publicFormMesh) {
-    card.publicFormMesh[forminput.form.name] = forminput.form
+  if (formData.name) {
+    card.publicFormMesh[formData.name] = formData
   }
 }
 
@@ -90,7 +90,7 @@ export function process_codeCard_form_nestedChildren(
     }
   } else {
     api.throwError(
-      api.generateUnhandledNestCaseError(scope, type),
+      api.generateUnhandledNestCaseError(input, type),
     )
   }
 }

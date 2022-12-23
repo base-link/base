@@ -2,7 +2,6 @@ export * from './initial'
 export * from './input'
 export * from './internal'
 export * from './mesh'
-export * from './scope'
 
 export type NestedPartial<T> = T extends
   | string

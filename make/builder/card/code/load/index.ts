@@ -36,7 +36,7 @@ export function process_codeCard_load_nestedChildren(
     }
   } else {
     api.throwError(
-      api.generateUnhandledNestCaseError(scope, type),
+      api.generateUnhandledNestCaseError(input, type),
     )
   }
 }

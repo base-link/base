@@ -2,7 +2,7 @@
   "name": "@treesurf/base",
   "main": "./host",
   "scripts": {
-    "compile": "tsc -b",
+    "build": "tsc && tsc-alias",
     "watch": "tsc -b -w",
     "lint": "eslint --ext .ts ./make",
     "lint:fix": "npm run lint -- --fix"
@@ -13,6 +13,7 @@
     "@types/node": "^18.11.17",
     "@typescript-eslint/eslint-plugin": "^5.46.1",
     "@typescript-eslint/parser": "^5.46.1",
+    "concurrently": "^7.6.0",
     "eslint": "^8.30.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-config-standard-with-typescript": "^24.0.0",
@@ -27,6 +28,7 @@
     "eslint-plugin-typescript-sort-keys": "^2.1.0",
     "prettier": "2.8.1",
     "ts-node": "^10.9.1",
+    "tsc-alias": "^1.8.2",
     "typescript": "^4.9.4"
   },
   "dependencies": {

@@ -16,13 +16,13 @@ export function process_deckCard_deck_bear(
 ): void {
   api.assertNestChildrenLength(input, 1)
 
-  const nest = input.nest.nest[0]
-  if (nest) {
-    const dependencyList = api.resolveTextDependencyList(nest)
-    api.processDependencyList(
-      dependencyList,
-      input,
-      api.finalize_deckCard_deck_bear,
-    )
-  }
+  // const nest = input.nest.nest[0]
+  // if (nest) {
+  //   const dependencyList = api.resolveTextDependencyList(nest)
+  //   api.processDependencyList(
+  //     dependencyList,
+  //     input,
+  //     api.finalize_deckCard_deck_bear,
+  //   )
+  // }
 }

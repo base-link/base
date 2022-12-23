@@ -1,4 +1,4 @@
-import { NestInputType, api } from '~'
+import { Nest, NestInputType, api } from '~'
 
 export function process_codeCard_formWear(
   input: NestInputType,
@@ -17,7 +17,7 @@ export function process_codeCard_formWear_nestedChildren(
 ): void {
   const type = api.determineNestType(input)
   switch (type) {
-    case 'text':
+    case Nest.StaticText:
       break
     default:
       api.throwError(api.generateUnhandledTermCaseError(input))

@@ -1,5 +1,6 @@
 import {
   Base,
+  InitialMeshFormType,
   InternalDependencyWatcherType,
   Mesh,
   MeshBearType,
@@ -55,13 +56,16 @@ export type MeshCodeCardType = MeshCardBaseType & {
   allZoneMesh: Record<string, MeshZoneType>
   bearList: Array<MeshBearType>
   faceMesh: Record<string, MeshFaceType>
-  formMesh: Record<string, MeshFormType>
+  formMesh: Record<string, MeshFormType | InitialMeshFormType>
   hookMesh: Record<string, MeshHookType>
   hostMesh: Record<string, MeshHostType>
   like: Mesh.CodeCard
   loadList: Array<MeshLoadType>
   publicFaceMesh: Record<string, MeshFaceType>
-  publicFormMesh: Record<string, MeshFormType>
+  publicFormMesh: Record<
+    string,
+    MeshFormType | InitialMeshFormType
+  >
   publicHostMesh: Record<string, MeshHostType>
   publicSuitMesh: Record<string, MeshSuitType>
   publicTaskMesh: Record<string, MeshTaskType>

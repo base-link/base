@@ -36,3 +36,15 @@ export type InitialMeshFormType = PickPartial<
     wear: 1
   }
 >
+
+export type InitialMeshTaskType = PickPartial<
+  MeshFormType,
+  {
+    base: 1
+    call: 1
+    like: 1
+    take: 1
+    task: 1
+    wear: 1
+  }
+>

@@ -1,6 +1,9 @@
 import { NestInputType, Tree } from '~'
 
-export function nestHasSlot(input: NestInputType): boolean {
+export function nestHasSlot(
+  input: NestInputType,
+  size: number = 1,
+): boolean {
   const nest = input.nest
 
   for (let i = 0, n = nest.line.length; i < n; i++) {
@@ -15,7 +18,7 @@ export function nestHasSlot(input: NestInputType): boolean {
         if (
           link &&
           link.like === Tree.Slot &&
-          link.size === 1
+          link.size === size
         ) {
           return true
         }
