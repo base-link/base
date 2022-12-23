@@ -80,3 +80,19 @@ export function process_deckCard_nestedChildren(
       )
   }
 }
+
+export function resolve_deckCard(
+  base: Base,
+  link: string,
+): void {
+  const card = base.card(link)
+  api.assertMesh(card.seed, Mesh.DeckCard)
+
+  const { deck } = card.seed
+
+  // TODO: deck.hint tells us the parser to use on the code.
+
+  if (deck.bear) {
+    api.process_codeCard(base, deck.bear)
+  }
+}

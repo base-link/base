@@ -1,25 +1,33 @@
-import { Nest, NestInputType, api } from '~'
+import { Mesh, NestInputType, api } from '~'
+
+export function finalize_deckCard_deck_test(
+  input: NestInputType,
+): void {
+  const text = api.resolveText(input)
+  const card = api.getProperty(input, 'card')
+  api.assertMesh(card, Mesh.DeckCard)
+  api.assertString(text)
+  const path = api.findPath(text, card.directory)
+  if (!path) {
+    api.throwError(api.generateUnresolvedPathError(input, text))
+  }
+  card.deck.test = path
+}
 
 export function process_deckCard_deck_test(
   input: NestInputType,
 ): void {
-  input.nest.nest.forEach((nest, index) => {
-    process_deckCard_deck_test_nestedChildren({
-      ...input,
-      index,
-      nest,
-    })
-  })
-}
+  api.assertNestChildrenLength(input, 1)
 
-export function process_deckCard_deck_test_nestedChildren(
-  input: NestInputType,
-): void {
-  const type = api.determineNestType(input)
-  switch (type) {
-    case Nest.StaticText:
-      break
-    default:
-      api.throwError(api.generateUnhandledTermCaseError(input))
-  }
+  const nest = input.nest.nest[0]
+  api.assertNest(nest)
+
+  api.processTextNest(
+    {
+      ...input,
+      index: 0,
+      nest,
+    },
+    api.finalize_deckCard_deck_test,
+  )
 }

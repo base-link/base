@@ -1,5 +1,11 @@
 import { Nest, NestInputType, api } from '~'
 
+export function finalize_codeCard_bear_nestedChildren(
+  input: NestInputType,
+): void {
+  console.log('here')
+}
+
 export function process_codeCard_bear(
   input: NestInputType,
 ): void {
@@ -22,6 +28,12 @@ export function process_codeCard_bear_nestedChildren(
   const type = api.determineNestType(input)
   switch (type) {
     case Nest.StaticText:
+      break
+    case Nest.DynamicText:
+      api.processDynamicTextNest(
+        input,
+        api.finalize_codeCard_bear_nestedChildren,
+      )
       break
     case Nest.StaticTerm:
       const term = api.resolveStaticTerm(input)

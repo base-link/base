@@ -1,6 +1,6 @@
 import { ERROR, Mesh, NestInputType, api } from '~'
 
-type ErrorType = {
+export type ErrorType = {
   code: string
   file?: string
   hint?: string
@@ -34,6 +34,30 @@ export function generateInvalidNestChildrenLengthError(
   return {
     code: `0009`,
     note: `Term doesn't have ${length} children.`,
+  }
+}
+
+export function generateInvalidPatternError(
+  input: NestInputType,
+  pattern: unknown,
+  name: string,
+): ErrorType {
+  const card = api.getForkProperty(input.fork, 'card')
+  api.assertCard(card)
+  return {
+    code: `0012`,
+    file: `${card.path}`,
+    note: `Invalid pattern ${pattern} for ${name}.`,
+    text: '',
+  }
+}
+
+export function generateMissingStringError(
+  object: unknown,
+): ErrorType {
+  return {
+    code: `0011`,
+    note: `Object ${object} is not a string.`,
   }
 }
 
@@ -118,6 +142,19 @@ export function generateUnknownTermError(
   }
 }
 
+export function generateUnresolvedPathError(
+  input: NestInputType,
+  path: string,
+): ErrorType {
+  const card = api.getForkProperty(input.fork, 'card')
+  api.assertCard(card)
+  return {
+    code: `0013`,
+    file: card.path,
+    note: `File not found ${path}.`,
+  }
+}
+
 export function throwError(error: ErrorType | undefined): void {
   if (!error) {
     error = {
@@ -130,6 +167,7 @@ export function throwError(error: ErrorType | undefined): void {
 
   const text: Array<string> = []
 
+  text.push(``)
   text.push(``)
   text.push(`  note <${error.note}>`)
   text.push(`  code <${error.code}>`)

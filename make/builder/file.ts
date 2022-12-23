@@ -6,7 +6,7 @@ import { Base } from '~'
 export function findPath(
   link: string,
   context = process.cwd(),
-): string {
+): string | undefined {
   if (link.startsWith('@treesurf')) {
     link = pathResolve
       .resolve(
@@ -25,7 +25,7 @@ export function findPath(
   } else if (fs.existsSync(`${link}.link`)) {
     link = `${link}.link`
   } else {
-    throw new Error(`Path ${link} not found.`)
+    return
   }
 
   return link

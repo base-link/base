@@ -21,6 +21,8 @@ export type BaseFreeType = () => void
 class Base {
   text_mesh: Record<string, string>
 
+  env: Record<string, unknown>
+
   link_mesh: Map<string, Array<string>>
 
   hook_mesh: Map<string, BaseHookType>
@@ -36,8 +38,9 @@ class Base {
 
   wait_find_mesh: Map<string, Map<string, Map<string, string>>>
 
-  constructor(text_mesh: Record<string, string>) {
-    this.text_mesh = text_mesh
+  constructor() {
+    this.text_mesh = {}
+    this.env = {}
     this.link_mesh = new Map()
     this.hook_mesh = new Map()
     this.free_mesh = new Map()

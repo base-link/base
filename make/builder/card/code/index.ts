@@ -4,7 +4,6 @@ import {
   MeshCodeCardInputType,
   MeshCodeCardType,
   NestInputType,
-  Tree,
   api,
 } from '~'
 
@@ -163,4 +162,15 @@ export function process_codeCard_nestedChildren_staticTerm(
       api.throwError(api.generateUnknownTermError(input))
     }
   }
+}
+
+export function resolve_codeCard(
+  base: Base,
+  link: string,
+): void {
+  const card = base.card(link)
+  api.assertMesh(card.seed, Mesh.CodeCard)
+
+  card.seed.loadList.forEach(load => {})
+  card.seed.bearList.forEach(bear => {})
 }
