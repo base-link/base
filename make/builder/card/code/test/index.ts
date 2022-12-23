@@ -18,7 +18,7 @@ export function process_codeCard_test_nestedChildren(
   const type = api.determineNestType(input)
   switch (type) {
     case Nest.StaticTerm:
-      const term = api.resolveStaticTerm(input)
+      const term = api.resolveStaticTermFromNest(input)
       break
     default:
       api.throwError(api.generateUnhandledTermCaseError(input))

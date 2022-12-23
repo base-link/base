@@ -36,7 +36,7 @@ export function process_codeCard_bear_nestedChildren(
       )
       break
     case Nest.StaticTerm:
-      const term = api.resolveStaticTerm(input)
+      const term = api.resolveStaticTermFromNest(input)
       switch (term) {
         case 'hide':
           api.process_codeCard_bear_hide(input)

@@ -22,7 +22,7 @@ export function process_codeCard_link_nestedChildren(
   const type = api.determineNestType(input)
   switch (type) {
     case Nest.StaticTerm:
-      const term = api.resolveStaticTerm(input)
+      const term = api.resolveStaticTermFromNest(input)
       switch (term) {
         case 'like':
           api.process_codeCard_like(input)

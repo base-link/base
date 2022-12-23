@@ -30,7 +30,7 @@ export function process_deckCard(
       name: undefined,
       term: [],
     },
-    dependencyWatcherMap: new Map(),
+    dependencyList: [],
     directory: linkHost,
     like: Mesh.DeckCard,
     parseTree: tree,
@@ -64,7 +64,7 @@ export function process_deckCard_nestedChildren(
   const type = api.determineNestType(input)
   switch (type) {
     case 'static-term': {
-      const term = api.resolveStaticTerm(input)
+      const term = api.resolveStaticTermFromNest(input)
       switch (term) {
         case 'deck':
           api.process_deckCard_deck(input)

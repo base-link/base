@@ -1,9 +1,9 @@
 import {
   Base,
   InitialMeshFormType,
-  InternalDependencyWatcherType,
   MeshBearType,
   MeshDeckType,
+  MeshDependencyType,
   MeshFaceType,
   MeshFormType,
   MeshHookType,
@@ -37,10 +37,7 @@ export type MeshBookCardType = MeshCardBaseType & {
 
 export type MeshCardBaseType = {
   base: Base
-  dependencyWatcherMap: Map<
-    string,
-    InternalDependencyWatcherType
-  >
+  dependencyList: Array<MeshDependencyType>
   directory: string
   parseTree: TreeNodeType
   path: string

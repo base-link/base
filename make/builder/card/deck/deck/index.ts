@@ -49,7 +49,7 @@ export function process_deckCard_deck_nestedChildren(
 export function process_deckCard_deck_nestedTerm(
   input: NestInputType,
 ): void {
-  const term = api.resolveStaticTerm(input)
+  const term = api.resolveStaticTermFromNest(input)
   switch (term) {
     case 'bear': {
       api.process_deckCard_deck_bear(input)

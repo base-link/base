@@ -4,6 +4,7 @@ import {
   InitialMeshFormType,
   MeshForkType,
   TreeNestType,
+  TreeTermType,
 } from '~'
 
 export type ForkInputType = {
@@ -25,4 +26,8 @@ export type MeshDeckCardInputType = ForkInputType & {
 export type NestInputType = ForkInputType & {
   index: number
   nest: TreeNestType
+}
+
+export type TermInputType = ForkInputType & {
+  term: TreeTermType
 }

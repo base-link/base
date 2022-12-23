@@ -53,7 +53,7 @@ export function process_codeCard(
     allZoneMesh: {},
     base,
     bearList: [],
-    dependencyWatcherMap: new Map(),
+    dependencyList: [],
     directory: linkHost,
     faceMesh: {},
     formMesh: {},
@@ -116,7 +116,7 @@ export function process_codeCard_nestedChildren(
 export function process_codeCard_nestedChildren_staticTerm(
   input: NestInputType,
 ): void {
-  const term = api.resolveStaticTerm(input)
+  const term = api.resolveStaticTermFromNest(input)
   switch (term) {
     case 'bear': {
       api.process_codeCard_bear(input)

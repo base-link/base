@@ -2,6 +2,8 @@ import {
   Mesh,
   MeshBearType,
   MeshBindType,
+  MeshBindableObjectType,
+  MeshBindableStringType,
   MeshBondType,
   MeshBookCardType,
   MeshCallType,
@@ -39,10 +41,16 @@ import {
   MeshZoneType,
 } from '~'
 
+import {
+  MeshDependencyPartType,
+  MeshDependencyType,
+} from './dependency'
+
 export * from './book'
 export * from './card'
 export * from './code'
 export * from './deck'
+export * from './dependency'
 export * from './list'
 
 export type MeshForkType = {
@@ -54,6 +62,8 @@ export type MeshForkType = {
 export type MeshNodeMappingType = {
   'mesh-bear': MeshBearType
   'mesh-bind': MeshBindType
+  'mesh-bindable-object': MeshBindableObjectType
+  'mesh-bindable-string': MeshBindableStringType
   'mesh-bond': MeshBondType
   'mesh-book-card': MeshBookCardType
   'mesh-call': MeshCallType
@@ -63,6 +73,8 @@ export type MeshNodeMappingType = {
   'mesh-deck-card': MeshDeckCardType
   'mesh-deck-face': MeshDeckFaceType
   'mesh-deck-term': MeshDeckTermType
+  'mesh-dependency': MeshDependencyType
+  'mesh-dependency-part': MeshDependencyPartType
   'mesh-face': MeshFaceType
   'mesh-fork': MeshForkType
   'mesh-form': MeshFormType

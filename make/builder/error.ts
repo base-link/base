@@ -104,7 +104,7 @@ export function generateUnhandledTermCaseError(
 ): ErrorType | undefined {
   const card = api.getForkProperty(input.fork, 'card')
   api.assertCard(card)
-  const name = api.resolveStaticTerm(input)
+  const name = api.resolveStaticTermFromNest(input)
   if (ERROR['0002'] && name) {
     return {
       code: `0002`,
@@ -133,7 +133,7 @@ export function generateUnknownTermError(
 ): ErrorType {
   const card = api.getForkProperty(input.fork, 'card')
   api.assertCard(card)
-  const name = api.resolveStaticTerm(input)
+  const name = api.resolveStaticTermFromNest(input)
   return {
     code: `0003`,
     file: `${card.path}`,

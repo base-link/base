@@ -1,6 +1,8 @@
 export enum Mesh {
   Bear = 'mesh-bear',
   Bind = 'mesh-bind',
+  BindableObject = 'mesh-bindable-object',
+  BindableString = 'mesh-bindable-string',
   Bond = 'mesh-bond',
   BookCard = 'mesh-book-card',
   Call = 'mesh-call',
@@ -10,6 +12,8 @@ export enum Mesh {
   DeckCard = 'mesh-deck-card',
   DeckFace = 'mesh-deck-face',
   DeckTerm = 'mesh-deck-term',
+  Dependency = 'mesh-dependency',
+  DependencyPart = 'mesh-dependency-part',
   Face = 'mesh-face',
   Fork = 'mesh-fork',
   Form = 'mesh-form',

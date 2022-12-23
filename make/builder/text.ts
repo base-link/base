@@ -1,9 +1,11 @@
 import {
   ErrorType,
+  Mesh,
+  MeshDependencyPartType,
+  MeshDependencyType,
   Nest,
   NestInputType,
   Tree,
-  TreeNestType,
   TreeNodeType,
   api,
 } from '~'
@@ -56,6 +58,42 @@ export function processTextNest(
   }
 }
 
+export function resolveNestDependencyList(
+  input: NestInputType,
+): Array<MeshDependencyType> {
+  const array: Array<MeshDependencyType> = []
+  const dependency: MeshDependencyType = {
+    like: Mesh.Dependency,
+    met: false,
+    path: [],
+  }
+  array.push(dependency)
+
+  input.nest.line.forEach(nest => {
+    if (nest.like === Tree.Term) {
+      // TODO: solve for interpolated terms too.
+      const name = api.resolveStaticTerm({
+        ...input,
+        term: nest,
+      })
+
+      api.assertString(name)
+
+      const dependencyPart: MeshDependencyPartType = {
+        callbackList: [],
+        like: Mesh.DependencyPart,
+        met: false,
+        name,
+        parent: dependency,
+      }
+
+      dependency.path.push(dependencyPart)
+    }
+  })
+
+  return array
+}
+
 export function resolveText(
   input: NestInputType,
 ): string | undefined {
@@ -96,7 +134,7 @@ export function resolveText(
 
 export function resolveTextDependencyList(
   input: NestInputType,
-): Array<TreeNestType> {
+): Array<MeshDependencyType> {
   const nest = input.nest
 
   if (nest.line.length > 1) {
@@ -112,14 +150,19 @@ export function resolveTextDependencyList(
     return []
   }
 
-  const array: Array<TreeNestType> = []
+  const array: Array<MeshDependencyType> = []
 
   line.link.forEach(link => {
     switch (link.like) {
       case Tree.Cord:
         break
       case Tree.Slot:
-        array.push(link.nest)
+        const dependencies = api.resolveNestDependencyList({
+          ...input,
+          index: 0,
+          nest: link.nest,
+        })
+        array.push(...dependencies)
         break
       default:
         throw new Error('Oops')

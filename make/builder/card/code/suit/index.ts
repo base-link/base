@@ -17,7 +17,7 @@ export function process_codeCard_suit_nestedChildren(
 ): void {
   const type = api.determineNestType(input)
   if (type === 'static-term') {
-    const term = api.resolveStaticTerm(input)
+    const term = api.resolveStaticTermFromNest(input)
     switch (term) {
       case 'link':
         api.process_codeCard_link(input)

@@ -18,7 +18,7 @@ export function process_codeCard_make_nestedChildren(
   const type = api.determineNestType(input)
   switch (type) {
     case Nest.StaticTerm:
-      const term = api.resolveStaticTerm(input)
+      const term = api.resolveStaticTermFromNest(input)
       switch (term) {
         case 'bind':
           api.process_codeCard_bind(input)

@@ -20,7 +20,7 @@ export function process_codeCard_load_nestedChildren(
 ) {
   const type = api.determineNestType(input)
   if (type === 'static-term') {
-    const term = api.resolveStaticTerm(input)
+    const term = api.resolveStaticTermFromNest(input)
     switch (term) {
       case 'find':
         api.process_codeCard_load_find(input)
