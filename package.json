@@ -3,7 +3,7 @@
   "main": "./host",
   "scripts": {
     "build": "tsc && tsc-alias",
-    "watch": "tsc -b -w",
+    "watch": "concurrently --kill-others \"tsc -w\" \"tsc-alias -w\"",
     "lint": "eslint --ext .ts ./make",
     "lint:fix": "npm run lint -- --fix"
   },

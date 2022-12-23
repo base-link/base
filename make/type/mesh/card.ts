@@ -2,7 +2,6 @@ import {
   Base,
   InitialMeshFormType,
   InternalDependencyWatcherType,
-  Mesh,
   MeshBearType,
   MeshDeckType,
   MeshFaceType,
@@ -17,6 +16,8 @@ import {
   MeshZoneType,
   TreeNodeType,
 } from '~'
+
+import { Mesh } from './list'
 
 export const CARD_TYPE = [
   Mesh.CodeCard,

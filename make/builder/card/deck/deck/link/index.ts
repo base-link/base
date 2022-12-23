@@ -10,7 +10,7 @@ export function process_deckCard_deck_link(
       api.throwError(api.generateInvalidDeckLink(input, text))
     }
 
-    const card = api.getForkProperty(input.fork, 'card')
+    const card = api.getProperty(input, 'card')
     api.assertMesh(card, Mesh.DeckCard)
     if (host && name) {
       card.deck.host = host

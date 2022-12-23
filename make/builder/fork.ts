@@ -3,7 +3,7 @@ import { Mesh, MeshForkType, api } from '~'
 export function getForkProperty(
   fork: MeshForkType,
   path: string | number | symbol,
-): unknown | undefined {
+): unknown {
   let source: MeshForkType | undefined = fork
 
   while (source) {
@@ -21,6 +21,15 @@ export function getForkProperty(
   return (
     source.data as Record<string | symbol | number, unknown>
   )[path]
+}
+
+export function getProperty(
+  object: Record<string, unknown>,
+  path: string,
+): unknown {
+  if (api.isObject(object) && path in object) {
+    return object[path]
+  }
 }
 
 export function isFork(
