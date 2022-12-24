@@ -1,7 +1,7 @@
-import { NestInputType, api } from '~'
+import { APIInputType, api } from '~'
 
 export function process_codeCard_load_find_bear(
-  input: NestInputType,
+  input: APIInputType,
 ): void {
   input.nest.nest.forEach((nest, index) => {
     api.process_codeCard_load_find_bear_nestedChildren({
@@ -13,7 +13,7 @@ export function process_codeCard_load_find_bear(
 }
 
 export function process_codeCard_load_find_bear_nestedChildren(
-  input: NestInputType,
+  input: APIInputType,
 ): void {
   const type = api.determineNestType(input)
   if (type === 'static-term') {

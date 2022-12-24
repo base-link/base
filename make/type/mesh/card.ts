@@ -1,19 +1,19 @@
 import {
   Base,
-  InitialMeshFormType,
   MeshBearType,
   MeshDeckType,
   MeshDependencyType,
   MeshFaceType,
-  MeshFormType,
+  MeshFormPotentialType,
   MeshHookType,
   MeshHostType,
-  MeshLoadType,
+  MeshLoadPotentialType,
   MeshSuitType,
   MeshTaskType,
   MeshTestType,
   MeshTreeType,
   MeshZoneType,
+  PartialState,
   TreeNodeType,
 } from '~'
 
@@ -25,7 +25,17 @@ export const CARD_TYPE = [
   Mesh.DeckCard,
 ] as const
 
-export type Card = Mesh.CodeCard | Mesh.DeckCard
+export type MeshBookCardPartialType = PartialState<
+  MeshBookCardType,
+  {
+    like: 1
+  },
+  true
+>
+
+export type MeshBookCardPotentialType =
+  | MeshBookCardPartialType
+  | MeshBookCardType
 
 export type MeshBookCardType = MeshCardBaseType & {
   abstract: string
@@ -46,6 +56,18 @@ export type MeshCardBaseType = {
 
 export type MeshCardType = MeshCodeCardType | MeshDeckCardType
 
+export type MeshCodeCardPartialType = PartialState<
+  MeshCodeCardType,
+  {
+    like: 1
+  },
+  true
+>
+
+export type MeshCodeCardPotentialType =
+  | MeshCodeCardPartialType
+  | MeshCodeCardType
+
 export type MeshCodeCardType = MeshCardBaseType & {
   allSuitMesh: Record<string, MeshSuitType>
   allTaskMesh: Record<string, MeshTaskType>
@@ -54,16 +76,13 @@ export type MeshCodeCardType = MeshCardBaseType & {
   allZoneMesh: Record<string, MeshZoneType>
   bearList: Array<MeshBearType>
   faceMesh: Record<string, MeshFaceType>
-  formMesh: Record<string, MeshFormType | InitialMeshFormType>
+  formMesh: Record<string, MeshFormPotentialType>
   hookMesh: Record<string, MeshHookType>
   hostMesh: Record<string, MeshHostType>
   like: Mesh.CodeCard
-  loadList: Array<MeshLoadType>
+  loadList: Array<MeshLoadPotentialType>
   publicFaceMesh: Record<string, MeshFaceType>
-  publicFormMesh: Record<
-    string,
-    MeshFormType | InitialMeshFormType
-  >
+  publicFormMesh: Record<string, MeshFormPotentialType>
   publicHostMesh: Record<string, MeshHostType>
   publicSuitMesh: Record<string, MeshSuitType>
   publicTaskMesh: Record<string, MeshTaskType>
@@ -71,6 +90,24 @@ export type MeshCodeCardType = MeshCardBaseType & {
   publicTreeMesh: Record<string, MeshTreeType>
   publicZoneMesh: Record<string, MeshZoneType>
 }
+
+export type MeshDeckCardPartialType = MeshCardBaseType &
+  PartialState<
+    MeshDeckCardType,
+    {
+      deck: {
+        face: 1
+        like: 1
+        term: 1
+      }
+      like: 1
+    },
+    true
+  >
+
+export type MeshDeckCardPotentialType =
+  | MeshDeckCardPartialType
+  | MeshDeckCardType
 
 export type MeshDeckCardType = MeshCardBaseType & {
   deck: MeshDeckType

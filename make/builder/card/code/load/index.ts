@@ -1,10 +1,17 @@
-import { Mesh, Nest, NestInputType, api } from '~'
+import {
+  APIInputType,
+  InitialMeshLoadType,
+  LoadInputType,
+  Mesh,
+  Nest,
+  api,
+} from '~'
 
 export * from './bear'
 export * from './find'
 
 export function finalize_codeCard_load_textNest(
-  input: NestInputType,
+  input: APIInputType & LoadInputType,
 ): void {
   const text = api.resolveText(input)
 
@@ -16,38 +23,51 @@ export function finalize_codeCard_load_textNest(
 
   const path = api.resolveModulePath(input, text)
 
-  card.loadList.push({
-    like: Mesh.Load,
-    link: path,
-    take: [],
-  })
+  input.load.link = path
 }
 
 export function process_codeCard_load(
-  input: NestInputType,
+  input: APIInputType,
 ): void {
+  const load: InitialMeshLoadType = {
+    like: Mesh.Load,
+    take: [],
+  }
+
+  api.assertMesh(input.card, Mesh.CodeCard)
+
+  input.card.loadList.push(load)
+
+  const childInput: APIInputType = {
+    ...input,
+    objectScope: api.createScope(load, input.objectScope),
+  }
+
   input.nest.nest.forEach((nest, index) => {
-    process_codeCard_load_nestedChildren({
-      ...input,
-      index,
-      nest,
-    })
+    process_codeCard_load_nestedChildren(
+      api.extendWithNestScope(childInput, {
+        index,
+        nest,
+      }),
+    )
   })
 }
 
 export function process_codeCard_load_nestedChildren(
-  input: NestInputType,
+  input: APIInputType & LoadInputType,
 ) {
   const type = api.determineNestType(input)
   switch (type) {
     case Nest.StaticText: {
-      if (input.index !== 0) {
+      const index = api.assumeNestIndex(input)
+      if (index !== 0) {
         throw new Error('Oops')
       } else {
         api.finalize_codeCard_load_textNest(input)
       }
       break
     }
+
     case Nest.StaticTerm: {
       const term = api.resolveStaticTermFromNest(input)
       switch (term) {
@@ -66,6 +86,7 @@ export function process_codeCard_load_nestedChildren(
       }
       break
     }
+
     default:
       api.throwError(
         api.generateUnhandledNestCaseError(input, type),

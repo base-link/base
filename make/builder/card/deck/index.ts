@@ -1,14 +1,28 @@
 import {
+  APIInputType,
   Base,
-  InitialMeshDeckCardType,
   Mesh,
-  MeshDeckCardInputType,
-  NestInputType,
+  MeshCardBaseType,
+  MeshDeckCardPartialType,
   Tree,
   api,
 } from '~'
 
 export * from './deck'
+
+export function createInitialAPIInput<
+  T extends MeshCardBaseType,
+>(
+  card: T,
+  objectScopeData: Record<string, unknown>,
+  lexicalScopeData: Record<string, unknown>,
+): APIInputType {
+  return {
+    card,
+    lexicalScope: api.createScope(lexicalScopeData),
+    objectScope: api.createScope(objectScopeData),
+  }
+}
 
 /**
  * Entrypoint function.
@@ -21,45 +35,44 @@ export function process_deckCard(
   const tree = api.parseTextIntoTree(text)
   const linkHost = api.getLinkHost(link)
   const card = base.card(link)
-  const seed: InitialMeshDeckCardType = {
+  const seed: MeshDeckCardPartialType = {
     base,
     deck: {
       face: [],
-      host: undefined,
       like: Mesh.Deck,
-      name: undefined,
+      partial: true,
       term: [],
     },
     dependencyList: [],
     directory: linkHost,
     like: Mesh.DeckCard,
     parseTree: tree,
+    partial: true,
     path: link,
     textByLine: text.split(/\n/),
   }
-  const input: MeshDeckCardInputType = {
-    card: seed,
-    fork: {
-      data: seed,
-      like: Mesh.Fork,
-    },
-  }
+  const input: APIInputType = api.createInitialAPIInput(
+    seed,
+    seed,
+    seed,
+  )
 
   card.bind(seed)
 
   if (tree.like === Tree.Nest) {
     tree.nest.forEach((nest, index) => {
-      api.process_deckCard_nestedChildren({
-        ...input,
-        index,
-        nest,
-      })
+      api.process_deckCard_nestedChildren(
+        api.extendWithNestScope(input, {
+          index,
+          nest,
+        }),
+      )
     })
   }
 }
 
 export function process_deckCard_nestedChildren(
-  input: NestInputType,
+  input: APIInputType,
 ): void {
   const type = api.determineNestType(input)
   switch (type) {

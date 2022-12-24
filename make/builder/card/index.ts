@@ -8,7 +8,10 @@ export function assertCard(
   object: unknown,
 ): asserts object is MeshCardType {
   if (!api.isCard(object)) {
-    api.throwError(undefined)
+    api.throwError({
+      code: '0014',
+      note: `Card is undefined?`,
+    })
   }
 }
 

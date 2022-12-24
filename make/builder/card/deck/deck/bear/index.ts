@@ -1,10 +1,10 @@
-import { Mesh, Nest, NestInputType, api } from '~'
+import { APIInputType, Mesh, api } from '~'
 
 export function finalize_deckCard_deck_bear(
-  input: NestInputType,
+  input: APIInputType,
 ): void {
   const text = api.resolveText(input)
-  const card = api.getProperty(input, 'card')
+  const { card } = input
   api.assertMesh(card, Mesh.DeckCard)
   api.assertString(text)
   const path = api.findPath(text, card.directory)
@@ -15,19 +15,14 @@ export function finalize_deckCard_deck_bear(
 }
 
 export function process_deckCard_deck_bear(
-  input: NestInputType,
+  input: APIInputType,
 ): void {
   api.assertNestChildrenLength(input, 1)
 
-  const nest = input.nest.nest[0]
-  api.assertNest(nest)
+  const nest = api.assumeNest(input).nest[0]
 
   api.processTextNest(
-    {
-      ...input,
-      index: 0,
-      nest,
-    },
+    api.extendWithNestScope(input, { index: 0, nest }),
     api.finalize_deckCard_deck_bear,
   )
 }

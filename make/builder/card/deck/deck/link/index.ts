@@ -1,7 +1,7 @@
-import { Mesh, NestInputType, api } from '~'
+import { APIInputType, Mesh, api } from '~'
 
 export function process_deckCard_deck_link(
-  input: NestInputType,
+  input: APIInputType,
 ) {
   const text = api.resolveText(input)
   if (text) {
@@ -26,7 +26,7 @@ export function process_deckCard_deck_link(
       )
     }
 
-    const card = api.getProperty(input, 'card')
+    const card = input.card
     api.assertMesh(card, Mesh.DeckCard)
 
     card.deck.host = host

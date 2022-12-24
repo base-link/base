@@ -1,4 +1,4 @@
-import { ForkInputType } from '~'
+import { APIInputType } from '~'
 
 import { Mesh } from './list'
 
@@ -36,11 +36,17 @@ export type MeshDependencyPartType = {
 }
 
 export type MeshDependencyType = {
-  callbackList: Array<MeshInputCallbackType<ForkInputType>>
-  context: ForkInputType
+  callbackList: Array<MeshInputCallbackType<APIInputType>>
+  context: APIInputType
   like: Mesh.Dependency
   met: boolean
   path: Array<MeshDependencyPartType>
 }
 
 export type MeshInputCallbackType<T> = (value: T) => void
+
+export type MeshLexicalScopeType = {
+  data: Record<string, unknown>
+  like: Mesh.LexicalScope
+  parent?: MeshLexicalScopeType
+}

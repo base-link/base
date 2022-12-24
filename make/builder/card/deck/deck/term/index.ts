@@ -1,7 +1,7 @@
-import { Nest, NestInputType, api } from '~'
+import { APIInputType, Nest, api } from '~'
 
 export function process_deckCard_deck_term(
-  input: NestInputType,
+  input: APIInputType,
 ): void {
   input.nest.nest.forEach((nest, index) => {
     process_deckCard_deck_term_nestedChildren({
@@ -13,7 +13,7 @@ export function process_deckCard_deck_term(
 }
 
 export function process_deckCard_deck_term_nestedChildren(
-  input: NestInputType,
+  input: APIInputType,
 ): void {
   const type = api.determineNestType(input)
   switch (type) {

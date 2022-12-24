@@ -1,7 +1,7 @@
-import { Mesh, Nest, NestInputType, api } from '~'
+import { APIInputType, Mesh, Nest, APIInputType, api } from '~'
 
 export function finalize_codeCard_bear_nestedChildren(
-  input: NestInputType,
+  input: APIInputType,
 ): void {
   const text = api.resolveText(input)
 
@@ -20,23 +20,25 @@ export function finalize_codeCard_bear_nestedChildren(
 }
 
 export function process_codeCard_bear(
-  input: NestInputType,
+  input: APIInputType,
 ): void {
-  input.nest.nest.forEach((nest, index) => {
-    api.process_codeCard_bear_nestedChildren({
-      ...input,
-      index,
-      nest,
-    })
+  const nest = api.assumeNest(input)
+  nest.nest.forEach((nest, index) => {
+    api.process_codeCard_bear_nestedChildren(
+      api.extendWithNestScope(input, {
+        index,
+        nest,
+      }),
+    )
   })
 }
 
 export function process_codeCard_bear_hide(
-  input: NestInputType,
+  input: APIInputType,
 ): void {}
 
 export function process_codeCard_bear_nestedChildren(
-  input: NestInputType,
+  input: APIInputType,
 ): void {
   const type = api.determineNestType(input)
   switch (type) {

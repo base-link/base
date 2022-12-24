@@ -1,7 +1,13 @@
-export * from './initial'
-export * from './input'
-export * from './internal'
+import { MeshCardBaseType, MeshScopeType } from '~'
+
 export * from './mesh'
+
+export type APIInputType = {
+  card: MeshCardBaseType
+  lexicalScope: MeshScopeType
+  nestScope?: MeshScopeType
+  objectScope: MeshScopeType
+}
 
 export type NestedPartial<T> = T extends
   | string
@@ -36,22 +42,25 @@ export type PartialOptionalObject<T, M> = Partial<
   Omit<T, keyof M>
 >
 
-export type PickPartial<T, M> = PartialOptionalObject<T, M> &
-  RequiredObject<T, M>
+export type PartialState<T, M, B> = PartialTree<T, M, B>
 
-export type RecursiveRequired<T, M> = {
+export type PartialTree<T, M, B> = PartialOptionalObject<T, M> &
+  RequiredObject<T, M, B>
+
+export type RecursiveRequired<T, M, B> = {
   [K in keyof T & keyof M]: M[K] extends object
-    ? PickPartial<T[K], M[K]>
+    ? PartialTree<T[K], M[K], B>
     : T[K]
-}
+} & (B extends true ? { partial: true } : {})
 
 export type RequiredKeyList<O> = {
   [K in keyof O]: O[K]
 }
 
-export type RequiredObject<T, M> = RecursiveRequired<
+export type RequiredObject<T, M, B> = RecursiveRequired<
   T,
-  M
+  M,
+  B
 > extends infer O
   ? RequiredKeyList<O>
   : never

@@ -1,6 +1,8 @@
-import { isObject, isString } from 'lodash'
+import { isNumber, isObject, isString } from 'lodash'
 
 import { api } from '~'
+
+export const isNativeNumber = isNumber
 
 export const isNativeString = isString
 

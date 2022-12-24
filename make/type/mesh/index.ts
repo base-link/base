@@ -1,50 +1,46 @@
 import {
   Mesh,
-  MeshBearType,
-  MeshBindType,
+  MeshBearPotentialType,
+  MeshBindPotentialType,
   MeshBindableObjectType,
   MeshBindableStringType,
-  MeshBondType,
-  MeshBookCardType,
-  MeshCallType,
-  MeshCodeCardType,
-  MeshCordType,
-  MeshDeckCardType,
-  MeshDeckFaceType,
-  MeshDeckTermType,
-  MeshDeckType,
-  MeshFaceType,
-  MeshFormType,
-  MeshHoldType,
-  MeshHookType,
-  MeshHostType,
-  MeshLikeType,
-  MeshLoadTakeSaveType,
-  MeshLoadTakeType,
-  MeshLoadType,
-  MeshMarkType,
-  MeshReadDrawType,
-  MeshReadLoanType,
-  MeshReadMoveType,
-  MeshReadType,
-  MeshSeekType,
-  MeshSuitTaskType,
-  MeshSuitType,
-  MeshTakeType,
-  MeshTaskFlowType,
-  MeshTaskType,
-  MeshTermType,
-  MeshTestType,
-  MeshTreeType,
-  MeshWearType,
-  MeshZoneToolType,
-  MeshZoneType,
-} from '~'
-
-import {
+  MeshBookCardPotentialType,
+  MeshCallPotentialType,
+  MeshCodeCardPotentialType,
+  MeshCordPotentialType,
+  MeshDeckCardPotentialType,
+  MeshDeckFacePotentialType,
+  MeshDeckPotentialType,
+  MeshDeckTermPotentialType,
   MeshDependencyPartType,
   MeshDependencyType,
-} from './dependency'
+  MeshFacePotentialType,
+  MeshFormPotentialType,
+  MeshFusePotentialType,
+  MeshHoldPotentialType,
+  MeshHookPotentialType,
+  MeshHostPotentialType,
+  MeshLexicalScopeType,
+  MeshLikePotentialType,
+  MeshLoadPotentialType,
+  MeshLoadTakePotentialType,
+  MeshLoadTakeSavePotentialType,
+  MeshMarkPotentialType,
+  MeshReadDrawPotentialType,
+  MeshReadLoanPotentialType,
+  MeshReadMovePotentialType,
+  MeshScopeType,
+  MeshSuitPotentialType,
+  MeshSuitTaskPotentialType,
+  MeshTakePotentialType,
+  MeshTaskPotentialType,
+  MeshTermPotentialType,
+  MeshTestPotentialType,
+  MeshTreePotentialType,
+  MeshWearPotentialType,
+  MeshZonePotentialType,
+  MeshZoneToolPotentialType,
+} from '~'
 
 export * from './book'
 export * from './card'
@@ -53,55 +49,47 @@ export * from './deck'
 export * from './dependency'
 export * from './list'
 
-export type MeshForkType = {
-  data: Record<string, unknown>
-  like: Mesh.Fork
-  parent?: MeshForkType
-}
-
 export type MeshNodeMappingType = {
-  'mesh-bear': MeshBearType
-  'mesh-bind': MeshBindType
+  'mesh-bear': MeshBearPotentialType
+  'mesh-bind': MeshBindPotentialType
   'mesh-bindable-object': MeshBindableObjectType
   'mesh-bindable-string': MeshBindableStringType
-  'mesh-bond': MeshBondType
-  'mesh-book-card': MeshBookCardType
-  'mesh-call': MeshCallType
-  'mesh-code-card': MeshCodeCardType
-  'mesh-cord': MeshCordType
-  'mesh-deck': MeshDeckType
-  'mesh-deck-card': MeshDeckCardType
-  'mesh-deck-face': MeshDeckFaceType
-  'mesh-deck-term': MeshDeckTermType
+  'mesh-book-card': MeshBookCardPotentialType
+  'mesh-call': MeshCallPotentialType
+  'mesh-code-card': MeshCodeCardPotentialType
+  'mesh-cord': MeshCordPotentialType
+  'mesh-deck': MeshDeckPotentialType
+  'mesh-deck-card': MeshDeckCardPotentialType
+  'mesh-deck-face': MeshDeckFacePotentialType
+  'mesh-deck-term': MeshDeckTermPotentialType
   'mesh-dependency': MeshDependencyType
   'mesh-dependency-part': MeshDependencyPartType
-  'mesh-face': MeshFaceType
-  'mesh-fork': MeshForkType
-  'mesh-form': MeshFormType
-  'mesh-hold': MeshHoldType
-  'mesh-hook': MeshHookType
-  'mesh-host': MeshHostType
-  'mesh-like': MeshLikeType
-  'mesh-load': MeshLoadType
-  'mesh-load-take': MeshLoadTakeType
-  'mesh-load-take-save': MeshLoadTakeSaveType
-  'mesh-mark': MeshMarkType
-  'mesh-read': MeshReadType
-  'mesh-read-draw': MeshReadDrawType
-  'mesh-read-loan': MeshReadLoanType
-  'mesh-read-move': MeshReadMoveType
-  'mesh-seek': MeshSeekType
-  'mesh-suit': MeshSuitType
-  'mesh-suit-task': MeshSuitTaskType
-  'mesh-take': MeshTakeType
-  'mesh-task': MeshTaskType
-  'mesh-task-flow': MeshTaskFlowType
-  'mesh-term': MeshTermType
-  'mesh-test': MeshTestType
-  'mesh-tree': MeshTreeType
-  'mesh-wear': MeshWearType
-  'mesh-zone': MeshZoneType
-  'mesh-zone-tool': MeshZoneToolType
+  'mesh-face': MeshFacePotentialType
+  'mesh-form': MeshFormPotentialType
+  'mesh-fuse': MeshFusePotentialType
+  'mesh-hold': MeshHoldPotentialType
+  'mesh-hook': MeshHookPotentialType
+  'mesh-host': MeshHostPotentialType
+  'mesh-lexical-scope': MeshLexicalScopeType
+  'mesh-like': MeshLikePotentialType
+  'mesh-load': MeshLoadPotentialType
+  'mesh-load-take': MeshLoadTakePotentialType
+  'mesh-load-take-save': MeshLoadTakeSavePotentialType
+  'mesh-mark': MeshMarkPotentialType
+  'mesh-read-draw': MeshReadDrawPotentialType
+  'mesh-read-loan': MeshReadLoanPotentialType
+  'mesh-read-move': MeshReadMovePotentialType
+  'mesh-scope': MeshScopeType
+  'mesh-suit': MeshSuitPotentialType
+  'mesh-suit-task': MeshSuitTaskPotentialType
+  'mesh-take': MeshTakePotentialType
+  'mesh-task': MeshTaskPotentialType
+  'mesh-term': MeshTermPotentialType
+  'mesh-test': MeshTestPotentialType
+  'mesh-tree': MeshTreePotentialType
+  'mesh-wear': MeshWearPotentialType
+  'mesh-zone': MeshZonePotentialType
+  'mesh-zone-tool': MeshZoneToolPotentialType
 }
 
 export type MeshType<T extends Mesh> = MeshNodeMappingType[T]

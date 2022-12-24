@@ -1,4 +1,4 @@
-import { NestInputType, TermInputType, Tree } from '~'
+import { APIInputType, TermInputType, Tree, api } from '~'
 
 export function resolveStaticTerm(
   input: TermInputType,
@@ -16,9 +16,9 @@ export function resolveStaticTerm(
 }
 
 export function resolveStaticTermFromNest(
-  input: NestInputType,
+  input: APIInputType,
 ): string | undefined {
-  const nest = input.nest
+  const nest = api.assumeNest(input)
 
   if (nest.line.length > 1) {
     return
@@ -44,7 +44,7 @@ export function resolveStaticTermFromNest(
 }
 
 export function termIsInterpolated(
-  input: NestInputType,
+  input: APIInputType,
 ): boolean {
   return false
 }

@@ -1,4 +1,11 @@
-import { ERROR, Mesh, NestInputType, api } from '~'
+import {
+  APIInputType,
+  ERROR,
+  Mesh,
+  MeshCardType,
+  APIInputType,
+  api,
+} from '~'
 
 export type ErrorType = {
   code: string
@@ -7,6 +14,8 @@ export type ErrorType = {
   note: string
   text?: string
 }
+
+export function assumeCard(input: APIInputType): MeshCardType {}
 
 export function generateForkMissingPropertyError(
   property: string,
@@ -18,7 +27,7 @@ export function generateForkMissingPropertyError(
 }
 
 export function generateInvalidDeckLink(
-  input: NestInputType,
+  input: APIInputType,
   link: string,
 ): ErrorType {
   return {
@@ -28,7 +37,7 @@ export function generateInvalidDeckLink(
 }
 
 export function generateInvalidNestChildrenLengthError(
-  input: NestInputType,
+  input: APIInputType,
   length: number,
 ): ErrorType {
   return {
@@ -38,11 +47,11 @@ export function generateInvalidNestChildrenLengthError(
 }
 
 export function generateInvalidPatternError(
-  input: NestInputType,
+  input: APIInputType,
   pattern: unknown,
   name: string,
 ): ErrorType {
-  const card = api.getForkProperty(input.fork, 'card')
+  const card = api.getProperty(input, 'card')
   api.assertCard(card)
   return {
     code: `0012`,
@@ -73,9 +82,9 @@ export function generateObjectNotMeshNodeError(
 export function generateTermMissingChildError(): void {}
 
 export function generateUnhandledNestCaseBaseError(
-  input: NestInputType,
+  input: APIInputType,
 ): ErrorType {
-  const card = api.getForkProperty(input.fork, 'card')
+  const card = api.getProperty(input, 'card')
   api.assertCard(card)
   return {
     code: `0005`,
@@ -86,29 +95,25 @@ export function generateUnhandledNestCaseBaseError(
 }
 
 export function generateUnhandledNestCaseError(
-  input: NestInputType,
+  input: APIInputType,
   type: string,
 ): ErrorType {
-  const card = api.getForkProperty(input.fork, 'card')
-  api.assertCard(card)
   return {
     code: `0004`,
-    file: `${card.path}`,
+    file: `${input.card.path}`,
     note: `We haven't implemented handling ${type} nests yet.`,
     text: '',
   }
 }
 
 export function generateUnhandledTermCaseError(
-  input: NestInputType,
+  input: APIInputType,
 ): ErrorType | undefined {
-  const card = api.getForkProperty(input.fork, 'card')
-  api.assertCard(card)
   const name = api.resolveStaticTermFromNest(input)
   if (ERROR['0002'] && name) {
     return {
       code: `0002`,
-      file: `${card.path}`,
+      file: `${input.card.path}`,
       note: ERROR['0002'].note({ name }),
       text: '',
     }
@@ -116,22 +121,20 @@ export function generateUnhandledTermCaseError(
 }
 
 export function generateUnhandledTermInterpolationError(
-  input: NestInputType,
+  input: APIInputType,
 ): ErrorType {
-  const card = api.getForkProperty(input.fork, 'card')
-  api.assertCard(card)
   return {
     code: `0001`,
-    file: `${card.path}`,
+    file: `${input.card.path}`,
     note: `We haven't implemented handling term interpolation yet.`,
     text: '',
   }
 }
 
 export function generateUnknownTermError(
-  input: NestInputType,
+  input: APIInputType,
 ): ErrorType {
-  const card = api.getForkProperty(input.fork, 'card')
+  const card = api.getProperty(input, 'card')
   api.assertCard(card)
   const name = api.resolveStaticTermFromNest(input)
   return {
@@ -143,10 +146,10 @@ export function generateUnknownTermError(
 }
 
 export function generateUnresolvedPathError(
-  input: NestInputType,
+  input: APIInputType,
   path: string,
 ): ErrorType {
-  const card = api.getForkProperty(input.fork, 'card')
+  const card = api.getProperty(input, 'card')
   api.assertCard(card)
   return {
     code: `0013`,
@@ -173,13 +176,13 @@ export function throwError(error: ErrorType | undefined): void {
   text.push(`  code <${error.code}>`)
   if (error.file) {
     if (error.text) {
-      text.push(`  text <${error.file}>, <`)
+      text.push(`  file <${error.file}>, <`)
       error.text.split('\n').forEach(line => {
         text.push(`    ${line}`)
       })
       text.push(`  >`)
     } else {
-      text.push(`  text <${error.file}>`)
+      text.push(`  file <${error.file}>`)
     }
   }
   text.push(``)

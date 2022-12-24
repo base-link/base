@@ -1,7 +1,7 @@
-import { Mesh, NestInputType, api } from '~'
+import { APIInputType, Mesh, api } from '~'
 
 export function finalize_deckCard_deck_test(
-  input: NestInputType,
+  input: APIInputType,
 ): void {
   const text = api.resolveText(input)
   const card = api.getProperty(input, 'card')
@@ -15,12 +15,11 @@ export function finalize_deckCard_deck_test(
 }
 
 export function process_deckCard_deck_test(
-  input: NestInputType,
+  input: APIInputType,
 ): void {
   api.assertNestChildrenLength(input, 1)
 
-  const nest = input.nest.nest[0]
-  api.assertNest(nest)
+  const nest = api.assumeNest(input).nest[0]
 
   api.processTextNest(
     {

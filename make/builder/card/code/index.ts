@@ -1,9 +1,8 @@
 import {
+  APIInputType,
   Base,
   Mesh,
-  MeshCodeCardInputType,
   MeshCodeCardType,
-  NestInputType,
   api,
 } from '~'
 
@@ -36,6 +35,16 @@ export * from './tree'
 export * from './wait'
 export * from './walk'
 export * from './zone'
+
+export function extendWithNestScope(
+  input: APIInputType,
+  data: Record<string, unknown>,
+): APIInputType {
+  return {
+    ...input,
+    nestScope: api.createScope(data),
+  }
+}
 
 export function process_codeCard(
   base: Base,
@@ -73,12 +82,11 @@ export function process_codeCard(
     publicZoneMesh: {},
     textByLine: text.split('\n'),
   }
-  const input: MeshCodeCardInputType = {
+  const bindableSeed = api.createBindableObject(seed)
+  const input: APIInputType = {
     card: seed,
-    fork: {
-      data: seed,
-      like: Mesh.Fork,
-    },
+    lexicalScope: api.createScope(bindableSeed),
+    objectScope: api.createScope(bindableSeed),
   }
 
   card.bind(seed)
@@ -86,18 +94,19 @@ export function process_codeCard(
   api.assertNest(textTree)
 
   textTree.nest.forEach((nest, index) => {
-    api.process_codeCard_nestedChildren({
-      ...input,
-      index,
-      nest,
-    })
+    api.process_codeCard_nestedChildren(
+      api.extendWithNestScope(input, {
+        index,
+        nest,
+      }),
+    )
   })
 
   // this.mintCodeCardMesh(fork)
 }
 
 export function process_codeCard_nestedChildren(
-  input: NestInputType,
+  input: APIInputType,
 ): void {
   const type = api.determineNestType(input)
   switch (type) {
@@ -114,7 +123,7 @@ export function process_codeCard_nestedChildren(
 }
 
 export function process_codeCard_nestedChildren_staticTerm(
-  input: NestInputType,
+  input: APIInputType,
 ): void {
   const term = api.resolveStaticTermFromNest(input)
   switch (term) {

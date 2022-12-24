@@ -1,4 +1,4 @@
-import { Nest, NestInputType, api } from '~'
+import { APIInputType, Nest, api } from '~'
 
 export * from './bear'
 export * from './face'
@@ -7,21 +7,24 @@ export * from './term'
 export * from './test'
 
 export function process_deckCard_deck(
-  input: NestInputType,
+  input: APIInputType,
 ): void {
-  input.nest.nest.forEach((nest, index) => {
-    api.process_deckCard_deck_nestedChildren({
-      ...input,
-      index,
-      nest,
-    })
+  const nest = api.assumeNest(input)
+  nest.nest.forEach((nest, index) => {
+    api.process_deckCard_deck_nestedChildren(
+      api.extendWithNestScope(input, {
+        index,
+        nest,
+      }),
+    )
   })
 }
 
 export function process_deckCard_deck_nestedChildren(
-  input: NestInputType,
+  input: APIInputType,
 ): void {
   const type = api.determineNestType(input)
+  const index = api.assumeNestIndex(input)
   switch (type) {
     case Nest.DynamicTerm:
     case Nest.DynamicText:
@@ -29,15 +32,16 @@ export function process_deckCard_deck_nestedChildren(
         api.generateUnhandledNestCaseError(input, type),
       )
       break
-    case Nest.StaticText:
-      if (input.index === 0) {
+    case Nest.StaticText: {
+      if (index === 0) {
         api.process_deckCard_deck_link(input)
       } else {
         throw new Error('Unhandled text.')
       }
       break
+    }
     case Nest.StaticTerm:
-      if (input.index > 0) {
+      if (index > 0) {
         api.process_deckCard_deck_nestedTerm(input)
       } else {
         throw new Error('Unhandled term.')
@@ -47,7 +51,7 @@ export function process_deckCard_deck_nestedChildren(
 }
 
 export function process_deckCard_deck_nestedTerm(
-  input: NestInputType,
+  input: APIInputType,
 ): void {
   const term = api.resolveStaticTermFromNest(input)
   switch (term) {
