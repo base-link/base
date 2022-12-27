@@ -127,7 +127,7 @@ export function generateUnhandledNestCaseError(
 
 export function generateUnhandledTermCaseError(
   input: APIInputType,
-): ErrorType | undefined {
+): ErrorType {
   const name = api.resolveStaticTermFromNest(input)
   api.assertString(name)
   const handle = ERROR['0002']
