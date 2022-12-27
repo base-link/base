@@ -2,6 +2,7 @@ import {
   APIInputType,
   AST,
   ASTCodeModuleType,
+  ASTPartialType,
   Base,
   api,
 } from '~'
@@ -36,14 +37,12 @@ export * from './wait'
 export * from './walk'
 export * from './zone'
 
-export function extendWithNestScope(
-  input: APIInputType,
-  data: Record<string, unknown>,
-): APIInputType {
-  return {
-    ...input,
-    nestScope: api.createScope(data),
-  }
+export function handle_codeCard(
+  base: Base,
+  link: string,
+): void {
+  api.process_codeCard(base, link)
+  api.resolve_codeCard(base, link)
 }
 
 export function process_codeCard(
@@ -54,7 +53,7 @@ export function process_codeCard(
   const textTree = api.parseTextIntoTree(text)
   const linkHost = api.getLinkHost(link)
   const card = base.card(link)
-  const seed: ASTCodeModuleType = {
+  const seed: ASTPartialType<AST.CodeModule> = {
     allSuitAST: {},
     allTaskAST: {},
     allTestAST: {},
@@ -68,9 +67,10 @@ export function process_codeCard(
     formAST: {},
     hookAST: {},
     hostAST: {},
-    like: AST.CodeCard,
+    like: AST.CodeModule,
     loadList: [],
     parseTree: textTree,
+    partial: true,
     path: link,
     publicFaceAST: {},
     publicFormAST: {},
@@ -178,11 +178,10 @@ export function resolve_codeCard(
   link: string,
 ): void {
   const card = base.card(link)
-  api.assertAST(card.seed, AST.CodeCard)
+  api.assertAST(card.seed, AST.CodeModule)
 
   card.seed.loadList.forEach(load => {})
   card.seed.bearList.forEach(bear => {
-    api.process_codeCard(base, bear.link)
-    api.resolve_codeCard(base, bear.link)
+    api.handle_codeCard(base, bear.link)
   })
 }

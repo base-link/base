@@ -1,11 +1,13 @@
-import {
-  APIInputType,
-  ERROR,
-  AST,
-  ASTModuleType,
-  APIInputType,
-  api,
-} from '~'
+import { APIInputType, AST, ERROR, api } from '~'
+
+export type ErrorConfigType = {
+  code: string
+  hint?: string
+  note: (props: Record<string, unknown>) => string
+  text?: string
+}
+
+export type ErrorInputType = Record<string, unknown>
 
 export type ErrorType = {
   code: string
@@ -15,7 +17,26 @@ export type ErrorType = {
   text?: string
 }
 
-export function assumeCard(input: APIInputType): ASTModuleType {}
+export function assertError(
+  error: unknown,
+): asserts error is ErrorConfigType {
+  if (!api.isError(error)) {
+    throw new Error('Error handler undefined')
+  }
+}
+
+export function errorReducer(
+  m: Record<string, ErrorConfigType>,
+  x: ErrorConfigType,
+) {
+  return {
+    ...m,
+    [x.code]: {
+      isError: true,
+      ...x,
+    },
+  }
+}
 
 export function generateForkMissingPropertyError(
   property: string,
@@ -51,8 +72,7 @@ export function generateInvalidPatternError(
   pattern: unknown,
   name: string,
 ): ErrorType {
-  const card = api.getProperty(input, 'card')
-  api.assertCard(card)
+  const { card } = input
   return {
     code: `0012`,
     file: `${card.path}`,
@@ -84,8 +104,7 @@ export function generateTermMissingChildError(): void {}
 export function generateUnhandledNestCaseBaseError(
   input: APIInputType,
 ): ErrorType {
-  const card = api.getProperty(input, 'card')
-  api.assertCard(card)
+  const { card } = input
   return {
     code: `0005`,
     file: `${card.path}`,
@@ -110,13 +129,14 @@ export function generateUnhandledTermCaseError(
   input: APIInputType,
 ): ErrorType | undefined {
   const name = api.resolveStaticTermFromNest(input)
-  if (ERROR['0002'] && name) {
-    return {
-      code: `0002`,
-      file: `${input.card.path}`,
-      note: ERROR['0002'].note({ name }),
-      text: '',
-    }
+  api.assertString(name)
+  const handle = ERROR['0002']
+  api.assertError(handle)
+  return {
+    code: `0002`,
+    file: `${input.card.path}`,
+    note: handle.note({ name }),
+    text: '',
   }
 }
 
@@ -134,8 +154,7 @@ export function generateUnhandledTermInterpolationError(
 export function generateUnknownTermError(
   input: APIInputType,
 ): ErrorType {
-  const card = api.getProperty(input, 'card')
-  api.assertCard(card)
+  const { card } = input
   const name = api.resolveStaticTermFromNest(input)
   return {
     code: `0003`,
@@ -149,8 +168,7 @@ export function generateUnresolvedPathError(
   input: APIInputType,
   path: string,
 ): ErrorType {
-  const card = api.getProperty(input, 'card')
-  api.assertCard(card)
+  const { card } = input
   return {
     code: `0013`,
     file: card.path,
@@ -158,16 +176,16 @@ export function generateUnresolvedPathError(
   }
 }
 
-export function throwError(error: ErrorType | undefined): void {
-  if (!error) {
-    error = {
-      code: `0005`,
-      file: `.`,
-      note: `Error.`,
-      text: '',
-    }
-  }
+export function isError(
+  error: unknown,
+): error is ErrorConfigType {
+  return (
+    api.isObject(error) &&
+    Boolean((error as ErrorConfigType).code)
+  )
+}
 
+export function throwError(error: ErrorType): void {
   const text: Array<string> = []
 
   text.push(``)

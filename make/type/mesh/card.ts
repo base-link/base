@@ -39,32 +39,33 @@ export type ASTBookModuleType = ASTModuleBaseType & {
   // text: Array<ASTBookSectionType>
 }
 
-export type ASTCodeModulePartialType = PartialState<
-  ASTCodeModuleType,
-  {
-    allSuitAST: 1
-    allTaskAST: 1
-    allTestAST: 1
-    allTreeAST: 1
-    allZoneAST: 1
-    bearList: 1
-    faceAST: 1
-    formAST: 1
-    hookAST: 1
-    hostAST: 1
-    like: 1
-    loadList: 1
-    publicFaceAST: 1
-    publicFormAST: 1
-    publicHostAST: 1
-    publicSuitAST: 1
-    publicTaskAST: 1
-    publicTestAST: 1
-    publicTreeAST: 1
-    publicZoneAST: 1
-  },
-  true
->
+export type ASTCodeModulePartialType = ASTModuleBaseType &
+  PartialState<
+    ASTCodeModuleType,
+    {
+      allSuitAST: 1
+      allTaskAST: 1
+      allTestAST: 1
+      allTreeAST: 1
+      allZoneAST: 1
+      bearList: 1
+      faceAST: 1
+      formAST: 1
+      hookAST: 1
+      hostAST: 1
+      like: 1
+      loadList: 1
+      publicFaceAST: 1
+      publicFormAST: 1
+      publicHostAST: 1
+      publicSuitAST: 1
+      publicTaskAST: 1
+      publicTestAST: 1
+      publicTreeAST: 1
+      publicZoneAST: 1
+    },
+    true
+  >
 
 export type ASTCodeModulePotentialType =
   | ASTCodeModulePartialType

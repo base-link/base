@@ -25,10 +25,13 @@ export function process_codeCard_load_find_save_nestedChildren(
     const term = api.resolveStaticTermFromNest(input)
     api.assertString(term)
 
-    const find = api.assumeInputObjectAsAST(input, AST.LoadTake)
+    const find = api.assumeInputObjectAsASTPartialType(
+      input,
+      AST.ImportVariable,
+    )
 
-    find.save = {
-      like: AST.LoadTakeSave,
+    find.rename = {
+      like: AST.ImportVariableRename,
       name: term,
     }
   } else {

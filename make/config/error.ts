@@ -1,36 +1,18 @@
-const ERROR: Record<string, ErrorType> = [
+import {
+  ErrorConfigType,
+  ErrorInputType,
+  errorReducer,
+} from '~'
+
+export const ERROR: Record<string, ErrorConfigType> = [
   {
     code: '0002',
-    note: ({ name }: NamePropsType) =>
+    note: ({ name }: ErrorInputType) =>
       `We haven't implemented handling the term '${name}' yet.`,
   },
   {
     code: '0001',
-    note: ({ term }: TermPropsType) =>
+    note: ({ term }: ErrorInputType) =>
       `We haven't implemented handling term interpolation yet, for ${term}.`,
   },
-].reduce(reducer, {})
-
-export { ERROR }
-
-function reducer(m: Record<string, ErrorType>, x: ErrorType) {
-  return {
-    ...m,
-    [x.code]: x,
-  }
-}
-
-type ErrorType = {
-  code: string
-  hint?: string
-  note: (props: Record<string, unknown>) => string
-  text?: string
-}
-
-type NamePropsType = {
-  name: string
-}
-
-type TermPropsType = {
-  term: string
-}
+].reduce(errorReducer, {})

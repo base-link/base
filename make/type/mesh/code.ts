@@ -451,6 +451,7 @@ export type ASTScopeType = {
   data: Record<string, unknown>
   like: AST.Scope
   parent?: ASTScopeType
+  partial: false
 }
 
 export type ASTStringPartialType = PartialState<

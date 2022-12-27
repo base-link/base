@@ -1,8 +1,7 @@
 import {
   APIInputType,
   AST,
-  ASTModuleBaseType,
-  ASTPackageModulePartialType,
+  ASTPartialType,
   Base,
   Tree,
   api,
@@ -10,18 +9,12 @@ import {
 
 export * from './deck'
 
-export function createInitialAPIInput<
-  T extends ASTModuleBaseType,
->(
-  card: T,
-  objectScopeData: Record<string, unknown>,
-  lexicalScopeData: Record<string, unknown>,
-): APIInputType {
-  return {
-    card,
-    lexicalScope: api.createScope(lexicalScopeData),
-    objectScope: api.createScope(objectScopeData),
-  }
+export function handle_deckCard(
+  base: Base,
+  link: string,
+): void {
+  api.process_deckCard(base, link)
+  api.resolve_deckCard(base, link)
 }
 
 /**
@@ -35,7 +28,7 @@ export function process_deckCard(
   const tree = api.parseTextIntoTree(text)
   const linkHost = api.getLinkHost(link)
   const card = base.card(link)
-  const seed: ASTPackageModulePartialType = {
+  const seed: ASTPartialType<AST.PackageModule> = {
     base,
     deck: {
       face: [],
@@ -99,14 +92,17 @@ export function resolve_deckCard(
   link: string,
 ): void {
   const card = base.card(link)
-  api.assertAST(card.seed, AST.PackageModule)
+  api.assertASTPartial(card.seed, AST.PackageModule)
 
   const { deck } = card.seed
 
   // TODO: deck.hint tells us the parser to use on the code.
 
   if (deck.bear) {
-    api.process_codeCard(base, deck.bear)
-    api.resolve_codeCard(base, deck.bear)
+    api.handle_codeCard(base, deck.bear)
+  }
+
+  if (deck.test) {
+    api.handle_codeCard(base, deck.test)
   }
 }

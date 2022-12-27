@@ -12,6 +12,7 @@ export type ASTBindableObjectType = {
   data: Record<string, unknown>
   like: AST.BindableObject
   parent?: ASTBindableObjectType
+  partial: false
 }
 
 export type ASTBindableStringType = {
@@ -19,6 +20,7 @@ export type ASTBindableStringType = {
   data: string
   like: AST.BindableString
   parent?: ASTBindableObjectType
+  partial: false
 }
 
 export type ASTDependencyPartCallbackType = (
@@ -33,6 +35,7 @@ export type ASTDependencyPartType = {
   name: string
   next?: ASTDependencyPartType
   parent: ASTDependencyType
+  partial: false
 }
 
 export type ASTDependencyType = {
@@ -40,6 +43,7 @@ export type ASTDependencyType = {
   context: APIInputType
   like: AST.Dependency
   met: boolean
+  partial: false
   path: Array<ASTDependencyPartType>
 }
 
@@ -49,4 +53,5 @@ export type ASTLexicalScopeType = {
   data: Record<string, unknown>
   like: AST.LexicalScope
   parent?: ASTLexicalScopeType
+  partial: false
 }

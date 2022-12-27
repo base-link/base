@@ -1,57 +1,21 @@
-import {
-  APIInputType,
-  AST,
-  ASTImportType,
-  ASTType,
-  InitialASTImportType,
-  InitialASTImportVariableType,
-  api,
-} from '~'
+import { APIInputType, AST, ASTPartialType, api } from '~'
 
 export * from './bear'
 export * from './save'
 
-export type LoadFindInputType = {
-  find: InitialASTImportVariableType
-}
-
-export type LoadInputType = {
-  load: ASTImportType | InitialASTImportType
-}
-
-export function assumeInputObjectAsAST<T extends AST>(
-  input: APIInputType,
-  type: T,
-  rank = 0,
-): ASTType<T> {
-  let objectScope = input.objectScope
-  while (rank > 0 && objectScope.parent) {
-    objectScope = objectScope.parent
-    rank--
-  }
-  api.assertAST(objectScope.data, type)
-  return objectScope.data
-}
-
-export function extendWithObjectScope(
-  input: APIInputType,
-  data: Record<string, unknown>,
-): APIInputType {
-  return {
-    ...input,
-    objectScope: api.createScope(data, input.objectScope),
-  }
-}
-
 export function process_codeCard_load_find(
   input: APIInputType,
 ): void {
-  const find: InitialASTImportVariableType = {
-    like: AST.LoadTake,
+  const find: ASTPartialType<AST.ImportVariable> = {
+    like: AST.ImportVariable,
+    partial: true,
   }
 
-  const load = api.assumeInputObjectAsAST(input, AST.Load)
-  load.take.push(find)
+  const load = api.assumeInputObjectAsASTPartialType(
+    input,
+    AST.Import,
+  )
+  load.variable.push(find)
 
   const childInput = api.extendWithObjectScope(input, find)
 
@@ -87,9 +51,9 @@ export function process_codeCard_load_find_nestedChildren(
           api.throwError(api.generateUnknownTermError(input))
       }
     } else {
-      const find = api.assumeInputObjectAsAST(
+      const find = api.assumeInputObjectAsASTPartialType(
         input,
-        AST.LoadTake,
+        AST.ImportVariable,
       )
       find.name = term
     }
