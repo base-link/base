@@ -1,21 +1,22 @@
-import { NestInputType, api } from '~'
+import { APIInputType, api } from '~'
 
 export * from './hook'
 
 export function process_codeCard_tree(
-  input: NestInputType,
+  input: APIInputType,
 ): void {
-  input.nest.nest.forEach((nest, index) => {
-    api.process_codeCard_tree_nestedChildren({
-      ...input,
-      index,
-      nest,
-    })
+  api.assumeNest(input).nest.forEach((nest, index) => {
+    api.process_codeCard_tree_nestedChildren(
+      api.extendWithNestScope(input, {
+        index,
+        nest,
+      }),
+    )
   })
 }
 
 export function process_codeCard_tree_nestedChildren(
-  input: NestInputType,
+  input: APIInputType,
 ): void {
   const type = api.determineNestType(input)
   if (type === 'static-term') {

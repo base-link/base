@@ -1,35 +1,36 @@
-import { Nest, NestInputType, api } from '~'
+import { APIInputType, Nest, api } from '~'
 
 export function process_codeCard_like(
-  input: NestInputType,
+  input: APIInputType,
 ): void {
-  input.nest.nest.forEach((nest, index) => {
-    process_codeCard_like_nestedChildren({
-      ...input,
-      index,
-      nest,
-    })
+  api.assumeNest(input).nest.forEach((nest, index) => {
+    process_codeCard_like_nestedChildren(
+      api.extendWithNestScope(input, {
+        index,
+        nest,
+      }),
+    )
   })
 }
 
 export function process_codeCard_like_free(
-  input: NestInputType,
+  input: APIInputType,
 ): void {}
 
 export function process_codeCard_like_head(
-  input: NestInputType,
+  input: APIInputType,
 ): void {}
 
 export function process_codeCard_like_list(
-  input: NestInputType,
+  input: APIInputType,
 ): void {}
 
 export function process_codeCard_like_mesh(
-  input: NestInputType,
+  input: APIInputType,
 ): void {}
 
 export function process_codeCard_like_nestedChildren(
-  input: NestInputType,
+  input: APIInputType,
 ): void {
   const type = api.determineNestType(input)
   switch (type) {
@@ -65,9 +66,9 @@ export function process_codeCard_like_nestedChildren(
 }
 
 export function process_codeCard_like_take(
-  input: NestInputType,
+  input: APIInputType,
 ): void {}
 
 export function process_codeCard_like_term(
-  input: NestInputType,
+  input: APIInputType,
 ): void {}

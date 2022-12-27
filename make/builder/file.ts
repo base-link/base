@@ -1,7 +1,7 @@
 import fs from 'fs'
 import pathResolve from 'path'
 
-import { Base, NestInputType, api } from '~'
+import { APIInputType, Base, api } from '~'
 
 export function findPath(
   link: string,
@@ -40,7 +40,7 @@ export function readTextFile(base: Base, link: string): string {
 }
 
 export function resolveModulePath(
-  input: NestInputType,
+  input: APIInputType,
   text: string,
 ): string {
   const card = api.getProperty(input, 'card')

@@ -1,8 +1,7 @@
 import {
+  APIInputType,
   AST,
-  FormInputType,
-  InitialASTClassType,
-  NestInputType,
+  ASTClassPotentialType,
   api,
 } from '~'
 
@@ -12,18 +11,19 @@ export * from './task'
 export * from './wear'
 
 export function process_codeCard_form(
-  input: NestInputType,
+  input: APIInputType,
 ): void {
-  const formData: InitialASTClassType = {
+  const formData: ASTClassPotentialType = {
     base: [],
     hook: {},
-    like: AST.Form,
+    like: AST.Class,
     link: {},
+    partial: true,
     task: {},
     wear: {},
   }
 
-  const formInput: FormInputType & NestInputType = {
+  const formInput: FormInputType & APIInputType = {
     ...input,
     fork: api.makeFork(input.fork, {}),
     form: formData,
@@ -39,7 +39,7 @@ export function process_codeCard_form(
 
   const card = api.getProperty(input, 'card')
 
-  api.assertAST(card, AST.CodeCard)
+  api.assertAST(card, AST.CodeModule)
 
   if (formData.name) {
     card.publicFormAST[formData.name] = formData
@@ -47,7 +47,7 @@ export function process_codeCard_form(
 }
 
 export function process_codeCard_form_nestedChildren(
-  input: NestInputType & FormInputType,
+  input: APIInputType & FormInputType,
 ): void {
   const type = api.determineNestType(input)
   if (type === 'static-term') {

@@ -1,9 +1,9 @@
-import { NestInputType, Tree } from '~'
+import { APIInputType, Tree, api } from '~'
 
 export function resolveCodeAsNumber(
-  input: NestInputType,
+  input: APIInputType,
 ): number {
-  let line = input.nest.line[0]
+  let line = api.assumeNest(input).line[0]
 
   if (line && line.like === Tree.Code) {
     let type = line.base

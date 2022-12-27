@@ -1,4 +1,4 @@
-import { APIInputType, AST, Nest, APIInputType, api } from '~'
+import { APIInputType, AST, Nest, api } from '~'
 
 export function finalize_codeCard_bear_nestedChildren(
   input: APIInputType,
@@ -9,12 +9,12 @@ export function finalize_codeCard_bear_nestedChildren(
 
   const card = api.getProperty(input, 'card')
 
-  api.assertAST(card, AST.CodeCard)
+  api.assertAST(card, AST.CodeModule)
 
   const path = api.resolveModulePath(input, text)
 
   card.bearList.push({
-    like: AST.Bear,
+    like: AST.Export,
     link: path,
   })
 }

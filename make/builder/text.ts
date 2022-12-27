@@ -4,23 +4,11 @@ import {
   ASTDependencyPartType,
   ASTDependencyType,
   ASTScopeType,
-  ErrorType,
   Nest,
   Tree,
   TreeNodeType,
   api,
 } from '~'
-
-export function assertString(
-  object: unknown,
-  error?: () => ErrorType,
-): asserts object is string {
-  if (!api.isString(object)) {
-    api.throwError(
-      error ? error() : api.generateMissingStringError(object),
-    )
-  }
-}
 
 export function checkDependency(
   dependency: ASTDependencyType,
@@ -55,10 +43,6 @@ export function checkDependency(
 
     i++
   }
-}
-
-export function isString(object: unknown): object is string {
-  return api.isNativeString(object)
 }
 
 export function parseTextIntoTree(text: string): TreeNodeType {

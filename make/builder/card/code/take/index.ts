@@ -1,21 +1,22 @@
 // the api url handlers go here
 import { api } from '~'
-import { Nest, NestInputType } from '~'
+import { APIInputType, Nest } from '~'
 
 export function process_codeCard_take(
-  input: NestInputType,
+  input: APIInputType,
 ): void {
-  input.nest.nest.forEach((nest, index) => {
-    process_codeCard_take_nestedChildren({
-      ...input,
-      index,
-      nest,
-    })
+  api.assumeNest(input).nest.forEach((nest, index) => {
+    process_codeCard_take_nestedChildren(
+      api.extendWithNestScope(input, {
+        index,
+        nest,
+      }),
+    )
   })
 }
 
 export function process_codeCard_take_nestedChildren(
-  input: NestInputType,
+  input: APIInputType,
 ): void {
   const type = api.determineNestType(input)
   switch (type) {

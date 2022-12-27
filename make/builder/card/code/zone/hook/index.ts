@@ -1,5 +1,5 @@
-import { NestInputType, api } from '~'
+import { APIInputType, api } from '~'
 
 export function process_codeCard_zoneHook(
-  input: NestInputType,
+  input: APIInputType,
 ): void {}

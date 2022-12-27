@@ -1,23 +1,24 @@
-import { Nest, NestInputType, api } from '~'
+import { APIInputType, Nest, api } from '~'
 
 export * from './back'
 export * from './base'
 export * from './free'
 
 export function process_codeCard_task(
-  input: NestInputType,
+  input: APIInputType,
 ): void {
-  input.nest.nest.forEach((nest, index) => {
-    api.process_codeCard_task_nestedChildren({
-      ...input,
-      index,
-      nest,
-    })
+  api.assumeNest(input).nest.forEach((nest, index) => {
+    api.process_codeCard_task_nestedChildren(
+      api.extendWithNestScope(input, {
+        index,
+        nest,
+      }),
+    )
   })
 }
 
 export function process_codeCard_task_nestedChildren(
-  input: NestInputType,
+  input: APIInputType,
 ): void {
   const type = api.determineNestType(input)
   if (type === Nest.StaticTerm) {

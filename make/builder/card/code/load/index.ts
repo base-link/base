@@ -43,7 +43,7 @@ export function process_codeCard_load(
     objectScope: api.createScope(load, input.objectScope),
   }
 
-  input.nest.nest.forEach((nest, index) => {
+  api.assumeNest(input).nest.forEach((nest, index) => {
     process_codeCard_load_nestedChildren(
       api.extendWithNestScope(childInput, {
         index,

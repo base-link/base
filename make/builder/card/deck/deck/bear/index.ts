@@ -5,7 +5,7 @@ export function finalize_deckCard_deck_bear(
 ): void {
   const text = api.resolveText(input)
   const { card } = input
-  api.assertAST(card, AST.DeckCard)
+  api.assertAST(card, AST.PackageModule)
   api.assertString(text)
   const path = api.findPath(text, card.directory)
   if (!path) {

@@ -40,7 +40,7 @@
 // // export function processSimpleTerm(scope: CompilerNestForkType, callback: (scope: CompilerNestForkType) => void): void {
 // // }
 // export function processTextDependencyList(
-//   input: NestInputType,
+//   input: APIInputType,
 //   handle: () => void,
 // ): void {
 //   const dependencyList = api.getTextDependencyList(input.nest)

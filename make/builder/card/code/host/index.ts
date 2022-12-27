@@ -1,19 +1,18 @@
-import { api , Nest, NestInputType } from '~'
+import { api , Nest, APIInputType } from '~'
 
 export function process_codeCard_host(
-  input: NestInputType,
+  input: APIInputType,
 ): void {
-  input.nest.nest.forEach((nest, index) => {
-    process_codeCard_host_nestedChildren({
-      ...input,
-      index,
-      nest,
-    })
+  api.assumeNest(input).nest.forEach((nest, index) => {
+    process_codeCard_host_nestedChildren(      api.extendWithNestScope(input, {
+        index,
+        nest,
+      }),)
   })
 }
 
 export function process_codeCard_host_nestedChildren(
-  input: NestInputType,
+  input: APIInputType,
 ): void {
   const type = api.determineNestType(input)
   switch (type) {

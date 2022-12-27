@@ -26,10 +26,10 @@ export function process_deckCard_deck_link(
       )
     }
 
-    const card = input.card
-    api.assertAST(card, AST.DeckCard)
+    const module = input.card
+    api.assertAST(module, AST.PackageModule)
 
-    card.deck.host = host
-    card.deck.name = name
+    module.deck.host = host
+    module.deck.name = name
   }
 }

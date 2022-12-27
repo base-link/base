@@ -1,39 +1,40 @@
-import { Nest, NestInputType, api } from '~'
+import { APIInputType, Nest, api } from '~'
 
 export function process_codeCard_bond(
-  input: NestInputType,
+  input: APIInputType,
 ): void {
-  input.nest.nest.forEach((nest, index) => {
-    process_codeCard_bond_nestedChildren({
-      ...input,
-      index,
-      nest,
-    })
+  api.assumeNest(input).nest.forEach((nest, index) => {
+    process_codeCard_bond_nestedChildren(
+      api.extendWithNestScope(input, {
+        index,
+        nest,
+      }),
+    )
   })
 }
 
 export function process_codeCard_bond_code(
-  input: NestInputType,
+  input: APIInputType,
 ): void {}
 
 export function process_codeCard_bond_comb(
-  input: NestInputType,
+  input: APIInputType,
 ): void {}
 
 export function process_codeCard_bond_loan(
-  input: NestInputType,
+  input: APIInputType,
 ): void {}
 
 export function process_codeCard_bond_mark(
-  input: NestInputType,
+  input: APIInputType,
 ): void {}
 
 export function process_codeCard_bond_move(
-  input: NestInputType,
+  input: APIInputType,
 ): void {}
 
 export function process_codeCard_bond_nestedChildren(
-  input: NestInputType,
+  input: APIInputType,
 ): void {
   const type = api.determineNestType(input)
   switch (type) {
@@ -75,17 +76,17 @@ export function process_codeCard_bond_nestedChildren(
 }
 
 export function process_codeCard_bond_read(
-  input: NestInputType,
+  input: APIInputType,
 ): void {}
 
 export function process_codeCard_bond_term(
-  input: NestInputType,
+  input: APIInputType,
 ): void {}
 
 export function process_codeCard_bond_text(
-  input: NestInputType,
+  input: APIInputType,
 ): void {}
 
 export function process_codeCard_bond_wave(
-  input: NestInputType,
+  input: APIInputType,
 ): void {}

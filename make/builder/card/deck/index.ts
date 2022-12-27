@@ -39,13 +39,13 @@ export function process_deckCard(
     base,
     deck: {
       face: [],
-      like: AST.Deck,
+      like: AST.Package,
       partial: true,
       term: [],
     },
     dependencyList: [],
     directory: linkHost,
-    like: AST.DeckCard,
+    like: AST.PackageModule,
     parseTree: tree,
     partial: true,
     path: link,
@@ -99,7 +99,7 @@ export function resolve_deckCard(
   link: string,
 ): void {
   const card = base.card(link)
-  api.assertAST(card.seed, AST.DeckCard)
+  api.assertAST(card.seed, AST.PackageModule)
 
   const { deck } = card.seed
 

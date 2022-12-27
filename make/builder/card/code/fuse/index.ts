@@ -1,33 +1,35 @@
 import {
+  APIInputType,
   AST,
-  InitialASTInjectType,
+  ASTInjectPotentialType,
   Nest,
-  NestInputType,
   api,
 } from '~'
 
 export function process_codeCard_fuse(
-  input: NestInputType,
+  input: APIInputType,
 ): void {
-  const fuse: InitialASTInjectType = {
+  const fuse: ASTInjectPotentialType = {
     bind: [],
-    like: AST.Fuse,
+    like: AST.Inject,
+    partial: true,
   }
 
   const card = api.getProperty(input, 'card')
-  api.assertAST(card, AST.CodeCard)
+  api.assertAST(card, AST.CodeModule)
 
-  input.nest.nest.forEach((nest, index) => {
-    process_codeCard_fuse_nestedChildren({
-      ...input,
-      index,
-      nest,
-    })
+  api.assumeNest(input).nest.forEach((nest, index) => {
+    process_codeCard_fuse_nestedChildren(
+      api.extendWithNestScope(input, {
+        index,
+        nest,
+      }),
+    )
   })
 }
 
 export function process_codeCard_fuse_nestedChildren(
-  input: NestInputType,
+  input: APIInputType,
 ): void {
   const type = api.determineNestType(input)
   switch (type) {

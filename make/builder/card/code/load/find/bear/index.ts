@@ -3,12 +3,13 @@ import { APIInputType, api } from '~'
 export function process_codeCard_load_find_bear(
   input: APIInputType,
 ): void {
-  input.nest.nest.forEach((nest, index) => {
-    api.process_codeCard_load_find_bear_nestedChildren({
-      ...input,
-      index,
-      nest,
-    })
+  api.assumeNest(input).nest.forEach((nest, index) => {
+    api.process_codeCard_load_find_bear_nestedChildren(
+      api.extendWithNestScope(input, {
+        index,
+        nest,
+      }),
+    )
   })
 }
 

@@ -34,14 +34,14 @@ export type ASTPackagePotentialType =
 
 export type ASTPackageType = {
   bear?: string
-  face: Array<ASTPackageUserType>
+  face: Array<ASTPackageUserPotentialType>
   host: string
   like: AST.Package
   mark: string
   name: string
   read?: string
   site?: string
-  term: Array<ASTPackageLicenseType>
+  term: Array<ASTPackageLicensePotentialType>
   test?: string
 }
 

@@ -75,7 +75,7 @@ export type ASTCallbackPartialType = PartialState<
   {
     flow: 1
     like: 1
-    take: 1
+    parameter: 1
   },
   true
 >
@@ -85,10 +85,10 @@ export type ASTCallbackPotentialType =
   | ASTCallbackType
 
 export type ASTCallbackType = {
-  flow: Array<ASTFunctionFlowType>
+  flow: Array<ASTFunctionFlowPotentialType>
   like: AST.Callback
   name: string
-  take: Record<string, ASTInputType>
+  parameter: Record<string, ASTInputPotentialType>
 }
 
 export type ASTClassInterfaceFunctionPartialType = PartialState<
@@ -112,8 +112,8 @@ export type ASTClassInterfaceImplementationPartialType =
     ASTClassInterfaceImplementationType,
     {
       like: 1
-      link: 1
-      task: 1
+      method: 1
+      property: 1
     },
     true
   >
@@ -124,17 +124,17 @@ export type ASTClassInterfaceImplementationPotentialType =
 
 export type ASTClassInterfaceImplementationType = {
   like: AST.ClassInterfaceImplementation
-  link: Record<string, ASTInputType>
+  method: Record<string, ASTFunctionType>
   name: string
-  task: Record<string, ASTFunctionType>
+  property: Record<string, ASTInputType>
 }
 
 export type ASTClassInterfacePartialType = PartialState<
   ASTClassInterfaceType,
   {
     like: 1
-    link: 1
-    task: 1
+    method: 1
+    property: 1
   },
   true
 >
@@ -145,19 +145,19 @@ export type ASTClassInterfacePotentialType =
 
 export type ASTClassInterfaceType = {
   like: AST.ClassInterface
-  link: Record<string, ASTInputType>
-  task: Record<string, ASTClassInterfaceFunctionType>
+  method: Record<string, ASTClassInterfaceFunctionType>
+  property: Record<string, ASTInputType>
 }
 
 export type ASTClassPartialType = PartialState<
   ASTClassType,
   {
-    base: 1
-    hook: 1
+    callback: 1
+    interface: 1
     like: 1
-    link: 1
-    task: 1
-    wear: 1
+    method: 1
+    parent: 1
+    property: 1
   },
   true
 >
@@ -189,13 +189,13 @@ export type ASTClassReferenceType = {
 }
 
 export type ASTClassType = {
-  base: Array<ASTClassType>
-  hook: Record<string, ASTCallbackType>
+  callback: Record<string, ASTCallbackType>
+  interface: Record<string, ASTClassInterfaceImplementationType>
   like: AST.Class
-  link: Record<string, ASTInputType>
+  method: Record<string, ASTFunctionType>
   name: string
-  task: Record<string, ASTFunctionType>
-  wear: Record<string, ASTClassInterfaceImplementationType>
+  parent: Array<ASTClassType>
+  property: Record<string, ASTInputType>
 }
 
 export type ASTCloneVariablePartialType = PartialState<
@@ -219,8 +219,8 @@ export type ASTCloneVariableType = ASTMutableMixinType & {
 export type ASTComponentPartialType = PartialState<
   ASTComponentType,
   {
+    element: 1
     like: 1
-    tool: 1
   },
   true
 >
@@ -230,9 +230,9 @@ export type ASTComponentPotentialType =
   | ASTComponentType
 
 export type ASTComponentType = {
+  element: Array<ASTElementType>
   like: AST.Component
   name: string
-  tool: Array<ASTElementType>
 }
 
 export type ASTConstantPartialType = PartialState<
@@ -264,8 +264,8 @@ export type ASTElementPotentialType =
   | ASTElementType
 
 export type ASTElementType = {
+  component: ASTComponentType
   like: AST.Element
-  zone: ASTComponentType
 }
 
 export type ASTExportPartialType = PartialState<
@@ -285,15 +285,19 @@ export type ASTExportType = {
   link: string
 }
 
+export type ASTFunctionFlowPotentialType =
+  | ASTCallPotentialType
+  | ASTAssertionPotentialType
+
 export type ASTFunctionFlowType = ASTCallType | ASTAssertionType
 
 export type ASTFunctionPartialType = PartialState<
   ASTFunctionType,
   {
     flow: 1
+    function: 1
     like: 1
-    take: 1
-    task: 1
+    parameter: 1
   },
   true
 >
@@ -304,16 +308,16 @@ export type ASTFunctionPotentialType =
 
 export type ASTFunctionType = {
   flow: Array<ASTFunctionFlowType>
+  function: Record<string, ASTFunctionType>
   like: AST.Function
-  take: Record<string, ASTInputType>
-  task: Record<string, ASTFunctionType>
+  parameter: Record<string, ASTInputType>
 }
 
 export type ASTImportPartialType = PartialState<
   ASTImportType,
   {
     like: 1
-    take: 1
+    variable: 1
   },
   true
 >
@@ -323,11 +327,9 @@ export type ASTImportPotentialType =
   | ASTImportType
 
 export type ASTImportType = {
+  absolutePath: string
   like: AST.Import
-  link: string
-  take: Array<
-    ASTImportVariableType | ASTImportVariablePartialType
-  >
+  variable: Array<ASTImportVariablePotentialType>
 }
 
 export type ASTImportVariablePartialType = PartialState<
@@ -362,7 +364,7 @@ export type ASTImportVariableRenameType = {
 export type ASTImportVariableType = {
   like: AST.ImportVariable
   name: string
-  save?: ASTImportVariableRenamePotentialType
+  rename?: ASTImportVariableRenamePotentialType
 }
 
 export type ASTInjectPartialType = PartialState<
@@ -379,7 +381,7 @@ export type ASTInjectPotentialType =
   | ASTInjectType
 
 export type ASTInjectType = {
-  bind: Array<ASTBindType>
+  bind: Array<ASTBindPotentialType>
   like: AST.Inject
   name: string
 }
@@ -397,9 +399,9 @@ export type ASTInputPotentialType =
   | ASTInputType
 
 export type ASTInputType = {
+  inputLike: ASTClassReferenceType
   like: AST.Input
   name: string
-  takeLike: ASTClassReferenceType
 }
 
 export type ASTMoveVariablePartialType = PartialState<
@@ -417,11 +419,11 @@ export type ASTMoveVariablePotentialType =
 // move
 export type ASTMoveVariableType = ASTMutableMixinType & {
   like: AST.MoveVariable
-  link: TreeNestType
+  path: TreeNestType
 }
 
 export type ASTMutableMixinType = {
-  flex: boolean
+  isMutable: boolean
 }
 
 export type ASTNativeClassInterfacePartialType = PartialState<
@@ -471,8 +473,8 @@ export type ASTStringType = {
 export type ASTTemplatePartialType = PartialState<
   ASTTemplateType,
   {
+    input: 1
     like: 1
-    take: 1
   },
   true
 >
@@ -482,8 +484,8 @@ export type ASTTemplatePotentialType =
   | ASTTemplateType
 
 export type ASTTemplateType = {
+  input: Record<string, ASTInputPotentialType>
   like: AST.Template
-  take: Record<string, ASTInputType>
 }
 
 export type ASTTermPartialType = PartialState<
@@ -533,7 +535,7 @@ export type ASTUnsignedIntegerPotentialType =
 
 export type ASTUnsignedIntegerType = {
   like: AST.UnsignedInteger
-  mark: number
+  value: number
 }
 
 export type ASTValueType =

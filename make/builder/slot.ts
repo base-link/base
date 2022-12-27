@@ -1,10 +1,10 @@
-import { NestInputType, Tree } from '~'
+import { APIInputType, Tree, api } from '~'
 
 export function nestHasSlot(
-  input: NestInputType,
+  input: APIInputType,
   size: number = 1,
 ): boolean {
-  const nest = input.nest
+  const nest = api.assumeNest(input)
 
   for (let i = 0, n = nest.line.length; i < n; i++) {
     let line = nest.line[i]
