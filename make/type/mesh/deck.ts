@@ -1,25 +1,25 @@
-import { Mesh, PartialState } from '~'
+import { AST, PartialState } from '~'
 
-export type MeshDeckFacePartialType = PartialState<
-  MeshDeckFaceType,
+export type ASTPackageLicensePartialType = PartialState<
+  ASTPackageLicenseType,
   {
     like: 1
   },
   true
 >
 
-export type MeshDeckFacePotentialType =
-  | MeshDeckFacePartialType
-  | MeshDeckFaceType
+export type ASTPackageLicensePotentialType =
+  | ASTPackageLicensePartialType
+  | ASTPackageLicenseType
 
-export type MeshDeckFaceType = {
-  email?: string
-  like: Mesh.DeckFace
-  name?: string
+export type ASTPackageLicenseType = {
+  like: AST.PackageLicense
+  name: string
+  partial: false
 }
 
-export type MeshDeckPartialType = PartialState<
-  MeshDeckType,
+export type ASTPackagePartialType = PartialState<
+  ASTPackageType,
   {
     face: 1
     like: 1
@@ -28,37 +28,37 @@ export type MeshDeckPartialType = PartialState<
   true
 >
 
-export type MeshDeckPotentialType =
-  | MeshDeckPartialType
-  | MeshDeckType
+export type ASTPackagePotentialType =
+  | ASTPackagePartialType
+  | ASTPackageType
 
-export type MeshDeckTermPartialType = PartialState<
-  MeshDeckTermType,
+export type ASTPackageType = {
+  bear?: string
+  face: Array<ASTPackageUserType>
+  host: string
+  like: AST.Package
+  mark: string
+  name: string
+  read?: string
+  site?: string
+  term: Array<ASTPackageLicenseType>
+  test?: string
+}
+
+export type ASTPackageUserPartialType = PartialState<
+  ASTPackageUserType,
   {
     like: 1
   },
   true
 >
 
-export type MeshDeckTermPotentialType =
-  | MeshDeckTermPartialType
-  | MeshDeckTermType
+export type ASTPackageUserPotentialType =
+  | ASTPackageUserPartialType
+  | ASTPackageUserType
 
-export type MeshDeckTermType = {
-  like: Mesh.DeckTerm
-  name: string
-  partial: false
-}
-
-export type MeshDeckType = {
-  bear?: string
-  face: Array<MeshDeckFaceType>
-  host: string
-  like: Mesh.Deck
-  mark: string
-  name: string
-  read?: string
-  site?: string
-  term: Array<MeshDeckTermType>
-  test?: string
+export type ASTPackageUserType = {
+  email?: string
+  like: AST.PackageUser
+  name?: string
 }

@@ -1,8 +1,8 @@
 import {
   APIInputType,
   ERROR,
-  Mesh,
-  MeshCardType,
+  AST,
+  ASTModuleType,
   APIInputType,
   api,
 } from '~'
@@ -15,7 +15,7 @@ export type ErrorType = {
   text?: string
 }
 
-export function assumeCard(input: APIInputType): MeshCardType {}
+export function assumeCard(input: APIInputType): ASTModuleType {}
 
 export function generateForkMissingPropertyError(
   property: string,
@@ -70,12 +70,12 @@ export function generateMissingStringError(
   }
 }
 
-export function generateObjectNotMeshNodeError(
-  like: Mesh,
+export function generateObjectNotASTNodeError(
+  like: AST,
 ): ErrorType {
   return {
     code: `0007`,
-    note: `Object isn't Mesh node '${like}'.`,
+    note: `Object isn't AST node '${like}'.`,
   }
 }
 

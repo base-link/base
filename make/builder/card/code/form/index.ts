@@ -1,7 +1,7 @@
 import {
+  AST,
   FormInputType,
-  InitialMeshFormType,
-  Mesh,
+  InitialASTClassType,
   NestInputType,
   api,
 } from '~'
@@ -14,10 +14,10 @@ export * from './wear'
 export function process_codeCard_form(
   input: NestInputType,
 ): void {
-  const formData: InitialMeshFormType = {
+  const formData: InitialASTClassType = {
     base: [],
     hook: {},
-    like: Mesh.Form,
+    like: AST.Form,
     link: {},
     task: {},
     wear: {},
@@ -39,10 +39,10 @@ export function process_codeCard_form(
 
   const card = api.getProperty(input, 'card')
 
-  api.assertMesh(card, Mesh.CodeCard)
+  api.assertAST(card, AST.CodeCard)
 
   if (formData.name) {
-    card.publicFormMesh[formData.name] = formData
+    card.publicFormAST[formData.name] = formData
   }
 }
 

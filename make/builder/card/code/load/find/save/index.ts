@@ -1,4 +1,4 @@
-import { APIInputType, Mesh, api } from '~'
+import { APIInputType, AST, api } from '~'
 
 export function process_codeCard_load_find_save(
   input: APIInputType,
@@ -25,13 +25,10 @@ export function process_codeCard_load_find_save_nestedChildren(
     const term = api.resolveStaticTermFromNest(input)
     api.assertString(term)
 
-    const find = api.assumeInputObjectAsMesh(
-      input,
-      Mesh.LoadTake,
-    )
+    const find = api.assumeInputObjectAsAST(input, AST.LoadTake)
 
     find.save = {
-      like: Mesh.LoadTakeSave,
+      like: AST.LoadTakeSave,
       name: term,
     }
   } else {

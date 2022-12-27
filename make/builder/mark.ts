@@ -1,7 +1,7 @@
-import { NestInputType, Tree } from '~'
+import { APIInputType, Tree, api } from '~'
 
-export function getMark(input: NestInputType) {
-  const nest = input.nest
+export function getMark(input: APIInputType) {
+  const nest = api.assumeNest(input)
   const line = nest.line[0]
 
   if (line && line.like === Tree.Mark) {

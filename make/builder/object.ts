@@ -1,24 +1,24 @@
-import { Mesh, MeshBindableObjectType, MeshScopeType } from '~'
+import { AST, ASTBindableObjectType, ASTScopeType } from '~'
 
 export function createBindableObject(
   data: Record<string, unknown>,
-  parent?: MeshBindableObjectType,
-): MeshBindableObjectType {
+  parent?: ASTBindableObjectType,
+): ASTBindableObjectType {
   return {
     callbackList: [],
     data,
-    like: Mesh.BindableObject,
+    like: AST.BindableObject,
     parent,
   }
 }
 
 export function createScope(
   data: Record<string, unknown>,
-  parent?: MeshScopeType,
-): MeshScopeType {
+  parent?: ASTScopeType,
+): ASTScopeType {
   return {
     data,
-    like: Mesh.Scope,
+    like: AST.Scope,
     parent,
   }
 }

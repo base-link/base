@@ -1,52 +1,52 @@
 import { APIInputType } from '~'
 
-import { Mesh } from './list'
+import { AST } from './list'
 
-export type MeshBindableObjectType = {
+export type ASTBindableObjectType = {
   // callbacks to the dependency handler
   // then the dependency handler calls back to
   // the original source compiler handler
   callbackList: Array<
-    MeshInputCallbackType<Record<string, unknown>>
+    ASTInputCallbackType<Record<string, unknown>>
   >
   data: Record<string, unknown>
-  like: Mesh.BindableObject
-  parent?: MeshBindableObjectType
+  like: AST.BindableObject
+  parent?: ASTBindableObjectType
 }
 
-export type MeshBindableStringType = {
-  callbackList: Array<MeshInputCallbackType<string>>
+export type ASTBindableStringType = {
+  callbackList: Array<ASTInputCallbackType<string>>
   data: string
-  like: Mesh.BindableString
-  parent?: MeshBindableObjectType
+  like: AST.BindableString
+  parent?: ASTBindableObjectType
 }
 
-export type MeshDependencyPartCallbackType = (
+export type ASTDependencyPartCallbackType = (
   value: unknown,
 ) => void
 
-export type MeshDependencyPartType = {
-  callbackList: Array<MeshDependencyPartCallbackType>
-  last?: MeshDependencyPartType
-  like: Mesh.DependencyPart
+export type ASTDependencyPartType = {
+  callbackList: Array<ASTDependencyPartCallbackType>
+  last?: ASTDependencyPartType
+  like: AST.DependencyPart
   met: boolean
   name: string
-  next?: MeshDependencyPartType
-  parent: MeshDependencyType
+  next?: ASTDependencyPartType
+  parent: ASTDependencyType
 }
 
-export type MeshDependencyType = {
-  callbackList: Array<MeshInputCallbackType<APIInputType>>
+export type ASTDependencyType = {
+  callbackList: Array<ASTInputCallbackType<APIInputType>>
   context: APIInputType
-  like: Mesh.Dependency
+  like: AST.Dependency
   met: boolean
-  path: Array<MeshDependencyPartType>
+  path: Array<ASTDependencyPartType>
 }
 
-export type MeshInputCallbackType<T> = (value: T) => void
+export type ASTInputCallbackType<T> = (value: T) => void
 
-export type MeshLexicalScopeType = {
+export type ASTLexicalScopeType = {
   data: Record<string, unknown>
-  like: Mesh.LexicalScope
-  parent?: MeshLexicalScopeType
+  like: AST.LexicalScope
+  parent?: ASTLexicalScopeType
 }

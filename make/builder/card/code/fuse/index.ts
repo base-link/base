@@ -1,6 +1,6 @@
 import {
-  InitialMeshFuseType,
-  Mesh,
+  AST,
+  InitialASTInjectType,
   Nest,
   NestInputType,
   api,
@@ -9,13 +9,13 @@ import {
 export function process_codeCard_fuse(
   input: NestInputType,
 ): void {
-  const fuse: InitialMeshFuseType = {
+  const fuse: InitialASTInjectType = {
     bind: [],
-    like: Mesh.Fuse,
+    like: AST.Fuse,
   }
 
   const card = api.getProperty(input, 'card')
-  api.assertMesh(card, Mesh.CodeCard)
+  api.assertAST(card, AST.CodeCard)
 
   input.nest.nest.forEach((nest, index) => {
     process_codeCard_fuse_nestedChildren({

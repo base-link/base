@@ -1,12 +1,12 @@
-import { MeshCardBaseType, MeshScopeType } from '~'
+import { ASTModuleBaseType, ASTScopeType } from '~'
 
 export * from './mesh'
 
 export type APIInputType = {
-  card: MeshCardBaseType
-  lexicalScope: MeshScopeType
-  nestScope?: MeshScopeType
-  objectScope: MeshScopeType
+  card: ASTModuleBaseType
+  lexicalScope: ASTScopeType
+  nestScope?: ASTScopeType
+  objectScope: ASTScopeType
 }
 
 export type NestedPartial<T> = T extends

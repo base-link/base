@@ -1,45 +1,45 @@
 import {
-  Mesh,
-  MeshBearPotentialType,
-  MeshBindPotentialType,
-  MeshBindableObjectType,
-  MeshBindableStringType,
-  MeshBookCardPotentialType,
-  MeshCallPotentialType,
-  MeshCodeCardPotentialType,
-  MeshCordPotentialType,
-  MeshDeckCardPotentialType,
-  MeshDeckFacePotentialType,
-  MeshDeckPotentialType,
-  MeshDeckTermPotentialType,
-  MeshDependencyPartType,
-  MeshDependencyType,
-  MeshFacePotentialType,
-  MeshFormPotentialType,
-  MeshFusePotentialType,
-  MeshHoldPotentialType,
-  MeshHookPotentialType,
-  MeshHostPotentialType,
-  MeshLexicalScopeType,
-  MeshLikePotentialType,
-  MeshLoadPotentialType,
-  MeshLoadTakePotentialType,
-  MeshLoadTakeSavePotentialType,
-  MeshMarkPotentialType,
-  MeshReadDrawPotentialType,
-  MeshReadLoanPotentialType,
-  MeshReadMovePotentialType,
-  MeshScopeType,
-  MeshSuitPotentialType,
-  MeshSuitTaskPotentialType,
-  MeshTakePotentialType,
-  MeshTaskPotentialType,
-  MeshTermPotentialType,
-  MeshTestPotentialType,
-  MeshTreePotentialType,
-  MeshWearPotentialType,
-  MeshZonePotentialType,
-  MeshZoneToolPotentialType,
+  AST,
+  ASTAssertionPotentialType,
+  ASTBindPotentialType,
+  ASTBindableObjectType,
+  ASTBindableStringType,
+  ASTBookModulePotentialType,
+  ASTBorrowVariablePotentialType,
+  ASTCallPotentialType,
+  ASTCallbackPotentialType,
+  ASTClassInterfaceFunctionPotentialType,
+  ASTClassInterfaceImplementationPotentialType,
+  ASTClassInterfacePotentialType,
+  ASTClassPotentialType,
+  ASTClassReferencePotentialType,
+  ASTCloneVariablePotentialType,
+  ASTCodeModulePotentialType,
+  ASTComponentPotentialType,
+  ASTConstantPotentialType,
+  ASTDependencyPartType,
+  ASTDependencyType,
+  ASTElementPotentialType,
+  ASTExportPotentialType,
+  ASTFunctionPotentialType,
+  ASTImportPotentialType,
+  ASTImportVariablePotentialType,
+  ASTImportVariableRenamePotentialType,
+  ASTInjectPotentialType,
+  ASTInputPotentialType,
+  ASTLexicalScopeType,
+  ASTMoveVariablePotentialType,
+  ASTNativeClassInterfacePotentialType,
+  ASTPackageLicensePotentialType,
+  ASTPackageModulePotentialType,
+  ASTPackagePotentialType,
+  ASTPackageUserPotentialType,
+  ASTScopeType,
+  ASTStringPotentialType,
+  ASTTemplatePotentialType,
+  ASTTermPotentialType,
+  ASTTestPotentialType,
+  ASTUnsignedIntegerPotentialType,
 } from '~'
 
 export * from './book'
@@ -49,47 +49,47 @@ export * from './deck'
 export * from './dependency'
 export * from './list'
 
-export type MeshNodeMappingType = {
-  'mesh-bear': MeshBearPotentialType
-  'mesh-bind': MeshBindPotentialType
-  'mesh-bindable-object': MeshBindableObjectType
-  'mesh-bindable-string': MeshBindableStringType
-  'mesh-book-card': MeshBookCardPotentialType
-  'mesh-call': MeshCallPotentialType
-  'mesh-code-card': MeshCodeCardPotentialType
-  'mesh-cord': MeshCordPotentialType
-  'mesh-deck': MeshDeckPotentialType
-  'mesh-deck-card': MeshDeckCardPotentialType
-  'mesh-deck-face': MeshDeckFacePotentialType
-  'mesh-deck-term': MeshDeckTermPotentialType
-  'mesh-dependency': MeshDependencyType
-  'mesh-dependency-part': MeshDependencyPartType
-  'mesh-face': MeshFacePotentialType
-  'mesh-form': MeshFormPotentialType
-  'mesh-fuse': MeshFusePotentialType
-  'mesh-hold': MeshHoldPotentialType
-  'mesh-hook': MeshHookPotentialType
-  'mesh-host': MeshHostPotentialType
-  'mesh-lexical-scope': MeshLexicalScopeType
-  'mesh-like': MeshLikePotentialType
-  'mesh-load': MeshLoadPotentialType
-  'mesh-load-take': MeshLoadTakePotentialType
-  'mesh-load-take-save': MeshLoadTakeSavePotentialType
-  'mesh-mark': MeshMarkPotentialType
-  'mesh-read-draw': MeshReadDrawPotentialType
-  'mesh-read-loan': MeshReadLoanPotentialType
-  'mesh-read-move': MeshReadMovePotentialType
-  'mesh-scope': MeshScopeType
-  'mesh-suit': MeshSuitPotentialType
-  'mesh-suit-task': MeshSuitTaskPotentialType
-  'mesh-take': MeshTakePotentialType
-  'mesh-task': MeshTaskPotentialType
-  'mesh-term': MeshTermPotentialType
-  'mesh-test': MeshTestPotentialType
-  'mesh-tree': MeshTreePotentialType
-  'mesh-wear': MeshWearPotentialType
-  'mesh-zone': MeshZonePotentialType
-  'mesh-zone-tool': MeshZoneToolPotentialType
+export type ASTNodeMappingType = {
+  'ast-assertion': ASTAssertionPotentialType
+  'ast-bind': ASTBindPotentialType
+  'ast-bindable-object': ASTBindableObjectType
+  'ast-bindable-string': ASTBindableStringType
+  'ast-book-module': ASTBookModulePotentialType
+  'ast-borrow-variable': ASTBorrowVariablePotentialType
+  'ast-call': ASTCallPotentialType
+  'ast-callback': ASTCallbackPotentialType
+  'ast-class': ASTClassPotentialType
+  'ast-class-interface': ASTClassInterfacePotentialType
+  'ast-class-interface-function': ASTClassInterfaceFunctionPotentialType
+  'ast-class-interface-implementation': ASTClassInterfaceImplementationPotentialType
+  'ast-class-reference': ASTClassReferencePotentialType
+  'ast-clone-variable': ASTCloneVariablePotentialType
+  'ast-code-module': ASTCodeModulePotentialType
+  'ast-component': ASTComponentPotentialType
+  'ast-constant': ASTConstantPotentialType
+  'ast-dependency': ASTDependencyType
+  'ast-dependency-part': ASTDependencyPartType
+  'ast-element': ASTElementPotentialType
+  'ast-export': ASTExportPotentialType
+  'ast-function': ASTFunctionPotentialType
+  'ast-import': ASTImportPotentialType
+  'ast-import-variable': ASTImportVariablePotentialType
+  'ast-import-variable-rename': ASTImportVariableRenamePotentialType
+  'ast-inject': ASTInjectPotentialType
+  'ast-input': ASTInputPotentialType
+  'ast-lexical-scope': ASTLexicalScopeType
+  'ast-move-variable': ASTMoveVariablePotentialType
+  'ast-native-class-interface': ASTNativeClassInterfacePotentialType
+  'ast-package': ASTPackagePotentialType
+  'ast-package-license': ASTPackageLicensePotentialType
+  'ast-package-module': ASTPackageModulePotentialType
+  'ast-package-user': ASTPackageUserPotentialType
+  'ast-scope': ASTScopeType
+  'ast-string': ASTStringPotentialType
+  'ast-template': ASTTemplatePotentialType
+  'ast-term': ASTTermPotentialType
+  'ast-test': ASTTestPotentialType
+  'ast-unsigned-integer': ASTUnsignedIntegerPotentialType
 }
 
-export type MeshType<T extends Mesh> = MeshNodeMappingType[T]
+export type ASTType<T extends AST> = ASTNodeMappingType[T]

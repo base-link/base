@@ -1,7 +1,7 @@
 import {
   APIInputType,
-  Mesh,
-  MeshScopeType,
+  AST,
+  ASTScopeType,
   Nest,
   Tree,
   TreeNestType,
@@ -41,7 +41,7 @@ export function assertNumber(
 
 export function assertScope(
   object: unknown,
-): asserts object is MeshScopeType {
+): asserts object is ASTScopeType {
   if (!api.isScope(object)) {
     api.throwError({
       code: `0015`,
@@ -112,11 +112,11 @@ export function isNumber(object: unknown): object is number {
 
 export function isScope(
   object: unknown,
-): object is MeshScopeType {
+): object is ASTScopeType {
   return (
     api.isObject(object) &&
     'like' in object &&
-    (object as MeshScopeType).like === Mesh.Scope
+    (object as ASTScopeType).like === AST.Scope
   )
 }
 

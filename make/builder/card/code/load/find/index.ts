@@ -1,10 +1,10 @@
 import {
   APIInputType,
-  InitialMeshLoadTakeType,
-  InitialMeshLoadType,
-  Mesh,
-  MeshLoadType,
-  MeshType,
+  AST,
+  ASTImportType,
+  ASTType,
+  InitialASTImportType,
+  InitialASTImportVariableType,
   api,
 } from '~'
 
@@ -12,24 +12,24 @@ export * from './bear'
 export * from './save'
 
 export type LoadFindInputType = {
-  find: InitialMeshLoadTakeType
+  find: InitialASTImportVariableType
 }
 
 export type LoadInputType = {
-  load: MeshLoadType | InitialMeshLoadType
+  load: ASTImportType | InitialASTImportType
 }
 
-export function assumeInputObjectAsMesh<T extends Mesh>(
+export function assumeInputObjectAsAST<T extends AST>(
   input: APIInputType,
   type: T,
   rank = 0,
-): MeshType<T> {
+): ASTType<T> {
   let objectScope = input.objectScope
   while (rank > 0 && objectScope.parent) {
     objectScope = objectScope.parent
     rank--
   }
-  api.assertMesh(objectScope.data, type)
+  api.assertAST(objectScope.data, type)
   return objectScope.data
 }
 
@@ -46,11 +46,11 @@ export function extendWithObjectScope(
 export function process_codeCard_load_find(
   input: APIInputType,
 ): void {
-  const find: InitialMeshLoadTakeType = {
-    like: Mesh.LoadTake,
+  const find: InitialASTImportVariableType = {
+    like: AST.LoadTake,
   }
 
-  const load = api.assumeInputObjectAsMesh(input, Mesh.Load)
+  const load = api.assumeInputObjectAsAST(input, AST.Load)
   load.take.push(find)
 
   const childInput = api.extendWithObjectScope(input, find)
@@ -87,9 +87,9 @@ export function process_codeCard_load_find_nestedChildren(
           api.throwError(api.generateUnknownTermError(input))
       }
     } else {
-      const find = api.assumeInputObjectAsMesh(
+      const find = api.assumeInputObjectAsAST(
         input,
-        Mesh.LoadTake,
+        AST.LoadTake,
       )
       find.name = term
     }

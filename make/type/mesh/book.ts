@@ -1,3 +1,3 @@
-export type MeshBookTextType = {
+export type ASTBookTextType = {
   like: 'book-text'
 }

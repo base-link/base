@@ -1,10 +1,10 @@
-import { Mesh, MeshForkType, api } from '~'
+import { AST, ASTForkType, api } from '~'
 
 export function getForkProperty(
-  fork: MeshForkType,
+  fork: ASTForkType,
   path: string | number | symbol,
 ): unknown {
-  let source: MeshForkType | undefined = fork
+  let source: ASTForkType | undefined = fork
 
   while (source) {
     if (path in source.data) {
@@ -32,29 +32,27 @@ export function getProperty(
   }
 }
 
-export function isFork(
-  object: unknown,
-): object is MeshForkType {
+export function isFork(object: unknown): object is ASTForkType {
   return (
     api.isObject(object) &&
     'like' in object &&
-    (object as MeshForkType).like === Mesh.Fork
+    (object as ASTForkType).like === AST.Fork
   )
 }
 
 export function makeFork(
-  parent: MeshForkType,
+  parent: ASTForkType,
   data: Record<string, unknown>,
-): MeshForkType {
+): ASTForkType {
   return {
     data,
-    like: Mesh.Fork,
+    like: AST.Fork,
     parent,
   }
 }
 
 export function setForkProperty(
-  fork: MeshForkType,
+  fork: ASTForkType,
   property: string,
   value: unknown,
 ): void {

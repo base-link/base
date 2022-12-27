@@ -1,11 +1,11 @@
 import {
   APIInputType,
+  AST,
+  ASTDependencyPartType,
+  ASTDependencyType,
+  ASTScopeType,
   ErrorType,
-  Mesh,
-  MeshDependencyPartType,
-  MeshDependencyType,
   Nest,
-  APIInputType,
   Tree,
   TreeNodeType,
   api,
@@ -23,7 +23,7 @@ export function assertString(
 }
 
 export function checkDependency(
-  dependency: MeshDependencyType,
+  dependency: ASTDependencyType,
 ): void {
   let value: unknown = dependency.context.fork.data
 
@@ -114,7 +114,7 @@ export function processTextNest(
 
 export function readDependency(
   input: unknown,
-  dependency: MeshDependencyType,
+  dependency: ASTDependencyType,
 ): unknown {
   let value = input
 
@@ -132,7 +132,7 @@ export function readDependency(
 }
 
 export function readNest(input: APIInputType): unknown {
-  let value: unknown = input.fork.data
+  let scope: ASTScopeType = input.lexicalScope
 
   api.assumeNest(input).line.forEach(nest => {
     switch (nest.like) {
@@ -144,8 +144,9 @@ export function readNest(input: APIInputType): unknown {
 
         api.assertString(name)
 
-        if (api.isRecord(value)) {
-          value = value[name]
+        // TODO
+        if (api.isRecord(scope.data) && name in scope.data) {
+          scope = scope.data[name]
         }
         break
       default:
@@ -159,12 +160,12 @@ export function readNest(input: APIInputType): unknown {
 export function resolveNestDependencyList(
   input: APIInputType,
   job: (i: APIInputType) => void,
-): Array<MeshDependencyType> {
-  const array: Array<MeshDependencyType> = []
-  const dependency: MeshDependencyType = {
+): Array<ASTDependencyType> {
+  const array: Array<ASTDependencyType> = []
+  const dependency: ASTDependencyType = {
     callbackList: [job],
     context: input,
-    like: Mesh.Dependency,
+    like: AST.Dependency,
     met: false,
     path: [],
   }
@@ -180,9 +181,9 @@ export function resolveNestDependencyList(
 
       api.assertString(name)
 
-      const dependencyPart: MeshDependencyPartType = {
+      const dependencyPart: ASTDependencyPartType = {
         callbackList: [],
-        like: Mesh.DependencyPart,
+        like: AST.DependencyPart,
         met: false,
         name,
         parent: dependency,
@@ -241,7 +242,7 @@ export function resolveText(
 export function resolveTextDependencyList(
   input: APIInputType,
   job: (i: APIInputType) => void,
-): Array<MeshDependencyType> {
+): Array<ASTDependencyType> {
   const nest = api.assumeNest(input)
 
   if (nest.line.length > 1) {
@@ -257,7 +258,7 @@ export function resolveTextDependencyList(
     return []
   }
 
-  const array: Array<MeshDependencyType> = []
+  const array: Array<ASTDependencyType> = []
 
   line.link.forEach(link => {
     switch (link.like) {

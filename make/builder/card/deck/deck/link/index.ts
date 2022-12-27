@@ -1,4 +1,4 @@
-import { APIInputType, Mesh, api } from '~'
+import { APIInputType, AST, api } from '~'
 
 export function process_deckCard_deck_link(
   input: APIInputType,
@@ -27,7 +27,7 @@ export function process_deckCard_deck_link(
     }
 
     const card = input.card
-    api.assertMesh(card, Mesh.DeckCard)
+    api.assertAST(card, AST.DeckCard)
 
     card.deck.host = host
     card.deck.name = name

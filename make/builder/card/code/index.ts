@@ -1,8 +1,8 @@
 import {
   APIInputType,
+  AST,
+  ASTCodeModuleType,
   Base,
-  Mesh,
-  MeshCodeCardType,
   api,
 } from '~'
 
@@ -54,32 +54,32 @@ export function process_codeCard(
   const textTree = api.parseTextIntoTree(text)
   const linkHost = api.getLinkHost(link)
   const card = base.card(link)
-  const seed: MeshCodeCardType = {
-    allSuitMesh: {},
-    allTaskMesh: {},
-    allTestMesh: {},
-    allTreeMesh: {},
-    allZoneMesh: {},
+  const seed: ASTCodeModuleType = {
+    allSuitAST: {},
+    allTaskAST: {},
+    allTestAST: {},
+    allTreeAST: {},
+    allZoneAST: {},
     base,
     bearList: [],
     dependencyList: [],
     directory: linkHost,
-    faceMesh: {},
-    formMesh: {},
-    hookMesh: {},
-    hostMesh: {},
-    like: Mesh.CodeCard,
+    faceAST: {},
+    formAST: {},
+    hookAST: {},
+    hostAST: {},
+    like: AST.CodeCard,
     loadList: [],
     parseTree: textTree,
     path: link,
-    publicFaceMesh: {},
-    publicFormMesh: {},
-    publicHostMesh: {},
-    publicSuitMesh: {},
-    publicTaskMesh: {},
-    publicTestMesh: {},
-    publicTreeMesh: {},
-    publicZoneMesh: {},
+    publicFaceAST: {},
+    publicFormAST: {},
+    publicHostAST: {},
+    publicSuitAST: {},
+    publicTaskAST: {},
+    publicTestAST: {},
+    publicTreeAST: {},
+    publicZoneAST: {},
     textByLine: text.split('\n'),
   }
   const bindableSeed = api.createBindableObject(seed)
@@ -102,7 +102,7 @@ export function process_codeCard(
     )
   })
 
-  // this.mintCodeCardMesh(fork)
+  // this.mintCodeCardAST(fork)
 }
 
 export function process_codeCard_nestedChildren(
@@ -178,7 +178,7 @@ export function resolve_codeCard(
   link: string,
 ): void {
   const card = base.card(link)
-  api.assertMesh(card.seed, Mesh.CodeCard)
+  api.assertAST(card.seed, AST.CodeCard)
 
   card.seed.loadList.forEach(load => {})
   card.seed.bearList.forEach(bear => {

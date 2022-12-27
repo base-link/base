@@ -1,11 +1,11 @@
-import { APIInputType, Mesh, api } from '~'
+import { APIInputType, AST, api } from '~'
 
 export function finalize_deckCard_deck_bear(
   input: APIInputType,
 ): void {
   const text = api.resolveText(input)
   const { card } = input
-  api.assertMesh(card, Mesh.DeckCard)
+  api.assertAST(card, AST.DeckCard)
   api.assertString(text)
   const path = api.findPath(text, card.directory)
   if (!path) {

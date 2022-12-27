@@ -1,99 +1,95 @@
 import {
+  ASTCallbackType,
+  ASTClassInterfaceType,
+  ASTClassPotentialType,
+  ASTComponentType,
+  ASTConstantType,
+  ASTDependencyType,
+  ASTExportType,
+  ASTFunctionType,
+  ASTImportPotentialType,
+  ASTNativeClassInterfaceType,
+  ASTPackageType,
+  ASTTemplateType,
+  ASTTestType,
   Base,
-  MeshBearType,
-  MeshDeckType,
-  MeshDependencyType,
-  MeshFaceType,
-  MeshFormPotentialType,
-  MeshHookType,
-  MeshHostType,
-  MeshLoadPotentialType,
-  MeshSuitType,
-  MeshTaskType,
-  MeshTestType,
-  MeshTreeType,
-  MeshZoneType,
   PartialState,
   TreeNodeType,
 } from '~'
 
-import { Mesh } from './list'
+import { AST } from './list'
 
-export const CARD_TYPE = [
-  Mesh.CodeCard,
-  Mesh.BookCard,
-  Mesh.DeckCard,
-] as const
-
-export type MeshBookCardPartialType = PartialState<
-  MeshBookCardType,
+export type ASTBookModulePartialType = PartialState<
+  ASTBookModuleType,
   {
     like: 1
   },
   true
 >
 
-export type MeshBookCardPotentialType =
-  | MeshBookCardPartialType
-  | MeshBookCardType
+export type ASTBookModulePotentialType =
+  | ASTBookModulePartialType
+  | ASTBookModuleType
 
-export type MeshBookCardType = MeshCardBaseType & {
+export type ASTBookModuleType = ASTModuleBaseType & {
   abstract: string
-  like: Mesh.BookCard
+  like: AST.BookModule
   tags: Array<string>
   title: string
-  // text: Array<MeshBookSectionType>
+  // text: Array<ASTBookSectionType>
 }
 
-export type MeshCardBaseType = {
+export type ASTCodeModulePartialType = PartialState<
+  ASTCodeModuleType,
+  {
+    like: 1
+  },
+  true
+>
+
+export type ASTCodeModulePotentialType =
+  | ASTCodeModulePartialType
+  | ASTCodeModuleType
+
+export type ASTCodeModuleType = ASTModuleBaseType & {
+  allSuitAST: Record<string, ASTClassInterfaceType>
+  allTaskAST: Record<string, ASTFunctionType>
+  allTestAST: Record<string, ASTTestType>
+  allTreeAST: Record<string, ASTTemplateType>
+  allZoneAST: Record<string, ASTComponentType>
+  bearList: Array<ASTExportType>
+  faceAST: Record<string, ASTNativeClassInterfaceType>
+  formAST: Record<string, ASTClassPotentialType>
+  hookAST: Record<string, ASTCallbackType>
+  hostAST: Record<string, ASTConstantType>
+  like: AST.CodeModule
+  loadList: Array<ASTImportPotentialType>
+  publicFaceAST: Record<string, ASTNativeClassInterfaceType>
+  publicFormAST: Record<string, ASTClassPotentialType>
+  publicHostAST: Record<string, ASTConstantType>
+  publicSuitAST: Record<string, ASTClassInterfaceType>
+  publicTaskAST: Record<string, ASTFunctionType>
+  publicTestAST: Record<string, ASTTestType>
+  publicTreeAST: Record<string, ASTTemplateType>
+  publicZoneAST: Record<string, ASTComponentType>
+}
+
+export type ASTModuleBaseType = {
   base: Base
-  dependencyList: Array<MeshDependencyType>
+  dependencyList: Array<ASTDependencyType>
   directory: string
   parseTree: TreeNodeType
   path: string
   textByLine: Array<string>
 }
 
-export type MeshCardType = MeshCodeCardType | MeshDeckCardType
+export type ASTModuleType =
+  | ASTCodeModuleType
+  | ASTPackageModuleType
 
-export type MeshCodeCardPartialType = PartialState<
-  MeshCodeCardType,
-  {
-    like: 1
-  },
-  true
->
-
-export type MeshCodeCardPotentialType =
-  | MeshCodeCardPartialType
-  | MeshCodeCardType
-
-export type MeshCodeCardType = MeshCardBaseType & {
-  allSuitMesh: Record<string, MeshSuitType>
-  allTaskMesh: Record<string, MeshTaskType>
-  allTestMesh: Record<string, MeshTestType>
-  allTreeMesh: Record<string, MeshTreeType>
-  allZoneMesh: Record<string, MeshZoneType>
-  bearList: Array<MeshBearType>
-  faceMesh: Record<string, MeshFaceType>
-  formMesh: Record<string, MeshFormPotentialType>
-  hookMesh: Record<string, MeshHookType>
-  hostMesh: Record<string, MeshHostType>
-  like: Mesh.CodeCard
-  loadList: Array<MeshLoadPotentialType>
-  publicFaceMesh: Record<string, MeshFaceType>
-  publicFormMesh: Record<string, MeshFormPotentialType>
-  publicHostMesh: Record<string, MeshHostType>
-  publicSuitMesh: Record<string, MeshSuitType>
-  publicTaskMesh: Record<string, MeshTaskType>
-  publicTestMesh: Record<string, MeshTestType>
-  publicTreeMesh: Record<string, MeshTreeType>
-  publicZoneMesh: Record<string, MeshZoneType>
-}
-
-export type MeshDeckCardPartialType = MeshCardBaseType &
+export type ASTPackageModulePartialType = ASTModuleBaseType &
   PartialState<
-    MeshDeckCardType,
+    ASTPackageModuleType,
     {
       deck: {
         face: 1
@@ -105,11 +101,17 @@ export type MeshDeckCardPartialType = MeshCardBaseType &
     true
   >
 
-export type MeshDeckCardPotentialType =
-  | MeshDeckCardPartialType
-  | MeshDeckCardType
+export type ASTPackageModulePotentialType =
+  | ASTPackageModulePartialType
+  | ASTPackageModuleType
 
-export type MeshDeckCardType = MeshCardBaseType & {
-  deck: MeshDeckType
-  like: Mesh.DeckCard
+export type ASTPackageModuleType = ASTModuleBaseType & {
+  deck: ASTPackageType
+  like: AST.PackageModule
 }
+
+export const CARD_TYPE = [
+  AST.CodeModule,
+  AST.BookModule,
+  AST.PackageModule,
+] as const

@@ -1,8 +1,8 @@
 import {
   APIInputType,
-  InitialMeshLoadType,
+  AST,
+  InitialASTImportType,
   LoadInputType,
-  Mesh,
   Nest,
   api,
 } from '~'
@@ -19,7 +19,7 @@ export function finalize_codeCard_load_textNest(
 
   const card = api.getProperty(input, 'card')
 
-  api.assertMesh(card, Mesh.CodeCard)
+  api.assertAST(card, AST.CodeCard)
 
   const path = api.resolveModulePath(input, text)
 
@@ -29,12 +29,12 @@ export function finalize_codeCard_load_textNest(
 export function process_codeCard_load(
   input: APIInputType,
 ): void {
-  const load: InitialMeshLoadType = {
-    like: Mesh.Load,
+  const load: InitialASTImportType = {
+    like: AST.Load,
     take: [],
   }
 
-  api.assertMesh(input.card, Mesh.CodeCard)
+  api.assertAST(input.card, AST.CodeCard)
 
   input.card.loadList.push(load)
 

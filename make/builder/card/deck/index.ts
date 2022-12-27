@@ -1,9 +1,9 @@
 import {
   APIInputType,
+  AST,
+  ASTModuleBaseType,
+  ASTPackageModulePartialType,
   Base,
-  Mesh,
-  MeshCardBaseType,
-  MeshDeckCardPartialType,
   Tree,
   api,
 } from '~'
@@ -11,7 +11,7 @@ import {
 export * from './deck'
 
 export function createInitialAPIInput<
-  T extends MeshCardBaseType,
+  T extends ASTModuleBaseType,
 >(
   card: T,
   objectScopeData: Record<string, unknown>,
@@ -35,17 +35,17 @@ export function process_deckCard(
   const tree = api.parseTextIntoTree(text)
   const linkHost = api.getLinkHost(link)
   const card = base.card(link)
-  const seed: MeshDeckCardPartialType = {
+  const seed: ASTPackageModulePartialType = {
     base,
     deck: {
       face: [],
-      like: Mesh.Deck,
+      like: AST.Deck,
       partial: true,
       term: [],
     },
     dependencyList: [],
     directory: linkHost,
-    like: Mesh.DeckCard,
+    like: AST.DeckCard,
     parseTree: tree,
     partial: true,
     path: link,
@@ -99,7 +99,7 @@ export function resolve_deckCard(
   link: string,
 ): void {
   const card = base.card(link)
-  api.assertMesh(card.seed, Mesh.DeckCard)
+  api.assertAST(card.seed, AST.DeckCard)
 
   const { deck } = card.seed
 

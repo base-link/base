@@ -1,4 +1,4 @@
-import { CARD_TYPE, MeshCardType, api } from '~'
+import { ASTModuleType, CARD_TYPE, api } from '~'
 
 export * from './book'
 export * from './code'
@@ -6,7 +6,7 @@ export * from './deck'
 
 export function assertCard(
   object: unknown,
-): asserts object is MeshCardType {
+): asserts object is ASTModuleType {
   if (!api.isCard(object)) {
     api.throwError({
       code: '0014',
@@ -17,10 +17,10 @@ export function assertCard(
 
 export function isCard(
   object: unknown,
-): object is MeshCardType {
+): object is ASTModuleType {
   return (
     api.isObject(object) &&
     'like' in object &&
-    CARD_TYPE.includes((object as MeshCardType).like)
+    CARD_TYPE.includes((object as ASTModuleType).like)
   )
 }
