@@ -3,6 +3,21 @@ import pathResolve from 'path'
 
 import { APIInputType, Base, api } from '~'
 
+export function assumePath(
+  input: APIInputType,
+  inputPath: string,
+): string {
+  const card = input.card
+  const path = api.findPath(inputPath, card.directory)
+  if (!path) {
+    api.throwError(
+      api.generateUnresolvedPathError(input, inputPath),
+    )
+  }
+  api.assertString(path)
+  return path
+}
+
 export function findPath(
   link: string,
   context = process.cwd(),
@@ -43,9 +58,7 @@ export function resolveModulePath(
   input: APIInputType,
   text: string,
 ): string {
-  const card = api.getProperty(input, 'card')
-  api.assertCard(card)
-
+  const card = api.assumeCard(input)
   const path = api.findPath(text, card.directory)
 
   if (!path) {

@@ -1,17 +1,10 @@
-import {
-  APIInputType,
-  AST,
-  InitialASTImportType,
-  LoadInputType,
-  Nest,
-  api,
-} from '~'
+import { APIInputType, AST, Nest, api } from '~'
 
 export * from './bear'
 export * from './find'
 
 export function finalize_codeCard_load_textNest(
-  input: APIInputType & LoadInputType,
+  input: APIInputType,
 ): void {
   const text = api.resolveText(input)
 
@@ -19,7 +12,7 @@ export function finalize_codeCard_load_textNest(
 
   const card = api.getProperty(input, 'card')
 
-  api.assertAST(card, AST.CodeCard)
+  api.assertAST(card, AST.CodeModule)
 
   const path = api.resolveModulePath(input, text)
 
@@ -54,7 +47,7 @@ export function process_codeCard_load(
 }
 
 export function process_codeCard_load_nestedChildren(
-  input: APIInputType & LoadInputType,
+  input: APIInputType,
 ) {
   const type = api.determineNestType(input)
   switch (type) {

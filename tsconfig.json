@@ -7,6 +7,7 @@
     "rootDir": "make",
     "sourceMap": true,
     "strictNullChecks": true,
+    "strict": true,
     "esModuleInterop": true,
     "noUncheckedIndexedAccess": true,
     "baseUrl": "./make",
