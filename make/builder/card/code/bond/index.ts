@@ -3,14 +3,7 @@ import { APIInputType, Nest, api } from '~'
 export function process_codeCard_bond(
   input: APIInputType,
 ): void {
-  api.assumeNest(input).nest.forEach((nest, index) => {
-    process_codeCard_bond_nestedChildren(
-      api.extendWithNestScope(input, {
-        index,
-        nest,
-      }),
-    )
-  })
+  process_codeCard_bond_nestedChildren(input)
 }
 
 export function process_codeCard_bond_code(

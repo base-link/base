@@ -29,6 +29,7 @@ export type ASTDependencyPartCallbackType = (
 
 export type ASTDependencyPartType = {
   callbackList: Array<ASTDependencyPartCallbackType>
+  children: []
   last?: ASTDependencyPartType
   like: AST.DependencyPart
   name: string
@@ -39,6 +40,7 @@ export type ASTDependencyPartType = {
 
 export type ASTDependencyType = {
   callbackList: Array<ASTInputCallbackType<APIInputType>>
+  children: []
   context: APIInputType
   like: AST.Dependency
   partial: false
@@ -48,6 +50,7 @@ export type ASTDependencyType = {
 export type ASTInputCallbackType<T> = (value: T) => void
 
 export type ASTLexicalScopeType = {
+  children: []
   data: Record<string, unknown>
   like: AST.LexicalScope
   parent?: ASTLexicalScopeType

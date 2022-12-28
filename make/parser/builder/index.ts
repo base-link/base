@@ -276,7 +276,10 @@ export function buildParseTree(list: Array<LexerTokenType>) {
             size: token.text.length,
           }
 
-          if (text && text.like === Tree.Text) {
+          if (
+            text &&
+            (text.like === Tree.Text || text.like === Tree.Term)
+          ) {
             text.link.push(slot)
           } else {
             throw new Error('Oops')

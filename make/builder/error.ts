@@ -138,6 +138,10 @@ export function generateUnhandledNestCaseError(
 export function generateUnhandledTermCaseError(
   input: APIInputType,
 ): ErrorType {
+  let scope
+  try {
+    scope = api.resolveStaticTermFromNest(input, 1)
+  } catch (e) {}
   const name = api.resolveStaticTermFromNest(input)
   api.assertString(name)
   const handle = ERROR['0002']
@@ -145,7 +149,7 @@ export function generateUnhandledTermCaseError(
   return {
     code: `0002`,
     file: `${input.card.path}`,
-    note: handle.note({ name }),
+    note: handle.note({ name, scope }),
     text: '',
   }
 }

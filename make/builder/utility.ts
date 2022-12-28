@@ -9,6 +9,7 @@ import {
   APIInputType,
   AST,
   ASTModuleBaseType,
+  ASTPartialType,
   ASTType,
   ErrorType,
   Tree,
@@ -41,7 +42,7 @@ export function assertString(
 
 export function assumeInputObjectAsASTPartialType<
   T extends AST,
->(input: APIInputType, type: T, rank = 0): ASTType<T> {
+>(input: APIInputType, type: T, rank = 0): ASTPartialType<T> {
   let objectScope = input.objectScope
   while (rank > 0 && objectScope.parent) {
     objectScope = objectScope.parent
@@ -99,7 +100,7 @@ export function extendWithNestScope(
 ): APIInputType {
   return {
     ...input,
-    nestScope: api.createScope(data),
+    nestScope: api.createScope(data, input.nestScope),
   }
 }
 

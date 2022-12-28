@@ -1,64 +1,62 @@
-import { AST, PartialState } from '~'
+import {
+  AST,
+  ASTString_Type,
+  AST_FullTypeMixin,
+  AST_PartialTypeMixin,
+} from '~'
 
-export type ASTPackageLicensePartialType = PartialState<
-  ASTPackageLicenseType,
-  {
-    like: 1
-  },
-  true
->
-
-export type ASTPackageLicensePotentialType =
-  | ASTPackageLicensePartialType
-  | ASTPackageLicenseType
-
-export type ASTPackageLicenseType = {
+export type ASTPackageLicense_FullType = AST_FullTypeMixin & {
   like: AST.PackageLicense
   name: string
-  partial: false
 }
 
-export type ASTPackagePartialType = PartialState<
-  ASTPackageType,
-  {
-    face: 1
-    like: 1
-    term: 1
-  },
-  true
->
+export type ASTPackageLicense_PartialType = {
+  children: Array<ASTString_Type>
+  like: AST.PackageLicense
+}
 
-export type ASTPackagePotentialType =
-  | ASTPackagePartialType
-  | ASTPackageType
+export type ASTPackageLicense_Type =
+  | ASTPackageLicense_PartialType
+  | ASTPackageLicense_FullType
 
-export type ASTPackageType = {
+export type ASTPackageUser_FullType = AST_FullTypeMixin & {
+  email?: string
+  like: AST.PackageUser
+  name?: string
+}
+
+export type ASTPackageUser_PartialType =
+  AST_PartialTypeMixin & {
+    children: Array<ASTString_Type>
+    like: AST.PackageUser
+  }
+
+export type ASTPackageUser_Type =
+  | ASTPackageUser_PartialType
+  | ASTPackageUser_FullType
+
+export type ASTPackage_FullType = {
   bear?: string
-  face: Array<ASTPackageUserPotentialType>
+  face: Array<ASTPackageUser_Type>
   host: string
   like: AST.Package
   mark: string
   name: string
   read?: string
   site?: string
-  term: Array<ASTPackageLicensePotentialType>
+  term: Array<ASTPackageLicense_Type>
   test?: string
 }
 
-export type ASTPackageUserPartialType = PartialState<
-  ASTPackageUserType,
-  {
-    like: 1
-  },
-  true
->
-
-export type ASTPackageUserPotentialType =
-  | ASTPackageUserPartialType
-  | ASTPackageUserType
-
-export type ASTPackageUserType = {
-  email?: string
-  like: AST.PackageUser
-  name?: string
+export type ASTPackage_PartialType = AST_PartialTypeMixin & {
+  children: Array<
+    | ASTPackageUser_Type
+    | ASTString_Type
+    | ASTPackageLicense_Type
+  >
+  like: AST.Package
 }
+
+export type ASTPackage_Type =
+  | ASTPackage_PartialType
+  | ASTPackage_FullType

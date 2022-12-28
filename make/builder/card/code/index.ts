@@ -1,11 +1,4 @@
-import {
-  APIInputType,
-  AST,
-  ASTCodeModuleType,
-  ASTPartialType,
-  Base,
-  api,
-} from '~'
+import { APIInputType, AST, ASTPartialType, Base, api } from '~'
 
 export * from './bear'
 export * from './bind'
@@ -17,6 +10,7 @@ export * from './fuse'
 export * from './head'
 export * from './hide'
 export * from './hold'
+export * from './hook'
 export * from './host'
 export * from './like'
 export * from './link'
@@ -35,12 +29,14 @@ export * from './time'
 export * from './tree'
 export * from './wait'
 export * from './walk'
-export * from './zone'
 
 export function handle_codeCard(
   base: Base,
   link: string,
 ): void {
+  if (base.card_mesh.has(link)) {
+    return
+  }
   api.process_codeCard(base, link)
   api.resolve_codeCard(base, link)
 }
@@ -49,6 +45,7 @@ export function process_codeCard(
   base: Base,
   link: string,
 ): void {
+  console.log(link)
   const text = api.readTextFile(base, link)
   const textTree = api.parseTextIntoTree(text)
   const linkHost = api.getLinkHost(link)
@@ -61,7 +58,6 @@ export function process_codeCard(
     allZoneAST: {},
     base,
     bearList: [],
-    dependencyList: [],
     directory: linkHost,
     faceAST: {},
     formAST: {},
@@ -100,8 +96,6 @@ export function process_codeCard(
       }),
     )
   })
-
-  // this.mintCodeCardAST(fork)
 }
 
 export function process_codeCard_nestedChildren(
@@ -179,7 +173,11 @@ export function resolve_codeCard(
   const card = base.card(link)
   api.assertAST(card.seed, AST.CodeModule)
 
-  card.seed.loadList.forEach(load => {})
+  card.seed.loadList.forEach(load => {
+    if (load.absolutePath) {
+      api.handle_codeCard(base, load.absolutePath)
+    }
+  })
   card.seed.bearList.forEach(bear => {
     api.handle_codeCard(base, bear.link)
   })

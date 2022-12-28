@@ -50,8 +50,11 @@ export function assertScope(
   }
 }
 
-export function assumeNest(input: APIInputType): TreeNestType {
-  const nest = api.getNestScopeProperty(input, 'nest')
+export function assumeNest(
+  input: APIInputType,
+  rank = 0,
+): TreeNestType {
+  const nest = api.getNestScopeProperty(input, 'nest', rank)
   api.assertNest(nest)
   return nest
 }
@@ -91,9 +94,14 @@ export function determineNestType(input: APIInputType): Nest {
 export function getNestScopeProperty(
   input: APIInputType,
   property: string,
+  rank = 0,
 ): unknown {
-  api.assertScope(input.nestScope)
-  return api.getProperty(input.nestScope.data, property)
+  let scope = input.nestScope
+  while (rank > 0 && scope) {
+    scope = scope.parent
+  }
+  api.assertScope(scope)
+  return api.getProperty(scope.data, property)
 }
 
 export function isNest(

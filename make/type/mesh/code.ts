@@ -1,544 +1,497 @@
-import { AST, PartialState, TreeNestType } from '~'
+import { AST, TreeNestType } from '~'
 
-export type ASTAssertionPartialType = PartialState<
-  ASTAssertionType,
-  {
-    like: 1
-  },
-  true
->
+export type ASTAssertion_FullType = AST_PartialTypeMixin & {
+  bind: Array<ASTBind_FullType | ASTValue_FullType>
+  like: AST.Assertion
+  name: string
+}
 
-export type ASTAssertionPotentialType =
-  | ASTAssertionPartialType
-  | ASTAssertionType
-
-export type ASTAssertionType = {
+export type ASTAssertion_PartialType = AST_PartialTypeMixin & {
+  children: Array<ASTTerm_Type | ASTBind_Type | ASTValue_Type>
   like: AST.Assertion
 }
 
-export type ASTBindPartialType = PartialState<
-  ASTBindType,
-  {
-    like: 1
-  },
-  true
->
+export type ASTAssertion_Type =
+  | ASTAssertion_PartialType
+  | ASTAssertion_FullType
 
-export type ASTBindPotentialType =
-  | ASTBindPartialType
-  | ASTBindType
-
-export type ASTBindType = {
-  bond: ASTValueType
+export type ASTBind_FullType = AST_FullTypeMixin & {
+  bond: ASTValue_FullType
   like: AST.Bind
   name: string
 }
 
-export type ASTBorrowVariablePartialType = PartialState<
-  ASTBorrowVariableType,
-  {
-    like: 1
-  },
-  true
->
-
-export type ASTBorrowVariablePotentialType =
-  | ASTBorrowVariablePartialType
-  | ASTBorrowVariableType
-
-// borrow
-export type ASTBorrowVariableType = ASTMutableMixinType & {
-  like: AST.BorrowVariable
-  link: TreeNestType
+export type ASTBind_PartialType = AST_PartialTypeMixin & {
+  children: Array<ASTTerm_Type | ASTValue_Type>
+  like: AST.Bind
 }
 
-export type ASTCallPartialType = PartialState<
-  ASTCallType,
-  {
-    bind: 1
-    like: 1
-  },
-  true
->
+export type ASTBind_Type =
+  | ASTBind_PartialType
+  | ASTBind_FullType
 
-export type ASTCallPotentialType =
-  | ASTCallPartialType
-  | ASTCallType
+export type ASTBorrowVariable_FullType = AST_FullTypeMixin &
+  Partial<AST_MutableTypeMixin> & {
+    like: AST.BorrowVariable
+    link: ASTTerm_FullType
+  }
 
-export type ASTCallType = {
-  bind: Record<string, ASTBindType>
+export type ASTBorrowVariable_PartialType =
+  AST_PartialTypeMixin &
+    AST_MutableTypeMixin & {
+      children: Array<ASTTerm_Type>
+      like: AST.BorrowVariable
+    }
+
+// borrow
+export type ASTBorrowVariable_Type =
+  | ASTBorrowVariable_PartialType
+  | ASTBorrowVariable_FullType
+
+export type ASTCall_FullType = AST_FullTypeMixin & {
+  bind: Record<string, ASTBind_FullType>
+  function: ASTFunction_FullType
   like: AST.Call
 }
 
-export type ASTCallbackPartialType = PartialState<
-  ASTCallbackType,
-  {
-    flow: 1
-    like: 1
-    parameter: 1
-  },
-  true
->
+export type ASTCall_PartialType = {
+  children: Array<ASTTerm_Type | ASTValue_Type | ASTBind_Type>
+  like: AST.Call
+}
 
-export type ASTCallbackPotentialType =
-  | ASTCallbackPartialType
-  | ASTCallbackType
+export type ASTCall_Type =
+  | ASTCall_PartialType
+  | ASTCall_FullType
 
-export type ASTCallbackType = {
-  flow: Array<ASTFunctionFlowPotentialType>
+export type ASTCallback_FullType = AST_FullTypeMixin & {
+  flow: Array<ASTFunctionFlow_FullType>
+  function: Record<string, ASTFunctionFlow_FullType>
   like: AST.Callback
   name: string
-  parameter: Record<string, ASTInputPotentialType>
+  parameter: Record<string, ASTInput_FullType>
 }
 
-export type ASTClassInterfaceFunctionPartialType = PartialState<
-  ASTClassInterfaceFunctionType,
-  {
-    like: 1
-  },
-  true
->
-
-export type ASTClassInterfaceFunctionPotentialType =
-  | ASTClassInterfaceFunctionPartialType
-  | ASTClassInterfaceFunctionType
-
-export type ASTClassInterfaceFunctionType = {
-  like: AST.ClassInterfaceFunction
-}
-
-export type ASTClassInterfaceImplementationPartialType =
-  PartialState<
-    ASTClassInterfaceImplementationType,
-    {
-      like: 1
-      method: 1
-      property: 1
-    },
-    true
+export type ASTCallback_PartialType = {
+  children: Array<
+    ASTFunctionFlow_Type | ASTInput_Type | ASTTerm_Type
   >
-
-export type ASTClassInterfaceImplementationPotentialType =
-  | ASTClassInterfaceImplementationPartialType
-  | ASTClassInterfaceImplementationType
-
-export type ASTClassInterfaceImplementationType = {
-  like: AST.ClassInterfaceImplementation
-  method: Record<string, ASTFunctionType>
-  name: string
-  property: Record<string, ASTInputType>
+  like: AST.Callback
 }
 
-export type ASTClassInterfacePartialType = PartialState<
-  ASTClassInterfaceType,
-  {
-    like: 1
-    method: 1
-    property: 1
-  },
-  true
->
+export type ASTCallback_Type =
+  | ASTCallback_PartialType
+  | ASTCallback_FullType
 
-export type ASTClassInterfacePotentialType =
-  | ASTClassInterfacePartialType
-  | ASTClassInterfaceType
+export type ASTClassInterfaceFunction_FullType =
+  AST_FullTypeMixin & {
+    function: Record<string, ASTFunction_FullType>
+    like: AST.ClassInterfaceFunction
+    name: string
+  }
 
-export type ASTClassInterfaceType = {
+export type ASTClassInterfaceFunction_PartialType =
+  AST_PartialTypeMixin & {
+    children: Array<ASTTerm_Type | ASTFunction_Type>
+    like: AST.ClassInterfaceFunction
+  }
+
+export type ASTClassInterfaceFunction_Type =
+  | ASTClassInterfaceFunction_FullType
+  | ASTClassInterfaceFunction_PartialType
+
+export type ASTClassInterfaceImplementation_FullType =
+  AST_FullTypeMixin & {
+    like: AST.ClassInterfaceImplementation
+    method: Record<string, ASTFunction_Type>
+    name: string
+    property: Record<string, ASTInput_Type>
+  }
+
+export type ASTClassInterfaceImplementation_PartialType =
+  AST_PartialTypeMixin & {
+    children: Array<ASTFunction_Type | ASTInput_Type>
+    like: AST.ClassInterfaceImplementation
+  }
+
+export type ASTClassInterfaceImplementation_Type =
+  | ASTClassInterfaceImplementation_FullType
+  | ASTClassInterfaceImplementation_PartialType
+
+export type ASTClassInterface_FullType = AST_FullTypeMixin & {
   like: AST.ClassInterface
-  method: Record<string, ASTClassInterfaceFunctionType>
-  property: Record<string, ASTInputType>
+  method: Record<string, ASTClassInterfaceFunction_FullType>
+  property: Record<string, ASTInput_Type>
 }
 
-export type ASTClassPartialType = PartialState<
-  ASTClassType,
-  {
-    callback: 1
-    interface: 1
-    like: 1
-    method: 1
-    parent: 1
-    property: 1
-  },
-  true
->
+export type ASTClassInterface_PartialType =
+  AST_PartialTypeMixin & {
+    children: Array<
+      ASTClassInterfaceFunction_Type | ASTInput_Type
+    >
+    like: AST.ClassInterface
+  }
 
-export type ASTClassPotentialType =
-  | ASTClassPartialType
-  | ASTClassType
+export type ASTClassInterface_Type =
+  | ASTClassInterface_PartialType
+  | ASTClassInterface_FullType
 
-export type ASTClassReferencePartialType = PartialState<
-  ASTClassReferenceType,
-  {
-    bind: 1
-    like: 1
-  },
-  true
->
-
-export type ASTClassReferencePotentialType =
-  | ASTClassReferencePartialType
-  | ASTClassReferenceType
-
-export type ASTClassReferenceType = {
-  bind: Record<
-    string,
-    ASTClassReferenceType | ASTClassReferencePartialType
-  >
+export type ASTClassReference_FullType = AST_FullTypeMixin & {
+  bind: Record<string, ASTClassReference_FullType>
+  class: ASTClass_FullType
   like: AST.ClassReference
-  name: string
 }
 
-export type ASTClassType = {
-  callback: Record<string, ASTCallbackType>
-  interface: Record<string, ASTClassInterfaceImplementationType>
+export type ASTClassReference_PartialType =
+  AST_FullTypeMixin & {
+    children: Array<ASTClassReference_Type>
+    like: AST.ClassReference
+  }
+
+export type ASTClassReference_Type =
+  | ASTClassReference_PartialType
+  | ASTClassReference_FullType
+
+export type ASTClass_FullType = AST_FullTypeMixin & {
+  callback: Record<string, ASTCallback_FullType>
+  interface: Record<
+    string,
+    ASTClassInterfaceImplementation_FullType
+  >
   like: AST.Class
-  method: Record<string, ASTFunctionType>
+  method: Record<string, ASTFunction_FullType>
   name: string
-  parent: Array<ASTClassType>
-  property: Record<string, ASTInputType>
+  parent: Array<ASTClass_FullType>
+  property: Record<string, ASTInput_FullType>
 }
 
-export type ASTCloneVariablePartialType = PartialState<
-  ASTCloneVariableType,
-  {
-    like: 1
-  },
-  true
->
+export type ASTClass_PartialType = AST_PartialTypeMixin & {
+  children: Array<
+    | ASTCallback_Type
+    | ASTClassInterfaceImplementation_Type
+    | ASTFunction_Type
+    | ASTClassReference_Type
+    | ASTInput_Type
+  >
+  like: AST.Class
+}
 
-export type ASTCloneVariablePotentialType =
-  | ASTCloneVariablePartialType
-  | ASTCloneVariableType
+export type ASTClass_Type =
+  | ASTClass_PartialType
+  | ASTClass_FullType
 
-// clone
-export type ASTCloneVariableType = ASTMutableMixinType & {
+export type ASTCloneVariable_FullType = AST_MutableTypeMixin & {
   like: AST.CloneVariable
   link: TreeNestType
 }
 
-export type ASTComponentPartialType = PartialState<
-  ASTComponentType,
-  {
-    element: 1
-    like: 1
-  },
-  true
->
+export type ASTCloneVariable_PartialType =
+  AST_PartialTypeMixin &
+    Partial<AST_MutableTypeMixin> & {
+      children: Array<ASTTerm_Type>
+      like: AST.CloneVariable
+    }
 
-export type ASTComponentPotentialType =
-  | ASTComponentPartialType
-  | ASTComponentType
+// clone
+export type ASTCloneVariable_Type =
+  | ASTCloneVariable_PartialType
+  | ASTCloneVariable_PartialType
 
-export type ASTComponentType = {
-  element: Array<ASTElementType>
+export type ASTComponent_FullType = AST_FullTypeMixin & {
+  element: Array<ASTElement_Type>
   like: AST.Component
   name: string
 }
 
-export type ASTConstantPartialType = PartialState<
-  ASTConstantType,
-  {
-    like: 1
-  },
-  true
->
+export type ASTComponent_PartialType = AST_PartialTypeMixin & {
+  children: Array<ASTElement_Type | ASTTerm_Type>
+  like: AST.Component
+}
 
-export type ASTConstantPotentialType =
-  | ASTConstantPartialType
-  | ASTConstantType
+export type ASTComponent_Type =
+  | ASTComponent_PartialType
+  | ASTComponent_FullType
 
-export type ASTConstantType = {
+export type ASTConstant_FullType = AST_FullTypeMixin & {
+  like: AST.Constant
+  name: string
+  value: ASTValue_FullType | Array<ASTConstant_FullType>
+}
+
+export type ASTConstant_PartialType = AST_PartialTypeMixin & {
+  children: Array<ASTTerm_Type | ASTConstant_Type>
   like: AST.Constant
 }
 
-export type ASTElementPartialType = PartialState<
-  ASTElementType,
-  {
-    like: 1
-  },
-  true
->
+export type ASTConstant_Type =
+  | ASTConstant_PartialType
+  | ASTConstant_FullType
 
-export type ASTElementPotentialType =
-  | ASTElementPartialType
-  | ASTElementType
-
-export type ASTElementType = {
-  component: ASTComponentType
+export type ASTElement_FullType = AST_FullTypeMixin & {
+  component: ASTComponent_FullType
   like: AST.Element
 }
 
-export type ASTExportPartialType = PartialState<
-  ASTExportType,
-  {
-    like: 1
-  },
-  true
->
-
-export type ASTExportPotentialType =
-  | ASTExportPartialType
-  | ASTExportType
-
-export type ASTExportType = {
-  like: AST.Export
-  link: string
+export type ASTElement_PartialType = AST_PartialTypeMixin & {
+  children: Array<ASTComponent_Type>
+  like: AST.Element
 }
 
-export type ASTFunctionFlowPotentialType =
-  | ASTCallPotentialType
-  | ASTAssertionPotentialType
+export type ASTElement_Type =
+  | ASTElement_PartialType
+  | ASTElement_FullType
 
-export type ASTFunctionFlowType = ASTCallType | ASTAssertionType
-
-export type ASTFunctionPartialType = PartialState<
-  ASTFunctionType,
-  {
-    flow: 1
-    function: 1
-    like: 1
-    parameter: 1
-  },
-  true
->
-
-export type ASTFunctionPotentialType =
-  | ASTFunctionPartialType
-  | ASTFunctionType
-
-export type ASTFunctionType = {
-  flow: Array<ASTFunctionFlowType>
-  function: Record<string, ASTFunctionType>
-  like: AST.Function
-  parameter: Record<string, ASTInputType>
-}
-
-export type ASTImportPartialType = PartialState<
-  ASTImportType,
-  {
-    like: 1
-    variable: 1
-  },
-  true
->
-
-export type ASTImportPotentialType =
-  | ASTImportPartialType
-  | ASTImportType
-
-export type ASTImportType = {
+export type ASTExport_FullType = AST_FullTypeMixin & {
   absolutePath: string
-  like: AST.Import
-  variable: Array<ASTImportVariablePotentialType>
+  like: AST.Export
 }
 
-export type ASTImportVariablePartialType = PartialState<
-  ASTImportVariableType,
-  {
-    like: 1
-  },
-  true
->
-
-export type ASTImportVariablePotentialType =
-  | ASTImportVariablePartialType
-  | ASTImportVariableType
-
-export type ASTImportVariableRenamePartialType = PartialState<
-  ASTImportVariableRenameType,
-  {
-    like: 1
-  },
-  true
->
-
-export type ASTImportVariableRenamePotentialType =
-  | ASTImportVariableRenamePartialType
-  | ASTImportVariableRenameType
-
-export type ASTImportVariableRenameType = {
-  like: AST.ImportVariableRename
-  name: string
+export type ASTExport_PartialType = AST_PartialTypeMixin & {
+  children: Array<ASTString_Type>
+  like: AST.Export
 }
 
-export type ASTImportVariableType = {
+export type ASTExport_Type =
+  | ASTExport_PartialType
+  | ASTExport_FullType
+
+export type ASTFunctionFlow_FullType =
+  | ASTBorrowVariable_FullType
+  | ASTMoveVariable_FullType
+  | ASTCloneVariable_FullType
+
+export type ASTFunctionFlow_Type =
+  | ASTBorrowVariable_Type
+  | ASTMoveVariable_Type
+  | ASTCloneVariable_Type
+
+export type ASTFunction_FullType = AST_FullTypeMixin & {
+  flow: Array<ASTFunctionFlow_FullType>
+  function: Record<string, ASTFunction_FullType>
+  like: AST.Function
+  parameter: Record<string, ASTInput_FullType>
+}
+
+export type ASTFunction_PartialType = AST_PartialTypeMixin & {
+  children: Array<
+    ASTFunctionFlow_Type | ASTFunction_Type | ASTInput_Type
+  >
+  like: AST.Function
+}
+
+export type ASTFunction_Type =
+  | ASTFunction_PartialType
+  | ASTFunction_FullType
+
+export type ASTImportVariableRename_FullType =
+  AST_FullTypeMixin & {
+    like: AST.ImportVariableRename
+    name: string
+  }
+
+export type ASTImportVariableRename_PartialType =
+  AST_FullTypeMixin & {
+    children: Array<ASTTerm_Type>
+    like: AST.ImportVariableRename
+  }
+
+export type ASTImportVariableRename_Type =
+  | ASTImportVariableRename_PartialType
+  | ASTImportVariableRename_FullType
+
+export type ASTImportVariable_FullType = AST_FullTypeMixin & {
   like: AST.ImportVariable
   name: string
-  rename?: ASTImportVariableRenamePotentialType
+  rename: ASTImportVariableRename_FullType
+  scope: string
 }
 
-export type ASTInjectPartialType = PartialState<
-  ASTInjectType,
-  {
-    bind: 1
-    like: 1
-  },
-  true
->
+export type ASTImportVariable_PartialType =
+  AST_PartialTypeMixin & {
+    children: Array<ASTTerm_Type | ASTImportVariableRename_Type>
+    like: AST.ImportVariable
+  }
 
-export type ASTInjectPotentialType =
-  | ASTInjectPartialType
-  | ASTInjectType
+export type ASTImportVariable_Type =
+  | ASTImportVariable_PartialType
+  | ASTImportVariable_FullType
 
-export type ASTInjectType = {
-  bind: Array<ASTBindPotentialType>
+export type ASTImport_FullType = AST_FullTypeMixin & {
+  absolutePath: string
+  like: AST.Import
+  variable: Array<ASTImportVariable_FullType>
+}
+
+export type ASTImport_PartialType = AST_PartialTypeMixin & {
+  children: Array<ASTString_Type | ASTImportVariable_Type>
+  like: AST.Import
+}
+
+export type ASTImport_Type =
+  | ASTImport_PartialType
+  | ASTImport_FullType
+
+export type ASTInject_FullType = AST_FullTypeMixin & {
+  bind: Array<ASTBind_FullType>
   like: AST.Inject
   name: string
 }
 
-export type ASTInputPartialType = PartialState<
-  ASTInputType,
-  {
-    like: 1
-  },
-  true
->
+export type ASTInject_PartialType = AST_PartialTypeMixin & {
+  children: Array<ASTBind_Type | ASTValue_Type | ASTTerm_Type>
+  like: AST.Inject
+}
 
-export type ASTInputPotentialType =
-  | ASTInputPartialType
-  | ASTInputType
+export type ASTInject_Type =
+  | ASTInject_PartialType
+  | ASTInject_FullType
 
-export type ASTInputType = {
-  inputLike: ASTClassReferenceType
+export type ASTInput_FullType = AST_FullTypeMixin & {
+  inputLike: ASTClassReference_Type
   like: AST.Input
   name: string
 }
 
-export type ASTMoveVariablePartialType = PartialState<
-  ASTMoveVariableType,
-  {
-    like: 1
-  },
-  true
->
+export type ASTInput_PartialType = AST_PartialTypeMixin & {
+  children: Array<ASTClassReference_Type | ASTTerm_Type>
+  like: AST.Input
+}
 
-export type ASTMoveVariablePotentialType =
-  | ASTMoveVariablePartialType
-  | ASTMoveVariableType
+export type ASTInput_Type =
+  | ASTInput_PartialType
+  | ASTInput_FullType
+
+export type ASTMoveVariable_FullType = AST_MutableTypeMixin & {
+  like: AST.MoveVariable
+  nest: ASTTerm_FullType
+}
+
+export type ASTMoveVariable_PartialType = AST_PartialTypeMixin &
+  Partial<AST_MutableTypeMixin> & {
+    children: Array<ASTTerm_Type>
+    like: AST.MoveVariable
+  }
 
 // move
-export type ASTMoveVariableType = ASTMutableMixinType & {
-  like: AST.MoveVariable
-  path: TreeNestType
-}
+export type ASTMoveVariable_Type =
+  | ASTMoveVariable_PartialType
+  | ASTMoveVariable_PartialType
 
-export type ASTMutableMixinType = {
-  isMutable: boolean
-}
+export type ASTNativeClassInterface_FullType =
+  AST_FullTypeMixin & {
+    like: AST.NativeClassInterface
+  }
 
-export type ASTNativeClassInterfacePartialType = PartialState<
-  ASTNativeClassInterfaceType,
-  {
-    like: 1
-  },
-  true
->
+export type ASTNativeClassInterface_PartialType =
+  AST_PartialTypeMixin & {
+    children: Array<ASTTerm_Type>
+    like: AST.NativeClassInterface
+  }
 
-export type ASTNativeClassInterfacePotentialType =
-  | ASTNativeClassInterfacePartialType
-  | ASTNativeClassInterfaceType
-
-export type ASTNativeClassInterfaceType = {
-  like: AST.NativeClassInterface
-}
-
-export type ASTReferenceVariableType =
-  | ASTMoveVariableType
-  | ASTBorrowVariableType
-  | ASTCloneVariableType
+export type ASTNativeClassInterface_Type =
+  | ASTNativeClassInterface_PartialType
+  | ASTNativeClassInterface_FullType
 
 export type ASTScopeType = {
+  children: []
   data: Record<string, unknown>
   like: AST.Scope
   parent?: ASTScopeType
   partial: false
 }
 
-export type ASTStringPartialType = PartialState<
-  ASTStringType,
-  {
-    like: 1
-  },
-  true
->
-
-export type ASTStringPotentialType =
-  | ASTStringPartialType
-  | ASTStringType
-
-export type ASTStringType = {
+export type ASTString_FullType = AST_FullTypeMixin & {
   like: AST.String
   string: string
 }
 
-export type ASTTemplatePartialType = PartialState<
-  ASTTemplateType,
-  {
-    input: 1
-    like: 1
-  },
-  true
->
+export type ASTString_Type = ASTString_FullType
 
-export type ASTTemplatePotentialType =
-  | ASTTemplatePartialType
-  | ASTTemplateType
-
-export type ASTTemplateType = {
-  input: Record<string, ASTInputPotentialType>
+export type ASTTemplate_FullType = AST_FullTypeMixin & {
+  input: Record<string, ASTInput_PartialType>
   like: AST.Template
-}
-
-export type ASTTermPartialType = PartialState<
-  ASTTermType,
-  {
-    like: 1
-  },
-  true
->
-
-export type ASTTermPotentialType =
-  | ASTTermPartialType
-  | ASTTermType
-
-export type ASTTermType = {
-  like: AST.Term
   name: string
 }
 
-export type ASTTestPartialType = PartialState<
-  ASTTestType,
-  {
-    like: 1
-  },
-  true
->
+export type ASTTemplate_PartialType = AST_PartialTypeMixin & {
+  children: Array<ASTInput_PartialType | ASTTerm_Type>
+  like: AST.Template
+}
 
-export type ASTTestPotentialType =
-  | ASTTestPartialType
-  | ASTTestType
+export type ASTTemplate_Type =
+  | ASTTemplate_PartialType
+  | ASTTemplate_FullType
 
-export type ASTTestType = {
+export type ASTTerm_FullType = AST_FullTypeMixin & {
+  dive: boolean
+  like: AST.Term
+  name: string
+  nest: Array<ASTTerm_FullType>
+}
+
+export type ASTTerm_PartialType = AST_PartialTypeMixin & {
+  children: Array<ASTString_Type | ASTTerm_Type>
+  like: AST.Term
+}
+
+export type ASTTerm_Type =
+  | ASTTerm_PartialType
+  | ASTTerm_FullType
+
+export type ASTTest_FullType = AST_FullTypeMixin & {
   like: AST.Test
 }
 
-export type ASTUnsignedIntegerPartialType = PartialState<
-  ASTUnsignedIntegerType,
-  {
-    like: 1
-  },
-  true
->
+export type ASTTest_PartialType = AST_PartialTypeMixin & {
+  children: Array<ASTTerm_Type | ASTString_Type>
+  like: AST.Test
+}
 
-export type ASTUnsignedIntegerPotentialType =
-  | ASTUnsignedIntegerPartialType
-  | ASTUnsignedIntegerType
+export type ASTTest_Type =
+  | ASTTest_PartialType
+  | ASTTest_FullType
 
-export type ASTUnsignedIntegerType = {
+export type ASTText_FullType = AST_FullTypeMixin & {
+  like: AST.String
+  text: TreeNestType
+}
+
+export type ASTText_Type = ASTText_FullType
+
+export type ASTUnsignedInteger_FullType = AST_FullTypeMixin & {
   like: AST.UnsignedInteger
   value: number
 }
 
-export type ASTValueType =
-  | ASTStringType
-  | ASTUnsignedIntegerType
+export type ASTUnsignedInteger_PartialType =
+  AST_PartialTypeMixin & {
+    children: Array<number>
+    like: AST.UnsignedInteger
+  }
+
+export type ASTUnsignedInteger_Type =
+  | ASTUnsignedInteger_PartialType
+  | ASTUnsignedInteger_FullType
+
+export type ASTValue_FullType =
+  | ASTUnsignedInteger_FullType
+  | ASTString_FullType
+
+export type ASTValue_PartialType =
+  | ASTString_Type
+  | ASTUnsignedInteger_Type
+
+export type ASTValue_Type =
+  | ASTValue_FullType
+  | ASTValue_PartialType
+
+export type AST_FullTypeMixin = {
+  partial: false
+}
+
+export type AST_MutableTypeMixin = {
+  isMutable: boolean
+}
+
+export type AST_PartialTypeMixin = {
+  partial: true
+}

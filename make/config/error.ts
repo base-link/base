@@ -3,8 +3,10 @@ import { ErrorConfigType, ErrorInputType } from '~'
 export const ERROR: Record<string, ErrorConfigType> = [
   {
     code: '0002',
-    note: ({ name }: ErrorInputType) =>
-      `We haven't implemented handling the term '${name}' yet.`,
+    note: ({ name, scope }: ErrorInputType) =>
+      scope
+        ? `We haven't implemented handling the term '${name}' within '${scope}' yet.`
+        : `We haven't implemented handling the term '${name}' yet.`,
   },
   {
     code: '0001',

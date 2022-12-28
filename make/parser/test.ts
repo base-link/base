@@ -17,9 +17,7 @@ import { parseLinkText as parse } from '.'
 
 // `)
 const nest = parse(`
-foo a/b/c
-foo <hello>
-foo <bar{a/b/c}baz>
+form bar-{{size}}
 `)
 
 console.log(prettify(nest))

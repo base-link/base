@@ -25,8 +25,9 @@ export function resolveStaticTerm(
 
 export function resolveStaticTermFromNest(
   input: APIInputType,
+  rank = 0,
 ): string | undefined {
-  const nest = api.assumeNest(input)
+  const nest = api.assumeNest(input, rank)
 
   if (nest.line.length > 1) {
     return

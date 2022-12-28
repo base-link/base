@@ -36,7 +36,6 @@ export function process_deckCard(
       partial: true,
       term: [],
     },
-    dependencyList: [],
     directory: linkHost,
     like: AST.PackageModule,
     parseTree: tree,
@@ -52,16 +51,16 @@ export function process_deckCard(
 
   card.bind(seed)
 
-  if (tree.like === Tree.Nest) {
-    tree.nest.forEach((nest, index) => {
-      api.process_deckCard_nestedChildren(
-        api.extendWithNestScope(input, {
-          index,
-          nest,
-        }),
-      )
-    })
-  }
+  api.assertNest(tree)
+
+  tree.nest.forEach((nest, index) => {
+    api.process_deckCard_nestedChildren(
+      api.extendWithNestScope(input, {
+        index,
+        nest,
+      }),
+    )
+  })
 }
 
 export function process_deckCard_nestedChildren(

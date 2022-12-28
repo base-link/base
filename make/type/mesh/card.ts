@@ -1,134 +1,131 @@
 import {
-  ASTCallbackType,
-  ASTClassInterfaceType,
-  ASTClassPotentialType,
-  ASTComponentType,
-  ASTConstantType,
-  ASTDependencyType,
-  ASTExportType,
-  ASTFunctionType,
-  ASTImportPotentialType,
-  ASTNativeClassInterfaceType,
-  ASTPackageType,
-  ASTTemplateType,
-  ASTTestType,
+  ASTCallback_FullType,
+  ASTCallback_Type,
+  ASTClassInterface_FullType,
+  ASTClassInterface_Type,
+  ASTClass_FullType,
+  ASTClass_Type,
+  ASTComponent_FullType,
+  ASTComponent_Type,
+  ASTConstant_FullType,
+  ASTConstant_Type,
+  ASTExport_FullType,
+  ASTFunction_FullType,
+  ASTFunction_Type,
+  ASTImport_Type,
+  ASTNativeClassInterface_FullType,
+  ASTNativeClassInterface_Type,
+  ASTPackage_FullType,
+  ASTPackage_Type,
+  ASTTemplate_FullType,
+  ASTTemplate_Type,
+  ASTTest_FullType,
+  ASTTest_Type,
+  AST_FullTypeMixin,
+  AST_PartialTypeMixin,
   Base,
-  PartialState,
   TreeNodeType,
 } from '~'
 
 import { AST } from './list'
 
-export type ASTBookModulePartialType = PartialState<
-  ASTBookModuleType,
-  {
-    like: 1
-  },
-  true
->
-
-export type ASTBookModulePotentialType =
-  | ASTBookModulePartialType
-  | ASTBookModuleType
-
-export type ASTBookModuleType = ASTModuleBaseType & {
+export type ASTBookModule_FullType = ASTModuleBaseType & {
   abstract: string
   like: AST.BookModule
   tags: Array<string>
   title: string
-  // text: Array<ASTBookSectionType>
+  // text: Array<ASTBookSection_PartialType>
 }
 
-export type ASTCodeModulePartialType = ASTModuleBaseType &
-  PartialState<
-    ASTCodeModuleType,
-    {
-      allSuitAST: 1
-      allTaskAST: 1
-      allTestAST: 1
-      allTreeAST: 1
-      allZoneAST: 1
-      bearList: 1
-      faceAST: 1
-      formAST: 1
-      hookAST: 1
-      hostAST: 1
-      like: 1
-      loadList: 1
-      publicFaceAST: 1
-      publicFormAST: 1
-      publicHostAST: 1
-      publicSuitAST: 1
-      publicTaskAST: 1
-      publicTestAST: 1
-      publicTreeAST: 1
-      publicZoneAST: 1
-    },
-    true
-  >
+export type ASTBookModule_PartialType = AST_PartialTypeMixin & {
+  like: AST.BookModule
+}
 
-export type ASTCodeModulePotentialType =
-  | ASTCodeModulePartialType
-  | ASTCodeModuleType
+export type ASTBookModule_Type =
+  | ASTBookModule_FullType
+  | ASTBookModule_PartialType
 
-export type ASTCodeModuleType = ASTModuleBaseType & {
-  allSuitAST: Record<string, ASTClassInterfaceType>
-  allTaskAST: Record<string, ASTFunctionType>
-  allTestAST: Record<string, ASTTestType>
-  allTreeAST: Record<string, ASTTemplateType>
-  allZoneAST: Record<string, ASTComponentType>
-  bearList: Array<ASTExportType>
-  faceAST: Record<string, ASTNativeClassInterfaceType>
-  formAST: Record<string, ASTClassPotentialType>
-  hookAST: Record<string, ASTCallbackType>
-  hostAST: Record<string, ASTConstantType>
+export type ASTCodeModule_FullType = ASTModuleBaseType & {
+  allSuitAST: Record<string, ASTClassInterface_FullType>
+  allTaskAST: Record<string, ASTFunction_FullType>
+  allTestAST: Record<string, ASTTest_FullType>
+  allTreeAST: Record<string, ASTTemplate_FullType>
+  allZoneAST: Record<string, ASTComponent_FullType>
+  bearList: Array<ASTExport_FullType>
+  faceAST: Record<string, ASTNativeClassInterface_FullType>
+  formAST: Record<string, ASTClass_FullType>
+  hookAST: Record<string, ASTCallback_FullType>
+  hostAST: Record<string, ASTConstant_FullType>
   like: AST.CodeModule
-  loadList: Array<ASTImportPotentialType>
-  publicFaceAST: Record<string, ASTNativeClassInterfaceType>
-  publicFormAST: Record<string, ASTClassPotentialType>
-  publicHostAST: Record<string, ASTConstantType>
-  publicSuitAST: Record<string, ASTClassInterfaceType>
-  publicTaskAST: Record<string, ASTFunctionType>
-  publicTestAST: Record<string, ASTTestType>
-  publicTreeAST: Record<string, ASTTemplateType>
-  publicZoneAST: Record<string, ASTComponentType>
+  loadList: Array<ASTImport_Type>
+  publicFaceAST: Record<
+    string,
+    ASTNativeClassInterface_FullType
+  >
+  publicFormAST: Record<string, ASTClass_FullType>
+  publicHostAST: Record<string, ASTConstant_FullType>
+  publicSuitAST: Record<string, ASTClassInterface_FullType>
+  publicTaskAST: Record<string, ASTFunction_FullType>
+  publicTestAST: Record<string, ASTTest_FullType>
+  publicTreeAST: Record<string, ASTTemplate_FullType>
+  publicZoneAST: Record<string, ASTComponent_FullType>
 }
+
+export type ASTCodeModule_PartialType = ASTModuleBaseType &
+  AST_PartialTypeMixin & {
+    children: Array<
+      | ASTClassInterface_Type
+      | ASTFunction_Type
+      | ASTTest_Type
+      | ASTTemplate_Type
+      | ASTComponent_Type
+      | ASTNativeClassInterface_Type
+      | ASTClass_Type
+      | ASTCallback_Type
+      | ASTConstant_Type
+    >
+    like: AST.CodeModule
+  }
+
+export type ASTCodeModule_Type =
+  | ASTCodeModule_FullType
+  | ASTCodeModule_PartialType
 
 export type ASTModuleBaseType = {
   base: Base
-  dependencyList: Array<ASTDependencyType>
   directory: string
   parseTree: TreeNodeType
   path: string
   textByLine: Array<string>
 }
 
-export type ASTModuleType =
-  | ASTCodeModuleType
-  | ASTPackageModuleType
+export type ASTModule_FullType =
+  | ASTCodeModule_FullType
+  | ASTPackageModule_FullType
 
-export type ASTPackageModulePartialType = ASTModuleBaseType &
-  PartialState<
-    ASTPackageModuleType,
-    {
-      deck: {
-        face: 1
-        like: 1
-        term: 1
-      }
-      like: 1
-    },
-    true
-  >
+export type ASTModule_PartialType =
+  | ASTCodeModule_PartialType
+  | ASTPackageModule_PartialType
 
-export type ASTPackageModulePotentialType =
-  | ASTPackageModulePartialType
-  | ASTPackageModuleType
+export type ASTModule_Type =
+  | ASTModule_FullType
+  | ASTModule_PartialType
 
-export type ASTPackageModuleType = ASTModuleBaseType & {
-  deck: ASTPackageType
-  like: AST.PackageModule
-}
+export type ASTPackageModule_FullType = ASTModuleBaseType &
+  AST_FullTypeMixin & {
+    deck: ASTPackage_FullType
+    like: AST.PackageModule
+  }
+
+export type ASTPackageModule_PartialType = ASTModuleBaseType &
+  AST_PartialTypeMixin & {
+    children: Array<ASTPackage_Type>
+    like: AST.PackageModule
+  }
+
+export type ASTPackageModule_Type =
+  | ASTPackageModule_FullType
+  | ASTPackageModule_PartialType
 
 export const CARD_TYPE = [
   AST.CodeModule,
