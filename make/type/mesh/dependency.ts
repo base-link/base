@@ -1,6 +1,7 @@
-import { APIInputType } from '~'
+import { api , api } from '~'
+import type { APIInputType } from '~'
 
-import { AST } from './list'
+import type {  } from './list'
 
 export type ASTBindableObjectType = {
   // callbacks to the dependency handler
@@ -9,6 +10,7 @@ export type ASTBindableObjectType = {
   callbackList: Array<
     ASTInputCallbackType<Record<string, unknown>>
   >
+  children: Array<undefined>
   data: Record<string, unknown>
   like: AST.BindableObject
   parent?: ASTBindableObjectType
@@ -17,6 +19,7 @@ export type ASTBindableObjectType = {
 
 export type ASTBindableStringType = {
   callbackList: Array<ASTInputCallbackType<string>>
+  children: Array<undefined>
   data: string
   like: AST.BindableString
   parent?: ASTBindableObjectType
@@ -29,7 +32,7 @@ export type ASTDependencyPartCallbackType = (
 
 export type ASTDependencyPartType = {
   callbackList: Array<ASTDependencyPartCallbackType>
-  children: []
+  children: Array<undefined>
   last?: ASTDependencyPartType
   like: AST.DependencyPart
   name: string
@@ -40,7 +43,7 @@ export type ASTDependencyPartType = {
 
 export type ASTDependencyType = {
   callbackList: Array<ASTInputCallbackType<APIInputType>>
-  children: []
+  children: Array<undefined>
   context: APIInputType
   like: AST.Dependency
   partial: false
@@ -50,7 +53,7 @@ export type ASTDependencyType = {
 export type ASTInputCallbackType<T> = (value: T) => void
 
 export type ASTLexicalScopeType = {
-  children: []
+  children: Array<undefined>
   data: Record<string, unknown>
   like: AST.LexicalScope
   parent?: ASTLexicalScopeType

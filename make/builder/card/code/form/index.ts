@@ -1,9 +1,10 @@
-import { APIInputType, AST, ASTPartialType, api } from '~'
+import { api } from '~'
+import type { APIInputType, AST, PartialType } from '~'
 
-export * from './base'
-export * from './case'
-export * from './task'
-export * from './wear'
+export * from './base/index.js'
+export * from './case/index.js'
+export * from './task/index.js'
+export * from './wear/index.js'
 
 export function process_codeCard_form(
   input: APIInputType,

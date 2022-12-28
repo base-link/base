@@ -1,4 +1,5 @@
-import { APIInputType, Tree, api } from '~'
+import { Tree, api } from '~'
+import type { APIInputType } from '~'
 
 export function assumeStaticTermFromNest(
   input: APIInputType,

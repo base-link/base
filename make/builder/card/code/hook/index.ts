@@ -1,4 +1,5 @@
-import { APIInputType, AST, ASTPartialType, Nest, api } from '~'
+import { api } from '~'
+import type { APIInputType, AST, Nest, PartialType } from '~'
 
 export function process_codeCard_hook(
   input: APIInputType,

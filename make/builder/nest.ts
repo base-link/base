@@ -1,11 +1,8 @@
-import {
+import { Nest, Tree, api } from '~'
+import type {
   APIInputType,
-  AST,
   ASTScopeType,
-  Nest,
-  Tree,
   TreeNestType,
-  api,
 } from '~'
 
 export function assertNest(
@@ -25,17 +22,6 @@ export function assertNestChildrenLength(
     api.throwError(
       api.generateInvalidNestChildrenLengthError(input, length),
     )
-  }
-}
-
-export function assertNumber(
-  object: unknown,
-): asserts object is number {
-  if (!api.isNumber(object)) {
-    api.throwError({
-      code: '0016',
-      note: 'Compiler error',
-    })
   }
 }
 
@@ -108,14 +94,10 @@ export function isNest(
   object: unknown,
 ): object is TreeNestType {
   return (
-    api.isObject(object) &&
+    api.isRecord(object) &&
     'like' in object &&
     (object as TreeNestType).like === Tree.Nest
   )
-}
-
-export function isNumber(object: unknown): object is number {
-  return api.isNativeNumber(object)
 }
 
 export function nestIsCode(input: APIInputType): boolean {

@@ -1,8 +1,9 @@
-import { APIInputType, Nest, api } from '~'
+import { api } from '~'
+import type { APIInputType, Nest } from '~'
 
-export * from './back'
-export * from './base'
-export * from './free'
+export * from './back/index.js'
+export * from './base/index.js'
+export * from './free/index.js'
 
 export function process_codeCard_task(
   input: APIInputType,

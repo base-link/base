@@ -1,13 +1,10 @@
-import {
+import { AST, Nest, Tree, api } from '~'
+import type {
   APIInputType,
-  AST,
   ASTDependencyPartType,
   ASTDependencyType,
   ASTScopeType,
-  Nest,
-  Tree,
   TreeNodeType,
-  api,
 } from '~'
 
 export function parseTextIntoTree(text: string): TreeNodeType {
@@ -112,6 +109,7 @@ export function resolveNestDependencyList(
   const array: Array<ASTDependencyType> = []
   const dependency: ASTDependencyType = {
     callbackList: [job],
+    children: [],
     context: input,
     like: AST.Dependency,
     partial: false,
@@ -130,6 +128,7 @@ export function resolveNestDependencyList(
 
       const dependencyPart: ASTDependencyPartType = {
         callbackList: [],
+        children: [],
         like: AST.DependencyPart,
         name,
         parent: dependency,

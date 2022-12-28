@@ -1,4 +1,6 @@
-import { Base } from './base'
+import { api } from '~'
+
+import { Base } from './base.js'
 
 export function createBase(): Base {
   return new Base()

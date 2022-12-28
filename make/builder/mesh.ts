@@ -40,7 +40,7 @@ export function isAST<T extends AST>(
   like: T,
 ): object is ASTType<T> {
   return (
-    api.isObject(object) &&
+    api.isRecord(object) &&
     'like' in object &&
     (object as ASTType<T>).like === like
   )
@@ -51,7 +51,7 @@ export function isASTPartial<T extends AST>(
   like: T,
 ): object is ASTPartialType<T> {
   return (
-    api.isObject(object) &&
+    api.isRecord(object) &&
     'like' in object &&
     (object as ASTType<T>).like === like &&
     (object as ASTPartialType<T>).partial === true
@@ -63,7 +63,7 @@ export function isTreeType<T extends Tree>(
   like: T,
 ): object is TreeType<T> {
   return (
-    api.isObject(object) &&
+    api.isRecord(object) &&
     'like' in object &&
     (object as TreeType<T>).like === like
   )

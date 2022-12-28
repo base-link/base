@@ -2,7 +2,7 @@ import {
   LEXER_DATA_TOKEN_TYPE,
   LexerDataTokenType,
   LexerTokenType,
-} from '../tokenizer'
+} from '../tokenizer/index.js'
 
 export enum Tree {
   Code = 'tree-code',

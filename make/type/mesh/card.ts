@@ -1,4 +1,5 @@
-import {
+import { Base } from '~'
+import type {
   ASTCallback_FullType,
   ASTCallback_Type,
   ASTClassInterface_FullType,
@@ -23,11 +24,10 @@ import {
   ASTTest_Type,
   AST_FullTypeMixin,
   AST_PartialTypeMixin,
-  Base,
   TreeNodeType,
 } from '~'
 
-import { AST } from './list'
+import { AST } from './list.js'
 
 export type ASTBookModule_FullType = ASTModuleBaseType & {
   abstract: string
@@ -38,6 +38,7 @@ export type ASTBookModule_FullType = ASTModuleBaseType & {
 }
 
 export type ASTBookModule_PartialType = AST_PartialTypeMixin & {
+  children: Array<undefined>
   like: AST.BookModule
 }
 

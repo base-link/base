@@ -1,4 +1,5 @@
-import { ASTDependencyType, BaseCard } from '~'
+import { BaseCard } from '~'
+import type { DependencyType } from '~'
 
 export { Base }
 

@@ -1,4 +1,5 @@
-import { AST, ASTScopeType, api } from '~'
+import { AST, api } from '~'
+import type { ASTScopeType } from '~'
 
 export function createScope(
   data: Record<string, unknown>,
@@ -37,7 +38,7 @@ export function isScope(
   object: unknown,
 ): object is ASTScopeType {
   return (
-    api.isObject(object) &&
+    api.isRecord(object) &&
     'like' in object &&
     (object as ASTScopeType).like === AST.Scope
   )

@@ -1,12 +1,13 @@
-import { ASTModuleType, CARD_TYPE, api } from '~'
+import { CARD_TYPE, api } from '~'
+import type { Module_FullType } from '~'
 
-export * from './book'
-export * from './code'
-export * from './deck'
+export * from './book/index.js'
+export * from './code/index.js'
+export * from './deck/index.js'
 
 export function assertCard(
   object: unknown,
-): asserts object is ASTModuleType {
+): asserts object is ASTModule_FullType {
   if (!api.isCard(object)) {
     api.throwError({
       code: '0014',
@@ -17,10 +18,10 @@ export function assertCard(
 
 export function isCard(
   object: unknown,
-): object is ASTModuleType {
+): object is ASTModule_FullType {
   return (
-    api.isObject(object) &&
+    api.isRecord(object) &&
     'like' in object &&
-    CARD_TYPE.includes((object as ASTModuleType).like)
+    CARD_TYPE.includes((object as ASTModule_FullType).like)
   )
 }

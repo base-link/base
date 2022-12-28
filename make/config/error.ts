@@ -1,4 +1,5 @@
-import { ErrorConfigType, ErrorInputType } from '~'
+import { api } from '~'
+import type { ErrorConfigType, ErrorInputType } from '~'
 
 export const ERROR: Record<string, ErrorConfigType> = [
   {

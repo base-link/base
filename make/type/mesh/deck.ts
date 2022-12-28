@@ -1,5 +1,6 @@
 import {
   AST,
+  ASTConstant_Type,
   ASTString_Type,
   AST_FullTypeMixin,
   AST_PartialTypeMixin,
@@ -10,10 +11,11 @@ export type ASTPackageLicense_FullType = AST_FullTypeMixin & {
   name: string
 }
 
-export type ASTPackageLicense_PartialType = {
-  children: Array<ASTString_Type>
-  like: AST.PackageLicense
-}
+export type ASTPackageLicense_PartialType =
+  AST_PartialTypeMixin & {
+    children: Array<ASTString_Type>
+    like: AST.PackageLicense
+  }
 
 export type ASTPackageLicense_Type =
   | ASTPackageLicense_PartialType
@@ -35,7 +37,7 @@ export type ASTPackageUser_Type =
   | ASTPackageUser_PartialType
   | ASTPackageUser_FullType
 
-export type ASTPackage_FullType = {
+export type ASTPackage_FullType = AST_FullTypeMixin & {
   bear?: string
   face: Array<ASTPackageUser_Type>
   host: string
@@ -53,6 +55,7 @@ export type ASTPackage_PartialType = AST_PartialTypeMixin & {
     | ASTPackageUser_Type
     | ASTString_Type
     | ASTPackageLicense_Type
+    | ASTConstant_Type
   >
   like: AST.Package
 }

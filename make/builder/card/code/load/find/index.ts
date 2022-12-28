@@ -1,7 +1,8 @@
-import { APIInputType, AST, ASTPartialType, api } from '~'
+import { api } from '~'
+import type { APIInputType, AST, PartialType } from '~'
 
-export * from './bear'
-export * from './save'
+export * from './bear/index.js'
+export * from './save/index.js'
 
 export function process_codeCard_load_find(
   input: APIInputType,

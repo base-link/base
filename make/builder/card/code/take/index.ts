@@ -1,6 +1,7 @@
 // the api url handlers go here
 import { api } from '~'
-import { APIInputType, Nest } from '~'
+import type { APIInputType, Nest } from '~'
+import { api } from '~'
 
 export function process_codeCard_take(
   input: APIInputType,

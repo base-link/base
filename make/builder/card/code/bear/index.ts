@@ -1,4 +1,5 @@
-import { APIInputType, AST, Nest, api } from '~'
+import { AST, api } from '~'
+import type { APIInputType, Nest } from '~'
 
 export function finalize_codeCard_bear_nestedChildren(
   input: APIInputType,

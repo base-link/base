@@ -1,6 +1,7 @@
-import { ASTModuleBaseType, ASTScopeType } from '~'
+import { api } from '~'
+import type { ModuleBaseType, ScopeType } from '~'
 
-export * from './mesh'
+export * from './mesh/index.js'
 
 export type APIInputType = {
   card: ASTModuleBaseType

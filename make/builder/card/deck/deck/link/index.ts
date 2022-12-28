@@ -1,35 +1,60 @@
-import { APIInputType, AST, api } from '~'
+import {
+  APIInputType,
+  AST,
+  ASTConstant_FullType,
+  ASTType,
+  ASTValue_FullType,
+  api,
+} from '~'
+
+export function assertStringPattern(
+  input: APIInputType,
+  string: string,
+  pattern: RegExp,
+): void {
+  if (!string.match(pattern)) {
+    api.throwError(
+      api.generateInvalidPatternError(input, pattern),
+    )
+  }
+}
+
+export function createConstant(
+  name: string,
+  value: ASTValue_FullType | Array<ASTConstant_FullType>,
+): ASTType<AST.Constant> {
+  return {
+    complete: true,
+    like: AST.Constant,
+    name,
+    partial: false,
+    value,
+  }
+}
 
 export function process_deckCard_deck_link(
   input: APIInputType,
 ) {
   const text = api.resolveText(input)
-  if (text) {
-    const [host, name] = text.slice(1).split('/')
+  api.assertString(text)
 
-    if (!host || !name) {
-      api.throwError(api.generateInvalidDeckLink(input, text))
-    }
+  api.assertStringPattern(
+    input,
+    text,
+    /^@[a-z0-9]+\/[a-z0-9]+$/,
+  )
 
-    api.assertString(host)
-    api.assertString(name)
+  const deck = api.assumeInputObjectAsASTPartialType(
+    input,
+    AST.Package,
+  )
 
-    if (host.match(/[^a-z0-9@]/)) {
-      api.throwError(
-        api.generateInvalidPatternError(input, host, 'host'),
-      )
-    }
-
-    if (name.match(/[^a-z0-9]/)) {
-      api.throwError(
-        api.generateInvalidPatternError(input, host, 'name'),
-      )
-    }
-
-    const module = input.card
-    api.assertAST(module, AST.PackageModule)
-
-    module.deck.host = host
-    module.deck.name = name
-  }
+  deck.children.push(
+    api.createConstant('link', {
+      complete: true,
+      like: AST.String,
+      partial: false,
+      string: text,
+    }),
+  )
 }

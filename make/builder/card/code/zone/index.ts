@@ -1,4 +1,5 @@
-import { APIInputType, api } from '~'
+import { api } from '~'
+import type { APIInputType } from '~'
 
 export * from './hook'
 

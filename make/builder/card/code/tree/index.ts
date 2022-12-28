@@ -23,7 +23,7 @@ export function childrenAreComplete({
 }: {
   children: Array<AST_PartialTypeMixin | AST_FullTypeMixin>
 }): boolean {
-  return children.filter(x => !x.partial).length === 0
+  return children.filter(x => x.partial).length === 0
 }
 
 export function getObjectScope(
@@ -111,8 +111,9 @@ export function replaceASTChild<
   X extends ASTPartialType<AST>,
   B extends ASTType<AST>,
 >(input: APIInputType, a: A, x: X, b: B): void {
-  const objectScope = api.assumeObjectScope(input, 1)
-  api.assertASTPartial(objectScope, a)
-  const index = objectScope.children.indexOf(x)
-  objectScope.children[index] = b
+  const { data } = api.assumeObjectScope(input, 1)
+  api.assertASTPartial(data, a)
+  api.assertArray(data.children)
+  const index = data.children.indexOf(x)
+  data.children[index] = b
 }

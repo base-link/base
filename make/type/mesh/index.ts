@@ -65,7 +65,7 @@ import {
   ASTPackage_PartialType,
   ASTScopeType,
   ASTString_FullType,
-  ASTString_Type,
+  ASTString_PartialType,
   ASTTemplate_FullType,
   ASTTemplate_PartialType,
   ASTTerm_FullType,
@@ -76,12 +76,12 @@ import {
   ASTUnsignedInteger_PartialType,
 } from '~'
 
-export * from './book'
-export * from './card'
-export * from './code'
-export * from './deck'
-export * from './dependency'
-export * from './list'
+export * from './book.js'
+export * from './card.js'
+export * from './code.js'
+export * from './deck.js'
+export * from './dependency.js'
+export * from './list.js'
 
 export type ASTNodeMappingPartialType = {
   'ast-assertion': ASTAssertion_PartialType
@@ -119,7 +119,7 @@ export type ASTNodeMappingPartialType = {
   'ast-package-module': ASTPackageModule_PartialType
   'ast-package-user': ASTPackageUser_PartialType
   'ast-scope': ASTScopeType
-  'ast-string': ASTString_Type
+  'ast-string': ASTString_PartialType
   'ast-template': ASTTemplate_PartialType
   'ast-term': ASTTerm_PartialType
   'ast-test': ASTTest_PartialType

@@ -1,4 +1,5 @@
-import { api , Nest, APIInputType } from '~'
+import { api } from '~'
+import type { Nest, APIInputType } from '~'
 
 export function process_codeCard_host(
   input: APIInputType,

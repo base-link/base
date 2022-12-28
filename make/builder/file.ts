@@ -1,7 +1,20 @@
 import fs from 'fs'
-import pathResolve from 'path'
+import glob from 'glob'
+import pathResolve, { dirname } from 'path'
+import smc from 'source-map'
+import { fileURLToPath } from 'url'
 
-import { APIInputType, Base, api } from '~'
+import { api } from '~'
+import type { APIInputType, Base } from '~'
+
+export const SOURCE_MAPS: Record<
+  string,
+  smc.SourceMapConsumer
+> = {}
+
+const __filename = fileURLToPath(import.meta.url)
+
+export const __dirname = dirname(__filename)
 
 export function assumePath(
   input: APIInputType,
@@ -16,6 +29,19 @@ export function assumePath(
   }
   api.assertString(path)
   return path
+}
+
+export async function findFilePathsRecursively(
+  pattern: string,
+): Promise<Array<string>> {
+  return new Promise((res, rej) => {
+    glob(pattern, (err, files) => {
+      if (err) {
+        return rej(err)
+      }
+      res(files)
+    })
+  })
 }
 
 export function findPath(
@@ -50,8 +76,28 @@ export function getLinkHost(link: string): string {
   return pathResolve.dirname(link)
 }
 
+export async function loadSourceMaps(): Promise<void> {
+  const startDir = pathResolve.resolve(
+    `${__dirname}/../../host`,
+  )
+  const paths = await api.findFilePathsRecursively(
+    `${startDir}/**/*.js`,
+  )
+
+  for (const path of paths) {
+    const mapContent = fs.readFileSync(`${path}.map`, 'utf-8')
+    const json = JSON.parse(mapContent) as smc.RawSourceMap
+    const sm = await new smc.SourceMapConsumer(json)
+    SOURCE_MAPS[`file://${path}`] = sm
+  }
+}
+
 export function readTextFile(base: Base, link: string): string {
   return base.text_mesh[link] ?? fs.readFileSync(link, 'utf-8')
+}
+
+export function resolveDirectoryPath(path: string): string {
+  return pathResolve.dirname(path)
 }
 
 export function resolveModulePath(
@@ -68,4 +114,12 @@ export function resolveModulePath(
   api.assertString(path)
 
   return path
+}
+
+export function resolveNativePath(
+  path: string,
+  context: string,
+): string {
+  return pathResolve.resolve(context, path)
+  // .replace(pathResolve.resolve(`${__dirname}/../..`), '.')
 }

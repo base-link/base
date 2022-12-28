@@ -1,13 +1,7 @@
-import {
-  APIInputType,
-  AST,
-  ASTPartialType,
-  Base,
-  Tree,
-  api,
-} from '~'
+import { AST, Base, api } from '~'
+import type { APIInputType, PartialType } from '~'
 
-export * from './deck'
+export * from './deck/index.js'
 
 export function handle_deckCard(
   base: Base,
@@ -30,12 +24,7 @@ export function process_deckCard(
   const card = base.card(link)
   const seed: ASTPartialType<AST.PackageModule> = {
     base,
-    deck: {
-      face: [],
-      like: AST.Package,
-      partial: true,
-      term: [],
-    },
+    children: [],
     directory: linkHost,
     like: AST.PackageModule,
     parseTree: tree,
@@ -93,15 +82,15 @@ export function resolve_deckCard(
   const card = base.card(link)
   api.assertASTPartial(card.seed, AST.PackageModule)
 
-  const { deck } = card.seed
+  card.seed
 
   // TODO: deck.hint tells us the parser to use on the code.
 
-  if (deck.bear) {
-    api.handle_codeCard(base, deck.bear)
-  }
+  // if (deck.bear) {
+  //   api.handle_codeCard(base, deck.bear)
+  // }
 
-  if (deck.test) {
-    api.handle_codeCard(base, deck.test)
-  }
+  // if (deck.test) {
+  //   api.handle_codeCard(base, deck.test)
+  // }
 }

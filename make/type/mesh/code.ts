@@ -1,4 +1,5 @@
-import { AST, TreeNestType } from '~'
+import { api } from '~'
+import type { TreeNestType } from '~'
 
 export type ASTAssertion_FullType = AST_PartialTypeMixin & {
   bind: Array<ASTBind_FullType | ASTValue_FullType>
@@ -392,7 +393,7 @@ export type ASTNativeClassInterface_Type =
   | ASTNativeClassInterface_FullType
 
 export type ASTScopeType = {
-  children: []
+  children: Array<undefined>
   data: Record<string, unknown>
   like: AST.Scope
   parent?: ASTScopeType
@@ -404,7 +405,14 @@ export type ASTString_FullType = AST_FullTypeMixin & {
   string: string
 }
 
-export type ASTString_Type = ASTString_FullType
+export type ASTString_PartialType = AST_PartialTypeMixin & {
+  children: Array<string>
+  like: AST.String
+}
+
+export type ASTString_Type =
+  | ASTString_FullType
+  | ASTString_PartialType
 
 export type ASTTemplate_FullType = AST_FullTypeMixin & {
   input: Record<string, ASTInput_PartialType>
@@ -485,6 +493,7 @@ export type ASTValue_Type =
   | ASTValue_PartialType
 
 export type AST_FullTypeMixin = {
+  complete: boolean
   partial: false
 }
 

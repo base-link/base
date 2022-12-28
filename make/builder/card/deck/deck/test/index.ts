@@ -1,4 +1,5 @@
-import { APIInputType, AST, api } from '~'
+import { AST, api } from '~'
+import type { APIInputType } from '~'
 
 export function finalize_deckCard_deck_test(
   input: APIInputType,
@@ -9,8 +10,24 @@ export function finalize_deckCard_deck_test(
   const card = api.getProperty(input, 'card')
   api.assertAST(card, AST.PackageModule)
 
-  const path = api.assumePath(input, text)
-  card.deck.test = path
+  const path = api.findPath(text, card.directory)
+  api.assertString(path, () => {
+    return api.generateUnresolvedPathError(input, text)
+  })
+
+  const deck = api.assumeInputObjectAsASTPartialType(
+    input,
+    AST.Package,
+  )
+
+  deck.children.push(
+    api.createConstant('test', {
+      complete: true,
+      like: AST.String,
+      partial: false,
+      string: path,
+    }),
+  )
 }
 
 export function process_deckCard_deck_test(

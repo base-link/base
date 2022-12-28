@@ -1,4 +1,5 @@
-import { APIInputType, api } from '~'
+import { api } from '~'
+import type { APIInputType } from '~'
 
 export function process_codeCard_load_find_bear(
   input: APIInputType,

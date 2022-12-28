@@ -1,8 +1,9 @@
-import { TreeNodeType, buildParseTree } from './builder'
-import { tokenizeLinkText } from './tokenizer'
+import { buildParseTree } from './builder/index.js'
+import type { TreeNodeType } from './builder/index.js'
+import { tokenizeLinkText } from './tokenizer/index.js'
 
-export * from './builder'
-export * from './tokenizer'
+export * from './builder/index.js'
+export * from './tokenizer/index.js'
 
 export enum Nest {
   Code = 'code',

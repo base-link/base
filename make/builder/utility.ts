@@ -1,9 +1,4 @@
-import {
-  isBoolean as isNativeBoolean,
-  isNumber as isNativeNumber,
-  isString as isNativeString,
-  isObject,
-} from 'lodash'
+import _ from 'lodash'
 
 import {
   APIInputType,
@@ -13,10 +8,17 @@ import {
   ASTType,
   ErrorType,
   Tree,
-  TreeNodeType,
   TreeType,
   api,
 } from '~'
+
+export function assertArray(
+  object: unknown,
+): asserts object is Array {
+  if (!api.isArray(object)) {
+    throw new Error('Object is not array')
+  }
+}
 
 export function assertBoolean(
   object: unknown,
@@ -25,6 +27,17 @@ export function assertBoolean(
     api.throwError({
       code: '0017',
       note: `Object is not type 'boolean'`,
+    })
+  }
+}
+
+export function assertNumber(
+  object: unknown,
+): asserts object is number {
+  if (!api.isNumber(object)) {
+    api.throwError({
+      code: '0016',
+      note: 'Compiler error',
     })
   }
 }
@@ -114,23 +127,24 @@ export function extendWithObjectScope(
   }
 }
 
-export function isBoolean(object: unknown): object is boolean {
-  return api.isNativeBoolean(object)
+export function isArray(object: unknown): object is Array {
+  return _.isArray(object)
 }
 
-export {
-  isNativeBoolean,
-  isNativeNumber,
-  isNativeString,
-  isObject,
+export function isBoolean(object: unknown): object is boolean {
+  return _.isBoolean(object)
+}
+
+export function isNumber(object: unknown): object is number {
+  return _.isNumber(object)
 }
 
 export function isRecord(
   object: unknown,
 ): object is Record<string, unknown> {
-  return api.isObject(object)
+  return _.isObject(object)
 }
 
 export function isString(object: unknown): object is string {
-  return api.isNativeString(object)
+  return _.isString(object)
 }

@@ -1,7 +1,8 @@
-import { APIInputType, AST, ASTPartialType, Nest, api } from '~'
+import { api } from '~'
+import type { APIInputType, AST, Nest, PartialType } from '~'
 
-export * from './bear'
-export * from './find'
+export * from './bear/index.js'
+export * from './find/index.js'
 
 export function finalize_codeCard_load_textNest(
   input: APIInputType,

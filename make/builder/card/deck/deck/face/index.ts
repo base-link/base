@@ -1,4 +1,5 @@
-import { APIInputType, Nest, api } from '~'
+import { api } from '~'
+import type { APIInputType, Nest } from '~'
 
 export function process_deckCard_deck_face(
   input: APIInputType,
