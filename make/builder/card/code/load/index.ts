@@ -1,4 +1,11 @@
-import { AST, Nest, api } from '~'
+import {
+  AST,
+  ASTFullType,
+  ASTImportVariable_FullType,
+  ASTImport_FullType,
+  Nest,
+  api,
+} from '~'
 import type { APIInputType, ASTPartialType } from '~'
 
 export * from './bear/index.js'
@@ -27,6 +34,47 @@ export function finalize_codeCard_load_textNest(
   )
 }
 
+export function generateFullImport(
+  start: ASTPartialType<AST.Import>,
+): ASTFullType<AST.Import> {
+  let absolutePath
+  let variableList: Array<ASTImportVariable_FullType> = []
+  let importList: Array<ASTImport_FullType> = []
+
+  start.children.forEach(node => {
+    if (!node.partial) {
+      switch (node.like) {
+        case AST.Constant:
+          if (
+            node.name === 'absolutePath' &&
+            'like' in node.value &&
+            node.value.like === AST.String
+          ) {
+            absolutePath = node.value.string
+          }
+          break
+        case AST.Import:
+          importList.push(node)
+          break
+        case AST.ImportVariable:
+          variableList.push(node)
+          break
+      }
+    }
+  })
+
+  api.assertString(absolutePath)
+
+  return {
+    absolutePath,
+    complete: false,
+    import: importList,
+    like: AST.Import,
+    partial: false,
+    variable: variableList,
+  }
+}
+
 export function process_codeCard_load(
   input: APIInputType,
 ): void {
@@ -36,10 +84,11 @@ export function process_codeCard_load(
     partial: true,
   }
 
-  api.assertAST(input.card, AST.CodeModule)
+  const loader = api.assumeInputObjectAsASTPartialType<
+    AST.CodeModule | AST.Import
+  >(input, [AST.CodeModule, AST.Import])
 
-  input.card.loadList.push(load)
-
+  loader.children.push(load)
   const childInput = api.extendWithObjectScope(input, load)
 
   api.assumeNest(input).nest.forEach((nest, index) => {
@@ -50,6 +99,20 @@ export function process_codeCard_load(
       }),
     )
   })
+
+  if (api.childrenAreComplete(load)) {
+    api.replaceASTChild<
+      AST.CodeModule | AST.Import,
+      ASTPartialType<AST.Import>,
+      ASTFullType<AST.Import>
+    >(
+      childInput,
+      [AST.CodeModule, AST.Import],
+      load,
+      api.generateFullImport(load),
+    )
+  } else {
+  }
 }
 
 export function process_codeCard_load_nestedChildren(

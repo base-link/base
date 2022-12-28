@@ -35,6 +35,8 @@ export function process_codeCard_like_nestedChildren(
 ): void {
   const type = api.determineNestType(input)
   switch (type) {
+    case Nest.DynamicTerm:
+      break
     case Nest.StaticTerm:
       const term = api.resolveStaticTermFromNest(input)
       switch (term) {
@@ -62,7 +64,9 @@ export function process_codeCard_like_nestedChildren(
       }
       break
     default:
-      api.throwError(api.generateUnhandledTermCaseError(input))
+      api.throwError(
+        api.generateUnhandledNestCaseError(input, type),
+      )
   }
 }
 

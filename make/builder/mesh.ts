@@ -19,20 +19,32 @@ export function assertAST<T extends AST>(
 
 export function assertASTFull<T extends AST>(
   object: unknown,
-  like: T,
+  like: T | Array<T>,
 ): asserts object is ASTFullType<T> {
-  if (!api.isASTFull(object, like)) {
-    api.throwError(api.generateObjectNotASTNodeError(like))
+  like = api.isArray(like) ? like : [like]
+
+  for (const l of like) {
+    if (api.isASTFull(object, l)) {
+      return
+    }
   }
+
+  api.throwError(api.generateObjectNotASTNodeError(like))
 }
 
 export function assertASTPartial<T extends AST>(
   object: unknown,
-  like: T,
+  like: T | Array<T>,
 ): asserts object is ASTPartialType<T> {
-  if (!api.isASTPartial(object, like)) {
-    api.throwError(api.generateObjectNotASTNodeError(like))
+  like = api.isArray(like) ? like : [like]
+
+  for (const l of like) {
+    if (api.isASTPartial(object, l)) {
+      return
+    }
   }
+
+  api.throwError(api.generateObjectNotASTNodeError(like))
 }
 
 export function assertTreeType<T extends Tree>(

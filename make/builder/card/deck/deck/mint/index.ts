@@ -1,11 +1,11 @@
 import { AST, Nest, api } from '~'
 import type { APIInputType } from '~'
 
-export function process_deckCard_deck_mark(
+export function process_deckCard_deck_mint(
   input: APIInputType,
 ): void {
   api.assumeNest(input).nest.forEach((nest, index) => {
-    process_deckCard_deck_mark_nestedChildren(
+    process_deckCard_deck_mint_nestedChildren(
       api.extendWithNestScope(input, {
         index,
         nest,
@@ -14,7 +14,7 @@ export function process_deckCard_deck_mark(
   })
 }
 
-export function process_deckCard_deck_mark_nestedChildren(
+export function process_deckCard_deck_mint_nestedChildren(
   input: APIInputType,
 ): void {
   const type = api.determineNestType(input)

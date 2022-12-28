@@ -2,6 +2,7 @@ export enum AST {
   Assertion = 'ast-assertion',
   Bind = 'ast-bind',
   BookModule = 'ast-book-module',
+  Boolean = 'ast-boolean',
   BorrowVariable = 'ast-borrow-variable',
   Call = 'ast-call',
   Callback = 'ast-callback',

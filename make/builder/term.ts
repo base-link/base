@@ -56,5 +56,45 @@ export function resolveStaticTermFromNest(
 export function termIsInterpolated(
   input: APIInputType,
 ): boolean {
+  const nest = api.assumeNest(input)
+
+  if (nest.line.length > 1) {
+    return false
+  }
+
+  let line = nest.line[0]
+  if (!line) {
+    return false
+  }
+
+  if (line.like !== Tree.Term) {
+    return false
+  }
+
+  for (const link of line.link) {
+    if (link.like === Tree.Slot) {
+      return true
+    }
+  }
+
+  return false
+}
+
+export function termIsNested(input: APIInputType): boolean {
+  const nest = api.assumeNest(input)
+
+  let line = nest.line[0]
+  if (!line) {
+    return false
+  }
+
+  if (line.like !== Tree.Term) {
+    return false
+  }
+
+  if (nest.line.length > 1) {
+    return true
+  }
+
   return false
 }

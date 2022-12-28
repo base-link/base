@@ -31,6 +31,20 @@ export type ASTBind_Type =
   | ASTBind_PartialType
   | ASTBind_FullType
 
+export type ASTBoolean_FullType = AST_FullTypeMixin & {
+  boolean: boolean
+  like: AST.Boolean
+}
+
+export type ASTBoolean_PartialType = AST_PartialTypeMixin & {
+  children: Array<boolean>
+  like: AST.Boolean
+}
+
+export type ASTBoolean_Type =
+  | ASTBoolean_FullType
+  | ASTBoolean_PartialType
+
 export type ASTBorrowVariable_FullType = AST_FullTypeMixin &
   Partial<AST_MutableTypeMixin> & {
     like: AST.BorrowVariable
@@ -281,7 +295,11 @@ export type ASTFunction_FullType = AST_FullTypeMixin & {
 
 export type ASTFunction_PartialType = AST_PartialTypeMixin & {
   children: Array<
-    ASTFunctionFlow_Type | ASTFunction_Type | ASTInput_Type
+    | ASTTerm_Type
+    | ASTFunctionFlow_Type
+    | ASTFunction_Type
+    | ASTInput_Type
+    | ASTConstant_Type
   >
   like: AST.Function
 }
@@ -315,7 +333,9 @@ export type ASTImportVariable_FullType = AST_FullTypeMixin & {
 
 export type ASTImportVariable_PartialType =
   AST_PartialTypeMixin & {
-    children: Array<ASTTerm_Type | ASTImportVariableRename_Type>
+    children: Array<
+      ASTConstant_Type | ASTImportVariableRename_Type
+    >
     like: AST.ImportVariable
   }
 
@@ -325,13 +345,17 @@ export type ASTImportVariable_Type =
 
 export type ASTImport_FullType = AST_FullTypeMixin & {
   absolutePath: string
+  import: Array<ASTImport_FullType>
   like: AST.Import
   variable: Array<ASTImportVariable_FullType>
 }
 
 export type ASTImport_PartialType = AST_PartialTypeMixin & {
   children: Array<
-    ASTString_Type | ASTImportVariable_Type | ASTConstant_Type
+    | ASTString_Type
+    | ASTImportVariable_Type
+    | ASTConstant_Type
+    | ASTImport_Type
   >
   like: AST.Import
 }
@@ -486,14 +510,17 @@ export type ASTUnsignedInteger_Type =
 export type ASTValue_FullType =
   | ASTString_FullType
   | ASTUnsignedInteger_FullType
+  | ASTBoolean_FullType
 
 export type ASTValue_PartialType =
   | ASTString_Type
   | ASTUnsignedInteger_Type
+  | ASTBoolean_PartialType
 
 export type ASTValue_Type =
   | ASTValue_FullType
   | ASTValue_PartialType
+  | ASTBoolean_Type
 
 export type AST_FullTypeMixin = {
   complete: boolean

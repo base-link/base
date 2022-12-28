@@ -47,7 +47,6 @@ export function process_codeCard(
   base: Base,
   link: string,
 ): void {
-  console.log(link)
   const text = api.readTextFile(base, link)
   const textTree = api.parseTextIntoTree(text)
   const linkHost = api.getLinkHost(link)
@@ -154,21 +153,11 @@ export function resolve_codeCard(
   base: Base,
   link: string,
 ): void {
+  console.log(link)
   const card = base.card(link)
   api.assertAST(card.seed, AST.CodeModule)
 
   if (card.seed.partial) {
-    card.seed.children.forEach(node => {
-      switch (node.like) {
-        case AST.Import:
-          if (node.partial) {
-          }
-          break
-        case AST.Export:
-          break
-      }
-    })
-
     if (api.childrenAreComplete(card.seed)) {
       const seed: ASTFullType<AST.CodeModule> = {
         allClassAST: {},
@@ -235,12 +224,48 @@ export function resolve_codeCard(
             seed.allClassAST[node.name] = node
             break
           }
-          case AST.Template:
+          case AST.Template: {
             api.assertASTFull(node, AST.Template)
             if (!node.hidden) {
               seed.publicTemplateAST[node.name] = node
             }
             seed.allTemplateAST[node.name] = node
+            break
+          }
+          case AST.Import: {
+            api.assertASTFull(node, AST.Import)
+            seed.importTree.push(node)
+          }
+          case AST.Export: {
+            api.assertASTFull(node, AST.Export)
+            seed.exportList.push(node)
+          }
+        }
+      })
+
+      const input: APIInputType = {
+        card: card.seed,
+        lexicalScope: api.createScope(card.seed),
+        objectScope: api.createScope(card.seed),
+      }
+
+      api.replaceSeed(input, seed)
+
+      seed.importTree.forEach(node => {
+        api.handle_codeCard(seed.base, node.absolutePath)
+      })
+
+      seed.exportList.forEach(node => {
+        api.handle_codeCard(seed.base, node.absolutePath)
+      })
+    } else {
+      card.seed.children.forEach(node => {
+        switch (node.like) {
+          case AST.Import:
+            if (node.partial) {
+            }
+            break
+          case AST.Export:
             break
         }
       })

@@ -4,7 +4,7 @@ import type { APIInputType, ASTPartialType, ASTType } from '~'
 export * from './bear/index.js'
 export * from './face/index.js'
 export * from './link/index.js'
-export * from './mark/index.js'
+export * from './mint/index.js'
 export * from './term/index.js'
 export * from './test/index.js'
 
@@ -42,7 +42,7 @@ export function generate_full_deckCard_deck(
               case 'export':
                 exportFile = node.value.string
                 break
-              case 'export':
+              case 'test':
                 testFile = node.value.string
                 break
             }
@@ -100,7 +100,7 @@ export function process_deckCard_deck(
 
   if (api.childrenAreComplete(deck)) {
     api.replaceASTChild(
-      input,
+      childInput,
       AST.PackageModule,
       deck,
       api.generate_full_deckCard_deck(childInput),
@@ -155,8 +155,8 @@ export function process_deckCard_deck_nestedTerm(
       api.process_deckCard_deck_test(input)
       break
     }
-    case 'mark': {
-      api.process_deckCard_deck_mark(input)
+    case 'mint': {
+      api.process_deckCard_deck_mint(input)
       break
     }
     default: {

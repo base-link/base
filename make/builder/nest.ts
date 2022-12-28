@@ -53,7 +53,10 @@ export function assumeNestIndex(input: APIInputType): number {
 
 export function determineNestType(input: APIInputType): Nest {
   if (api.nestIsTerm(input)) {
-    if (api.termIsInterpolated(input)) {
+    if (
+      api.termIsInterpolated(input) ||
+      api.termIsNested(input)
+    ) {
       return Nest.DynamicTerm
     } else {
       return Nest.StaticTerm
@@ -85,6 +88,7 @@ export function getNestScopeProperty(
   let scope = input.nestScope
   while (rank > 0 && scope) {
     scope = scope.parent
+    rank--
   }
   api.assertScope(scope)
   return api.getProperty(scope.data, property)
@@ -141,10 +145,6 @@ export function nestIsMark(input: APIInputType): boolean {
 export function nestIsTerm(input: APIInputType): boolean {
   const nest = api.assumeNest(input)
 
-  if (nest.line.length > 1) {
-    return false
-  }
-
   if (nest.line.length === 0) {
     return false
   }
@@ -158,16 +158,7 @@ export function nestIsTerm(input: APIInputType): boolean {
     return false
   }
 
-  if (line.link.length !== 1) {
-    return false
-  }
-
-  let link = line.link[0]
-  if (link && link.like === Tree.Cord) {
-    return true
-  }
-
-  return false
+  return true
 }
 
 export function nestIsText(input: APIInputType): boolean {

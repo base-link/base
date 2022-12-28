@@ -121,6 +121,9 @@ export function resolveNativePath(
   path: string,
   context: string,
 ): string {
-  return pathResolve.resolve(context, path)
-  // .replace(pathResolve.resolve(`${__dirname}/../..`), '.')
+  const relative = pathResolve.relative(
+    process.cwd(),
+    pathResolve.resolve(context, path),
+  )
+  return relative.startsWith('.') ? relative : `./${relative}`
 }

@@ -15,6 +15,17 @@ export enum Nest {
   StaticText = 'static-text',
 }
 
+// eslint-disable-next-line sort-exports/sort-exports
+export const NEST_TYPE_TEXT: Record<Nest, string> = {
+  [Nest.DynamicTerm]: 'dynamic term',
+  [Nest.DynamicText]: 'dynamic text',
+  [Nest.StaticTerm]: 'static term',
+  [Nest.StaticText]: 'static text',
+  [Nest.Empty]: 'empty',
+  [Nest.Code]: 'boolean',
+  [Nest.Mark]: 'unsigned integer',
+}
+
 export function parseLinkText(str: string): TreeNodeType {
   return buildParseTree(tokenizeLinkText(str))
 }

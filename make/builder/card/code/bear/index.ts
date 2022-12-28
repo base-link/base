@@ -14,6 +14,8 @@ export function finalize_codeCard_bear_nestedChildren(
 
   const path = api.resolveModulePath(input, text)
 
+  console.log(path)
+
   card.children.push({
     absolutePath: path,
     complete: true,

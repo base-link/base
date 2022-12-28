@@ -51,9 +51,24 @@ export function assertString(
   }
 }
 
+export function assertTrue(
+  object: unknown,
+): asserts object is true {
+  if (object !== true) {
+    api.throwError({
+      code: '0017',
+      note: `Object is not type 'true'`,
+    })
+  }
+}
+
 export function assumeInputObjectAsASTPartialType<
   T extends AST,
->(input: APIInputType, type: T, rank = 0): ASTPartialType<T> {
+>(
+  input: APIInputType,
+  type: T | Array<T>,
+  rank = 0,
+): ASTPartialType<T> {
   let objectScope = input.objectScope
   while (rank > 0 && objectScope.parent) {
     objectScope = objectScope.parent
@@ -74,6 +89,18 @@ export function assumeInputObjectAsASTType<T extends AST>(
     rank--
   }
   api.assertAST(objectScope.data, type)
+  return objectScope.data
+}
+
+export function assumeInputObjectAsGenericASTType(
+  input: APIInputType,
+  rank = 0,
+): Record<string, unknown> {
+  let objectScope = input.objectScope
+  while (rank > 0 && objectScope.parent) {
+    objectScope = objectScope.parent
+    rank--
+  }
   return objectScope.data
 }
 
@@ -131,8 +158,6 @@ export function isArray<T = unknown>(
   return _.isArray(object)
 }
 
-export const omit = _.omit
-
 export function isBoolean(object: unknown): object is boolean {
   return _.isBoolean(object)
 }
@@ -150,3 +175,5 @@ export function isRecord(
 export function isString(object: unknown): object is string {
   return _.isString(object)
 }
+
+export const omit = _.omit

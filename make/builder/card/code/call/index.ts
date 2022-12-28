@@ -19,9 +19,31 @@ export function process_codeCard_call_nestedChildren(
 ): void {
   const type = api.determineNestType(input)
   switch (type) {
+    case Nest.DynamicTerm:
+      break
     case Nest.StaticText:
       break
+    case Nest.StaticTerm:
+      const term = api.assumeStaticTermFromNest(input)
+      const index = api.assumeNestIndex(input)
+      if (index === 0) {
+        throw new Error('Hint: call name')
+      } else {
+        switch (term) {
+          case 'read':
+            break
+          case 'loan':
+            break
+          default:
+            api.throwError(
+              api.generateUnhandledTermCaseError(input),
+            )
+        }
+      }
+      break
     default:
-      api.throwError(api.generateUnhandledTermCaseError(input))
+      api.throwError(
+        api.generateUnhandledNestCaseError(input, type),
+      )
   }
 }

@@ -1,6 +1,14 @@
 import chalk from 'chalk'
 
-import { AST, ERROR, SOURCE_MAPS, Tree, api } from '~'
+import {
+  AST,
+  ERROR,
+  NEST_TYPE_TEXT,
+  Nest,
+  SOURCE_MAPS,
+  Tree,
+  api,
+} from '~'
 import type { APIInputType } from '~'
 
 export type CursorLinePositionType = {
@@ -158,11 +166,18 @@ export function generateModuleUnresolvableError(
 }
 
 export function generateObjectNotASTNodeError(
-  like: AST,
+  like: Array<AST>,
 ): ErrorType {
+  const words =
+    like.length > 1
+      ? like
+          .slice(-1)
+          .map(x => `\`${x}\``)
+          .join(', ') + ` or \`${like[-1]}\``
+      : `\`${like[0]}\``
   return {
     code: `0007`,
-    note: `Object isn't AST node '${like}'.`,
+    note: `Object isn't AST node ${words}.`,
   }
 }
 
@@ -195,23 +210,31 @@ export function generateUnhandledNestCaseBaseError(
   input: APIInputType,
 ): ErrorType {
   const { card } = input
+  const text = api.generateHighlightedErrorForTerm(input)
   return {
     code: `0005`,
     file: `${card.path}`,
     note: `We haven't implemented handling this type of nest yet.`,
-    text: '',
+    text,
   }
 }
 
 export function generateUnhandledNestCaseError(
   input: APIInputType,
-  type: string,
+  type: Nest,
 ): ErrorType {
+  let scope
+  try {
+    scope = api.resolveStaticTermFromNest(input, 1)
+  } catch (e) {}
+  const text = api.generateHighlightedErrorForTerm(input)
   return {
     code: `0004`,
     file: `${input.card.path}`,
-    note: `We haven't implemented handling ${type} nests yet.`,
-    text: '',
+    note: `We haven't implemented handling "${
+      NEST_TYPE_TEXT[type]
+    }s" yet${scope ? ` on \`${scope}\`` : ''}.`,
+    text,
   }
 }
 
@@ -226,11 +249,12 @@ export function generateUnhandledTermCaseError(
   api.assertString(name)
   const handle = ERROR['0002']
   api.assertError(handle)
+  const text = api.generateHighlightedErrorForTerm(input)
   return {
     code: `0002`,
     file: `${input.card.path}`,
     note: handle.note({ name, scope }),
-    text: '',
+    text,
   }
 }
 
@@ -251,10 +275,13 @@ export function generateUnknownTermError(
   const { card } = input
   const name = api.resolveStaticTermFromNest(input)
   const text = api.generateHighlightedErrorForTerm(input)
+  const insideName = api.resolveStaticTermFromNest(input, 1)
   return {
     code: `0003`,
     file: `${card.path}`,
-    note: `Unknown term ${name}.`,
+    note: `Unknown term \`${name}\`${
+      insideName ? ` inside \`${insideName}\`` : ''
+    }.`,
     text: text,
   }
 }
@@ -287,10 +314,6 @@ export function getCursorRangeForTerm(
     },
   }
 
-  if (nest.line.length > 1) {
-    return range
-  }
-
   let line = nest.line[0]
   if (!line) {
     return range
@@ -312,11 +335,43 @@ export function getCursorRangeForTerm(
     range.end.character = first.lineCharacterNumberEnd
   }
 
-  const last = line.link[line.link.length - 1]
+  const lastTop = nest.line[nest.line.length - 1]
 
-  if (last && last !== first && last.like === Tree.Cord) {
-    range.end.line = last.lineNumber
-    range.end.character = last.lineCharacterNumberEnd
+  if (lastTop && lastTop.like === Tree.Term) {
+    const last = lastTop.link[line.link.length - 1]
+
+    if (last && last !== first) {
+      if (last.like === Tree.Cord) {
+        range.end.line = last.lineNumber
+        range.end.character = last.lineCharacterNumberEnd
+      } else if (last.like === Tree.Slot) {
+        const lastNest = last.nest
+        const lastLine = lastNest.line[lastNest.line.length - 1]
+        if (lastLine && lastLine.like === Tree.Term) {
+          const childRange = api.getCursorRangeForTerm(
+            api.extendWithNestScope(input, {
+              nest: lastNest,
+            }),
+          )
+          range.end.line = childRange.end.line
+          range.end.character =
+            childRange.end.character + last.size
+        } else {
+          throw new Error('Unhandled')
+        }
+      } else if (last.like === Tree.Term) {
+        const childRange = api.getCursorRangeForTerm(
+          api.extendWithNestScope(input, {
+            nest: last,
+          }),
+        )
+        range.end.line = childRange.end.line
+        range.end.character = childRange.end.character
+      }
+    }
+  } else {
+    console.log(lastTop)
+    throw new Error('Unhandled')
   }
 
   return range
@@ -384,7 +439,7 @@ export function highlightTextRangeForError(
   let n = bound.end.line
   let pad = String(n).length
   const defaultIndent = new Array(pad + 1).join(' ')
-  lines.push(chalk.white(`  ${defaultIndent} |`))
+  lines.push(chalk.white(`${defaultIndent} |`))
   while (i < n) {
     const lineText = card.textByLine[i]
     const x = i + 1
@@ -393,7 +448,7 @@ export function highlightTextRangeForError(
         ? x.toString().padStart(pad, ' ')
         : defaultIndent
     if (highlight.start.line === i) {
-      lines.push(chalk.whiteBright(`  ${z} | ${lineText}`))
+      lines.push(chalk.whiteBright(`${z} | ${lineText}`))
       const indentA = new Array(z.length + 1).join(' ')
       const indentB = new Array(
         highlight.start.character + 1,
@@ -402,16 +457,16 @@ export function highlightTextRangeForError(
         highlight.end.character - highlight.start.character + 1,
       ).join('~')
       lines.push(
-        chalk.white(`  ${indentA} | ${indentB}`) +
+        chalk.white(`${indentA} | ${indentB}`) +
           chalk.red(`${squiggly}`),
       )
     } else {
-      lines.push(chalk.white(`  ${z} | ${lineText}`))
+      lines.push(chalk.white(`${z} | ${lineText}`))
     }
     i++
   }
 
-  lines.push(chalk.white(`  ${defaultIndent} |`))
+  lines.push(chalk.white(`${defaultIndent} |`))
 
   return lines.join('\n')
 }

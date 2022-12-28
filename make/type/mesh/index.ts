@@ -1,5 +1,5 @@
-import {
-  AST,
+import { AST } from '~'
+import type {
   ASTAssertion_FullType,
   ASTAssertion_PartialType,
   ASTAssertion_Type,
@@ -9,6 +9,9 @@ import {
   ASTBookModule_FullType,
   ASTBookModule_PartialType,
   ASTBookModule_Type,
+  ASTBoolean_FullType,
+  ASTBoolean_PartialType,
+  ASTBoolean_Type,
   ASTBorrowVariable_FullType,
   ASTBorrowVariable_PartialType,
   ASTBorrowVariable_Type,
@@ -118,6 +121,7 @@ export type ASTMappingFullType = {
   'ast-assertion': ASTAssertion_FullType
   'ast-bind': ASTBind_FullType
   'ast-book-module': ASTBookModule_FullType
+  'ast-boolean': ASTBoolean_FullType
   'ast-borrow-variable': ASTBorrowVariable_FullType
   'ast-call': ASTCall_FullType
   'ast-callback': ASTCallback_FullType
@@ -155,6 +159,7 @@ export type ASTMappingPartialType = {
   'ast-assertion': ASTAssertion_PartialType
   'ast-bind': ASTBind_PartialType
   'ast-book-module': ASTBookModule_PartialType
+  'ast-boolean': ASTBoolean_PartialType
   'ast-borrow-variable': ASTBorrowVariable_PartialType
   'ast-call': ASTCall_PartialType
   'ast-callback': ASTCallback_PartialType
@@ -193,6 +198,7 @@ export type ASTMappingType = {
   'ast-assertion': ASTAssertion_Type
   'ast-bind': ASTBind_Type
   'ast-book-module': ASTBookModule_Type
+  'ast-boolean': ASTBoolean_Type
   'ast-borrow-variable': ASTBorrowVariable_Type
   'ast-call': ASTCall_Type
   'ast-callback': ASTCallback_Type

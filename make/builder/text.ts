@@ -23,8 +23,8 @@ export function processDynamicTextNest(
   const card = api.getProperty(input, 'card')
   api.assertCard(card)
 
-  const unmetDependencyList = dependencyList.filter(dep =>
-    api.checkDependency(input, dep),
+  const unmetDependencyList = dependencyList.filter(
+    dep => !api.checkDependency(input, dep),
   )
 
   card.base.dependency.push(...unmetDependencyList)
@@ -77,9 +77,10 @@ export function readDependency(
 }
 
 export function readNest(input: APIInputType): unknown {
-  let scope: InternalScopeType = input.lexicalScope
+  let value: unknown = input.lexicalScope.data
+  const nest = api.assumeNest(input)
 
-  api.assumeNest(input).line.forEach(nest => {
+  nest.line.forEach((nest, i) => {
     switch (nest.like) {
       case Tree.Term:
         const name = api.resolveStaticTerm(
@@ -88,18 +89,18 @@ export function readNest(input: APIInputType): unknown {
 
         api.assertString(name)
 
-        // TODO
-        // if (api.isRecord(scope.data) && name in scope.data) {
-        //   scope = scope.data[name]
-        // }
+        if (api.isRecord(value) && name in value) {
+          value = value[name]
+        } else {
+          value = undefined
+        }
         break
       default:
         throw new Error(nest.like)
     }
   })
 
-  return undefined
-  // return value
+  return value
 }
 
 export function resolveNestDependencyList(

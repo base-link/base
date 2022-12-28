@@ -1,4 +1,4 @@
-import { AST, ASTTerm_FullType, api } from '~'
+import { AST, ASTFullType, ASTTerm_FullType, api } from '~'
 import type {
   APIInputType,
   ASTConstant_FullType,
@@ -14,6 +14,7 @@ export function createStringConstant(
 ): ASTConstant_FullType {
   return {
     complete: true,
+    hidden: false,
     like: AST.Constant,
     name,
     partial: false,
@@ -34,6 +35,75 @@ export function createTerm(name: string): ASTTerm_FullType {
     name,
     nest: [],
     partial: false,
+  }
+}
+
+export function generateFullImportVariable(
+  input: ASTPartialType<AST.ImportVariable>,
+): ASTFullType<AST.ImportVariable> {
+  let rename
+  let name
+  let scope
+
+  input.children.forEach(node => {
+    if (!node.partial) {
+      switch (node.like) {
+        case AST.Constant:
+          switch (node.name) {
+            case 'scope':
+              scope = api.getStringConstant(node)
+              break
+            case 'name':
+              name = rename = api.getStringConstant(node)
+              break
+          }
+          break
+        case AST.ImportVariableRename:
+          rename = node.name
+          break
+      }
+    }
+  })
+
+  api.assertString(name)
+  api.assertString(scope)
+  api.assertString(rename)
+
+  return {
+    complete: true,
+    like: AST.ImportVariable,
+    name,
+    partial: false,
+    rename,
+    scope,
+  }
+}
+
+export function getBooleanConstant(
+  c: ASTFullType<AST.Constant>,
+): boolean {
+  if (
+    c.value &&
+    'like' in c.value &&
+    c.value.like === AST.Boolean
+  ) {
+    return c.value.boolean
+  } else {
+    throw Error('Oops')
+  }
+}
+
+export function getStringConstant(
+  c: ASTFullType<AST.Constant>,
+): string {
+  if (
+    c.value &&
+    'like' in c.value &&
+    c.value.like === AST.String
+  ) {
+    return c.value.string
+  } else {
+    throw Error('Oops')
   }
 }
 
@@ -63,6 +133,15 @@ export function process_codeCard_load_find(
       }),
     )
   })
+
+  if (api.childrenAreComplete(find)) {
+    api.replaceASTChild(
+      childInput,
+      AST.Import,
+      find,
+      api.generateFullImportVariable(find),
+    )
+  }
 }
 
 export function process_codeCard_load_find_nestedChildren(
@@ -71,6 +150,7 @@ export function process_codeCard_load_find_nestedChildren(
   const type = api.determineNestType(input)
   if (type === 'static-term') {
     const term = api.resolveStaticTermFromNest(input)
+    const nest = api.assumeNest(input)
     api.assertString(term)
     const index = api.assumeNestIndex(input)
 
@@ -90,7 +170,19 @@ export function process_codeCard_load_find_nestedChildren(
         input,
         AST.ImportVariable,
       )
-      find.children.push(api.createTerm(term))
+      const scope = term
+      const nestedNest = nest.nest[0]
+      api.assertNest(nestedNest)
+      const nestedInput = api.extendWithNestScope(input, {
+        index: 0,
+        nest: nestedNest,
+      })
+      const name = api.resolveStaticTermFromNest(nestedInput)
+      api.assertString(name)
+      find.children.push(
+        api.createStringConstant('scope', scope),
+        api.createStringConstant('name', name),
+      )
     }
   } else {
     api.throwError(api.generateUnhandledTermCaseError(input))
