@@ -1,9 +1,9 @@
-import { AST, Nest, Tree, api } from '~'
+import { Internal, Nest, Tree, api } from '~'
 import type {
   APIInputType,
-  ASTDependencyPartType,
-  ASTDependencyType,
-  ASTScopeType,
+  InternalDependencyPartType,
+  InternalDependencyType,
+  InternalScopeType,
   TreeNodeType,
 } from '~'
 
@@ -56,7 +56,7 @@ export function processTextNest(
 
 export function readDependency(
   input: APIInputType,
-  dependency: ASTDependencyType,
+  dependency: InternalDependencyType,
 ): unknown {
   const scope = api.findInitialScope(input, dependency)
 
@@ -77,7 +77,7 @@ export function readDependency(
 }
 
 export function readNest(input: APIInputType): unknown {
-  let scope: ASTScopeType = input.lexicalScope
+  let scope: InternalScopeType = input.lexicalScope
 
   api.assumeNest(input).line.forEach(nest => {
     switch (nest.like) {
@@ -105,13 +105,13 @@ export function readNest(input: APIInputType): unknown {
 export function resolveNestDependencyList(
   input: APIInputType,
   job: (i: APIInputType) => void,
-): Array<ASTDependencyType> {
-  const array: Array<ASTDependencyType> = []
-  const dependency: ASTDependencyType = {
+): Array<InternalDependencyType> {
+  const array: Array<InternalDependencyType> = []
+  const dependency: InternalDependencyType = {
     callbackList: [job],
     children: [],
     context: input,
-    like: AST.Dependency,
+    like: Internal.Dependency,
     partial: false,
     path: [],
   }
@@ -126,13 +126,11 @@ export function resolveNestDependencyList(
 
       api.assertString(name)
 
-      const dependencyPart: ASTDependencyPartType = {
+      const dependencyPart: InternalDependencyPartType = {
         callbackList: [],
-        children: [],
-        like: AST.DependencyPart,
+        like: Internal.DependencyPart,
         name,
         parent: dependency,
-        partial: false,
       }
 
       dependency.path.push(dependencyPart)
@@ -189,7 +187,7 @@ export function resolveText(
 export function resolveTextDependencyList(
   input: APIInputType,
   job: (i: APIInputType) => void,
-): Array<ASTDependencyType> {
+): Array<InternalDependencyType> {
   const nest = api.assumeNest(input)
 
   if (nest.line.length > 1) {
@@ -205,7 +203,7 @@ export function resolveTextDependencyList(
     return []
   }
 
-  const array: Array<ASTDependencyType> = []
+  const array: Array<InternalDependencyType> = []
 
   line.link.forEach(link => {
     switch (link.like) {

@@ -1,4 +1,9 @@
-import { Base } from '~'
+import {
+  ASTExport_Type,
+  ASTImport_FullType,
+  ASTImport_Type,
+  Base,
+} from '~'
 import type {
   ASTCallback_FullType,
   ASTCallback_Type,
@@ -13,7 +18,6 @@ import type {
   ASTExport_FullType,
   ASTFunction_FullType,
   ASTFunction_Type,
-  ASTImport_Type,
   ASTNativeClassInterface_FullType,
   ASTNativeClassInterface_Type,
   ASTPackage_FullType,
@@ -29,16 +33,17 @@ import type {
 
 import { AST } from './list.js'
 
-export type ASTBookModule_FullType = ASTModuleBaseType & {
-  abstract: string
-  like: AST.BookModule
-  tags: Array<string>
-  title: string
-  // text: Array<ASTBookSection_PartialType>
-}
+export type ASTBookModule_FullType = AST_FullTypeMixin &
+  ASTModuleBaseType & {
+    abstract: string
+    like: AST.BookModule
+    tags: Array<string>
+    title: string
+    // text: Array<ASTBookSection_PartialType>
+  }
 
 export type ASTBookModule_PartialType = AST_PartialTypeMixin & {
-  children: Array<undefined>
+  children: Array<unknown>
   like: AST.BookModule
 }
 
@@ -46,31 +51,42 @@ export type ASTBookModule_Type =
   | ASTBookModule_FullType
   | ASTBookModule_PartialType
 
-export type ASTCodeModule_FullType = ASTModuleBaseType & {
-  allSuitAST: Record<string, ASTClassInterface_FullType>
-  allTaskAST: Record<string, ASTFunction_FullType>
-  allTestAST: Record<string, ASTTest_FullType>
-  allTreeAST: Record<string, ASTTemplate_FullType>
-  allZoneAST: Record<string, ASTComponent_FullType>
-  bearList: Array<ASTExport_FullType>
-  faceAST: Record<string, ASTNativeClassInterface_FullType>
-  formAST: Record<string, ASTClass_FullType>
-  hookAST: Record<string, ASTCallback_FullType>
-  hostAST: Record<string, ASTConstant_FullType>
-  like: AST.CodeModule
-  loadList: Array<ASTImport_Type>
-  publicFaceAST: Record<
-    string,
-    ASTNativeClassInterface_FullType
-  >
-  publicFormAST: Record<string, ASTClass_FullType>
-  publicHostAST: Record<string, ASTConstant_FullType>
-  publicSuitAST: Record<string, ASTClassInterface_FullType>
-  publicTaskAST: Record<string, ASTFunction_FullType>
-  publicTestAST: Record<string, ASTTest_FullType>
-  publicTreeAST: Record<string, ASTTemplate_FullType>
-  publicZoneAST: Record<string, ASTComponent_FullType>
-}
+export type ASTCodeModule_FullType = AST_FullTypeMixin &
+  ASTModuleBaseType & {
+    allClassAST: Record<string, ASTClass_FullType>
+    allClassInterfaceAST: Record<
+      string,
+      ASTClassInterface_FullType
+    >
+    allComponentAST: Record<string, ASTComponent_FullType>
+    allConstantAST: Record<string, ASTConstant_FullType>
+    allFunctionAST: Record<string, ASTFunction_FullType>
+    allTemplateAST: Record<string, ASTTemplate_FullType>
+    allTestAST: Record<string, ASTTest_FullType>
+    callbackAST: Record<string, ASTCallback_FullType>
+    constantAST: Record<string, ASTConstant_FullType>
+    exportList: Array<ASTExport_FullType>
+    importTree: Array<ASTImport_FullType>
+    like: AST.CodeModule
+    nativeClassInterfaceAST: Record<
+      string,
+      ASTNativeClassInterface_FullType
+    >
+    publicClassAST: Record<string, ASTClass_FullType>
+    publicClassInterfaceAST: Record<
+      string,
+      ASTClassInterface_FullType
+    >
+    publicComponentAST: Record<string, ASTComponent_FullType>
+    publicConstantAST: Record<string, ASTConstant_FullType>
+    publicFunctionAST: Record<string, ASTFunction_FullType>
+    publicNativeClassInterfaceAST: Record<
+      string,
+      ASTNativeClassInterface_FullType
+    >
+    publicTemplateAST: Record<string, ASTTemplate_FullType>
+    publicTestAST: Record<string, ASTTest_FullType>
+  }
 
 export type ASTCodeModule_PartialType = ASTModuleBaseType &
   AST_PartialTypeMixin & {
@@ -84,6 +100,8 @@ export type ASTCodeModule_PartialType = ASTModuleBaseType &
       | ASTClass_Type
       | ASTCallback_Type
       | ASTConstant_Type
+      | ASTImport_Type
+      | ASTExport_Type
     >
     like: AST.CodeModule
   }

@@ -1,11 +1,11 @@
-import { api } from '~'
-import type { APIInputType, Nest } from '~'
+import { AST, ASTPartialType, Nest, api } from '~'
+import type { APIInputType } from '~'
 
 export function process_codeCard_fuse(
   input: APIInputType,
 ): void {
-  const fuse: ASTInjectPotentialType = {
-    bind: [],
+  const fuse: ASTPartialType<AST.Inject> = {
+    children: [],
     like: AST.Inject,
     partial: true,
   }

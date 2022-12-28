@@ -1,7 +1,7 @@
 import { Nest, Tree, api } from '~'
 import type {
   APIInputType,
-  ASTScopeType,
+  InternalScopeType,
   TreeNestType,
 } from '~'
 
@@ -27,7 +27,7 @@ export function assertNestChildrenLength(
 
 export function assertScope(
   object: unknown,
-): asserts object is ASTScopeType {
+): asserts object is InternalScopeType {
   if (!api.isScope(object)) {
     api.throwError({
       code: `0015`,

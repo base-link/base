@@ -1,5 +1,4 @@
 import { api } from '~'
-import type { api } from '~'
 
 start()
 

@@ -1,20 +1,18 @@
 import _ from 'lodash'
 
-import {
+import { AST, Tree, api } from '~'
+import type {
   APIInputType,
-  AST,
   ASTModuleBaseType,
   ASTPartialType,
   ASTType,
   ErrorType,
-  Tree,
   TreeType,
-  api,
 } from '~'
 
-export function assertArray(
+export function assertArray<T = unknown>(
   object: unknown,
-): asserts object is Array {
+): asserts object is Array<T> {
   if (!api.isArray(object)) {
     throw new Error('Object is not array')
   }
@@ -127,7 +125,9 @@ export function extendWithObjectScope(
   }
 }
 
-export function isArray(object: unknown): object is Array {
+export function isArray<T = unknown>(
+  object: unknown,
+): object is Array<T> {
   return _.isArray(object)
 }
 

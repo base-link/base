@@ -10,13 +10,14 @@ export function finalize_codeCard_bear_nestedChildren(
 
   const card = api.getProperty(input, 'card')
 
-  api.assertAST(card, AST.CodeModule)
+  api.assertASTPartial(card, AST.CodeModule)
 
   const path = api.resolveModulePath(input, text)
 
-  card.bearList.push({
+  card.children.push({
     like: AST.Export,
     link: path,
+    partial: false,
   })
 }
 

@@ -1,7 +1,7 @@
-import { api } from '~'
+import { AST } from '~'
 import type { TreeNestType } from '~'
 
-export type ASTAssertion_FullType = AST_PartialTypeMixin & {
+export type ASTAssertion_FullType = AST_FullTypeMixin & {
   bind: Array<ASTBind_FullType | ASTValue_FullType>
   like: AST.Assertion
   name: string
@@ -55,7 +55,7 @@ export type ASTCall_FullType = AST_FullTypeMixin & {
   like: AST.Call
 }
 
-export type ASTCall_PartialType = {
+export type ASTCall_PartialType = AST_PartialTypeMixin & {
   children: Array<ASTTerm_Type | ASTValue_Type | ASTBind_Type>
   like: AST.Call
 }
@@ -72,7 +72,7 @@ export type ASTCallback_FullType = AST_FullTypeMixin & {
   parameter: Record<string, ASTInput_FullType>
 }
 
-export type ASTCallback_PartialType = {
+export type ASTCallback_PartialType = AST_PartialTypeMixin & {
   children: Array<
     ASTFunctionFlow_Type | ASTInput_Type | ASTTerm_Type
   >
@@ -119,8 +119,10 @@ export type ASTClassInterfaceImplementation_Type =
   | ASTClassInterfaceImplementation_PartialType
 
 export type ASTClassInterface_FullType = AST_FullTypeMixin & {
+  hidden: boolean
   like: AST.ClassInterface
   method: Record<string, ASTClassInterfaceFunction_FullType>
+  name: string
   property: Record<string, ASTInput_Type>
 }
 
@@ -143,7 +145,7 @@ export type ASTClassReference_FullType = AST_FullTypeMixin & {
 }
 
 export type ASTClassReference_PartialType =
-  AST_FullTypeMixin & {
+  AST_PartialTypeMixin & {
     children: Array<ASTClassReference_Type>
     like: AST.ClassReference
   }
@@ -154,6 +156,7 @@ export type ASTClassReference_Type =
 
 export type ASTClass_FullType = AST_FullTypeMixin & {
   callback: Record<string, ASTCallback_FullType>
+  hidden: boolean
   interface: Record<
     string,
     ASTClassInterfaceImplementation_FullType
@@ -180,10 +183,11 @@ export type ASTClass_Type =
   | ASTClass_PartialType
   | ASTClass_FullType
 
-export type ASTCloneVariable_FullType = AST_MutableTypeMixin & {
-  like: AST.CloneVariable
-  link: TreeNestType
-}
+export type ASTCloneVariable_FullType = AST_FullTypeMixin &
+  AST_MutableTypeMixin & {
+    like: AST.CloneVariable
+    link: TreeNestType
+  }
 
 export type ASTCloneVariable_PartialType =
   AST_PartialTypeMixin &
@@ -213,6 +217,7 @@ export type ASTComponent_Type =
   | ASTComponent_FullType
 
 export type ASTConstant_FullType = AST_FullTypeMixin & {
+  hidden: boolean
   like: AST.Constant
   name: string
   value: ASTValue_FullType | Array<ASTConstant_FullType>
@@ -268,7 +273,9 @@ export type ASTFunctionFlow_Type =
 export type ASTFunction_FullType = AST_FullTypeMixin & {
   flow: Array<ASTFunctionFlow_FullType>
   function: Record<string, ASTFunction_FullType>
+  hidden: boolean
   like: AST.Function
+  name: string
   parameter: Record<string, ASTInput_FullType>
 }
 
@@ -290,7 +297,7 @@ export type ASTImportVariableRename_FullType =
   }
 
 export type ASTImportVariableRename_PartialType =
-  AST_FullTypeMixin & {
+  AST_PartialTypeMixin & {
     children: Array<ASTTerm_Type>
     like: AST.ImportVariableRename
   }
@@ -323,7 +330,9 @@ export type ASTImport_FullType = AST_FullTypeMixin & {
 }
 
 export type ASTImport_PartialType = AST_PartialTypeMixin & {
-  children: Array<ASTString_Type | ASTImportVariable_Type>
+  children: Array<
+    ASTString_Type | ASTImportVariable_Type | ASTConstant_Type
+  >
   like: AST.Import
 }
 
@@ -361,10 +370,11 @@ export type ASTInput_Type =
   | ASTInput_PartialType
   | ASTInput_FullType
 
-export type ASTMoveVariable_FullType = AST_MutableTypeMixin & {
-  like: AST.MoveVariable
-  nest: ASTTerm_FullType
-}
+export type ASTMoveVariable_FullType = AST_FullTypeMixin &
+  AST_MutableTypeMixin & {
+    like: AST.MoveVariable
+    nest: ASTTerm_FullType
+  }
 
 export type ASTMoveVariable_PartialType = AST_PartialTypeMixin &
   Partial<AST_MutableTypeMixin> & {
@@ -392,14 +402,6 @@ export type ASTNativeClassInterface_Type =
   | ASTNativeClassInterface_PartialType
   | ASTNativeClassInterface_FullType
 
-export type ASTScopeType = {
-  children: Array<undefined>
-  data: Record<string, unknown>
-  like: AST.Scope
-  parent?: ASTScopeType
-  partial: false
-}
-
 export type ASTString_FullType = AST_FullTypeMixin & {
   like: AST.String
   string: string
@@ -415,6 +417,7 @@ export type ASTString_Type =
   | ASTString_PartialType
 
 export type ASTTemplate_FullType = AST_FullTypeMixin & {
+  hidden: boolean
   input: Record<string, ASTInput_PartialType>
   like: AST.Template
   name: string
@@ -481,8 +484,8 @@ export type ASTUnsignedInteger_Type =
   | ASTUnsignedInteger_FullType
 
 export type ASTValue_FullType =
-  | ASTUnsignedInteger_FullType
   | ASTString_FullType
+  | ASTUnsignedInteger_FullType
 
 export type ASTValue_PartialType =
   | ASTString_Type

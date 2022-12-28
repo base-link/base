@@ -1,18 +1,17 @@
-import {
+import { AST, ExpandRecursively, api } from '~'
+import type {
   APIInputType,
-  AST,
   ASTPartialType,
-  ASTScopeType,
   ASTType,
   AST_FullTypeMixin,
   AST_PartialTypeMixin,
-  api,
+  InternalScopeType,
 } from '~'
 
 export function assumeObjectScope(
   input: APIInputType,
   rank = 0,
-): ASTScopeType {
+): InternalScopeType {
   const scope = api.getObjectScope(input, rank)
   api.assertScope(scope)
   return scope
@@ -29,8 +28,8 @@ export function childrenAreComplete({
 export function getObjectScope(
   input: APIInputType,
   rank = 0,
-): ASTScopeType | undefined {
-  let scope: ASTScopeType | undefined = input.objectScope
+): InternalScopeType | undefined {
+  let scope: InternalScopeType | undefined = input.objectScope
   while (rank > 0 && scope) {
     scope = scope.parent
     rank--
@@ -79,6 +78,7 @@ export function process_codeCard_tree_nestedChildren(
         AST.Template,
       )
       const fullTerm: ASTType<AST.Term> = {
+        complete: true,
         dive: false,
         like: AST.Term,
         name,
@@ -113,7 +113,8 @@ export function replaceASTChild<
 >(input: APIInputType, a: A, x: X, b: B): void {
   const { data } = api.assumeObjectScope(input, 1)
   api.assertASTPartial(data, a)
-  api.assertArray(data.children)
-  const index = data.children.indexOf(x)
+  const index: number = (
+    data.children as Array<unknown>
+  ).indexOf(x)
   data.children[index] = b
 }

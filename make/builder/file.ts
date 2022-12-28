@@ -21,6 +21,7 @@ export function assumePath(
   inputPath: string,
 ): string {
   const card = input.card
+  api.assertCard(card)
   const path = api.findPath(inputPath, card.directory)
   if (!path) {
     api.throwError(

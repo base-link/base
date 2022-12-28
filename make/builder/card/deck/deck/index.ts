@@ -1,11 +1,5 @@
-import {
-  APIInputType,
-  AST,
-  ASTPartialType,
-  ASTType,
-  Nest,
-  api,
-} from '~'
+import { AST, Nest, api } from '~'
+import type { APIInputType, ASTPartialType, ASTType } from '~'
 
 export * from './bear/index.js'
 export * from './face/index.js'

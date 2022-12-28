@@ -1,5 +1,4 @@
 import { api } from '~'
-import type { api } from '~'
 
 export * from './card/index.js'
 export * from './code.js'

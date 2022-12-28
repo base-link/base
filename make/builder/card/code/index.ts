@@ -1,5 +1,5 @@
-import { api } from '~'
-import type { APIInputType, AST, Base, PartialType } from '~'
+import { AST, ASTFullType, Base, api } from '~'
+import type { APIInputType, ASTPartialType } from '~'
 
 export * from './bear/index.js'
 export * from './bind/index.js'
@@ -30,6 +30,7 @@ export * from './time/index.js'
 export * from './tree/index.js'
 export * from './wait/index.js'
 export * from './walk/index.js'
+export * from './zone/index.js'
 
 export function handle_codeCard(
   base: Base,
@@ -52,31 +53,13 @@ export function process_codeCard(
   const linkHost = api.getLinkHost(link)
   const card = base.card(link)
   const seed: ASTPartialType<AST.CodeModule> = {
-    allSuitAST: {},
-    allTaskAST: {},
-    allTestAST: {},
-    allTreeAST: {},
-    allZoneAST: {},
     base,
-    bearList: [],
+    children: [],
     directory: linkHost,
-    faceAST: {},
-    formAST: {},
-    hookAST: {},
-    hostAST: {},
     like: AST.CodeModule,
-    loadList: [],
     parseTree: textTree,
     partial: true,
     path: link,
-    publicFaceAST: {},
-    publicFormAST: {},
-    publicHostAST: {},
-    publicSuitAST: {},
-    publicTaskAST: {},
-    publicTestAST: {},
-    publicTreeAST: {},
-    publicZoneAST: {},
     textByLine: text.split('\n'),
   }
   const input: APIInputType = {
@@ -174,12 +157,93 @@ export function resolve_codeCard(
   const card = base.card(link)
   api.assertAST(card.seed, AST.CodeModule)
 
-  card.seed.loadList.forEach(load => {
-    if (load.absolutePath) {
-      api.handle_codeCard(base, load.absolutePath)
+  if (card.seed.partial) {
+    card.seed.children.forEach(node => {
+      switch (node.like) {
+        case AST.Import:
+          if (node.partial) {
+          }
+          break
+        case AST.Export:
+          break
+      }
+    })
+
+    if (api.childrenAreComplete(card.seed)) {
+      const seed: ASTFullType<AST.CodeModule> = {
+        allClassAST: {},
+        allClassInterfaceAST: {},
+        allComponentAST: {},
+        allConstantAST: {},
+        allFunctionAST: {},
+        allTemplateAST: {},
+        allTestAST: {},
+        base: card.seed.base,
+        callbackAST: {},
+        complete: false,
+        constantAST: {},
+        directory: card.seed.directory,
+        exportList: [],
+        importTree: [],
+        like: AST.CodeModule,
+        nativeClassInterfaceAST: {},
+        parseTree: card.seed.parseTree,
+        partial: false,
+        path: card.seed.path,
+        publicClassAST: {},
+        publicClassInterfaceAST: {},
+        publicComponentAST: {},
+        publicConstantAST: {},
+        publicFunctionAST: {},
+        publicNativeClassInterfaceAST: {},
+        publicTemplateAST: {},
+        publicTestAST: {},
+        textByLine: card.seed.textByLine,
+      }
+
+      card.seed.children.forEach(node => {
+        switch (node.like) {
+          case AST.Constant: {
+            api.assertASTFull(node, AST.Constant)
+            if (!node.hidden) {
+              seed.publicConstantAST[node.name] = node
+            }
+            seed.allConstantAST[node.name] = node
+            break
+          }
+          case AST.ClassInterface: {
+            api.assertASTFull(node, AST.ClassInterface)
+            if (!node.hidden) {
+              seed.publicClassInterfaceAST[node.name] = node
+            }
+            seed.allClassInterfaceAST[node.name] = node
+            break
+          }
+          case AST.Function: {
+            api.assertASTFull(node, AST.Function)
+            if (!node.hidden) {
+              seed.publicFunctionAST[node.name] = node
+            }
+            seed.allFunctionAST[node.name] = node
+            break
+          }
+          case AST.Class: {
+            api.assertASTFull(node, AST.Class)
+            if (!node.hidden) {
+              seed.publicClassAST[node.name] = node
+            }
+            seed.allClassAST[node.name] = node
+            break
+          }
+          case AST.Template:
+            api.assertASTFull(node, AST.Template)
+            if (!node.hidden) {
+              seed.publicTemplateAST[node.name] = node
+            }
+            seed.allTemplateAST[node.name] = node
+            break
+        }
+      })
     }
-  })
-  card.seed.bearList.forEach(bear => {
-    api.handle_codeCard(base, bear.link)
-  })
+  }
 }

@@ -1,5 +1,5 @@
-import { api } from '~'
-import type { APIInputType, AST, Nest, PartialType } from '~'
+import { AST, Nest, api } from '~'
+import type { APIInputType, ASTPartialType } from '~'
 
 export * from './bear/index.js'
 export * from './find/index.js'
@@ -13,7 +13,7 @@ export function finalize_codeCard_load_textNest(
 
   const card = api.getProperty(input, 'card')
 
-  api.assertAST(card, AST.CodeModule)
+  api.assertASTPartial(card, AST.CodeModule)
 
   const path = api.resolveModulePath(input, text)
 
@@ -22,16 +22,18 @@ export function finalize_codeCard_load_textNest(
     AST.Import,
   )
 
-  load.absolutePath = path
+  load.children.push(
+    api.createStringConstant('absolutePath', path),
+  )
 }
 
 export function process_codeCard_load(
   input: APIInputType,
 ): void {
   const load: ASTPartialType<AST.Import> = {
+    children: [],
     like: AST.Import,
     partial: true,
-    variable: [],
   }
 
   api.assertAST(input.card, AST.CodeModule)

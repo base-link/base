@@ -1,5 +1,5 @@
-import { api } from '~'
-import type { APIInputType, AST, PartialType } from '~'
+import { AST, api } from '~'
+import type { APIInputType, ASTPartialType } from '~'
 
 export * from './base/index.js'
 export * from './case/index.js'
@@ -10,13 +10,9 @@ export function process_codeCard_form(
   input: APIInputType,
 ): void {
   const form: ASTPartialType<AST.Class> = {
-    callback: {},
-    interface: {},
+    children: [],
     like: AST.Class,
-    method: {},
-    parent: [],
     partial: true,
-    property: {},
   }
 
   const formInput = api.extendWithObjectScope(input, form)
@@ -36,7 +32,7 @@ export function process_codeCard_form(
     api.generateTermMissingError(input, 'name', 'form'),
   )
 
-  input.card.publicFormAST[form.name] = form
+  input.card.children.push(form)
 }
 
 export function process_codeCard_form_nestedChildren(

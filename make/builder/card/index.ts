@@ -1,5 +1,5 @@
 import { CARD_TYPE, api } from '~'
-import type { Module_FullType } from '~'
+import type { ASTModule_FullType } from '~'
 
 export * from './book/index.js'
 export * from './code/index.js'

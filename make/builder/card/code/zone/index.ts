@@ -1,7 +1,7 @@
 import { api } from '~'
 import type { APIInputType } from '~'
 
-export * from './hook'
+export * from './hook/index.js'
 
 export function process_codeCard_zone(
   input: APIInputType,

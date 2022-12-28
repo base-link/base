@@ -1,10 +1,9 @@
-import {
+import { AST, api } from '~'
+import type {
   APIInputType,
-  AST,
   ASTConstant_FullType,
   ASTType,
   ASTValue_FullType,
-  api,
 } from '~'
 
 export function assertStringPattern(

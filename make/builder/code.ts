@@ -1,5 +1,5 @@
-import { api } from '~'
-import type { APIInputType, Tree } from '~'
+import { Tree, api } from '~'
+import type { APIInputType } from '~'
 
 export function resolveCodeAsNumber(
   input: APIInputType,

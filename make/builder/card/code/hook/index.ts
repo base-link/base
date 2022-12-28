@@ -1,13 +1,12 @@
-import { api } from '~'
-import type { APIInputType, AST, Nest, PartialType } from '~'
+import { AST, Nest, api } from '~'
+import type { APIInputType, ASTPartialType } from '~'
 
 export function process_codeCard_hook(
   input: APIInputType,
 ): void {
   const hook: ASTPartialType<AST.Callback> = {
-    flow: [],
+    children: [],
     like: AST.Callback,
-    parameter: {},
     partial: true,
   }
 
@@ -36,7 +35,14 @@ export function process_codeCard_hook_nestedChildren(
           input,
           AST.Callback,
         )
-        callback.name = term
+        callback.children.push({
+          complete: true,
+          dive: false,
+          like: AST.Term,
+          name: term,
+          nest: [],
+          partial: false,
+        })
       } else {
         switch (term) {
           case 'task':

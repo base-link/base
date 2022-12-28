@@ -1,5 +1,6 @@
 import {
   AST,
+  ASTFullType,
   ASTPartialType,
   ASTType,
   Tree,
@@ -12,6 +13,15 @@ export function assertAST<T extends AST>(
   like: T,
 ): asserts object is ASTType<T> {
   if (!api.isAST(object, like)) {
+    api.throwError(api.generateObjectNotASTNodeError(like))
+  }
+}
+
+export function assertASTFull<T extends AST>(
+  object: unknown,
+  like: T,
+): asserts object is ASTFullType<T> {
+  if (!api.isASTFull(object, like)) {
     api.throwError(api.generateObjectNotASTNodeError(like))
   }
 }
@@ -43,6 +53,18 @@ export function isAST<T extends AST>(
     api.isRecord(object) &&
     'like' in object &&
     (object as ASTType<T>).like === like
+  )
+}
+
+export function isASTFull<T extends AST>(
+  object: unknown,
+  like: T,
+): object is ASTType<T> {
+  return (
+    api.isRecord(object) &&
+    'like' in object &&
+    (object as ASTFullType<T>).like === like &&
+    (object as ASTFullType<T>).partial === false
   )
 }
 

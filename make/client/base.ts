@@ -1,5 +1,5 @@
 import { BaseCard } from '~'
-import type { DependencyType } from '~'
+import type { InternalDependencyType } from '~'
 
 export { Base }
 
@@ -39,7 +39,7 @@ class Base {
 
   wait_find_mesh: Map<string, Map<string, Map<string, string>>>
 
-  dependency: Array<ASTDependencyType>
+  dependency: Array<InternalDependencyType>
 
   constructor() {
     this.text_mesh = {}

@@ -1,5 +1,5 @@
 import { AST, Base, api } from '~'
-import type { APIInputType, PartialType } from '~'
+import type { APIInputType, ASTPartialType } from '~'
 
 export * from './deck/index.js'
 

@@ -1,13 +1,13 @@
 import {
   APIInputType,
-  ASTDependencyType,
-  ASTScopeType,
+  InternalDependencyType,
+  InternalScopeType,
   api,
 } from '~'
 
 export function checkDependency(
   input: APIInputType,
-  dependency: ASTDependencyType,
+  dependency: InternalDependencyType,
 ): boolean {
   const scope = api.findInitialScope(input, dependency)
 
@@ -43,9 +43,9 @@ export function checkDependency(
 
 export function findInitialScope(
   input: APIInputType,
-  dependency: ASTDependencyType,
-): ASTScopeType | undefined {
-  let scope: ASTScopeType = input.lexicalScope
+  dependency: InternalDependencyType,
+): InternalScopeType | undefined {
+  let scope: InternalScopeType = input.lexicalScope
 
   const part = dependency.path[0]
   if (!part) {

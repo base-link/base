@@ -1,6 +1,6 @@
 import chalk from 'chalk'
 
-import { ERROR, SOURCE_MAPS, Tree, api } from '~'
+import { AST, ERROR, SOURCE_MAPS, Tree, api } from '~'
 import type { APIInputType } from '~'
 
 export type CursorLinePositionType = {
@@ -458,7 +458,7 @@ export function throwError(data: ErrorType): void {
   }
   text.push(``)
 
-  Error.stackTraceLimit = Infinity
+  // Error.stackTraceLimit = Infinity
 
   const prepareStackTrace = Error.prepareStackTrace
 

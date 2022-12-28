@@ -1,23 +1,22 @@
-import { AST, api } from '~'
-import type { ASTScopeType } from '~'
+import { AST, Internal, api } from '~'
+import type { InternalScopeType } from '~'
 
 export function createScope(
   data: Record<string, unknown>,
-  parent?: ASTScopeType,
-): ASTScopeType {
+  parent?: InternalScopeType,
+): InternalScopeType {
   return {
     data,
-    like: AST.Scope,
+    like: Internal.Scope,
     parent,
-    partial: false,
   }
 }
 
 export function getScopeProperty(
-  scope: ASTScopeType,
+  scope: InternalScopeType,
   path: string | number | symbol,
 ): unknown {
-  let source: ASTScopeType = scope
+  let source: InternalScopeType = scope
 
   while (source) {
     if (path in source.data) {
@@ -36,16 +35,16 @@ export function getScopeProperty(
 
 export function isScope(
   object: unknown,
-): object is ASTScopeType {
+): object is InternalScopeType {
   return (
     api.isRecord(object) &&
     'like' in object &&
-    (object as ASTScopeType).like === AST.Scope
+    (object as InternalScopeType).like === Internal.Scope
   )
 }
 
 export function setScopeProperty(
-  scope: ASTScopeType,
+  scope: InternalScopeType,
   property: string,
   value: unknown,
 ): void {

@@ -1,5 +1,4 @@
 import { api } from '~'
-import type { api } from '~'
 
 export function getProperty(
   object: Record<string, unknown>,
