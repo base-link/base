@@ -20,14 +20,7 @@ export function finalize_deckCard_deck_test(
     AST.Package,
   )
 
-  deck.children.push(
-    api.createConstant('test', {
-      complete: true,
-      like: AST.String,
-      partial: false,
-      string: path,
-    }),
-  )
+  deck.children.push(api.createStringConstant('test', path))
 }
 
 export function process_deckCard_deck_test(

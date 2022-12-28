@@ -131,6 +131,8 @@ export function isArray<T = unknown>(
   return _.isArray(object)
 }
 
+export const omit = _.omit
+
 export function isBoolean(object: unknown): object is boolean {
   return _.isBoolean(object)
 }

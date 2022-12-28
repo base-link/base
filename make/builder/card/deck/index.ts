@@ -1,7 +1,36 @@
-import { AST, Base, api } from '~'
-import type { APIInputType, ASTPartialType } from '~'
+import { AST, ASTModuleBaseType, Base, api } from '~'
+import type {
+  APIInputType,
+  ASTFullType,
+  ASTPartialType,
+} from '~'
 
 export * from './deck/index.js'
+
+export function generate_deckCard(
+  input: APIInputType,
+): ASTFullType<AST.PackageModule> {
+  api.assertASTPartial(input.card, AST.PackageModule)
+
+  let deck
+
+  input.card.children.forEach(node => {
+    switch (node.like) {
+      case AST.Package:
+        deck = node
+        break
+    }
+  })
+
+  api.assertASTFull(deck, AST.Package)
+
+  return {
+    ...api.omit(input.card, ['children']),
+    complete: true,
+    deck,
+    partial: false,
+  }
+}
 
 export function handle_deckCard(
   base: Base,
@@ -50,6 +79,10 @@ export function process_deckCard(
       }),
     )
   })
+
+  if (api.childrenAreComplete(seed)) {
+    api.replaceSeed(input, api.generate_deckCard(input))
+  }
 }
 
 export function process_deckCard_nestedChildren(
@@ -75,22 +108,30 @@ export function process_deckCard_nestedChildren(
   }
 }
 
+export function replaceSeed<T extends ASTModuleBaseType>(
+  input: APIInputType,
+  replacement: T,
+): void {
+  input.card = replacement
+  input.card.base.card(input.card.path).bind(replacement)
+}
+
 export function resolve_deckCard(
   base: Base,
   link: string,
 ): void {
   const card = base.card(link)
-  api.assertASTPartial(card.seed, AST.PackageModule)
-
-  card.seed
+  api.assertASTFull(card.seed, AST.PackageModule)
 
   // TODO: deck.hint tells us the parser to use on the code.
 
-  // if (deck.bear) {
-  //   api.handle_codeCard(base, deck.bear)
-  // }
+  const { deck } = card.seed
 
-  // if (deck.test) {
-  //   api.handle_codeCard(base, deck.test)
-  // }
+  if (deck.bear) {
+    api.handle_codeCard(base, deck.bear)
+  }
+
+  if (deck.test) {
+    api.handle_codeCard(base, deck.test)
+  }
 }

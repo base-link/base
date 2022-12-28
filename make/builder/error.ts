@@ -250,11 +250,12 @@ export function generateUnknownTermError(
 ): ErrorType {
   const { card } = input
   const name = api.resolveStaticTermFromNest(input)
+  const text = api.generateHighlightedErrorForTerm(input)
   return {
     code: `0003`,
     file: `${card.path}`,
     note: `Unknown term ${name}.`,
-    text: '',
+    text: text,
   }
 }
 
@@ -378,7 +379,7 @@ export function highlightTextRangeForError(
   highlight: CursorRangeType,
 ): string {
   const { card } = input
-  const lines: Array<string> = ['']
+  const lines: Array<string> = []
   let i = bound.start.line
   let n = bound.end.line
   let pad = String(n).length
@@ -411,7 +412,6 @@ export function highlightTextRangeForError(
   }
 
   lines.push(chalk.white(`  ${defaultIndent} |`))
-  lines.push('')
 
   return lines.join('\n')
 }

@@ -4,6 +4,7 @@ import type { APIInputType, ASTPartialType, ASTType } from '~'
 export * from './bear/index.js'
 export * from './face/index.js'
 export * from './link/index.js'
+export * from './mark/index.js'
 export * from './term/index.js'
 export * from './test/index.js'
 
@@ -17,6 +18,8 @@ export function generate_full_deckCard_deck(
   let host
   let name
   let version
+  let exportFile
+  let testFile
 
   deck.children.forEach(node => {
     if (!node.partial) {
@@ -36,6 +39,12 @@ export function generate_full_deckCard_deck(
               case 'version':
                 version = node.value.string
                 break
+              case 'export':
+                exportFile = node.value.string
+                break
+              case 'export':
+                testFile = node.value.string
+                break
             }
             break
           }
@@ -52,14 +61,16 @@ export function generate_full_deckCard_deck(
   // api.assertString(version)
 
   return {
+    bear: exportFile,
     complete: false,
     face: [],
     host,
     like: AST.Package,
-    mark: version ?? '',
+    mark: version,
     name,
     partial: false,
     term: [],
+    test: testFile,
   }
 }
 
@@ -72,6 +83,9 @@ export function process_deckCard_deck(
     like: AST.Package,
     partial: true,
   }
+
+  api.assertASTPartial(input.card, AST.PackageModule)
+  input.card.children.push(deck)
 
   const childInput = api.extendWithObjectScope(input, deck)
 
@@ -86,7 +100,7 @@ export function process_deckCard_deck(
 
   if (api.childrenAreComplete(deck)) {
     api.replaceASTChild(
-      childInput,
+      input,
       AST.PackageModule,
       deck,
       api.generate_full_deckCard_deck(childInput),
@@ -139,6 +153,10 @@ export function process_deckCard_deck_nestedTerm(
     }
     case 'test': {
       api.process_deckCard_deck_test(input)
+      break
+    }
+    case 'mark': {
+      api.process_deckCard_deck_mark(input)
       break
     }
     default: {

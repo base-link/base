@@ -18,14 +18,7 @@ export function finalize_deckCard_deck_bear(
     AST.Package,
   )
 
-  deck.children.push(
-    api.createConstant('bear', {
-      complete: true,
-      like: AST.String,
-      partial: false,
-      string: path,
-    }),
-  )
+  deck.children.push(api.createStringConstant('export', path))
 }
 
 export function process_deckCard_deck_bear(

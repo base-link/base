@@ -111,7 +111,7 @@ export function replaceASTChild<
   X extends ASTPartialType<AST>,
   B extends ASTType<AST>,
 >(input: APIInputType, a: A, x: X, b: B): void {
-  const { data } = api.assumeObjectScope(input, 1)
+  const { data } = api.assumeObjectScope(input)
   api.assertASTPartial(data, a)
   const index: number = (
     data.children as Array<unknown>
