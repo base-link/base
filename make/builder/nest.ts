@@ -12,7 +12,7 @@ export function assertNest(
   object: unknown,
 ): asserts object is TreeNestType {
   if (!api.isNest(object)) {
-    api.throwError(undefined)
+    throw new Error('Nest error')
   }
 }
 
@@ -108,16 +108,6 @@ export function isNest(
 
 export function isNumber(object: unknown): object is number {
   return api.isNativeNumber(object)
-}
-
-export function isScope(
-  object: unknown,
-): object is ASTScopeType {
-  return (
-    api.isObject(object) &&
-    'like' in object &&
-    (object as ASTScopeType).like === AST.Scope
-  )
 }
 
 export function nestIsCode(input: APIInputType): boolean {

@@ -1,9 +1,4 @@
-import {
-  APIInputType,
-  AST,
-  ASTClassPotentialType,
-  api,
-} from '~'
+import { APIInputType, AST, ASTPartialType, api } from '~'
 
 export * from './base'
 export * from './case'
@@ -13,49 +8,49 @@ export * from './wear'
 export function process_codeCard_form(
   input: APIInputType,
 ): void {
-  const formData: ASTClassPotentialType = {
-    base: [],
-    hook: {},
+  const form: ASTPartialType<AST.Class> = {
+    callback: {},
+    interface: {},
     like: AST.Class,
-    link: {},
+    method: {},
+    parent: [],
     partial: true,
-    task: {},
-    wear: {},
+    property: {},
   }
 
-  const formInput: FormInputType & APIInputType = {
-    ...input,
-    fork: api.makeFork(input.fork, {}),
-    form: formData,
-  }
+  const formInput = api.extendWithObjectScope(input, form)
 
-  formInput.nest.nest.forEach((nest, index) => {
-    api.process_codeCard_form_nestedChildren({
-      ...formInput,
-      index,
-      nest,
-    })
+  api.assumeNest(formInput).nest.forEach((nest, index) => {
+    api.process_codeCard_form_nestedChildren(
+      api.extendWithNestScope(formInput, {
+        index,
+        nest,
+      }),
+    )
   })
 
-  const card = api.getProperty(input, 'card')
+  api.assertASTPartial(input.card, AST.CodeModule)
 
-  api.assertAST(card, AST.CodeModule)
+  api.assertString(form.name, () =>
+    api.generateTermMissingError(input, 'name', 'form'),
+  )
 
-  if (formData.name) {
-    card.publicFormAST[formData.name] = formData
-  }
+  input.card.publicFormAST[form.name] = form
 }
 
 export function process_codeCard_form_nestedChildren(
-  input: APIInputType & FormInputType,
+  input: APIInputType,
 ): void {
   const type = api.determineNestType(input)
   if (type === 'static-term') {
-    const term = api.resolveStaticTermFromNest(input)
-    api.assertString(term)
-
-    if (input.index === 0) {
-      input.form.name = term
+    const term = api.assumeStaticTermFromNest(input)
+    const index = api.assumeNestIndex(input)
+    if (index === 0) {
+      const form = api.assumeInputObjectAsASTPartialType(
+        input,
+        AST.Class,
+      )
+      form.name = term
     } else {
       switch (term) {
         case 'link':

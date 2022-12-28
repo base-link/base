@@ -15,7 +15,7 @@ export enum Tree {
   Text = 'tree-text',
 }
 
-type TreeMappingType = {
+type TreeMarkingType = {
   end: number
   lineCharacterNumberEnd: number
   lineCharacterNumberStart: number
@@ -23,23 +23,34 @@ type TreeMappingType = {
   start: number
 }
 
-export type TreeCodeType = TreeMappingType & {
+export type TreeCodeType = TreeMarkingType & {
   base: string
   code: string
   like: Tree.Code
 }
 
-export type TreeCombType = TreeMappingType & {
+export type TreeCombType = TreeMarkingType & {
   comb: number
   like: Tree.Comb
 }
 
-export type TreeCordType = TreeMappingType & {
+export type TreeCordType = TreeMarkingType & {
   cord: string
   like: Tree.Cord
 }
 
-export type TreeMarkType = TreeMappingType & {
+export type TreeMappingType = {
+  'tree-code': TreeCodeType
+  'tree-comb': TreeCombType
+  'tree-cord': TreeCordType
+  'tree-mark': TreeMarkType
+  'tree-nest': TreeNestType
+  'tree-slot': TreeSlotType
+  'tree-term': TreeTermType
+  'tree-text': TreeTextType
+}
+
+export type TreeMarkType = TreeMarkingType & {
   like: Tree.Mark
   mark: number
 }
@@ -83,6 +94,8 @@ export type TreeTextType = {
   like: Tree.Text
   link: Array<TreeCordType | TreeSlotType>
 }
+
+export type TreeType<T extends Tree> = TreeMappingType[T]
 
 export function buildParseTree(list: Array<LexerTokenType>) {
   const start: TreeNestType = {

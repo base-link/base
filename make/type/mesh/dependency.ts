@@ -31,7 +31,6 @@ export type ASTDependencyPartType = {
   callbackList: Array<ASTDependencyPartCallbackType>
   last?: ASTDependencyPartType
   like: AST.DependencyPart
-  met: boolean
   name: string
   next?: ASTDependencyPartType
   parent: ASTDependencyType
@@ -42,7 +41,6 @@ export type ASTDependencyType = {
   callbackList: Array<ASTInputCallbackType<APIInputType>>
   context: APIInputType
   like: AST.Dependency
-  met: boolean
   partial: false
   path: Array<ASTDependencyPartType>
 }

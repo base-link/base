@@ -1,8 +1,4 @@
-import {
-  ErrorConfigType,
-  ErrorInputType,
-  errorReducer,
-} from '~'
+import { ErrorConfigType, ErrorInputType } from '~'
 
 export const ERROR: Record<string, ErrorConfigType> = [
   {
@@ -16,3 +12,16 @@ export const ERROR: Record<string, ErrorConfigType> = [
       `We haven't implemented handling term interpolation yet, for ${term}.`,
   },
 ].reduce(errorReducer, {})
+
+function errorReducer(
+  m: Record<string, ErrorConfigType>,
+  x: ErrorConfigType,
+) {
+  return {
+    ...m,
+    [x.code]: {
+      isError: true,
+      ...x,
+    },
+  }
+}

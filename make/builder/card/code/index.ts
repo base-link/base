@@ -82,11 +82,10 @@ export function process_codeCard(
     publicZoneAST: {},
     textByLine: text.split('\n'),
   }
-  const bindableSeed = api.createBindableObject(seed)
   const input: APIInputType = {
     card: seed,
-    lexicalScope: api.createScope(bindableSeed),
-    objectScope: api.createScope(bindableSeed),
+    lexicalScope: api.createScope(seed),
+    objectScope: api.createScope(seed),
   }
 
   card.bind(seed)

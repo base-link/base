@@ -1,9 +1,17 @@
-import { APIInputType, TermInputType, Tree, api } from '~'
+import { APIInputType, Tree, api } from '~'
+
+export function assumeStaticTermFromNest(
+  input: APIInputType,
+): string {
+  const term = api.resolveStaticTermFromNest(input)
+  api.assertString(term)
+  return term
+}
 
 export function resolveStaticTerm(
-  input: TermInputType,
+  input: APIInputType,
 ): string | undefined {
-  const term = input.term
+  const term = api.assumeInputObjectAsTreeType(Tree.Term, input)
 
   if (term.link.length !== 1) {
     return

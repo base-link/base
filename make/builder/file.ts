@@ -58,11 +58,11 @@ export function resolveModulePath(
   input: APIInputType,
   text: string,
 ): string {
-  const card = api.assumeCard(input)
+  const { card } = input
   const path = api.findPath(text, card.directory)
 
   if (!path) {
-    api.throwError(undefined)
+    throw new Error('oops, todo')
   }
 
   api.assertString(path)

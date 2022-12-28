@@ -1,24 +1,10 @@
-import { AST, ASTBindableObjectType, ASTScopeType } from '~'
+import { api } from '~'
 
-export function createBindableObject(
-  data: Record<string, unknown>,
-  parent?: ASTBindableObjectType,
-): ASTBindableObjectType {
-  return {
-    callbackList: [],
-    data,
-    like: AST.BindableObject,
-    parent,
-  }
-}
-
-export function createScope(
-  data: Record<string, unknown>,
-  parent?: ASTScopeType,
-): ASTScopeType {
-  return {
-    data,
-    like: AST.Scope,
-    parent,
+export function getProperty(
+  object: Record<string, unknown>,
+  path: string,
+): unknown {
+  if (api.isObject(object) && path in object) {
+    return object[path]
   }
 }

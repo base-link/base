@@ -25,19 +25,6 @@ export function assertError(
   }
 }
 
-export function errorReducer(
-  m: Record<string, ErrorConfigType>,
-  x: ErrorConfigType,
-) {
-  return {
-    ...m,
-    [x.code]: {
-      isError: true,
-      ...x,
-    },
-  }
-}
-
 export function generateForkMissingPropertyError(
   property: string,
 ): ErrorType {
@@ -99,7 +86,30 @@ export function generateObjectNotASTNodeError(
   }
 }
 
+export function generateScopeMissingPropertyError(
+  property: string,
+): ErrorType {
+  return {
+    code: '0019',
+    note: `Scope is missing property ${property}.`,
+  }
+}
+
 export function generateTermMissingChildError(): void {}
+
+export function generateTermMissingError(
+  input: APIInputType,
+  type: string,
+  object: string,
+): ErrorType {
+  const { card } = input
+  return {
+    code: `0018`,
+    file: `${card.path}`,
+    note: `Term ${type} is missing on ${object}.`,
+    text: '',
+  }
+}
 
 export function generateUnhandledNestCaseBaseError(
   input: APIInputType,

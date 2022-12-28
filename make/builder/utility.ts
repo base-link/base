@@ -11,6 +11,9 @@ import {
   ASTModuleBaseType,
   ASTType,
   ErrorType,
+  Tree,
+  TreeNodeType,
+  TreeType,
   api,
 } from '~'
 
@@ -59,6 +62,20 @@ export function assumeInputObjectAsASTType<T extends AST>(
     rank--
   }
   api.assertAST(objectScope.data, type)
+  return objectScope.data
+}
+
+export function assumeInputObjectAsTreeType<T extends Tree>(
+  type: T,
+  input: APIInputType,
+  rank = 0,
+): TreeType<T> {
+  let objectScope = input.objectScope
+  while (rank > 0 && objectScope.parent) {
+    objectScope = objectScope.parent
+    rank--
+  }
+  api.assertTreeType(objectScope.data, type)
   return objectScope.data
 }
 

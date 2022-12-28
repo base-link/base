@@ -1,4 +1,4 @@
-import { BaseCard } from '~'
+import { ASTDependencyType, BaseCard } from '~'
 
 export { Base }
 
@@ -38,6 +38,8 @@ class Base {
 
   wait_find_mesh: Map<string, Map<string, Map<string, string>>>
 
+  dependency: Array<ASTDependencyType>
+
   constructor() {
     this.text_mesh = {}
     this.env = {}
@@ -47,6 +49,7 @@ class Base {
     this.card_mesh = new Map()
     this.wait_seek_mesh = new Map()
     this.wait_find_mesh = new Map()
+    this.dependency = []
   }
 
   request({

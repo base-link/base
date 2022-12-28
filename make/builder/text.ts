@@ -10,41 +10,6 @@ import {
   api,
 } from '~'
 
-export function checkDependency(
-  dependency: ASTDependencyType,
-): void {
-  let value: unknown = dependency.context.fork.data
-
-  if (dependency.met) {
-    return
-  }
-
-  let i = 0
-  while (i < dependency.path.length) {
-    const part = dependency.path[i]
-
-    if (
-      part &&
-      api.isRecord(value) &&
-      value &&
-      part.name in value
-    ) {
-      part.met = true
-
-      if (i === dependency.path.length - 1) {
-        dependency.met = true
-        return
-      } else {
-        value = value[part.name]
-      }
-    } else {
-      return
-    }
-
-    i++
-  }
-}
-
 export function parseTextIntoTree(text: string): TreeNodeType {
   return api.parseLinkText(text)
 }
@@ -61,15 +26,11 @@ export function processDynamicTextNest(
   const card = api.getProperty(input, 'card')
   api.assertCard(card)
 
-  card.dependencyList.push(...dependencyList)
-
-  dependencyList.forEach(dep => {
-    api.checkDependency(dep)
-  })
-
-  const unmetDependencyList = dependencyList.filter(
-    dep => !dep.met,
+  const unmetDependencyList = dependencyList.filter(dep =>
+    api.checkDependency(input, dep),
   )
+
+  card.base.dependency.push(...unmetDependencyList)
 
   if (!unmetDependencyList.length) {
     job(input)
@@ -97,22 +58,25 @@ export function processTextNest(
 }
 
 export function readDependency(
-  input: unknown,
+  input: APIInputType,
   dependency: ASTDependencyType,
 ): unknown {
-  let value = input
+  const scope = api.findInitialScope(input, dependency)
 
-  if (dependency.met) {
+  if (scope) {
+    let value: unknown = scope.data
+
     dependency.path.forEach(part => {
       if (api.isRecord(value)) {
-        value = value[part.name]
+        const childValue = value[part.name]
+        value = childValue
+      } else {
+        value = undefined
       }
     })
-  } else {
-    value = undefined
-  }
 
-  return value
+    return value
+  }
 }
 
 export function readNest(input: APIInputType): unknown {
@@ -121,24 +85,24 @@ export function readNest(input: APIInputType): unknown {
   api.assumeNest(input).line.forEach(nest => {
     switch (nest.like) {
       case Tree.Term:
-        const name = api.resolveStaticTerm({
-          ...input,
-          term: nest,
-        })
+        const name = api.resolveStaticTerm(
+          api.extendWithObjectScope(input, nest),
+        )
 
         api.assertString(name)
 
         // TODO
-        if (api.isRecord(scope.data) && name in scope.data) {
-          scope = scope.data[name]
-        }
+        // if (api.isRecord(scope.data) && name in scope.data) {
+        //   scope = scope.data[name]
+        // }
         break
       default:
         throw new Error(nest.like)
     }
   })
 
-  return value
+  return undefined
+  // return value
 }
 
 export function resolveNestDependencyList(
@@ -150,7 +114,7 @@ export function resolveNestDependencyList(
     callbackList: [job],
     context: input,
     like: AST.Dependency,
-    met: false,
+    partial: false,
     path: [],
   }
   array.push(dependency)
@@ -158,19 +122,18 @@ export function resolveNestDependencyList(
   api.assumeNest(input).line.forEach(nest => {
     if (nest.like === Tree.Term) {
       // TODO: solve for interpolated terms too.
-      const name = api.resolveStaticTerm({
-        ...input,
-        term: nest,
-      })
+      const name = api.resolveStaticTerm(
+        api.extendWithObjectScope(input, nest),
+      )
 
       api.assertString(name)
 
       const dependencyPart: ASTDependencyPartType = {
         callbackList: [],
         like: AST.DependencyPart,
-        met: false,
         name,
         parent: dependency,
+        partial: false,
       }
 
       dependency.path.push(dependencyPart)
@@ -207,11 +170,12 @@ export function resolveText(
         break
       case Tree.Slot:
         // TODO
-        const text = api.readNest({
-          ...input,
-          index: 0,
-          nest: link.nest,
-        })
+        const text = api.readNest(
+          api.extendWithNestScope(input, {
+            index: 0,
+            nest: link.nest,
+          }),
+        )
 
         str.push(text)
         break
