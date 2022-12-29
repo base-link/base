@@ -1,14 +1,15 @@
+import chalk from 'chalk'
+
 import {
   CursorRangeType,
+  Emitter,
+  EmitterNodeType,
+  EmitterResultType,
   ErrorType,
   LEXER_TYPE,
-  LexerLineRangeType,
-  LexerRangeType,
   LexerSplitInputType,
+  LexerTermFragmentTokenType,
   LexerTokenType,
-  Norm,
-  NormNodeType,
-  NormResultType,
   api,
 } from '~'
 
@@ -110,6 +111,7 @@ export type TreeNodeType =
   | TreeStringType
   | TreeHandleType
   | TreeUnsignedIntegerType
+  | TreeSignedIntegerType
   | TreeTextType
   | TreePluginType
   | TreeIndexType
@@ -206,7 +208,7 @@ type TreeInputType = LexerSplitInputType & {
     index: number
     stack: Array<TreeNodeType>
   }
-  token: NormNodeType
+  token: EmitterNodeType
 }
 
 type TT = TreeNodeType
@@ -223,7 +225,7 @@ export function attach_handle_module(
 }
 
 export function buildParseTree(
-  input: NormResultType,
+  input: EmitterResultType,
 ): TreeResultType {
   const stack: Array<TreeNodeType> = []
   let result: TreeNodeType | undefined = undefined
@@ -232,50 +234,66 @@ export function buildParseTree(
 
   const state = { index: 0, stack }
 
+  let start
+
   let i = 0
-  while (i < input.normalizedTokenList.length) {
-    const token = input.normalizedTokenList[i]
+  while (i < input.directions.length) {
+    const token = input.directions[i]
     if (!token) {
       continue
     }
 
     switch (token.like) {
-      case Norm.OpenModule:
-        api.parse_openModule({
+      case Emitter.OpenModule:
+        start = api.parse_openModule({
           ...input,
           state,
           token,
         })
         break
-      case Norm.CloseModule:
+      case Emitter.CloseModule:
         api.parse_closeModule({
           ...input,
           state,
           token,
         })
         break
-      case Norm.OpenTermPath:
-        api.parse_openTermPath({
+      case Emitter.TermFragment:
+        api.parse_termFragment({
           ...input,
           state,
           token,
         })
         break
-      case Norm.CloseTermPath:
-        api.parse_closeTermPath({
-          ...input,
-          state,
-          token,
-        })
-        break
-      case Norm.OpenHandle:
+      case Emitter.OpenHandle:
         api.parse_openHandle({
           ...input,
           state,
           token,
         })
         break
-      case Norm.CloseHandle:
+      case Emitter.MoveInward:
+        api.parse_moveInward({
+          ...input,
+          state,
+          token,
+        })
+        break
+      case Emitter.OpenPlugin:
+        api.parse_openPlugin({
+          ...input,
+          state,
+          token,
+        })
+        break
+      case Emitter.ClosePlugin:
+        api.parse_closePlugin({
+          ...input,
+          state,
+          token,
+        })
+        break
+      case Emitter.CloseHandle:
         api.parse_closeHandle({
           ...input,
           state,
@@ -283,7 +301,11 @@ export function buildParseTree(
         })
         break
     }
+
+    i++
   }
+
+  printParserAST(result ?? start)
 
   api.assertTreeType(result, Tree.Module)
 
@@ -291,56 +313,6 @@ export function buildParseTree(
     ...input,
     parseTree: result,
   }
-}
-
-function createString(
-  value: string,
-  start: LexerLineRangeType,
-  end: LexerLineRangeType,
-  offset: LexerRangeType,
-): TreeStringType {
-  return {
-    end,
-    like: Tree.String,
-    offset,
-    start,
-    value,
-  }
-}
-
-function parse_termFragment_list(
-  string: string,
-  line: number,
-  character: number,
-  total: number,
-): Array<TreeTermType> {
-  const parts = string.split('/')
-  return parts.map((fragment, i) => {
-    const dive = Boolean(fragment.match(/\*/))
-    const guard = Boolean(fragment.match(/\?/))
-    const key = Boolean(fragment.match(/~/))
-    const name = fragment.replace(/[\*\~\?]/g, '')
-    const upto = parts.slice(0, i).join('').length
-    const start = {
-      character: character + upto + i,
-      line,
-    }
-    const end = {
-      character: character + upto + fragment.length + i,
-      line,
-    }
-    const offset = {
-      end: total + upto + fragment.length + i,
-      start: total,
-    }
-    return {
-      dive,
-      guard,
-      key,
-      like: Tree.Term,
-      segment: [createString(name, start, end, offset)],
-    }
-  })
 }
 
 export function generateUnhandledTreeResolver(
@@ -398,17 +370,19 @@ export function isLexerType<T extends Lexer>(
 }
 
 export function parse_closeHandle(input: TreeInputType): void {
-  input.state.stack.pop()
+  // input.state.stack.pop()
 }
 
 export function parse_closeModule(input: TreeInputType): void {
-  input.state.stack.pop()
+  // input.state.stack.pop()
 }
 
-export function parse_closeTermPath(
-  input: TreeInputType,
-): void {
-  input.state.stack.pop()
+export function parse_closePlugin(input: TreeInputType): void {
+  // input.state.stack.pop()
+}
+
+export function parse_moveInward(input: TreeInputType): void {
+  console.log('m')
 }
 
 export function parse_openHandle(input: TreeInputType): void {
@@ -424,11 +398,27 @@ export function parse_openHandle(input: TreeInputType): void {
   switch (currentLike) {
     case Tree.Module: {
       api.attach_handle_module(input, handle)
+      break
     }
+    case Tree.Path: {
+      const current2 =
+        input.state.stack[input.state.stack.length - 2]
+      if (current2?.like === Tree.Handle) {
+        current2.element.push(handle)
+      }
+      break
+    }
+    default:
+      api.throwError({
+        code: '0024',
+        note: 'Not implemented yet.',
+      })
   }
+
+  input.state.stack.push(handle)
 }
 
-export function parse_openModule(input: TreeInputType): void {
+export function parse_openModule(input: TreeInputType) {
   // const current = stack[stack.length - 1]
   // const parent = stack[stack.length - 2]
   const container: TreeModuleType = {
@@ -436,42 +426,180 @@ export function parse_openModule(input: TreeInputType): void {
     like: Tree.Module,
   }
   input.state.stack.push(container)
+  return container
 }
 
-export function parse_openTermPath(input: TreeInputType): void {
-  input.state.stack.pop()
+export function parse_openPlugin(input: TreeInputType): void {
+  // input.state.stack.pop()
 }
 
-function mergeTreePaths(
-  a: TreePathType,
-  b: TreePathType,
-): TreePathType {
-  const lastOfFirst = a.segment[a.segment.length - 1]
-  if (!lastOfFirst) {
-    return b
+export function parse_termFragment(input: TreeInputType): void {
+  const current =
+    input.state.stack[input.state.stack.length - 1]
+  if (current) {
+    if (current.like !== Tree.Path) {
+      const path: TreePathType = {
+        like: Tree.Path,
+        segment: [],
+      }
+      input.state.stack.push(path)
+
+      switch (current.like) {
+        case Tree.Module: {
+          break
+        }
+        case Tree.Handle: {
+          if (!current.hook) {
+            current.hook = path
+          } else {
+            current.element.push(path)
+          }
+          break
+        }
+        default:
+          console.log(current)
+      }
+      parse_termFragment(input)
+      return
+    }
   }
 
-  const firstOfLast = b.segment[0]
-  if (!firstOfLast) {
-    return b
+  api.assertTreeType(current, Tree.Path)
+
+  let term: TreeTermType = {
+    dive: false,
+    guard: false,
+    key: false,
+    like: Tree.Term,
+    segment: [],
   }
 
-  const stringsAndStuff: Array<TreeNodeType> = []
-  stringsAndStuff.push(
-    ...lastOfFirst.segment,
-    ...firstOfLast.segment,
-  )
-
-  const newTerm: TreeTermType = {
-    // ...
+  if (input.token.like === Emitter.TermFragment) {
+    term.segment.push({
+      end: input.token.end,
+      like: Tree.String,
+      offset: input.token.offset,
+      start: input.token.start,
+      value: input.token.value,
+    })
   }
 
-  const newChildren = [
-    ...a.segment.slice(0, a.segment.length - 2),
-  ]
+  current.segment.push(term)
 
-  const newPath: TreePathType = {
-    like: Tree.Path,
-    segment: [...newChildren],
+  // dive: false,
+  // end: { character: 4, line: 0 },
+  // guard: false,
+  // key: false,
+  // offset: { end: 25, start: 21 },
+  // start: { character: 0, line: 0 },
+  // value: 'bond',
+  // id: 6,
+  // like: 'emitter-term-fragment'
+
+  // current.segment.push()
+}
+
+function printParserAST(base: TreeModuleType | unknown): void {
+  const text: Array<string> = ['']
+
+  if (!base) {
+    text.push(`  undefined`)
+  } else {
+    printParserASTDetails(base).forEach(line => {
+      text.push(`  ${line}`)
+    })
   }
+
+  text.push('')
+
+  console.log(text.join('\n'))
+}
+
+function printParserASTDetails(
+  node: TreeNodeType,
+): Array<string> {
+  const text: Array<string> = []
+
+  const title = chalk.white(node.like)
+
+  switch (node.like) {
+    case Tree.Module: {
+      text.push(`${title}`)
+      node.element.forEach(el => {
+        printParserASTDetails(el).forEach(line => {
+          text.push(`  ${line}`)
+        })
+      })
+      break
+    }
+    case Tree.String: {
+      text.push(`${title} ${chalk.green(node.value)}`)
+      break
+    }
+    case Tree.Handle: {
+      text.push(`${title}`)
+      if (node.hook) {
+        text.push(chalk.gray(`  hook:`))
+        printParserASTDetails(node.hook).forEach(line => {
+          text.push(`    ${line}`)
+        })
+      } else {
+        text.push(chalk.gray('  hook: undefined'))
+      }
+      if (node.element.length) {
+        text.push(chalk.gray(`  element:`))
+        node.element.forEach(el => {
+          printParserASTDetails(el).forEach(line => {
+            text.push(`    ${line}`)
+          })
+        })
+      }
+      break
+    }
+    case Tree.UnsignedInteger: {
+      break
+    }
+    case Tree.Text: {
+      break
+    }
+    case Tree.Plugin: {
+      text.push(`${title} (size: ${node.size})`)
+      if (node.element) {
+        text.push(chalk.gray(`  element:`))
+        printParserASTDetails(node.element).forEach(line => {
+          text.push(`  ${line}`)
+        })
+      }
+      break
+    }
+    case Tree.Index: {
+      break
+    }
+    case Tree.Decimal: {
+      break
+    }
+    case Tree.Hashtag: {
+      break
+    }
+    case Tree.Term: {
+      text.push(`${title}`)
+      node.segment.forEach(seg => {
+        printParserASTDetails(seg).forEach(line => {
+          text.push(`  ${line}`)
+        })
+      })
+      break
+    }
+    case Tree.Path: {
+      text.push(`${title}`)
+      node.segment.forEach(seg => {
+        printParserASTDetails(seg).forEach(line => {
+          text.push(`  ${line}`)
+        })
+      })
+      break
+    }
+  }
+
+  return text
 }

@@ -134,8 +134,9 @@ type LexerCloseInterpolationTokenType = LexerTokenBaseType & {
   like: Lexer.CloseInterpolation
 }
 
-type LexerTermFragmentTokenType = LexerTokenBaseType & {
-  like: Lexer.TermFragment
+export type LexerLineRangeType = {
+  character: number
+  line: number
 }
 
 type LexerOpenNestTokenType = LexerTokenBaseType & {
@@ -156,11 +157,6 @@ type LexerHashtagTokenType = LexerTokenBaseType & {
 
 type LexerCommentTokenType = LexerTokenBaseType & {
   like: Lexer.Comment
-}
-
-export type LexerLineRangeType = {
-  character: number
-  line: number
 }
 
 export type LexerOpenEvaluationTokenType =
@@ -196,6 +192,10 @@ export enum LexerState {
 
 export type LexerStringTokenType = LexerTokenBaseType & {
   like: Lexer.String
+}
+
+export type LexerTermFragmentTokenType = LexerTokenBaseType & {
+  like: Lexer.TermFragment
 }
 
 export type LexerTokenBaseType = {

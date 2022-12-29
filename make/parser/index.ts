@@ -3,12 +3,12 @@ import type {
   TreeNodeType,
   TreeResultType,
 } from './builder/index.js'
-import { normalizeLinkTextAST } from './normalizer/index.js'
+import { generateLinkTextBuildingDirections } from './emitter/index.js'
 import { tokenizeLinkText } from './tokenizer/index.js'
 import type { LexerInputType } from './tokenizer/index.js'
 
 export * from './builder/index.js'
-export * from './normalizer/index.js'
+export * from './emitter/index.js'
 export * from './tokenizer/index.js'
 
 export enum Nest {
@@ -36,6 +36,6 @@ export function parseLinkText(
   input: LexerInputType,
 ): TreeResultType {
   return buildParseTree(
-    normalizeLinkTextAST(tokenizeLinkText(input)),
+    generateLinkTextBuildingDirections(tokenizeLinkText(input)),
   )
 }
