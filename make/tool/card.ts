@@ -1,9 +1,9 @@
 import { CARD_TYPE, code } from '~'
 import type { MeshModule_FullType } from '~'
 
-export * from './book/index.js'
-export * from './code/index.js'
-export * from './deck/index.js'
+export * from '../mesh/book/index.js'
+export * from '../mesh/code/index.js'
+export * from '../mesh/deck/index.js'
 
 export function assertCard(
   object: unknown,

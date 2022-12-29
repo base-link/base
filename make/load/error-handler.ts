@@ -1,12 +1,5 @@
-import { BaseLinkError, code } from '~'
 
-export * from './card/index.js'
-export * from './dependency.js'
-export * from './mesh.js'
-export * from './nest.js'
-export * from './slot.js'
-export * from './term.js'
-export * from './text.js'
+watchUnhandledErrors()
 
 export function watchUnhandledErrors(): void {
   process.on('unhandledRejection', (reason: unknown) => {
@@ -36,5 +29,3 @@ export function watchUnhandledErrors(): void {
     console.log(error.stack)
   })
 }
-
-watchUnhandledErrors()
