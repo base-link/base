@@ -19,7 +19,7 @@ export enum Lexer {
   Path = 'lexer-path',
   SignedInteger = 'lexer-signed-integer',
   String = 'lexer-string',
-  TermPath = 'lexer-term-path',
+  TermFragment = 'lexer-term-fragment',
   UnsignedInteger = 'lexer-unsigned-integer',
 }
 
@@ -43,7 +43,7 @@ export const LEXER_TYPE = [
   Lexer.Path,
   Lexer.SignedInteger,
   Lexer.String,
-  Lexer.TermPath,
+  Lexer.TermFragment,
   Lexer.UnsignedInteger,
 ]
 
@@ -65,7 +65,7 @@ export const LEXER_PATTERN_LIST = [
   Lexer.OpenText,
   Lexer.Path,
   Lexer.SignedInteger,
-  Lexer.TermPath,
+  Lexer.TermFragment,
   Lexer.UnsignedInteger,
 ]
 
@@ -134,8 +134,8 @@ type LexerCloseInterpolationTokenType = LexerTokenBaseType & {
   like: Lexer.CloseInterpolation
 }
 
-type LexerTermPathTokenType = LexerTokenBaseType & {
-  like: Lexer.TermPath
+type LexerTermFragmentTokenType = LexerTokenBaseType & {
+  like: Lexer.TermFragment
 }
 
 type LexerOpenNestTokenType = LexerTokenBaseType & {
@@ -258,9 +258,9 @@ const PATTERN: Record<Lexer, LexerPatternConfigType> = {
   [Lexer.SignedInteger]: {
     pattern: /^-\d+(?=\b)/,
   },
-  [Lexer.TermPath]: {
+  [Lexer.TermFragment]: {
     pattern:
-      /^(?:[*~]?[a-z][a-z0-9]*(?:-[a-z0-9]+)*\??)(?:\/[a-z][a-z0-9]*(?:-[a-z0-9]+)*\??)*-?/,
+      /^-?(?:[*~]?[a-z][a-z0-9]*(?:-[a-z0-9]+)*\??)(?:\/[a-z][a-z0-9]*(?:-[a-z0-9]+)*\??)*-?/,
   },
   [Lexer.UnsignedInteger]: {
     pattern: /^\d+(?=\b)/,
@@ -290,7 +290,7 @@ export type LexerTokenMappingType = {
   'lexer-path': LexerPathTokenType
   'lexer-signed-integer': LexerSignedIntegerTokenType
   'lexer-string': LexerStringTokenType
-  'lexer-term-path': LexerTermPathTokenType
+  'lexer-term-fragment': LexerTermFragmentTokenType
   'lexer-unsigned-integer': LexerUnignedIntegerTokenType
 }
 

@@ -37,7 +37,7 @@ async function start() {
   await api.loadSourceMaps()
   parse({
     path: 'foo.link',
-    text: `foo bar{x}baz/bear-{bond}`,
+    text: `foo bar{x}-baz/bear-{bond}`,
   })
 }
 
