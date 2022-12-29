@@ -1,9 +1,7 @@
 import { BaseLinkError, code } from '~'
 
 export * from './card/index.js'
-export * from './code.js'
 export * from './dependency.js'
-export * from './mark.js'
 export * from './mesh.js'
 export * from './nest.js'
 export * from './slot.js'
