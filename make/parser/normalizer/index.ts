@@ -230,10 +230,6 @@ export function normalizeLinkTextAST(
 
   console.log(api.prettifyJSON(input.tokenList))
 
-  result.push({
-    like: Norm.OpenModule,
-  })
-
   const stack: Array<Norm> = [Norm.OpenModule]
   const counter: Record<string, number> = {}
 
@@ -241,6 +237,8 @@ export function normalizeLinkTextAST(
     counter[like] = counter[like] || 1
     return counter[like]++
   }
+
+  result.push(base(Norm.OpenModule))
 
   function base<T extends Norm>(like: T) {
     return {
@@ -265,6 +263,8 @@ export function normalizeLinkTextAST(
           }
           case Norm.OpenTermFragment: {
             result.push(base(Norm.CloseTermFragment))
+            stack.pop()
+            result.push(base(Norm.CloseTermPath))
             stack.pop()
             result.push(base(Norm.ClosePlugin))
             stack.pop()
@@ -328,6 +328,8 @@ export function normalizeLinkTextAST(
           case Norm.OpenTermFragment: {
             result.push(base(Norm.CloseTermFragment))
             stack.pop()
+            result.push(base(Norm.CloseTermPath))
+            stack.pop()
             result.push(base(Norm.MoveInward))
             stack.push(Norm.MoveInward)
             break
@@ -354,6 +356,10 @@ export function normalizeLinkTextAST(
         switch (top) {
           case Norm.OpenModule: {
             result.push({
+              ...base(Norm.OpenTermPath),
+            })
+            stack.push(Norm.OpenTermPath)
+            result.push({
               ...token,
               ...base(Norm.OpenTermFragment),
             })
@@ -370,6 +376,10 @@ export function normalizeLinkTextAST(
           }
           case Norm.OpenPlugin: {
             result.push({
+              ...base(Norm.OpenTermPath),
+            })
+            stack.push(Norm.OpenTermPath)
+            result.push({
               ...token,
               ...base(Norm.OpenTermFragment),
             })
@@ -377,6 +387,10 @@ export function normalizeLinkTextAST(
             break
           }
           case Norm.MoveInward: {
+            result.push({
+              ...base(Norm.OpenTermPath),
+            })
+            stack.push(Norm.OpenTermPath)
             result.push({
               ...token,
               ...base(Norm.OpenTermFragment),
@@ -399,9 +413,27 @@ export function normalizeLinkTextAST(
     i++
   }
 
-  result.push({
-    like: Norm.CloseModule,
-  })
+  while (stack.length) {
+    const top = stack.pop()
+    switch (top) {
+      case Norm.OpenTermFragment: {
+        result.push(base(Norm.CloseTermFragment))
+        break
+      }
+      case Norm.OpenTermPath: {
+        result.push(base(Norm.CloseTermPath))
+        break
+      }
+      case Norm.MoveInward: {
+        result.push(base(Norm.MoveOutward))
+        break
+      }
+      case Norm.OpenModule: {
+        result.push(base(Norm.CloseModule))
+        break
+      }
+    }
+  }
 
   function peek(amount = 1): LexerTokenType<Lexer> | undefined {
     return input.tokenList[i + amount]
