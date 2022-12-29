@@ -4,7 +4,7 @@ import type {
   TextTokenType,
 } from '~'
 
-import { Text, TextTokenBaseType } from '../tokenizer/index.js'
+import { Text, TextTokenBaseType } from '../text/index.js'
 
 export enum Tree {
   Boolean = 'tree-boolean',

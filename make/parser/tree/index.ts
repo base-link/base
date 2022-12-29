@@ -18,7 +18,7 @@ import type {
 } from '~'
 import { Fold, TEXT_TYPE, Tree, api } from '~'
 
-import { Text } from '../tokenizer/index.js'
+import { Text } from '../text/index.js'
 
 export * from './type.js'
 

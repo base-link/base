@@ -1,15 +1,12 @@
-import { buildParseTree } from './builder/index.js'
-import type {
-  TreeNodeType,
-  TreeResultType,
-} from './builder/index.js'
-import { generateLinkTextBuildingDirections } from './emitter/index.js'
-import { tokenizeLinkText } from './tokenizer/index.js'
-import type { TextInputType } from './tokenizer/index.js'
+import { generateLinkTextBuildingDirections } from './fold/index.js'
+import { tokenizeLinkText } from './text/index.js'
+import type { TextInputType } from './text/index.js'
+import { buildParseTree } from './tree/index.js'
+import type { TreeResultType } from './tree/index.js'
 
-export * from './builder/index.js'
-export * from './emitter/index.js'
-export * from './tokenizer/index.js'
+export * from './fold/index.js'
+export * from './text/index.js'
+export * from './tree/index.js'
 
 export enum Nest {
   Code = 'code',
