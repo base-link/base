@@ -2,8 +2,6 @@ import chalk from 'chalk'
 
 import {
   Lexer,
-  LexerLineRangeType,
-  LexerRangeType,
   LexerTermFragmentTokenType,
   LexerTokenBaseType,
   api,
@@ -234,7 +232,7 @@ export type EmitterTermFragmentType = {
   like: Emitter.TermFragment
   query: boolean
   range: EmitterRangeMetadatType
-  start: number
+  start: boolean
   value: string
 }
 
@@ -246,6 +244,7 @@ export type EmitterTermSeparatorType = {
 export type EmitterUnsignedIntegerType = {
   id: number
   like: Emitter.UnsignedInteger
+  value: number
 }
 
 export function generateLinkTextBuildingDirections(
@@ -253,11 +252,7 @@ export function generateLinkTextBuildingDirections(
 ): EmitterResultType {
   const result: Array<EmitterNodeType> = []
 
-  let nesting = 0
-  let previousLineNesting = 0
   let i = 0
-
-  console.log(api.prettifyJSON(input.tokenList))
 
   const stack: Array<Emitter> = [Emitter.OpenModule]
   const counter: Record<string, number> = {}
@@ -290,12 +285,11 @@ export function generateLinkTextBuildingDirections(
             stack.pop()
             break
           }
-          case Emitter.TermFragment: {
-            result.push(base(Emitter.ClosePlugin))
+          case Emitter.OpenTerm: {
+            result.push(base(Emitter.CloseTerm))
             stack.pop()
-            break
-          }
-          case Emitter.OpenHandle: {
+            result.push(base(Emitter.CloseTermPath))
+            stack.pop()
             result.push(base(Emitter.CloseHandle))
             stack.pop()
             result.push(base(Emitter.ClosePlugin))
@@ -303,6 +297,13 @@ export function generateLinkTextBuildingDirections(
             break
           }
           case Emitter.OpenDepth: {
+            result.push(base(Emitter.CloseDepth))
+            stack.pop()
+            break
+          }
+          case Emitter.OpenHandle: {
+            result.push(base(Emitter.CloseHandle))
+            stack.pop()
             break
           }
           default:
@@ -320,6 +321,21 @@ export function generateLinkTextBuildingDirections(
         break
       }
       case Lexer.Comma: {
+        switch (top) {
+          case Emitter.OpenTerm: {
+            result.push(base(Emitter.CloseTerm))
+            stack.pop()
+            result.push(base(Emitter.CloseTermPath))
+            stack.pop()
+            break
+          }
+          default:
+            api.throwError({
+              code: '0023',
+              note: top,
+            })
+        }
+        // console.log(token)
         break
       }
       case Lexer.Comment: {
@@ -335,7 +351,30 @@ export function generateLinkTextBuildingDirections(
         switch (top) {
           case Emitter.OpenHandle: {
             result.push(base(Emitter.CloseHandle))
+            stack.pop()
+            break
           }
+          case Emitter.OpenDepth: {
+            result.push(base(Emitter.CloseHandle))
+            stack.pop()
+            break
+          }
+          case Emitter.OpenModule: {
+            break
+          }
+          case Emitter.OpenTerm: {
+            result.push(base(Emitter.CloseTerm))
+            stack.pop()
+
+            result.push(base(Emitter.CloseTermPath))
+            stack.pop()
+            break
+          }
+          default:
+            api.throwError({
+              code: '0023',
+              note: top,
+            })
         }
         break
       }
@@ -347,14 +386,7 @@ export function generateLinkTextBuildingDirections(
       }
       case Lexer.OpenInterpolation: {
         switch (top) {
-          case Emitter.TermFragment: {
-            stack.push(Emitter.OpenPlugin)
-            result.push({
-              ...token,
-              ...base(Emitter.OpenPlugin),
-            })
-            break
-          }
+          case Emitter.OpenTerm:
           case Emitter.OpenHandle: {
             stack.push(Emitter.OpenPlugin)
             result.push({
@@ -376,7 +408,21 @@ export function generateLinkTextBuildingDirections(
       }
       case Lexer.OpenNesting: {
         switch (top) {
-          case Emitter.TermFragment: {
+          case Emitter.OpenTerm: {
+            result.push(base(Emitter.CloseTerm))
+            stack.pop()
+
+            result.push(base(Emitter.CloseTermPath))
+            stack.pop()
+
+            result.push(base(Emitter.OpenDepth))
+            stack.push(Emitter.OpenDepth)
+            break
+          }
+          case Emitter.OpenTermPath: {
+            result.push(base(Emitter.CloseTermPath))
+            stack.pop()
+
             result.push(base(Emitter.OpenDepth))
             stack.push(Emitter.OpenDepth)
             break
@@ -415,16 +461,24 @@ export function generateLinkTextBuildingDirections(
             result.push(base(Emitter.OpenHandle))
             stack.push(Emitter.OpenHandle)
 
-            applyFragments(token)
-            break
-          }
-          case Emitter.TermFragment: {
+            result.push(base(Emitter.OpenTermPath))
+            stack.push(Emitter.OpenTermPath)
+
+            result.push(base(Emitter.OpenTerm))
+            stack.push(Emitter.OpenTerm)
+
             applyFragments(token)
             break
           }
           case Emitter.OpenPlugin: {
             result.push(base(Emitter.OpenHandle))
             stack.push(Emitter.OpenHandle)
+
+            result.push(base(Emitter.OpenTermPath))
+            stack.push(Emitter.OpenTermPath)
+
+            result.push(base(Emitter.OpenTerm))
+            stack.push(Emitter.OpenTerm)
 
             applyFragments(token)
             break
@@ -433,10 +487,26 @@ export function generateLinkTextBuildingDirections(
             result.push(base(Emitter.OpenHandle))
             stack.push(Emitter.OpenHandle)
 
+            result.push(base(Emitter.OpenTermPath))
+            stack.push(Emitter.OpenTermPath)
+
+            result.push(base(Emitter.OpenTerm))
+            stack.push(Emitter.OpenTerm)
+
             applyFragments(token)
             break
           }
           case Emitter.OpenHandle: {
+            result.push(base(Emitter.OpenTermPath))
+            stack.push(Emitter.OpenTermPath)
+
+            result.push(base(Emitter.OpenTerm))
+            stack.push(Emitter.OpenTerm)
+
+            applyFragments(token)
+            break
+          }
+          case Emitter.OpenTerm: {
             applyFragments(token)
             break
           }
@@ -449,6 +519,10 @@ export function generateLinkTextBuildingDirections(
         break
       }
       case Lexer.UnsignedInteger: {
+        result.push({
+          ...base(Emitter.UnsignedInteger),
+          value: parseInt(token.text, 10),
+        })
         break
       }
     }
@@ -462,6 +536,11 @@ export function generateLinkTextBuildingDirections(
       result.push({
         ...frag,
       })
+
+      if (i > 0 && i < fragments.length - 2) {
+        result.push(base(Emitter.CloseTerm))
+        result.push(base(Emitter.OpenTerm))
+      }
 
       if (i < fragments.length - 2) {
         result.push(base(Emitter.TermSeparator))
@@ -552,24 +631,36 @@ function logDirectionList(
   const tree: Array<string> = ['']
 
   let indent = 1
+  let yay = 0
+  let nay = 0
 
   directionList.forEach(direction => {
     let color = chalk.gray
     let diff = 0
+    let type = 'neutral'
     if (direction.like.match('open')) {
       indent++
+      yay++
       color = chalk.green
+      type = 'open'
     } else if (direction.like.match('close')) {
       diff = -1
+      nay++
       color = chalk.yellow
+      type = 'close'
     }
 
     const indentText = new Array(indent + 1).join('  ')
     const value = chalk.whiteBright(
       'value' in direction ? `${direction.value}` : '',
     )
+    const symbol = chalk.gray(
+      '', // type === 'close' ? nay : type === 'open' ? yay : '',
+    )
     tree.push(
-      `  ${indentText}${color(direction.like)} ${value}`,
+      `  ${indentText}${color(
+        direction.like,
+      )} ${value} ${symbol}`,
     )
     indent += diff
   })

@@ -102,7 +102,7 @@ type LexerSignedIntegerTokenType = LexerTokenBaseType & {
   like: Lexer.SignedInteger
 }
 
-type LexerUnignedIntegerTokenType = LexerTokenBaseType & {
+type LexerUnsignedIntegerTokenType = LexerTokenBaseType & {
   like: Lexer.UnsignedInteger
 }
 
@@ -291,7 +291,7 @@ export type LexerTokenMappingType = {
   'lexer-signed-integer': LexerSignedIntegerTokenType
   'lexer-string': LexerStringTokenType
   'lexer-term-fragment': LexerTermFragmentTokenType
-  'lexer-unsigned-integer': LexerUnignedIntegerTokenType
+  'lexer-unsigned-integer': LexerUnsignedIntegerTokenType
 }
 
 export type LexerTokenType<T extends Lexer> =

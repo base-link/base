@@ -47,6 +47,7 @@ export type TreeDecimalType = LexerTokenBaseType & {
 export type TreeHandleType = {
   element: Array<
     | TreeTextType
+    | TreePathType
     | TreeHandleType
     | TreeUnsignedIntegerType
     | TreeSignedIntegerType
@@ -151,7 +152,7 @@ export type TreeTextType = {
 
 export type TreeType<T extends Tree> = TreeMappingType[T]
 
-export type TreeUnsignedIntegerType = LexerTokenBaseType & {
+export type TreeUnsignedIntegerType = {
   like: Tree.UnsignedInteger
   value: number
 }
@@ -258,6 +259,13 @@ export function buildParseTree(
           token,
         })
         break
+      case Emitter.CloseDepth:
+        api.parse_closeDepth({
+          ...input,
+          state,
+          token,
+        })
+        break
       case Emitter.OpenPlugin:
         api.parse_openPlugin({
           ...input,
@@ -272,8 +280,43 @@ export function buildParseTree(
           token,
         })
         break
+      case Emitter.OpenTermPath:
+        api.parse_openTermPath({
+          ...input,
+          state,
+          token,
+        })
+        break
+      case Emitter.CloseTermPath:
+        api.parse_closeTermPath({
+          ...input,
+          state,
+          token,
+        })
+        break
+      case Emitter.OpenTerm:
+        api.parse_openTerm({
+          ...input,
+          state,
+          token,
+        })
+        break
+      case Emitter.CloseTerm:
+        api.parse_closeTerm({
+          ...input,
+          state,
+          token,
+        })
+        break
       case Emitter.CloseHandle:
         api.parse_closeHandle({
+          ...input,
+          state,
+          token,
+        })
+        break
+      case Emitter.UnsignedInteger:
+        api.parse_unsignedInteger({
           ...input,
           state,
           token,
@@ -348,6 +391,10 @@ export function isLexerType<T extends Lexer>(
   )
 }
 
+export function parse_closeDepth(input: TreeInputType): void {
+  // console.log('m')
+}
+
 export function parse_closeHandle(input: TreeInputType): void {
   input.state.stack.pop()
 }
@@ -360,8 +407,32 @@ export function parse_closePlugin(input: TreeInputType): void {
   input.state.stack.pop()
 }
 
+export function parse_closeTerm(input: TreeInputType): void {
+  input.state.stack.pop()
+}
+
+export function parse_closeTermPath(
+  input: TreeInputType,
+): void {
+  input.state.stack.pop()
+}
+
 export function parse_openDepth(input: TreeInputType): void {
-  // console.log('m')
+  const { stack } = input.state
+  const current = stack[stack.length - 1]
+
+  switch (current?.like) {
+    case Tree.Handle: {
+      console.log(current)
+      break
+    }
+    default:
+      api.throwError({
+        code: '0024',
+        file: current.like,
+        note: 'Not implemented yet.',
+      })
+  }
 }
 
 export function parse_openHandle(input: TreeInputType): void {
@@ -379,9 +450,6 @@ export function parse_openHandle(input: TreeInputType): void {
       stack.push(handle)
       break
     }
-    // case Tree.Path: {
-    //   break
-    // }
     case Tree.Plugin: {
       const handle: TreeHandleType = {
         element: [],
@@ -400,6 +468,16 @@ export function parse_openHandle(input: TreeInputType): void {
         parent,
       }
       parent.element.push(handle)
+      stack.push(handle)
+      break
+    }
+    case Tree.Handle: {
+      const handle: TreeHandleType = {
+        element: [],
+        like: Tree.Handle,
+        parent: current,
+      }
+      current.element.push(handle)
       stack.push(handle)
       break
     }
@@ -450,95 +528,70 @@ export function parse_openPlugin(input: TreeInputType): void {
   }
 }
 
-export function parse_termFragment(input: TreeInputType): void {
+export function parse_openTerm(input: TreeInputType): void {
   const { stack } = input.state
   const current = stack[stack.length - 1]
 
   switch (current?.like) {
     case Tree.Path: {
-      const oldTerm =
-        current.segment[current.segment.length - 1]
-
-      if (input.token.like === Emitter.TermFragment) {
-        const newTerm: TreeTermType = {
-          dereference: input.token.dereference,
-          guard: input.token.guard,
-          like: Tree.Term,
-          parent: current,
-          query: input.token.query,
-          segment: [],
-        }
-
-        newTerm.segment.push({
-          like: Tree.String,
-          range: input.token.range,
-          value: input.token.value,
-        })
-
-        current.segment.push(newTerm)
-
-        stack.push(newTerm)
-
-        // if (!input.token.start) {
-        //   const termList: Array<TreeTermType> = mergeTerms(
-        //     oldTerm,
-        //     newTerm,
-        //   )
-        // }
+      const term: TreeTermType = {
+        dereference: false,
+        guard: false,
+        like: Tree.Term,
+        parent: current,
+        query: false,
+        segment: [],
       }
-      break
+
+      stack.push(term)
+
+      current.segment.push(term)
     }
+  }
+}
+
+export function parse_openTermPath(input: TreeInputType): void {
+  const { stack } = input.state
+  const current = stack[stack.length - 1]
+
+  switch (current?.like) {
     case Tree.Handle: {
-      if (input.token.like === Emitter.TermFragment) {
-        const newPath: TreePathType = {
-          like: Tree.Path,
-          parent: current,
-          segment: [],
-        }
-
-        const newTerm: TreeTermType = {
-          dereference: input.token.dereference,
-          guard: input.token.guard,
-          like: Tree.Term,
-          parent: newPath,
-          query: input.token.query,
-          segment: [],
-        }
-
-        newPath.segment.push(newTerm)
-
-        newTerm.segment.push({
-          like: Tree.String,
-          range: input.token.range,
-          value: input.token.value,
-        })
-
-        if (!current.head) {
-          current.head = newPath
-        } else {
-          current.head.segment.push(...newPath.segment)
-        }
-
-        stack.push(newPath)
-        stack.push(newTerm)
+      const path: TreePathType = {
+        like: Tree.Path,
+        parent: current,
+        segment: [],
       }
+
+      stack.push(path)
+
+      if (!current.head) {
+        current.head = path
+      } else {
+        current.element.push(path)
+      }
+
       break
     }
+  }
+}
+
+export function parse_termFragment(input: TreeInputType): void {
+  const { stack } = input.state
+  const current = stack[stack.length - 1]
+
+  switch (current?.like) {
     case Tree.Term: {
       const parent = current.parent
       const oldTerm = current
 
       if (input.token.like === Emitter.TermFragment) {
-        const newTerm: TreeTermType = {
-          dereference: input.token.dereference,
-          guard: input.token.guard,
-          like: Tree.Term,
-          parent,
-          query: input.token.query,
-          segment: [],
-        }
+        oldTerm.dereference = input.token.dereference
+        oldTerm.guard = input.token.guard
+        oldTerm.like = Tree.Term
+        oldTerm.parent = parent
+        oldTerm.query = input.token.query
 
-        newTerm.segment.push({
+        oldTerm.segment.push({
           like: Tree.String,
           range: input.token.range,
           value: input.token.value,
@@ -550,8 +603,35 @@ export function parse_termFragment(input: TreeInputType): void {
         //     newTerm,
         //   )
         // }
-        parent.segment.push(newTerm)
-        stack.push(newTerm)
+        // parent.segment.push(newTerm)
+        // stack.push(newTerm)
+      }
+      break
+    }
+    default:
+      api.throwError({
+        code: '0024',
+        file: current.like,
+        note: 'Not implemented yet.',
+      })
+  }
+}
+
+export function parse_unsignedInteger(
+  input: TreeInputType,
+): void {
+  const { stack } = input.state
+  const current = stack[stack.length - 1]
+
+  switch (current?.like) {
+    case Tree.Handle: {
+      if (input.token.like === Emitter.UnsignedInteger) {
+        const uint: TreeUnsignedIntegerType = {
+          like: Tree.UnsignedInteger,
+          value: input.token.value,
+        }
+
+        current.element.push(uint)
       }
       break
     }
@@ -622,6 +702,7 @@ function printParserASTDetails(
       break
     }
     case Tree.UnsignedInteger: {
+      text.push(`${title} ${node.value}`)
       break
     }
     case Tree.Text: {
