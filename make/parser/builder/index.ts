@@ -4,11 +4,11 @@ import {
   CursorRangeType,
   Emitter,
   EmitterNodeType,
+  EmitterRangeMetadatType,
   EmitterResultType,
   ErrorType,
   LEXER_TYPE,
   LexerSplitInputType,
-  LexerTermFragmentTokenType,
   LexerTokenType,
   api,
 } from '~'
@@ -17,8 +17,6 @@ import {
   Lexer,
   LexerTokenBaseType,
 } from '../tokenizer/index.js'
-
-type LT = LexerTokenType<Lexer>
 
 export enum Tree {
   Boolean = 'tree-boolean',
@@ -32,7 +30,6 @@ export enum Tree {
   SignedInteger = 'tree-signed-integer',
   String = 'tree-string',
   Term = 'tree-term',
-  TermFragment = 'tree-term-fragment',
   Text = 'tree-text',
   UnsignedInteger = 'tree-unsigned-integer',
 }
@@ -49,8 +46,6 @@ export type TreeDecimalType = LexerTokenBaseType & {
 
 export type TreeHandleType = {
   element: Array<
-    | TreePathType
-    | TreeTermType
     | TreeTextType
     | TreeHandleType
     | TreeUnsignedIntegerType
@@ -58,9 +53,11 @@ export type TreeHandleType = {
     | TreeHashtagType
     | TreeDecimalType
     | TreeStringType
+    | TreeBooleanType
   >
-  hook?: TreeTermType | TreePathType
+  head?: TreeTermType
   like: Tree.Handle
+  parent: TreeHandleType | TreeModuleType | TreePluginType
 }
 
 export type TreeHashtagType = LexerTokenBaseType & {
@@ -70,8 +67,9 @@ export type TreeHashtagType = LexerTokenBaseType & {
 }
 
 export type TreeIndexType = {
-  element: TreeHandleType | TreeTermType | TreePathType
+  element: TreeHandleType
   like: Tree.Index
+  parent: TreePathType
 }
 
 export type TreeMappingType = {
@@ -86,23 +84,12 @@ export type TreeMappingType = {
   'tree-signed-integer': TreeSignedIntegerType
   'tree-string': TreeStringType
   'tree-term': TreeTermType
-  'tree-term-fragment': TreeTermFragmentType
   'tree-text': TreeTextType
   'tree-unsigned-integer': TreeUnsignedIntegerType
 }
 
 export type TreeModuleType = {
-  element: Array<
-    | TreePathType
-    | TreeTermType
-    | TreeTextType
-    | TreeHandleType
-    | TreeUnsignedIntegerType
-    | TreeSignedIntegerType
-    | TreeHashtagType
-    | TreeDecimalType
-    | TreeStringType
-  >
+  element: Array<TreeHandleType>
   like: Tree.Module
 }
 
@@ -122,12 +109,14 @@ export type TreeNodeType =
 
 export type TreePathType = {
   like: Tree.Path
-  segment: Array<TreeTermType | TreePathType>
+  parent: TreeHandleType
+  segment: Array<TreeTermType | TreeIndexType>
 }
 
 export type TreePluginType = {
-  element?: TreeHandleType | TreeTermType | TreePathType
+  element?: TreeHandleType
   like: Tree.Plugin
+  parent: TreeTermType | TreeTextType
   size: number
 }
 
@@ -140,29 +129,19 @@ export type TreeSignedIntegerType = LexerTokenBaseType & {
   value: number
 }
 
-export type TreeStringType = Omit<
-  LexerTokenBaseType,
-  'text'
-> & {
+export type TreeStringType = {
   like: Tree.String
+  range: EmitterRangeMetadatType
   value: string
 }
 
-export type TreeTermFragmentType = {
-  like: Tree.TermFragment
-}
-
 export type TreeTermType = {
-  dive: boolean
+  dereference: boolean
   guard: boolean
-  key: boolean
   like: Tree.Term
-  segment: Array<
-    | TreeStringType
-    | TreeTermType
-    | TreePathType
-    | TreePluginType
-  >
+  parent: TreePathType
+  query: boolean
+  segment: Array<TreeStringType | TreePluginType>
 }
 
 export type TreeTextType = {
@@ -272,8 +251,8 @@ export function buildParseTree(
           token,
         })
         break
-      case Emitter.MoveInward:
-        api.parse_moveInward({
+      case Emitter.OpenDepth:
+        api.parse_openDepth({
           ...input,
           state,
           token,
@@ -307,11 +286,11 @@ export function buildParseTree(
 
   printParserAST(result ?? start)
 
-  api.assertTreeType(result, Tree.Module)
+  api.assertTreeType(start, Tree.Module)
 
   return {
     ...input,
-    parseTree: result,
+    parseTree: start,
   }
 }
 
@@ -370,52 +349,67 @@ export function isLexerType<T extends Lexer>(
 }
 
 export function parse_closeHandle(input: TreeInputType): void {
-  // input.state.stack.pop()
+  input.state.stack.pop()
 }
 
 export function parse_closeModule(input: TreeInputType): void {
-  // input.state.stack.pop()
+  input.state.stack.pop()
 }
 
 export function parse_closePlugin(input: TreeInputType): void {
-  // input.state.stack.pop()
+  input.state.stack.pop()
 }
 
-export function parse_moveInward(input: TreeInputType): void {
-  console.log('m')
+export function parse_openDepth(input: TreeInputType): void {
+  // console.log('m')
 }
 
 export function parse_openHandle(input: TreeInputType): void {
-  const handle: TreeHandleType = {
-    element: [],
-    like: Tree.Handle,
-  }
+  const { stack } = input.state
+  const current = stack[stack.length - 1]
 
-  const current =
-    input.state.stack[input.state.stack.length - 1]
-  const currentLike = current?.like
-
-  switch (currentLike) {
+  switch (current?.like) {
     case Tree.Module: {
-      api.attach_handle_module(input, handle)
+      const handle: TreeHandleType = {
+        element: [],
+        like: Tree.Handle,
+        parent: current,
+      }
+      current.element.push(handle)
+      stack.push(handle)
       break
     }
-    case Tree.Path: {
-      const current2 =
-        input.state.stack[input.state.stack.length - 2]
-      if (current2?.like === Tree.Handle) {
-        current2.element.push(handle)
+    // case Tree.Path: {
+    //   break
+    // }
+    case Tree.Plugin: {
+      const handle: TreeHandleType = {
+        element: [],
+        like: Tree.Handle,
+        parent: current,
       }
+      current.element = handle
+      stack.push(handle)
+      break
+    }
+    case Tree.Term: {
+      const parent = current.parent.parent
+      const handle: TreeHandleType = {
+        element: [],
+        like: Tree.Handle,
+        parent,
+      }
+      parent.element.push(handle)
+      stack.push(handle)
       break
     }
     default:
       api.throwError({
         code: '0024',
+        file: current.like,
         note: 'Not implemented yet.',
       })
   }
-
-  input.state.stack.push(handle)
 }
 
 export function parse_openModule(input: TreeInputType) {
@@ -430,73 +424,135 @@ export function parse_openModule(input: TreeInputType) {
 }
 
 export function parse_openPlugin(input: TreeInputType): void {
-  // input.state.stack.pop()
+  const { stack } = input.state
+  const current = stack[stack.length - 1]
+
+  switch (current?.like) {
+    case Tree.Term: {
+      const plugin: TreePluginType = {
+        like: Tree.Plugin,
+        parent: current,
+        size: input.token.text.length,
+      }
+
+      current.segment.push(plugin)
+
+      stack.push(plugin)
+
+      break
+    }
+    default:
+      api.throwError({
+        code: '0024',
+        file: current.like,
+        note: 'Not implemented yet.',
+      })
+  }
 }
 
 export function parse_termFragment(input: TreeInputType): void {
-  const current =
-    input.state.stack[input.state.stack.length - 1]
-  if (current) {
-    if (current.like !== Tree.Path) {
-      const path: TreePathType = {
-        like: Tree.Path,
-        segment: [],
-      }
-      input.state.stack.push(path)
+  const { stack } = input.state
+  const current = stack[stack.length - 1]
 
-      switch (current.like) {
-        case Tree.Module: {
-          break
+  switch (current?.like) {
+    case Tree.Path: {
+      const oldTerm =
+        current.segment[current.segment.length - 1]
+
+      if (input.token.like === Emitter.TermFragment) {
+        const newTerm: TreeTermType = {
+          dereference: input.token.dereference,
+          guard: input.token.guard,
+          like: Tree.Term,
+          parent: current,
+          query: input.token.query,
+          segment: [],
         }
-        case Tree.Handle: {
-          if (!current.hook) {
-            current.hook = path
-          } else {
-            current.element.push(path)
-          }
-          break
-        }
-        default:
-          console.log(current)
+
+        newTerm.segment.push({
+          like: Tree.String,
+          range: input.token.range,
+          value: input.token.value,
+        })
+
+        // if (!input.token.start) {
+        //   const termList: Array<TreeTermType> = mergeTerms(
+        //     oldTerm,
+        //     newTerm,
+        //   )
+        // }
       }
-      parse_termFragment(input)
-      return
+      break
     }
+    case Tree.Handle: {
+      if (input.token.like === Emitter.TermFragment) {
+        const newPath: TreePathType = {
+          like: Tree.Path,
+          parent: current,
+          segment: [],
+        }
+
+        const newTerm: TreeTermType = {
+          dereference: input.token.dereference,
+          guard: input.token.guard,
+          like: Tree.Term,
+          parent: newPath,
+          query: input.token.query,
+          segment: [],
+        }
+
+        newPath.segment.push(newTerm)
+
+        newTerm.segment.push({
+          like: Tree.String,
+          range: input.token.range,
+          value: input.token.value,
+        })
+
+        current.head = newPath
+
+        stack.push(newPath)
+        stack.push(newTerm)
+      }
+      break
+    }
+    case Tree.Term: {
+      const parent = current.parent
+      const oldTerm = current
+
+      if (input.token.like === Emitter.TermFragment) {
+        const newTerm: TreeTermType = {
+          dereference: input.token.dereference,
+          guard: input.token.guard,
+          like: Tree.Term,
+          parent,
+          query: input.token.query,
+          segment: [],
+        }
+
+        newTerm.segment.push({
+          like: Tree.String,
+          range: input.token.range,
+          value: input.token.value,
+        })
+
+        // if (!input.token.start) {
+        //   const termList: Array<TreeTermType> = mergeTerms(
+        //     oldTerm,
+        //     newTerm,
+        //   )
+        // }
+        parent.segment.push(newTerm)
+      }
+      break
+    }
+    default:
+      api.throwError({
+        code: '0024',
+        file: current.like,
+        note: 'Not implemented yet.',
+      })
   }
-
-  api.assertTreeType(current, Tree.Path)
-
-  let term: TreeTermType = {
-    dive: false,
-    guard: false,
-    key: false,
-    like: Tree.Term,
-    segment: [],
-  }
-
-  if (input.token.like === Emitter.TermFragment) {
-    term.segment.push({
-      end: input.token.end,
-      like: Tree.String,
-      offset: input.token.offset,
-      start: input.token.start,
-      value: input.token.value,
-    })
-  }
-
-  current.segment.push(term)
-
-  // dive: false,
-  // end: { character: 4, line: 0 },
-  // guard: false,
-  // key: false,
-  // offset: { end: 25, start: 21 },
-  // start: { character: 0, line: 0 },
-  // value: 'bond',
-  // id: 6,
-  // like: 'emitter-term-fragment'
-
-  // current.segment.push()
 }
 
 function printParserAST(base: TreeModuleType | unknown): void {
@@ -563,7 +619,8 @@ function printParserASTDetails(
       break
     }
     case Tree.Plugin: {
-      text.push(`${title} (size: ${node.size})`)
+      text.push(`${title}`)
+      text.push(chalk.gray(`  size: ${node.size}`))
       if (node.element) {
         text.push(chalk.gray(`  element:`))
         printParserASTDetails(node.element).forEach(line => {

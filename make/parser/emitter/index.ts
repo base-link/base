@@ -10,6 +10,11 @@ import {
 } from '~'
 import type { LexerResultType, LexerTokenType } from '~'
 
+export type EditorRangeType = {
+  end: number
+  start: number
+}
+
 export enum Emitter {
   CloseDepth = 'emitter-close-depth',
   CloseHandle = 'emitter-close-handle',
@@ -202,6 +207,12 @@ export type EmitterPathType = {
   like: Emitter.Path
 }
 
+export type EmitterRangeMetadatType = {
+  character: EditorRangeType
+  line: EditorRangeType
+  offset: EditorRangeType
+}
+
 export type EmitterResultType = LexerResultType & {
   directions: Array<EmitterNodeType>
 }
@@ -217,14 +228,13 @@ export type EmitterStringType = {
 }
 
 export type EmitterTermFragmentType = {
-  dive: boolean
-  end: LexerLineRangeType
+  dereference: boolean
   guard: boolean
   id: number
-  key: boolean
   like: Emitter.TermFragment
-  offset: LexerRangeType
-  start: LexerLineRangeType
+  query: boolean
+  range: EmitterRangeMetadatType
+  start: number
   value: string
 }
 
@@ -493,31 +503,34 @@ export function generateLinkTextBuildingDirections(
     const parts = token.text.split('/')
 
     return parts.map((fragment, i) => {
-      const dive = Boolean(fragment.match(/\*/))
+      const dereference = Boolean(fragment.match(/\*/))
       const guard = Boolean(fragment.match(/\?/))
-      const key = Boolean(fragment.match(/~/))
+      const query = Boolean(fragment.match(/~/))
       const name = fragment.replace(/[\*\~\?]/g, '')
       const upto = parts.slice(0, i).join('').length
-      const start = {
-        character: token.start.character + upto + i,
-        line: token.start.line,
+      const character = {
+        end: token.start.character + upto + fragment.length + i,
+        start: token.start.character + upto + i,
       }
-      const end = {
-        character:
-          token.start.character + upto + fragment.length + i,
-        line: token.start.line,
+      const line = {
+        end: token.start.line,
+        start: token.start.line,
       }
       const offset = {
         end: token.offset.start + upto + fragment.length + i,
         start: token.offset.start,
       }
       return {
-        dive,
-        end,
+        dereference,
         guard,
-        key,
         offset,
-        start,
+        query,
+        range: {
+          character,
+          line,
+          offset,
+        },
+        start: i > 0,
         value: name,
         ...base(Emitter.TermFragment),
         like: Emitter.TermFragment,

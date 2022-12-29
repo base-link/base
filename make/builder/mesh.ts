@@ -54,7 +54,9 @@ export function assertTreeType<T extends Tree>(
   like: T,
 ): asserts object is TreeType<T> {
   if (!api.isTreeType(object, like)) {
-    throw new Error('oops')
+    api.throwError({
+      note: 'Not of type',
+    })
     // api.throwError(api.generateObjectNotTypeError(like))
   }
 }

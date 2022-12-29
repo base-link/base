@@ -1,4 +1,4 @@
-import { api } from '~'
+import { BaseLinkError, api } from '~'
 
 export * from './card/index.js'
 export * from './code.js'
@@ -17,16 +17,30 @@ export * from './utility.js'
 
 export function watchUnhandledErrors(): void {
   process.on('unhandledRejection', (reason: unknown) => {
-    let message =
-      (reason instanceof Error ? reason.stack : reason) ??
-      'error'
-    if (api.isString(message)) {
-      console.log(message)
+    if (reason instanceof BaseLinkError) {
+      console.log(reason.stack)
+    } else {
+      console.log(reason)
+      try {
+        api.throwError({
+          code: `0025`,
+          note:
+            api.isRecord(reason) && 'message' in reason
+              ? String(reason.message)
+              : String(reason),
+        })
+      } catch (e: unknown) {
+        if (e instanceof Error) {
+          console.log(e.stack)
+        } else {
+          console.log(e)
+        }
+      }
     }
   })
 
   process.on('uncaughtException', (error: Error) => {
-    console.log(error)
+    console.log(error.stack)
   })
 }
 

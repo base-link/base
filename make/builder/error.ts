@@ -253,6 +253,8 @@ export function generateTermMissingError(
   }
 }
 
+export class BaseLinkError extends Error {}
+
 export function generateUnhandledNestCaseBaseError(
   input: APIInputType,
 ): ErrorType {
@@ -641,7 +643,7 @@ export function throwError(data: ErrorType): void {
     )
   }
 
-  const error = new Error(text.join('\n'))
+  const error = new BaseLinkError(text.join('\n'))
   error.name = ''
 
   Error.captureStackTrace(error)
