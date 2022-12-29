@@ -1,5 +1,5 @@
-import * as code from './host/code.js'
+import * as code from './tool/code.js'
 
-export * from './host/code.js'
+export * from './tool/code.js'
 
 export { code }

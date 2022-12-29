@@ -1,1 +1,6 @@
+export * from './error/index.js'
+export * from './file.js'
+export * from './object.js'
 export * from './prettyJSON.js'
+export * from './scope.js'
+export * from './utility.js'
