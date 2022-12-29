@@ -5,7 +5,7 @@ import type {
 } from './builder/index.js'
 import { generateLinkTextBuildingDirections } from './emitter/index.js'
 import { tokenizeLinkText } from './tokenizer/index.js'
-import type { LexerInputType } from './tokenizer/index.js'
+import type { TextInputType } from './tokenizer/index.js'
 
 export * from './builder/index.js'
 export * from './emitter/index.js'
@@ -33,7 +33,7 @@ export const NEST_TYPE_TEXT: Record<Nest, string> = {
 }
 
 export function parseLinkText(
-  input: LexerInputType,
+  input: TextInputType,
 ): TreeResultType {
   return buildParseTree(
     generateLinkTextBuildingDirections(tokenizeLinkText(input)),

@@ -1,313 +1,311 @@
 import { api } from '~'
 
-export enum Lexer {
-  CloseEvaluation = 'lexer-close-evaluation',
-  CloseInterpolation = 'lexer-close-interpolation',
-  CloseParenthesis = 'lexer-close-parenthesis',
-  CloseText = 'lexer-close-text',
-  Comma = 'lexer-comma',
-  Comment = 'lexer-comment',
-  Decimal = 'lexer-decimal',
-  Hashtag = 'lexer-hashtag',
-  Line = 'lexer-line',
-  OpenEvaluation = 'lexer-open-evaluation',
-  OpenIndentation = 'lexer-open-indentation',
-  OpenInterpolation = 'lexer-open-interpolation',
-  OpenNesting = 'lexer-open-nesting',
-  OpenParenthesis = 'lexer-open-parenthesis',
-  OpenText = 'lexer-open-text',
-  Path = 'lexer-path',
-  SignedInteger = 'lexer-signed-integer',
-  String = 'lexer-string',
-  TermFragment = 'lexer-term-fragment',
-  UnsignedInteger = 'lexer-unsigned-integer',
+export enum Text {
+  CloseEvaluation = 'text-close-evaluation',
+  CloseInterpolation = 'text-close-interpolation',
+  CloseParenthesis = 'text-close-parenthesis',
+  CloseText = 'text-close-text',
+  Comma = 'text-comma',
+  Comment = 'text-comment',
+  Decimal = 'text-decimal',
+  Hashtag = 'text-hashtag',
+  Line = 'text-line',
+  OpenEvaluation = 'text-open-evaluation',
+  OpenIndentation = 'text-open-indentation',
+  OpenInterpolation = 'text-open-interpolation',
+  OpenNesting = 'text-open-nesting',
+  OpenParenthesis = 'text-open-parenthesis',
+  OpenText = 'text-open-text',
+  Path = 'text-path',
+  SignedInteger = 'text-signed-integer',
+  String = 'text-string',
+  TermFragment = 'text-term-fragment',
+  UnsignedInteger = 'text-unsigned-integer',
 }
 
 // eslint-disable-next-line sort-exports/sort-exports
-export const LEXER_TYPE = [
-  Lexer.CloseEvaluation,
-  Lexer.CloseInterpolation,
-  Lexer.CloseParenthesis,
-  Lexer.CloseText,
-  Lexer.Comma,
-  Lexer.Comment,
-  Lexer.Decimal,
-  Lexer.Hashtag,
-  Lexer.Line,
-  Lexer.OpenEvaluation,
-  Lexer.OpenIndentation,
-  Lexer.OpenInterpolation,
-  Lexer.OpenNesting,
-  Lexer.OpenParenthesis,
-  Lexer.OpenText,
-  Lexer.Path,
-  Lexer.SignedInteger,
-  Lexer.String,
-  Lexer.TermFragment,
-  Lexer.UnsignedInteger,
+export const TEXT_TYPE = [
+  Text.CloseEvaluation,
+  Text.CloseInterpolation,
+  Text.CloseParenthesis,
+  Text.CloseText,
+  Text.Comma,
+  Text.Comment,
+  Text.Decimal,
+  Text.Hashtag,
+  Text.Line,
+  Text.OpenEvaluation,
+  Text.OpenIndentation,
+  Text.OpenInterpolation,
+  Text.OpenNesting,
+  Text.OpenParenthesis,
+  Text.OpenText,
+  Text.Path,
+  Text.SignedInteger,
+  Text.String,
+  Text.TermFragment,
+  Text.UnsignedInteger,
 ]
 
 // eslint-disable-next-line sort-exports/sort-exports
-export const LEXER_PATTERN_LIST = [
-  Lexer.CloseEvaluation,
-  Lexer.CloseInterpolation,
-  Lexer.CloseParenthesis,
-  Lexer.CloseText,
-  Lexer.Comma,
-  Lexer.Comment,
-  Lexer.Decimal,
-  Lexer.Hashtag,
-  Lexer.OpenEvaluation,
-  Lexer.OpenIndentation,
-  Lexer.OpenInterpolation,
-  Lexer.OpenNesting,
-  Lexer.OpenParenthesis,
-  Lexer.OpenText,
-  Lexer.Path,
-  Lexer.SignedInteger,
-  Lexer.TermFragment,
-  Lexer.UnsignedInteger,
+export const TEXT_PATTERN_LIST = [
+  Text.CloseEvaluation,
+  Text.CloseInterpolation,
+  Text.CloseParenthesis,
+  Text.CloseText,
+  Text.Comma,
+  Text.Comment,
+  Text.Decimal,
+  Text.Hashtag,
+  Text.OpenEvaluation,
+  Text.OpenIndentation,
+  Text.OpenInterpolation,
+  Text.OpenNesting,
+  Text.OpenParenthesis,
+  Text.OpenText,
+  Text.Path,
+  Text.SignedInteger,
+  Text.TermFragment,
+  Text.UnsignedInteger,
 ]
 
 // eslint-disable-next-line sort-exports/sort-exports
-export const LEXER_STRING_PATTERN_LIST = [
-  Lexer.CloseInterpolation,
-  Lexer.CloseText,
-  Lexer.String,
+export const TEXT_STRING_PATTERN_LIST = [
+  Text.CloseInterpolation,
+  Text.CloseText,
+  Text.String,
 ]
 
-export type LexerCloseEvaluationTokenType =
-  LexerTokenBaseType & {
-    like: Lexer.CloseEvaluation
-  }
+export type TextCloseEvaluationTokenType = TextTokenBaseType & {
+  like: Text.CloseEvaluation
+}
 
-export type LexerInputType = {
+export type TextInputType = {
   path: string
   text: string
 }
 
-type LexerLineTokenType = LexerTokenBaseType & {
-  like: Lexer.Line
+type TextLineTokenType = TextTokenBaseType & {
+  like: Text.Line
 }
 
-type LexerOpenIndentationTokenType = LexerTokenBaseType & {
-  like: Lexer.OpenIndentation
+type TextOpenIndentationTokenType = TextTokenBaseType & {
+  like: Text.OpenIndentation
 }
 
-type LexerDecimalTokenType = LexerTokenBaseType & {
-  like: Lexer.Decimal
+type TextDecimalTokenType = TextTokenBaseType & {
+  like: Text.Decimal
 }
 
-type LexerSignedIntegerTokenType = LexerTokenBaseType & {
-  like: Lexer.SignedInteger
+type TextSignedIntegerTokenType = TextTokenBaseType & {
+  like: Text.SignedInteger
 }
 
-type LexerUnsignedIntegerTokenType = LexerTokenBaseType & {
-  like: Lexer.UnsignedInteger
+type TextUnsignedIntegerTokenType = TextTokenBaseType & {
+  like: Text.UnsignedInteger
 }
 
-type LexerOpenNestingTokenType = LexerTokenBaseType & {
-  like: Lexer.OpenNesting
+type TextOpenNestingTokenType = TextTokenBaseType & {
+  like: Text.OpenNesting
 }
 
-type LexerOpenParenthesisTokenType = LexerTokenBaseType & {
-  like: Lexer.OpenParenthesis
+type TextOpenParenthesisTokenType = TextTokenBaseType & {
+  like: Text.OpenParenthesis
 }
 
-type LexerCloseParenthesisTokenType = LexerTokenBaseType & {
-  like: Lexer.CloseParenthesis
+type TextCloseParenthesisTokenType = TextTokenBaseType & {
+  like: Text.CloseParenthesis
 }
 
-type LexerOpenTextTokenType = LexerTokenBaseType & {
-  like: Lexer.OpenText
+type TextOpenTextTokenType = TextTokenBaseType & {
+  like: Text.OpenText
 }
 
-type LexerCloseTextTokenType = LexerTokenBaseType & {
-  like: Lexer.CloseText
+type TextCloseTextTokenType = TextTokenBaseType & {
+  like: Text.CloseText
 }
 
-type LexerOpenInterpolationTokenType = LexerTokenBaseType & {
-  like: Lexer.OpenInterpolation
+type TextOpenInterpolationTokenType = TextTokenBaseType & {
+  like: Text.OpenInterpolation
 }
 
-type LexerCloseInterpolationTokenType = LexerTokenBaseType & {
-  like: Lexer.CloseInterpolation
+type TextCloseInterpolationTokenType = TextTokenBaseType & {
+  like: Text.CloseInterpolation
 }
 
-export type LexerLineRangeType = {
+export type TextLineRangeType = {
   character: number
   line: number
 }
 
-type LexerOpenNestTokenType = LexerTokenBaseType & {
-  like: Lexer.OpenEvaluation
+type TextOpenNestTokenType = TextTokenBaseType & {
+  like: Text.OpenEvaluation
 }
 
-type LexerCloseNestTokenType = LexerTokenBaseType & {
-  like: Lexer.CloseEvaluation
+type TextCloseNestTokenType = TextTokenBaseType & {
+  like: Text.CloseEvaluation
 }
 
-type LexerCommaTokenType = LexerTokenBaseType & {
-  like: Lexer.Comma
+type TextCommaTokenType = TextTokenBaseType & {
+  like: Text.Comma
 }
 
-type LexerHashtagTokenType = LexerTokenBaseType & {
-  like: Lexer.Hashtag
+type TextHashtagTokenType = TextTokenBaseType & {
+  like: Text.Hashtag
 }
 
-type LexerCommentTokenType = LexerTokenBaseType & {
-  like: Lexer.Comment
+type TextCommentTokenType = TextTokenBaseType & {
+  like: Text.Comment
 }
 
-export type LexerOpenEvaluationTokenType =
-  LexerTokenBaseType & {
-    like: Lexer.OpenEvaluation
-  }
-
-export type LexerPathTokenType = LexerTokenBaseType & {
-  like: Lexer.Path
+export type TextOpenEvaluationTokenType = TextTokenBaseType & {
+  like: Text.OpenEvaluation
 }
 
-export type LexerPatternConfigType = {
+export type TextPathTokenType = TextTokenBaseType & {
+  like: Text.Path
+}
+
+export type TextPatternConfigType = {
   pattern: RegExp
 }
 
-export type LexerRangeType = {
+export type TextRangeType = {
   end: number
   start: number
 }
 
-export type LexerResultType = LexerSplitInputType & {
-  tokenList: Array<LexerTokenType<Lexer>>
+export type TextResultType = TextSplitInputType & {
+  tokenList: Array<TextTokenType<Text>>
 }
 
-export type LexerSplitInputType = LexerInputType & {
+export type TextSplitInputType = TextInputType & {
   textInLines: Array<string>
 }
 
-export enum LexerState {
+export enum TextState {
   Text = 'text',
   Tree = 'tree',
 }
 
-export type LexerStringTokenType = LexerTokenBaseType & {
-  like: Lexer.String
+export type TextStringTokenType = TextTokenBaseType & {
+  like: Text.String
 }
 
-export type LexerTermFragmentTokenType = LexerTokenBaseType & {
-  like: Lexer.TermFragment
+export type TextTermFragmentTokenType = TextTokenBaseType & {
+  like: Text.TermFragment
 }
 
-export type LexerTokenBaseType = {
-  end: LexerLineRangeType
-  offset: LexerRangeType
-  start: LexerLineRangeType
+export type TextTokenBaseType = {
+  end: TextLineRangeType
+  offset: TextRangeType
+  start: TextLineRangeType
   text: string
 }
 
-const PATTERN: Record<Lexer, LexerPatternConfigType> = {
-  [Lexer.CloseEvaluation]: {
+const PATTERN: Record<Text, TextPatternConfigType> = {
+  [Text.CloseEvaluation]: {
     pattern: /^ *\] */,
   },
-  [Lexer.CloseInterpolation]: {
+  [Text.CloseInterpolation]: {
     pattern: /^\}+/,
   },
-  [Lexer.CloseParenthesis]: {
+  [Text.CloseParenthesis]: {
     pattern: /^\)/,
   },
-  [Lexer.CloseText]: {
+  [Text.CloseText]: {
     pattern: /^>/,
   },
-  [Lexer.Comma]: {
+  [Text.Comma]: {
     pattern: /^, +/,
   },
-  [Lexer.Comment]: {
+  [Text.Comment]: {
     pattern: /^# [^\n]+/,
   },
-  [Lexer.Decimal]: {
+  [Text.Decimal]: {
     pattern: /^-?\d+\.\d+/,
   },
-  [Lexer.Hashtag]: {
+  [Text.Hashtag]: {
     pattern: /^#\w+/,
   },
-  [Lexer.Line]: {
+  [Text.Line]: {
     pattern: /^\n/,
   },
-  [Lexer.OpenEvaluation]: {
+  [Text.OpenEvaluation]: {
     pattern: /^ *\[ */,
   },
-  [Lexer.OpenIndentation]: {
+  [Text.OpenIndentation]: {
     pattern: /^  /,
   },
-  [Lexer.OpenInterpolation]: {
+  [Text.OpenInterpolation]: {
     pattern: /^\{+/,
   },
-  [Lexer.OpenNesting]: {
+  [Text.OpenNesting]: {
     pattern: /^ /,
   },
-  [Lexer.OpenParenthesis]: {
+  [Text.OpenParenthesis]: {
     pattern: /^\(/,
   },
-  [Lexer.OpenText]: {
+  [Text.OpenText]: {
     pattern: /^</,
   },
-  [Lexer.Path]: {
+  [Text.Path]: {
     pattern:
       /^(?:(?:@[^\s\/]+(?:\/[^\s\/]*)*)|(?:\.{1,2}(?:\/[^\s\/]*)*)|(?:\/[^\s\/]+)+)/,
   },
-  [Lexer.SignedInteger]: {
+  [Text.SignedInteger]: {
     pattern: /^-\d+(?=\b)/,
   },
-  [Lexer.TermFragment]: {
+  [Text.TermFragment]: {
     pattern:
       /^-?(?:[*~]?[a-z][a-z0-9]*(?:-[a-z0-9]+)*\??)(?:\/[a-z][a-z0-9]*(?:-[a-z0-9]+)*\??)*-?/,
   },
-  [Lexer.UnsignedInteger]: {
+  [Text.UnsignedInteger]: {
     pattern: /^\d+(?=\b)/,
   },
   // eslint-disable-next-line sort-keys/sort-keys-fix
-  [Lexer.String]: {
+  [Text.String]: {
     pattern: /^(?:\\[<>\{\}])+|[^\{>\\]+/,
   },
 }
 
-export type LexerTokenMappingType = {
-  'lexer-close-evaluation': LexerCloseEvaluationTokenType
-  'lexer-close-interpolation': LexerCloseInterpolationTokenType
-  'lexer-close-parenthesis': LexerCloseParenthesisTokenType
-  'lexer-close-text': LexerCloseTextTokenType
-  'lexer-comma': LexerCommaTokenType
-  'lexer-comment': LexerCommentTokenType
-  'lexer-decimal': LexerDecimalTokenType
-  'lexer-hashtag': LexerHashtagTokenType
-  'lexer-line': LexerLineTokenType
-  'lexer-open-evaluation': LexerOpenEvaluationTokenType
-  'lexer-open-indentation': LexerOpenIndentationTokenType
-  'lexer-open-interpolation': LexerOpenInterpolationTokenType
-  'lexer-open-nesting': LexerOpenNestingTokenType
-  'lexer-open-parenthesis': LexerOpenParenthesisTokenType
-  'lexer-open-text': LexerOpenTextTokenType
-  'lexer-path': LexerPathTokenType
-  'lexer-signed-integer': LexerSignedIntegerTokenType
-  'lexer-string': LexerStringTokenType
-  'lexer-term-fragment': LexerTermFragmentTokenType
-  'lexer-unsigned-integer': LexerUnsignedIntegerTokenType
+export type TextTokenMappingType = {
+  'text-close-evaluation': TextCloseEvaluationTokenType
+  'text-close-interpolation': TextCloseInterpolationTokenType
+  'text-close-parenthesis': TextCloseParenthesisTokenType
+  'text-close-text': TextCloseTextTokenType
+  'text-comma': TextCommaTokenType
+  'text-comment': TextCommentTokenType
+  'text-decimal': TextDecimalTokenType
+  'text-hashtag': TextHashtagTokenType
+  'text-line': TextLineTokenType
+  'text-open-evaluation': TextOpenEvaluationTokenType
+  'text-open-indentation': TextOpenIndentationTokenType
+  'text-open-interpolation': TextOpenInterpolationTokenType
+  'text-open-nesting': TextOpenNestingTokenType
+  'text-open-parenthesis': TextOpenParenthesisTokenType
+  'text-open-text': TextOpenTextTokenType
+  'text-path': TextPathTokenType
+  'text-signed-integer': TextSignedIntegerTokenType
+  'text-string': TextStringTokenType
+  'text-term-fragment': TextTermFragmentTokenType
+  'text-unsigned-integer': TextUnsignedIntegerTokenType
 }
 
-export type LexerTokenType<T extends Lexer> =
-  LexerTokenMappingType[T]
+export type TextTokenType<T extends Text> =
+  TextTokenMappingType[T]
 
 export function tokenizeLinkText(
-  input: LexerInputType,
-): LexerResultType {
-  const tokenList: Array<LexerTokenType<Lexer>> = []
+  input: TextInputType,
+): TextResultType {
+  const tokenList: Array<TextTokenType<Text>> = []
 
-  let source: LexerSplitInputType = {
+  let source: TextSplitInputType = {
     ...input,
     textInLines: input.text.split('\n'),
   }
 
-  let typeStack = [LexerState.Tree]
+  let typeStack = [TextState.Tree]
 
   let line = 0
   let character = 0
@@ -316,27 +314,27 @@ export function tokenizeLinkText(
   let i = 0
   lineLoop: for (let textLine of source.textInLines) {
     processLoop: while (textLine) {
-      const state: LexerState =
-        typeStack[typeStack.length - 1] || LexerState.Tree
+      const state: TextState =
+        typeStack[typeStack.length - 1] || TextState.Tree
 
       const patternList =
-        state === LexerState.Tree
-          ? LEXER_PATTERN_LIST
-          : LEXER_STRING_PATTERN_LIST
+        state === TextState.Tree
+          ? TEXT_PATTERN_LIST
+          : TEXT_STRING_PATTERN_LIST
 
       patternLoop: for (const type of patternList) {
-        const config = PATTERN[type as Lexer]
+        const config = PATTERN[type as Text]
         if (config && config.pattern instanceof RegExp) {
           const match = textLine.match(config.pattern)
           if (match) {
             const matchedLength = match[0].length
             const matchedText = textLine.slice(0, matchedLength)
-            const token: LexerTokenType<Lexer> = {
+            const token: TextTokenType<Text> = {
               end: {
                 character: character + matchedLength,
                 line: line,
               },
-              like: type as Lexer,
+              like: type as Text,
               offset: {
                 end: offset + matchedLength,
                 start: offset,
@@ -353,19 +351,19 @@ export function tokenizeLinkText(
             offset += matchedLength
 
             switch (type) {
-              case Lexer.OpenInterpolation: {
-                typeStack.push(LexerState.Tree)
+              case Text.OpenInterpolation: {
+                typeStack.push(TextState.Tree)
                 break
               }
-              case Lexer.CloseInterpolation: {
+              case Text.CloseInterpolation: {
                 typeStack.pop()
                 break
               }
-              case Lexer.OpenText: {
-                typeStack.push(LexerState.Text)
+              case Text.OpenText: {
+                typeStack.push(TextState.Text)
                 break
               }
-              case Lexer.CloseText: {
+              case Text.CloseText: {
                 typeStack.pop()
                 break
               }
@@ -387,12 +385,12 @@ export function tokenizeLinkText(
     }
 
     if (i < source.textInLines.length - 2) {
-      const token: LexerTokenType<Lexer.Line> = {
+      const token: TextTokenType<Text.Line> = {
         end: {
           character: character + 1,
           line: line,
         },
-        like: Lexer.Line,
+        like: Text.Line,
         offset: {
           end: offset + 1,
           start: offset,
@@ -411,12 +409,12 @@ export function tokenizeLinkText(
     }
   }
 
-  const token: LexerTokenType<Lexer.Line> = {
+  const token: TextTokenType<Text.Line> = {
     end: {
       character: character + 1,
       line: line,
     },
-    like: Lexer.Line,
+    like: Text.Line,
     offset: {
       end: offset + 1,
       start: offset,

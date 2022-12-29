@@ -11,10 +11,12 @@ import {
 } from '~'
 import type {
   APIInputType,
-  Lexer,
-  LexerSplitInputType,
-  LexerTokenType,
+  Text,
+  TextSplitInputType,
+  TextTokenType,
 } from '~'
+
+export class BaseLinkError extends Error {}
 
 export type CursorLinePositionType = {
   character: number
@@ -35,6 +37,8 @@ export type ErrorConfigType = {
 
 export type ErrorInputType = Record<string, unknown>
 
+const consumers = {}
+
 export type ErrorType = {
   code: string
   file?: string
@@ -42,8 +46,6 @@ export type ErrorType = {
   note: string
   text?: string
 }
-
-const consumers = {}
 
 export function assertError(
   error: unknown,
@@ -205,8 +207,8 @@ export function generateScopeMissingPropertyError(
 }
 
 export function generateSyntaxTokenError(
-  input: LexerSplitInputType,
-  lastToken?: LexerTokenType<Lexer>,
+  input: TextSplitInputType,
+  lastToken?: TextTokenType<Text>,
 ): ErrorType {
   const highlight: CursorRangeType = {
     end: {
@@ -252,8 +254,6 @@ export function generateTermMissingError(
     text: '',
   }
 }
-
-export class BaseLinkError extends Error {}
 
 export function generateUnhandledNestCaseBaseError(
   input: APIInputType,

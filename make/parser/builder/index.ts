@@ -1,194 +1,50 @@
 import chalk from 'chalk'
 
-import {
+import type {
   CursorRangeType,
-  Emitter,
-  EmitterNodeType,
-  EmitterRangeMetadatType,
-  EmitterResultType,
   ErrorType,
-  LEXER_TYPE,
-  LexerSplitInputType,
-  LexerTokenType,
-  api,
+  FoldNodeType,
+  FoldResultType,
+  TextSplitInputType,
+  TextTokenType,
+  TreeHandleType,
+  TreeModuleType,
+  TreeNodeType,
+  TreePathType,
+  TreePluginType,
+  TreeResultType,
+  TreeTermType,
+  TreeUnsignedIntegerType,
 } from '~'
+import { Fold, TEXT_TYPE, Tree, api } from '~'
 
-import {
-  Lexer,
-  LexerTokenBaseType,
-} from '../tokenizer/index.js'
+import { Text } from '../tokenizer/index.js'
 
-export enum Tree {
-  Boolean = 'tree-boolean',
-  Decimal = 'tree-decimal',
-  Handle = 'tree-handle',
-  Hashtag = 'tree-hashtag',
-  Index = 'tree-index',
-  Module = 'tree-module',
-  Path = 'tree-path',
-  Plugin = 'tree-plugin',
-  SignedInteger = 'tree-signed-integer',
-  String = 'tree-string',
-  Term = 'tree-term',
-  Text = 'tree-text',
-  UnsignedInteger = 'tree-unsigned-integer',
-}
+export * from './type.js'
 
-export type TreeBooleanType = {
-  like: Tree.Boolean
-  value: boolean
-}
-
-export type TreeDecimalType = LexerTokenBaseType & {
-  like: Tree.Decimal
-  value: number
-}
-
-export type TreeHandleType = {
-  element: Array<
-    | TreeTextType
-    | TreePathType
-    | TreeHandleType
-    | TreeUnsignedIntegerType
-    | TreeSignedIntegerType
-    | TreeHashtagType
-    | TreeDecimalType
-    | TreeStringType
-    | TreeBooleanType
-  >
-  head?: TreeTermType
-  like: Tree.Handle
-  parent: TreeHandleType | TreeModuleType | TreePluginType
-}
-
-export type TreeHashtagType = LexerTokenBaseType & {
-  code: string
-  like: Tree.Hashtag
-  system: string
-}
-
-export type TreeIndexType = {
-  element: TreeHandleType
-  like: Tree.Index
-  parent: TreePathType
-}
-
-export type TreeMappingType = {
-  'tree-boolean': TreeBooleanType
-  'tree-decimal': TreeDecimalType
-  'tree-handle': TreeHandleType
-  'tree-hashtag': TreeHashtagType
-  'tree-index': TreeIndexType
-  'tree-module': TreeModuleType
-  'tree-path': TreePathType
-  'tree-plugin': TreePluginType
-  'tree-signed-integer': TreeSignedIntegerType
-  'tree-string': TreeStringType
-  'tree-term': TreeTermType
-  'tree-text': TreeTextType
-  'tree-unsigned-integer': TreeUnsignedIntegerType
-}
-
-export type TreeModuleType = {
-  element: Array<TreeHandleType>
-  like: Tree.Module
-}
-
-export type TreeNodeType =
-  | TreeTermType
-  | TreeStringType
-  | TreeHandleType
-  | TreeUnsignedIntegerType
-  | TreeSignedIntegerType
-  | TreeTextType
-  | TreePluginType
-  | TreeIndexType
-  | TreeDecimalType
-  | TreeHashtagType
-  | TreePathType
-  | TreeModuleType
-
-export type TreePathType = {
-  like: Tree.Path
-  parent: TreeHandleType
-  segment: Array<TreeTermType | TreeIndexType>
-}
-
-export type TreePluginType = {
-  element?: TreeHandleType
-  like: Tree.Plugin
-  parent: TreeTermType | TreeTextType
-  size: number
-}
-
-export type TreeResultType = LexerSplitInputType & {
-  parseTree: TreeModuleType
-}
-
-export type TreeSignedIntegerType = LexerTokenBaseType & {
-  like: Tree.SignedInteger
-  value: number
-}
-
-export type TreeStringType = {
-  like: Tree.String
-  range: EmitterRangeMetadatType
-  value: string
-}
-
-export type TreeTermType = {
-  dereference: boolean
-  guard: boolean
-  like: Tree.Term
-  parent: TreePathType
-  query: boolean
-  segment: Array<TreeStringType | TreePluginType>
-}
-
-export type TreeTextType = {
-  like: Tree.Text
-  segment: Array<TreeStringType | TreePluginType>
-}
-
-export type TreeType<T extends Tree> = TreeMappingType[T]
-
-export type TreeUnsignedIntegerType = {
-  like: Tree.UnsignedInteger
-  value: number
-}
-
-export type TreeWorkListCallbackType = (
-  token: LexerTokenType<Lexer>,
-) => void
-
-export type TreeWorkListInputType = {
-  callback: TreeWorkListCallbackType
-  parent: TreeNodeType
-}
-
-export function assertLexerGenericType(
+export function assertTextGenericType(
   object: unknown,
-): asserts object is LexerTokenType<Lexer> {
-  if (!api.isLexerGenericType(object)) {
+): asserts object is TextTokenType<Text> {
+  if (!api.isTextGenericType(object)) {
     api.throwError()
   }
 }
 
-export function assertLexerType<T extends Lexer>(
+export function assertTextType<T extends Text>(
   object: unknown,
   like: T,
-): asserts object is LexerTokenType<T> {
-  if (!api.isLexerType<T>(object, like)) {
+): asserts object is TextTokenType<T> {
+  if (!api.isTextType<T>(object, like)) {
     api.throwError()
   }
 }
 
-type TreeInputType = LexerSplitInputType & {
+type TreeInputType = TextSplitInputType & {
   state: {
     index: number
     stack: Array<TreeNodeType>
   }
-  token: EmitterNodeType
+  token: FoldNodeType
 }
 
 type TT = TreeNodeType
@@ -205,7 +61,7 @@ export function attach_handle_module(
 }
 
 export function buildParseTree(
-  input: EmitterResultType,
+  input: FoldResultType,
 ): TreeResultType {
   const stack: Array<TreeNodeType> = []
   let result: TreeNodeType | undefined = undefined
@@ -224,98 +80,98 @@ export function buildParseTree(
     }
 
     switch (token.like) {
-      case Emitter.OpenModule:
+      case Fold.OpenModule:
         start = api.parse_openModule({
           ...input,
           state,
           token,
         })
         break
-      case Emitter.CloseModule:
+      case Fold.CloseModule:
         api.parse_closeModule({
           ...input,
           state,
           token,
         })
         break
-      case Emitter.TermFragment:
+      case Fold.TermFragment:
         api.parse_termFragment({
           ...input,
           state,
           token,
         })
         break
-      case Emitter.OpenHandle:
+      case Fold.OpenHandle:
         api.parse_openHandle({
           ...input,
           state,
           token,
         })
         break
-      case Emitter.OpenDepth:
+      case Fold.OpenDepth:
         api.parse_openDepth({
           ...input,
           state,
           token,
         })
         break
-      case Emitter.CloseDepth:
+      case Fold.CloseDepth:
         api.parse_closeDepth({
           ...input,
           state,
           token,
         })
         break
-      case Emitter.OpenPlugin:
+      case Fold.OpenPlugin:
         api.parse_openPlugin({
           ...input,
           state,
           token,
         })
         break
-      case Emitter.ClosePlugin:
+      case Fold.ClosePlugin:
         api.parse_closePlugin({
           ...input,
           state,
           token,
         })
         break
-      case Emitter.OpenTermPath:
+      case Fold.OpenTermPath:
         api.parse_openTermPath({
           ...input,
           state,
           token,
         })
         break
-      case Emitter.CloseTermPath:
+      case Fold.CloseTermPath:
         api.parse_closeTermPath({
           ...input,
           state,
           token,
         })
         break
-      case Emitter.OpenTerm:
+      case Fold.OpenTerm:
         api.parse_openTerm({
           ...input,
           state,
           token,
         })
         break
-      case Emitter.CloseTerm:
+      case Fold.CloseTerm:
         api.parse_closeTerm({
           ...input,
           state,
           token,
         })
         break
-      case Emitter.CloseHandle:
+      case Fold.CloseHandle:
         api.parse_closeHandle({
           ...input,
           state,
           token,
         })
         break
-      case Emitter.UnsignedInteger:
+      case Fold.UnsignedInteger:
         api.parse_unsignedInteger({
           ...input,
           state,
@@ -370,24 +226,24 @@ export function generateUnhandledTreeResolver(
   }
 }
 
-export function isLexerGenericType(
+export function isTextGenericType(
   object: unknown,
-): object is LexerTokenType<Lexer> {
+): object is TextTokenType<Text> {
   return (
     api.isRecord(object) &&
     'like' in object &&
-    LEXER_TYPE.includes((object as LexerTokenType<Lexer>).like)
+    TEXT_TYPE.includes((object as TextTokenType<Text>).like)
   )
 }
 
-export function isLexerType<T extends Lexer>(
+export function isTextType<T extends Text>(
   object: unknown,
   like: T,
-): object is LexerTokenType<T> {
+): object is TextTokenType<T> {
   return (
     api.isRecord(object) &&
     'like' in object &&
-    (object as LexerTokenType<Lexer>).like === like
+    (object as TextTokenType<Text>).like === like
   )
 }
 
@@ -584,7 +440,7 @@ export function parse_termFragment(input: TreeInputType): void {
       const parent = current.parent
       const oldTerm = current
 
-      if (input.token.like === Emitter.TermFragment) {
+      if (input.token.like === Fold.TermFragment) {
         oldTerm.dereference = input.token.dereference
         oldTerm.guard = input.token.guard
         oldTerm.like = Tree.Term
@@ -625,7 +481,7 @@ export function parse_unsignedInteger(
 
   switch (current?.like) {
     case Tree.Handle: {
-      if (input.token.like === Emitter.UnsignedInteger) {
+      if (input.token.like === Fold.UnsignedInteger) {
         const uint: TreeUnsignedIntegerType = {
           like: Tree.UnsignedInteger,
           value: input.token.value,
