@@ -6,7 +6,7 @@ export function finalize_deckCard_deck_bear(
 ): void {
   const text = code.resolveText(input)
   const { card } = input
-  code.assertMesh(card, Mesh.PackageModule)
+  code.assertMeshType(card, Mesh.PackageModule)
   code.assertString(text)
   const path = code.findPath(text, card.directory)
   code.assertString(path, () => {

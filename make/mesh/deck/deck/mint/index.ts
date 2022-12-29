@@ -1,4 +1,4 @@
-import { Mesh, MeshHint, code } from '~'
+import { LinkHint, Mesh, code } from '~'
 import type { MeshInputType } from '~'
 
 export function process_deckCard_deck_mint(
@@ -19,7 +19,7 @@ export function process_deckCard_deck_mint_nestedChildren(
 ): void {
   const type = code.determineNestType(input)
   switch (type) {
-    case MeshHint.StaticText:
+    case LinkHint.StaticText:
       const text = code.resolveText(input)
       code.assertString(text)
       const deck = code.assumeInputObjectAsMeshPartialType(

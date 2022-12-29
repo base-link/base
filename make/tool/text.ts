@@ -1,4 +1,4 @@
-import { MeshHint, Site, Tree, code } from '~'
+import { Link, LinkHint, Site, code } from '~'
 import type {
   MeshInputType,
   SiteDependencyPartType,
@@ -40,11 +40,11 @@ export function processTextNest(
 ): void {
   const type = code.determineNestType(input)
   switch (type) {
-    case MeshHint.DynamicText: {
+    case LinkHint.DynamicText: {
       code.processDynamicTextNest(input, job)
       break
     }
-    case MeshHint.StaticText:
+    case LinkHint.StaticText:
       job(input)
       break
     default:

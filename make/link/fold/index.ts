@@ -311,9 +311,9 @@ export function generateLinkTextBuildingDirections(
         result.push(base(Fold.OpenTerm))
       }
 
-      if (i < fragments.length - 2) {
-        result.push(base(Fold.TermSeparator))
-      }
+      // if (i < fragments.length - 2) {
+      //   result.push(base(Fold.TermSeparator))
+      // }
     })
   }
 

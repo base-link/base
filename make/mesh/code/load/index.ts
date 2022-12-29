@@ -1,7 +1,7 @@
 import {
+  LinkHint,
   Mesh,
   MeshFullType,
-  MeshHint,
   MeshImportVariable_FullType,
   MeshImport_FullType,
   code,
@@ -20,7 +20,7 @@ export function finalize_codeCard_load_textNest(
 
   const card = code.getProperty(input, 'card')
 
-  code.assertMeshPartial(card, Mesh.CodeModule)
+  code.assertMeshTypePartial(card, Mesh.CodeModule)
 
   const path = code.resolveModulePath(input, text)
 
@@ -120,7 +120,7 @@ export function process_codeCard_load_nestedChildren(
 ) {
   const type = code.determineNestType(input)
   switch (type) {
-    case MeshHint.StaticText: {
+    case LinkHint.StaticText: {
       const index = code.assumeNestIndex(input)
       if (index !== 0) {
         throw new Error('Oops')
@@ -130,7 +130,7 @@ export function process_codeCard_load_nestedChildren(
       break
     }
 
-    case MeshHint.StaticTerm: {
+    case LinkHint.StaticTerm: {
       const term = code.resolveStaticTermFromNest(input)
       switch (term) {
         case 'find':

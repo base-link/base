@@ -1,4 +1,4 @@
-import { Mesh, MeshHint, code } from '~'
+import { LinkHint, Mesh, code } from '~'
 import type { MeshInputType } from '~'
 
 export function finalize_codeCard_bear_nestedChildren(
@@ -10,7 +10,7 @@ export function finalize_codeCard_bear_nestedChildren(
 
   const card = code.getProperty(input, 'card')
 
-  code.assertMeshPartial(card, Mesh.CodeModule)
+  code.assertMeshTypePartial(card, Mesh.CodeModule)
 
   const path = code.resolveModulePath(input, text)
 
@@ -45,16 +45,16 @@ export function process_codeCard_bear_nestedChildren(
 ): void {
   const type = code.determineNestType(input)
   switch (type) {
-    case MeshHint.StaticText:
+    case LinkHint.StaticText:
       code.finalize_codeCard_bear_nestedChildren(input)
       break
-    case MeshHint.DynamicText:
+    case LinkHint.DynamicText:
       code.processDynamicTextNest(
         input,
         code.finalize_codeCard_bear_nestedChildren,
       )
       break
-    case MeshHint.StaticTerm:
+    case LinkHint.StaticTerm:
       const term = code.resolveStaticTermFromNest(input)
       switch (term) {
         case 'hide':

@@ -1,4 +1,4 @@
-import { MeshHint, code } from '~'
+import { LinkHint, code } from '~'
 import type { MeshInputType } from '~'
 
 export function process_codeCard_like(
@@ -35,9 +35,9 @@ export function process_codeCard_like_nestedChildren(
 ): void {
   const type = code.determineNestType(input)
   switch (type) {
-    case MeshHint.DynamicTerm:
+    case LinkHint.DynamicTerm:
       break
-    case MeshHint.StaticTerm:
+    case LinkHint.StaticTerm:
       const term = code.resolveStaticTermFromNest(input)
       switch (term) {
         case 'head':

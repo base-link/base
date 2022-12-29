@@ -8,7 +8,7 @@ export function finalize_deckCard_deck_test(
   code.assertString(text)
 
   const card = code.getProperty(input, 'card')
-  code.assertMesh(card, Mesh.PackageModule)
+  code.assertMeshType(card, Mesh.PackageModule)
 
   const path = code.findPath(text, card.directory)
   code.assertString(path, () => {

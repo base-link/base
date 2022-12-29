@@ -1,4 +1,4 @@
-import { Mesh, MeshHint, MeshPartialType, code } from '~'
+import { LinkHint, Mesh, MeshPartialType, code } from '~'
 import type { MeshInputType } from '~'
 
 export function process_codeCard_fuse(
@@ -11,7 +11,7 @@ export function process_codeCard_fuse(
   }
 
   const card = code.getProperty(input, 'card')
-  code.assertMesh(card, Mesh.CodeModule)
+  code.assertMeshType(card, Mesh.CodeModule)
 
   const fuseInput = code.extendWithObjectScope(input, fuse)
 
@@ -30,7 +30,7 @@ export function process_codeCard_fuse_nestedChildren(
 ): void {
   const type = code.determineNestType(input)
   switch (type) {
-    case MeshHint.StaticTerm: {
+    case LinkHint.StaticTerm: {
       const term = code.assumeStaticTermFromNest(input)
       const index = code.assumeNestIndex(input)
       if (index === 0) {

@@ -158,7 +158,7 @@ export function resolve_codeCard(
   link: string,
 ): void {
   const card = base.card(link)
-  code.assertMesh(card.seed, Mesh.CodeModule)
+  code.assertMeshType(card.seed, Mesh.CodeModule)
 
   if (card.seed.partial) {
     if (code.childrenAreComplete(card.seed)) {
@@ -196,7 +196,7 @@ export function resolve_codeCard(
       card.seed.children.forEach(node => {
         switch (node.like) {
           case Mesh.Constant: {
-            code.assertMeshFull(node, Mesh.Constant)
+            code.assertMeshTypeFull(node, Mesh.Constant)
             if (!node.hidden) {
               seed.publicConstantMesh[node.name] = node
             }
@@ -204,7 +204,7 @@ export function resolve_codeCard(
             break
           }
           case Mesh.ClassInterface: {
-            code.assertMeshFull(node, Mesh.ClassInterface)
+            code.assertMeshTypeFull(node, Mesh.ClassInterface)
             if (!node.hidden) {
               seed.publicClassInterfaceMesh[node.name] = node
             }
@@ -212,7 +212,7 @@ export function resolve_codeCard(
             break
           }
           case Mesh.Function: {
-            code.assertMeshFull(node, Mesh.Function)
+            code.assertMeshTypeFull(node, Mesh.Function)
             if (!node.hidden) {
               seed.publicFunctionMesh[node.name] = node
             }
@@ -220,7 +220,7 @@ export function resolve_codeCard(
             break
           }
           case Mesh.Class: {
-            code.assertMeshFull(node, Mesh.Class)
+            code.assertMeshTypeFull(node, Mesh.Class)
             if (!node.hidden) {
               seed.publicClassMesh[node.name] = node
             }
@@ -228,7 +228,7 @@ export function resolve_codeCard(
             break
           }
           case Mesh.Template: {
-            code.assertMeshFull(node, Mesh.Template)
+            code.assertMeshTypeFull(node, Mesh.Template)
             if (!node.hidden) {
               seed.publicTemplateMesh[node.name] = node
             }
@@ -236,12 +236,12 @@ export function resolve_codeCard(
             break
           }
           case Mesh.Import: {
-            code.assertMeshFull(node, Mesh.Import)
+            code.assertMeshTypeFull(node, Mesh.Import)
             seed.importTree.push(node)
             break
           }
           case Mesh.Export: {
-            code.assertMeshFull(node, Mesh.Export)
+            code.assertMeshTypeFull(node, Mesh.Export)
             seed.exportList.push(node)
             break
           }

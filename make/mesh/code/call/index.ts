@@ -1,4 +1,4 @@
-import { MeshHint, code } from '~'
+import { LinkHint, code } from '~'
 import type { MeshInputType } from '~'
 
 export function process_codeCard_call(
@@ -19,11 +19,11 @@ export function process_codeCard_call_nestedChildren(
 ): void {
   const type = code.determineNestType(input)
   switch (type) {
-    case MeshHint.DynamicTerm:
+    case LinkHint.DynamicTerm:
       break
-    case MeshHint.StaticText:
+    case LinkHint.StaticText:
       break
-    case MeshHint.StaticTerm:
+    case LinkHint.StaticTerm:
       const term = code.assumeStaticTermFromNest(input)
       const index = code.assumeNestIndex(input)
       if (index === 0) {

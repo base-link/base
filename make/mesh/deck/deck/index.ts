@@ -1,4 +1,4 @@
-import { Mesh, MeshHint, code } from '~'
+import { LinkHint, Mesh, code } from '~'
 import type {
   MeshInputType,
   MeshPartialType,
@@ -88,7 +88,7 @@ export function process_deckCard_deck(
     partial: true,
   }
 
-  code.assertMeshPartial(input.card, Mesh.PackageModule)
+  code.assertMeshTypePartial(input.card, Mesh.PackageModule)
   input.card.children.push(deck)
 
   const childInput = code.extendWithObjectScope(input, deck)
@@ -122,13 +122,13 @@ export function process_deckCard_deck_nestedChildren(
   const type = code.determineNestType(input)
   const index = code.assumeNestIndex(input)
   switch (type) {
-    case MeshHint.DynamicTerm:
-    case MeshHint.DynamicText:
+    case LinkHint.DynamicTerm:
+    case LinkHint.DynamicText:
       code.throwError(
         code.generateUnhandledNestCaseError(input, type),
       )
       break
-    case MeshHint.StaticText: {
+    case LinkHint.StaticText: {
       if (index === 0) {
         code.process_deckCard_deck_link(input)
       } else {
@@ -136,7 +136,7 @@ export function process_deckCard_deck_nestedChildren(
       }
       break
     }
-    case MeshHint.StaticTerm:
+    case LinkHint.StaticTerm:
       if (index > 0) {
         code.process_deckCard_deck_nestedTerm(input)
       } else {

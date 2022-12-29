@@ -7,7 +7,7 @@ import { fileURLToPath } from 'url'
 import { code } from '~'
 import type { Base, MeshInputType } from '~'
 
-export const SOURCE_MAPS: Record<
+export const SOURCE_MAP_MESH: Record<
   string,
   smc.SourceMapConsumer
 > = {}
@@ -28,7 +28,7 @@ export function assumePath(
       code.generateUnresolvedPathError(input, inputPath),
     )
   }
-  code.assertString(path)
+  code.assertString(path, 'path')
   return path
 }
 
@@ -89,7 +89,7 @@ export async function loadSourceMaps(): Promise<void> {
     const mapContent = fs.readFileSync(`${path}.map`, 'utf-8')
     const json = JSON.parse(mapContent) as smc.RawSourceMap
     const sm = await new smc.SourceMapConsumer(json)
-    SOURCE_MAPS[`file://${path}`] = sm
+    SOURCE_MAP_MESH[`file://${path}`] = sm
   }
 }
 

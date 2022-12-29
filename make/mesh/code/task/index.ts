@@ -1,8 +1,8 @@
 import {
+  LinkHint,
   Mesh,
   MeshFullType,
   MeshFunctionFlow_FullType,
-  MeshHint,
   MeshPartialType,
   code,
 } from '~'
@@ -120,7 +120,7 @@ export function process_codeCard_task_nestedChildren(
   input: MeshInputType,
 ): void {
   const type = code.determineNestType(input)
-  if (type === MeshHint.StaticTerm) {
+  if (type === LinkHint.StaticTerm) {
     const term = code.assumeStaticTermFromNest(input)
     const index = code.assumeNestIndex(input)
     if (index === 0) {

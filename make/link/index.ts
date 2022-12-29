@@ -3,19 +3,18 @@ import chalk from 'chalk'
 import type {
   CursorRangeType,
   FoldResultType,
+  LinkInputType,
+  LinkNodeType,
+  LinkPathType,
+  LinkPluginType,
+  LinkResultType,
+  LinkTermType,
+  LinkTreeType,
+  LinkUnsignedIntegerType,
   SiteErrorType,
   TextTokenType,
-  TreeHandleType,
-  TreeInputType,
-  TreeModuleType,
-  TreeNodeType,
-  TreePathType,
-  TreePluginType,
-  TreeResultType,
-  TreeTermType,
-  TreeUnsignedIntegerType,
 } from '~'
-import { Fold, TEXT_TYPE, Tree, code } from '~'
+import { Fold, Link, TEXT_TYPE, code } from '~'
 
 import { generateLinkTextBuildingDirections } from './fold/index.js'
 import { Text, tokenizeLinkText } from './text/index.js'
@@ -26,7 +25,7 @@ export * from './text/index.js'
 
 export * from './type.js'
 
-export enum MeshHint {
+export enum LinkHint {
   Code = 'code',
   DynamicTerm = 'dynamic-term',
   DynamicText = 'dynamic-text',
@@ -38,37 +37,53 @@ export enum MeshHint {
 
 export function assertTextGenericType(
   object: unknown,
+  name?: string,
 ): asserts object is TextTokenType<Text> {
   if (!code.isTextGenericType(object)) {
-    code.throwError()
+    code.throwError(
+      code.generateIncorrectlyTypedVariable('text', name),
+    )
   }
 }
 
 export function assertTextType<T extends Text>(
   object: unknown,
   like: T,
+  name?: string,
 ): asserts object is TextTokenType<T> {
   if (!code.isTextType<T>(object, like)) {
-    code.throwError()
+    code.throwError(
+      code.generateIncorrectlyTypedVariable(like, name),
+    )
   }
 }
 
-export function attach_handle_module(
-  input: TreeInputType,
-  handle: TreeHandleType,
-): void {
-  const current =
-    input.state.stack[input.state.stack.length - 1]
-  code.assertTreeType(current, Tree.Module)
-
-  current.element.push(handle)
+export function isTextGenericType(
+  object: unknown,
+): object is TextTokenType<Text> {
+  return (
+    code.isRecord(object) &&
+    'like' in object &&
+    TEXT_TYPE.includes((object as TextTokenType<Text>).like)
+  )
 }
 
-export function buildParseTree(
+export function isTextType<T extends Text>(
+  object: unknown,
+  like: T,
+): object is TextTokenType<T> {
+  return (
+    code.isRecord(object) &&
+    'like' in object &&
+    (object as TextTokenType<Text>).like === like
+  )
+}
+
+export function parseLinkTree(
   input: FoldResultType,
-): TreeResultType {
-  const stack: Array<TreeNodeType> = []
-  let result: TreeNodeType | undefined = undefined
+): LinkResultType {
+  const stack: Array<LinkNodeType> = []
+  let result: LinkNodeType | undefined = undefined
 
   // console.log(code.prettifyJSON(input.tokenList))
 
@@ -187,188 +202,120 @@ export function buildParseTree(
     i++
   }
 
-  printParserMesh(result ?? start)
+  printParserMesh(start)
 
-  code.assertTreeType(start, Tree.Module)
+  code.assertLinkType(start, Link.Tree)
 
   return {
     ...input,
-    parseTree: start,
+    link: start,
   }
 }
 
-export function generateUnhandledTreeResolver(
-  input: TreeInputType & { scope?: string },
-): SiteErrorType {
-  const token = input.token
-
-  const range: CursorRangeType = {
-    end: {
-      character: token.end.character,
-      line: token.end.line,
-    },
-    start: {
-      character: token.start.character,
-      line: token.start.line,
-    },
-  }
-
-  const text = code.generateHighlightedError(
-    input.textInLines,
-    range,
-  )
-
-  return {
-    code: `0022`,
-    file: input.path,
-    note: `We haven't implemented a handler for the \`${
-      token.like
-    }\` item${
-      input.scope ? ` in the \`${input.scope}\` scope` : ''
-    } yet.`,
-    text,
-  }
-}
-
-export function isTextGenericType(
-  object: unknown,
-): object is TextTokenType<Text> {
-  return (
-    code.isRecord(object) &&
-    'like' in object &&
-    TEXT_TYPE.includes((object as TextTokenType<Text>).like)
-  )
-}
-
-export function isTextType<T extends Text>(
-  object: unknown,
-  like: T,
-): object is TextTokenType<T> {
-  return (
-    code.isRecord(object) &&
-    'like' in object &&
-    (object as TextTokenType<Text>).like === like
-  )
-}
-
-export function parse_closeDepth(input: TreeInputType): void {
+export function parse_closeDepth(input: LinkInputType): void {
   // console.log('m')
 }
 
-export function parse_closeHandle(input: TreeInputType): void {
+export function parse_closeHandle(input: LinkInputType): void {
   input.state.stack.pop()
 }
 
-export function parse_closeModule(input: TreeInputType): void {
+export function parse_closeModule(input: LinkInputType): void {
   input.state.stack.pop()
 }
 
-export function parse_closePlugin(input: TreeInputType): void {
+export function parse_closePlugin(input: LinkInputType): void {
   input.state.stack.pop()
 }
 
-export function parse_closeTerm(input: TreeInputType): void {
+export function parse_closeTerm(input: LinkInputType): void {
   input.state.stack.pop()
 }
 
 export function parse_closeTermPath(
-  input: TreeInputType,
+  input: LinkInputType,
 ): void {
   input.state.stack.pop()
 }
 
-export function parse_openDepth(input: TreeInputType): void {
+export function parse_openDepth(input: LinkInputType): void {
   const { stack } = input.state
   const current = stack[stack.length - 1]
 
   switch (current?.like) {
-    case Tree.Handle: {
-      console.log(current)
+    case Link.Tree: {
+      // console.log(current)
       break
     }
     default:
-      code.throwError({
-        code: '0024',
-        file: current.like,
-        note: 'Not implemented yet.',
-      })
+      code.throwError(
+        code.generatedNotImplementedYetError(current?.like),
+      )
   }
 }
 
-export function parse_openHandle(input: TreeInputType): void {
+export function parse_openHandle(input: LinkInputType): void {
   const { stack } = input.state
   const current = stack[stack.length - 1]
 
   switch (current?.like) {
-    case Tree.Module: {
-      const handle: TreeHandleType = {
-        element: [],
-        like: Tree.Handle,
+    case Link.Plugin: {
+      const tree: LinkTreeType = {
+        like: Link.Tree,
+        nest: [],
         parent: current,
       }
-      current.element.push(handle)
-      stack.push(handle)
+      current.element = tree
+      stack.push(tree)
       break
     }
-    case Tree.Plugin: {
-      const handle: TreeHandleType = {
-        element: [],
-        like: Tree.Handle,
-        parent: current,
-      }
-      current.element = handle
-      stack.push(handle)
-      break
-    }
-    case Tree.Term: {
+    case Link.Term: {
       const parent = current.parent.parent
-      const handle: TreeHandleType = {
-        element: [],
-        like: Tree.Handle,
+      const tree: LinkTreeType = {
+        like: Link.Tree,
+        nest: [],
         parent,
       }
-      parent.element.push(handle)
-      stack.push(handle)
+      parent.nest.push(tree)
+      stack.push(tree)
       break
     }
-    case Tree.Handle: {
-      const handle: TreeHandleType = {
-        element: [],
-        like: Tree.Handle,
+    case Link.Tree: {
+      const tree: LinkTreeType = {
+        like: Link.Tree,
+        nest: [],
         parent: current,
       }
-      current.element.push(handle)
-      stack.push(handle)
+      current.nest.push(tree)
+      stack.push(tree)
       break
     }
     default:
-      code.throwError({
-        code: '0024',
-        file: current.like,
-        note: 'Not implemented yet.',
-      })
+      code.throwError(
+        code.generatedNotImplementedYetError(current?.like),
+      )
   }
 }
 
-export function parse_openModule(input: TreeInputType) {
+export function parse_openModule(input: LinkInputType) {
   // const current = stack[stack.length - 1]
   // const parent = stack[stack.length - 2]
-  const container: TreeModuleType = {
-    element: [],
-    like: Tree.Module,
+  const container: LinkTreeType = {
+    like: Link.Tree,
+    nest: [],
   }
   input.state.stack.push(container)
   return container
 }
 
-export function parse_openPlugin(input: TreeInputType): void {
+export function parse_openPlugin(input: LinkInputType): void {
   const { stack } = input.state
   const current = stack[stack.length - 1]
 
   switch (current?.like) {
-    case Tree.Term: {
-      const plugin: TreePluginType = {
-        like: Tree.Plugin,
+    case Link.Term: {
+      const plugin: LinkPluginType = {
+        like: Link.Plugin,
         parent: current,
         size: input.token.text.length,
       }
@@ -380,24 +327,22 @@ export function parse_openPlugin(input: TreeInputType): void {
       break
     }
     default:
-      code.throwError({
-        code: '0024',
-        file: current.like,
-        note: 'Not implemented yet.',
-      })
+      code.throwError(
+        code.generatedNotImplementedYetError(current?.like),
+      )
   }
 }
 
-export function parse_openTerm(input: TreeInputType): void {
+export function parse_openTerm(input: LinkInputType): void {
   const { stack } = input.state
   const current = stack[stack.length - 1]
 
   switch (current?.like) {
-    case Tree.Path: {
-      const term: TreeTermType = {
+    case Link.Path: {
+      const term: LinkTermType = {
         dereference: false,
         guard: false,
-        like: Tree.Term,
+        like: Link.Term,
         parent: current,
         query: false,
         segment: [],
@@ -410,14 +355,14 @@ export function parse_openTerm(input: TreeInputType): void {
   }
 }
 
-export function parse_openTermPath(input: TreeInputType): void {
+export function parse_openTermPath(input: LinkInputType): void {
   const { stack } = input.state
   const current = stack[stack.length - 1]
 
   switch (current?.like) {
-    case Tree.Handle: {
-      const path: TreePathType = {
-        like: Tree.Path,
+    case Link.Tree: {
+      const path: LinkPathType = {
+        like: Link.Path,
         parent: current,
         segment: [],
       }
@@ -427,7 +372,7 @@ export function parse_openTermPath(input: TreeInputType): void {
       if (!current.head) {
         current.head = path
       } else {
-        current.element.push(path)
+        current.nest.push(path)
       }
 
       break
@@ -435,30 +380,30 @@ export function parse_openTermPath(input: TreeInputType): void {
   }
 }
 
-export function parse_termFragment(input: TreeInputType): void {
+export function parse_termFragment(input: LinkInputType): void {
   const { stack } = input.state
   const current = stack[stack.length - 1]
 
   switch (current?.like) {
-    case Tree.Term: {
+    case Link.Term: {
       const parent = current.parent
       const oldTerm = current
 
       if (input.token.like === Fold.TermFragment) {
         oldTerm.dereference = input.token.dereference
         oldTerm.guard = input.token.guard
-        oldTerm.like = Tree.Term
+        oldTerm.like = Link.Term
         oldTerm.parent = parent
         oldTerm.query = input.token.query
 
         oldTerm.segment.push({
-          like: Tree.String,
+          like: Link.String,
           range: input.token.range,
           value: input.token.value,
         })
 
         // if (!input.token.start) {
-        //   const termList: Array<TreeTermType> = mergeTerms(
+        //   const termList: Array<LinkTermType> = mergeTerms(
         //     oldTerm,
         //     newTerm,
         //   )
@@ -469,15 +414,13 @@ export function parse_termFragment(input: TreeInputType): void {
       break
     }
     default:
-      code.throwError({
-        code: '0024',
-        file: current.like,
-        note: 'Not implemented yet.',
-      })
+      code.throwError(
+        code.generatedNotImplementedYetError(current?.like),
+      )
   }
 }
 
-function printParserMesh(base: TreeModuleType | unknown): void {
+function printParserMesh(base: LinkNodeType | unknown): void {
   const text: Array<string> = ['']
 
   if (!base) {
@@ -494,27 +437,18 @@ function printParserMesh(base: TreeModuleType | unknown): void {
 }
 
 function printParserMeshDetails(
-  node: TreeNodeType,
+  node: LinkNodeType,
 ): Array<string> {
   const text: Array<string> = []
 
   const title = chalk.white(node.like)
 
   switch (node.like) {
-    case Tree.Module: {
-      text.push(`${title}`)
-      node.element.forEach(el => {
-        printParserMeshDetails(el).forEach(line => {
-          text.push(`  ${line}`)
-        })
-      })
-      break
-    }
-    case Tree.String: {
+    case Link.String: {
       text.push(`${title} ${chalk.green(node.value)}`)
       break
     }
-    case Tree.Handle: {
+    case Link.Tree: {
       text.push(`${title}`)
       if (node.head) {
         text.push(chalk.gray(`  head:`))
@@ -524,9 +458,9 @@ function printParserMeshDetails(
       } else {
         text.push(chalk.gray('  hook: undefined'))
       }
-      if (node.element.length) {
-        text.push(chalk.gray(`  element:`))
-        node.element.forEach(el => {
+      if (node.nest.length) {
+        text.push(chalk.gray(`  nest:`))
+        node.nest.forEach(el => {
           printParserMeshDetails(el).forEach(line => {
             text.push(`    ${line}`)
           })
@@ -534,14 +468,14 @@ function printParserMeshDetails(
       }
       break
     }
-    case Tree.UnsignedInteger: {
+    case Link.UnsignedInteger: {
       text.push(`${title} ${node.value}`)
       break
     }
-    case Tree.Text: {
+    case Link.Text: {
       break
     }
-    case Tree.Plugin: {
+    case Link.Plugin: {
       text.push(`${title}`)
       text.push(chalk.gray(`  size: ${node.size}`))
       if (node.element) {
@@ -552,16 +486,16 @@ function printParserMeshDetails(
       }
       break
     }
-    case Tree.Index: {
+    case Link.Index: {
       break
     }
-    case Tree.Decimal: {
+    case Link.Decimal: {
       break
     }
-    case Tree.Hashtag: {
+    case Link.Hashtag: {
       break
     }
-    case Tree.Term: {
+    case Link.Term: {
       text.push(`${title}`)
       node.segment.forEach(seg => {
         printParserMeshDetails(seg).forEach(line => {
@@ -570,7 +504,7 @@ function printParserMeshDetails(
       })
       break
     }
-    case Tree.Path: {
+    case Link.Path: {
       text.push(`${title}`)
       node.segment.forEach(seg => {
         printParserMeshDetails(seg).forEach(line => {
@@ -585,47 +519,45 @@ function printParserMeshDetails(
 }
 
 export function parse_unsignedInteger(
-  input: TreeInputType,
+  input: LinkInputType,
 ): void {
   const { stack } = input.state
   const current = stack[stack.length - 1]
 
   switch (current?.like) {
-    case Tree.Handle: {
+    case Link.Tree: {
       if (input.token.like === Fold.UnsignedInteger) {
-        const uint: TreeUnsignedIntegerType = {
-          like: Tree.UnsignedInteger,
+        const uint: LinkUnsignedIntegerType = {
+          like: Link.UnsignedInteger,
           value: input.token.value,
         }
 
-        current.element.push(uint)
+        current.nest.push(uint)
       }
       break
     }
     default:
-      code.throwError({
-        code: '0024',
-        file: current.like,
-        note: 'Not implemented yet.',
-      })
+      code.throwError(
+        code.generatedNotImplementedYetError(current?.like),
+      )
   }
 }
 
 // eslint-disable-next-line sort-exports/sort-exports
-export const MESH_HINT_TEXT: Record<MeshHint, string> = {
-  [MeshHint.Code]: 'boolean',
-  [MeshHint.DynamicTerm]: 'dynamic term',
-  [MeshHint.DynamicText]: 'dynamic text',
-  [MeshHint.Empty]: 'empty',
-  [MeshHint.Mark]: 'unsigned integer',
-  [MeshHint.StaticTerm]: 'static term',
-  [MeshHint.StaticText]: 'static text',
+export const LINK_HINT_TEXT: Record<LinkHint, string> = {
+  [LinkHint.Code]: 'boolean',
+  [LinkHint.DynamicTerm]: 'dynamic term',
+  [LinkHint.DynamicText]: 'dynamic text',
+  [LinkHint.Empty]: 'empty',
+  [LinkHint.Mark]: 'unsigned integer',
+  [LinkHint.StaticTerm]: 'static term',
+  [LinkHint.StaticText]: 'static text',
 }
 
 export function parseLinkText(
   input: TextInputType,
-): TreeResultType {
-  return buildParseTree(
+): LinkResultType {
+  return parseLinkTree(
     generateLinkTextBuildingDirections(tokenizeLinkText(input)),
   )
 }

@@ -2,10 +2,10 @@ import chalk from 'chalk'
 
 import {
   ERROR,
-  MESH_HINT_TEXT,
-  MeshHint,
-  SOURCE_MAPS,
-  Tree,
+  LINK_HINT_TEXT,
+  Link,
+  LinkHint,
+  SOURCE_MAP_MESH,
   code,
   prettifyJSON,
 } from '~'
@@ -117,6 +117,25 @@ export function generateHighlightedErrorForText(
   )
 }
 
+export function generateIncorrectlyTypedVariable(
+  like: string | Array<string>,
+  name?: string,
+): SiteErrorType {
+  like = Array.isArray(like) ? like : [like]
+  const words =
+    like.length > 1
+      ? like
+          .slice(-1)
+          .map(x => `\`${x}\``)
+          .join(', ') + ` or \`${like[like.length - 1]}\``
+      : `\`${like[0]}\``
+  const text = name ? ` \`${name}\`` : ''
+  return {
+    code: `0027`,
+    note: `Variable${text} is not typed as a ${words}.`,
+  }
+}
+
 export function generateInvalidDeckLink(
   input: MeshInputType,
   link: string,
@@ -158,7 +177,7 @@ export function generateMissingStringError(
 ): SiteErrorType {
   const nest = code.assumeNest(input)
   const term = nest.line[0]
-  code.assertTreeType(term, Tree.Term)
+  code.assertLinkType(term, Link.Term)
   const childInput = code.extendWithObjectScope(input, term)
   const name = code.resolveStaticTerm(childInput)
   const text = code.generateHighlightedErrorForTerm(input)
@@ -272,7 +291,7 @@ export function generateUnhandledNestCaseBaseError(
 
 export function generateUnhandledNestCaseError(
   input: MeshInputType,
-  type: MeshHint,
+  type: LinkHint,
 ): SiteErrorType {
   let scope
   try {
@@ -283,7 +302,7 @@ export function generateUnhandledNestCaseError(
     code: `0004`,
     file: `${input.card.path}`,
     note: `We haven't implemented handling "${
-      MESH_HINT_TEXT[type]
+      LINK_HINT_TEXT[type]
     }s" yet${scope ? ` on \`${scope}\`` : ''}.`,
     text,
   }
@@ -349,6 +368,17 @@ export function generateUnresolvedPathError(
   }
 }
 
+export function generatedNotImplementedYetError(
+  name?: string,
+): SiteErrorType {
+  return {
+    code: '0024',
+    note: `We have not yet implemented ${
+      name ? `${name}` : 'something you referenced'
+    }.`,
+  }
+}
+
 export function getCursorRangeForTerm(
   input: MeshInputType,
 ): CursorRangeType {
@@ -370,7 +400,7 @@ export function getCursorRangeForTerm(
     return range
   }
 
-  if (line.like !== Tree.Term) {
+  if (line.like !== Link.Term) {
     return range
   }
 
@@ -379,7 +409,7 @@ export function getCursorRangeForTerm(
     return range
   }
 
-  if (first.like === Tree.Cord) {
+  if (first.like === Link.Cord) {
     range.start.line = first.lineNumber
     range.start.character = first.lineCharacterNumberStart
     range.end.line = first.lineNumber
@@ -388,17 +418,17 @@ export function getCursorRangeForTerm(
 
   const lastTop = nest.line[nest.line.length - 1]
 
-  if (lastTop && lastTop.like === Tree.Term) {
+  if (lastTop && lastTop.like === Link.Term) {
     const last = lastTop.link[line.link.length - 1]
 
     if (last && last !== first) {
-      if (last.like === Tree.Cord) {
+      if (last.like === Link.Cord) {
         range.end.line = last.lineNumber
         range.end.character = last.lineCharacterNumberEnd
-      } else if (last.like === Tree.Slot) {
+      } else if (last.like === Link.Slot) {
         const lastNest = last.nest
         const lastLine = lastNest.line[lastNest.line.length - 1]
-        if (lastLine && lastLine.like === Tree.Term) {
+        if (lastLine && lastLine.like === Link.Term) {
           const childRange = code.getCursorRangeForTerm(
             code.extendWithNestScope(input, {
               nest: lastNest,
@@ -410,7 +440,7 @@ export function getCursorRangeForTerm(
         } else {
           throw new Error('Unhandled')
         }
-      } else if (last.like === Tree.Term) {
+      } else if (last.like === Link.Term) {
         const childRange = code.getCursorRangeForTerm(
           code.extendWithNestScope(input, {
             nest: last,
@@ -453,7 +483,7 @@ export function getCursorRangeForText(
     return range
   }
 
-  if (line.like !== Tree.Text) {
+  if (line.like !== Link.Text) {
     return range
   }
 
@@ -462,7 +492,7 @@ export function getCursorRangeForText(
     return range
   }
 
-  if (first.like === Tree.Cord) {
+  if (first.like === Link.Cord) {
     range.start.line = first.lineNumber
     range.start.character = first.lineCharacterNumberStart
     range.end.line = first.lineNumber
@@ -471,7 +501,7 @@ export function getCursorRangeForText(
 
   const last = line.link[line.link.length - 1]
 
-  if (last && last !== first && last.like === Tree.Cord) {
+  if (last && last !== first && last.like === Link.Cord) {
     range.end.line = last.lineNumber
     range.end.character = last.lineCharacterNumberEnd
   }
@@ -594,7 +624,7 @@ export function throwError(data: SiteErrorType): void {
             code.isString(x)
           ) {
             // x = code.resolveNativePath(x.replace(/^file:\/\//, ''))
-            const map = SOURCE_MAPS[x]
+            const map = SOURCE_MAP_MESH[x]
 
             const trace = {
               column: b,

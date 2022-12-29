@@ -1,4 +1,4 @@
-import { MeshHint, code } from '~'
+import { LinkHint, code } from '~'
 import type { MeshInputType } from '~'
 
 export function process_codeCard_risk(
@@ -19,7 +19,7 @@ export function process_codeCard_risk_nestedChildren(
 ): void {
   const type = code.determineNestType(input)
   switch (type) {
-    case MeshHint.StaticText:
+    case LinkHint.StaticText:
       break
     default:
       code.throwError(

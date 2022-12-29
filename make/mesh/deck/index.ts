@@ -10,7 +10,7 @@ export * from './deck/index.js'
 export function generate_deckCard(
   input: MeshInputType,
 ): MeshFullType<Mesh.PackageModule> {
-  code.assertMeshPartial(input.card, Mesh.PackageModule)
+  code.assertMeshTypePartial(input.card, Mesh.PackageModule)
 
   let deck
 
@@ -22,7 +22,7 @@ export function generate_deckCard(
     }
   })
 
-  code.assertMeshFull(deck, Mesh.Package)
+  code.assertMeshTypeFull(deck, Mesh.Package)
 
   return {
     ...code.omit(input.card, ['children']),
@@ -123,7 +123,7 @@ export function resolve_deckCard(
   link: string,
 ): void {
   const card = base.card(link)
-  code.assertMeshFull(card.seed, Mesh.PackageModule)
+  code.assertMeshTypeFull(card.seed, Mesh.PackageModule)
 
   // TODO: deck.hint tells us the parser to use on the code.
 

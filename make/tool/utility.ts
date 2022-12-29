@@ -1,13 +1,12 @@
 import _ from 'lodash'
 
-import { Mesh, Tree, code } from '~'
+import { Link, Mesh, code } from '~'
 import type {
+  LinkType,
   MeshInputType,
   MeshModuleBaseType,
   MeshPartialType,
   MeshType,
-  SiteErrorType,
-  TreeType,
 } from '~'
 
 export function assertArray<T = unknown>(
@@ -42,21 +41,12 @@ export function assertNumber(
 
 export function assertString(
   object: unknown,
-  error: () => SiteErrorType,
+  name?: string,
 ): asserts object is string {
   if (!code.isString(object)) {
-    code.throwError(error())
-  }
-}
-
-export function assertTrue(
-  object: unknown,
-): asserts object is true {
-  if (object !== true) {
-    code.throwError({
-      code: '0017',
-      note: `Object is not type 'true'`,
-    })
+    code.throwError(
+      code.generateIncorrectlyTypedVariable('string', name),
+    )
   }
 }
 
@@ -72,6 +62,20 @@ export function assumeInputObjectAsGenericMeshType(
   return objectScope.data
 }
 
+export function assumeInputObjectAsLinkType<T extends Link>(
+  type: T,
+  input: MeshInputType,
+  rank = 0,
+): LinkType<T> {
+  let objectScope = input.objectScope
+  while (rank > 0 && objectScope.parent) {
+    objectScope = objectScope.parent
+    rank--
+  }
+  code.assertLinkType(objectScope.data, type)
+  return objectScope.data
+}
+
 export function assumeInputObjectAsMeshPartialType<
   T extends Mesh,
 >(
@@ -84,7 +88,7 @@ export function assumeInputObjectAsMeshPartialType<
     objectScope = objectScope.parent
     rank--
   }
-  code.assertMeshPartial(objectScope.data, type)
+  code.assertMeshTypePartial(objectScope.data, type)
   return objectScope.data
 }
 
@@ -98,21 +102,7 @@ export function assumeInputObjectAsMeshType<T extends Mesh>(
     objectScope = objectScope.parent
     rank--
   }
-  code.assertMesh(objectScope.data, type)
-  return objectScope.data
-}
-
-export function assumeInputObjectAsTreeType<T extends Tree>(
-  type: T,
-  input: MeshInputType,
-  rank = 0,
-): TreeType<T> {
-  let objectScope = input.objectScope
-  while (rank > 0 && objectScope.parent) {
-    objectScope = objectScope.parent
-    rank--
-  }
-  code.assertTreeType(objectScope.data, type)
+  code.assertMeshType(objectScope.data, type)
   return objectScope.data
 }
 

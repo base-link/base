@@ -1,4 +1,4 @@
-import { Tree, code } from '~'
+import { Link, code } from '~'
 import type { MeshInputType } from '~'
 
 export function nestHasSlot(

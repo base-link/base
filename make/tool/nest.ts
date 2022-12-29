@@ -1,4 +1,4 @@
-import { MeshHint, Site, Tree, code } from '~'
+import { Link, LinkHint, Site, code } from '~'
 import type {
   MeshInputType,
   SiteScopeType,
@@ -9,7 +9,7 @@ export function assertNest(
   object: unknown,
 ): asserts object is TreeNestType {
   if (!code.isNest(object)) {
-    throw new Error('MeshHint error')
+    throw new Error('LinkHint error')
   }
 }
 
@@ -55,33 +55,33 @@ export function assumeNestIndex(input: MeshInputType): number {
 
 export function determineNestType(
   input: MeshInputType,
-): MeshHint {
+): LinkHint {
   if (code.nestIsTerm(input)) {
     if (
       code.termIsInterpolated(input) ||
       code.termIsNested(input)
     ) {
-      return MeshHint.DynamicTerm
+      return LinkHint.DynamicTerm
     } else {
-      return MeshHint.StaticTerm
+      return LinkHint.StaticTerm
     }
   } else if (code.nestIsText(input)) {
     if (code.textIsInterpolated(input)) {
-      return MeshHint.DynamicText
+      return LinkHint.DynamicText
     } else {
-      return MeshHint.StaticText
+      return LinkHint.StaticText
     }
   } else if (code.nestIsMark(input)) {
-    return MeshHint.Mark
+    return LinkHint.Mark
   } else if (code.nestIsCode(input)) {
-    return MeshHint.Code
+    return LinkHint.Code
   } else {
     code.throwError(
       code.generateUnhandledNestCaseBaseError(input),
     )
   }
 
-  return MeshHint.Empty
+  return LinkHint.Empty
 }
 
 export function getNestScopeProperty(
@@ -104,7 +104,7 @@ export function isNest(
   return (
     code.isRecord(object) &&
     'like' in object &&
-    (object as TreeNestType).like === Tree.MeshHint
+    (object as TreeNestType).like === Tree.LinkHint
   )
 }
 

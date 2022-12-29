@@ -1,5 +1,4 @@
-
-watchUnhandledErrors()
+import { BaseLinkError, code } from '~'
 
 export function watchUnhandledErrors(): void {
   process.on('unhandledRejection', (reason: unknown) => {

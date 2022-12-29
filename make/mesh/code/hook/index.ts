@@ -1,4 +1,4 @@
-import { Mesh, MeshHint, code } from '~'
+import { LinkHint, Mesh, code } from '~'
 import type { MeshInputType, MeshPartialType } from '~'
 
 export function process_codeCard_hook(
@@ -27,7 +27,7 @@ export function process_codeCard_hook_nestedChildren(
 ): void {
   const type = code.determineNestType(input)
   switch (type) {
-    case MeshHint.StaticTerm: {
+    case LinkHint.StaticTerm: {
       const index = code.assumeNestIndex(input)
       const term = code.assumeStaticTermFromNest(input)
       if (index === 0) {

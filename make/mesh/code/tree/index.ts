@@ -112,7 +112,7 @@ export function replaceMeshChild<
   B extends MeshType<Mesh>,
 >(input: MeshInputType, a: A | Array<A>, x: X, b: B): void {
   const { data } = code.assumeObjectScope(input, 1)
-  code.assertMeshPartial(data, a)
+  code.assertMeshTypePartial(data, a)
   const index: number = (
     data.children as Array<unknown>
   ).indexOf(x)
