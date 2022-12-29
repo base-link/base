@@ -1,12 +1,12 @@
-import { api } from '~'
-import type { APIInputType } from '~'
+import { code } from '~'
+import type { MeshInputType } from '~'
 
 export function process_codeCard_load_find_bear(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
-  api.assumeNest(input).nest.forEach((nest, index) => {
-    api.process_codeCard_load_find_bear_nestedChildren(
-      api.extendWithNestScope(input, {
+  code.assumeNest(input).nest.forEach((nest, index) => {
+    code.process_codeCard_load_find_bear_nestedChildren(
+      code.extendWithNestScope(input, {
         index,
         nest,
       }),
@@ -15,11 +15,11 @@ export function process_codeCard_load_find_bear(
 }
 
 export function process_codeCard_load_find_bear_nestedChildren(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
-  const type = api.determineNestType(input)
+  const type = code.determineNestType(input)
   if (type === 'static-term') {
   } else {
-    api.throwError(api.generateUnhandledTermCaseError(input))
+    code.throwError(code.generateUnhandledTermCaseError(input))
   }
 }

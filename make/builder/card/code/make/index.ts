@@ -1,12 +1,12 @@
-import { Nest, api } from '~'
-import type { APIInputType } from '~'
+import { MeshHint, code } from '~'
+import type { MeshInputType } from '~'
 
 export function process_codeCard_make(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
-  api.assumeNest(input).nest.forEach((nest, index) => {
+  code.assumeNest(input).nest.forEach((nest, index) => {
     process_codeCard_make_nestedChildren(
-      api.extendWithNestScope(input, {
+      code.extendWithNestScope(input, {
         index,
         nest,
       }),
@@ -15,19 +15,21 @@ export function process_codeCard_make(
 }
 
 export function process_codeCard_make_nestedChildren(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
-  const type = api.determineNestType(input)
+  const type = code.determineNestType(input)
   switch (type) {
-    case Nest.StaticTerm:
-      const term = api.resolveStaticTermFromNest(input)
+    case MeshHint.StaticTerm:
+      const term = code.resolveStaticTermFromNest(input)
       switch (term) {
         case 'bind':
-          api.process_codeCard_bind(input)
+          code.process_codeCard_bind(input)
           break
       }
       break
     default:
-      api.throwError(api.generateUnhandledTermCaseError(input))
+      code.throwError(
+        code.generateUnhandledTermCaseError(input),
+      )
   }
 }

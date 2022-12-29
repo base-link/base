@@ -1,94 +1,94 @@
-import { AST, api } from '~'
-import type { APIInputType, ASTPartialType } from '~'
+import { Mesh, code } from '~'
+import type { MeshInputType, MeshPartialType } from '~'
 
 export * from './base/index.js'
 export * from './case/index.js'
 export * from './wear/index.js'
 
 export function process_codeCard_form(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
-  const form: ASTPartialType<AST.Class> = {
+  const form: MeshPartialType<Mesh.Class> = {
     children: [],
-    like: AST.Class,
+    like: Mesh.Class,
     partial: true,
   }
 
-  const formInput = api.extendWithObjectScope(input, form)
+  const formInput = code.extendWithObjectScope(input, form)
 
-  api.assumeNest(formInput).nest.forEach((nest, index) => {
-    api.process_codeCard_form_nestedChildren(
-      api.extendWithNestScope(formInput, {
+  code.assumeNest(formInput).nest.forEach((nest, index) => {
+    code.process_codeCard_form_nestedChildren(
+      code.extendWithNestScope(formInput, {
         index,
         nest,
       }),
     )
   })
 
-  api.assertASTPartial(input.card, AST.CodeModule)
+  code.assertMeshPartial(input.card, Mesh.CodeModule)
 
-  api.assertString(form.name, () =>
-    api.generateTermMissingError(input, 'name', 'form'),
+  code.assertString(form.name, () =>
+    code.generateTermMissingError(input, 'name', 'form'),
   )
 
   input.card.children.push(form)
 }
 
 export function process_codeCard_form_nestedChildren(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
-  const type = api.determineNestType(input)
+  const type = code.determineNestType(input)
   if (type === 'static-term') {
-    const term = api.assumeStaticTermFromNest(input)
-    const index = api.assumeNestIndex(input)
+    const term = code.assumeStaticTermFromNest(input)
+    const index = code.assumeNestIndex(input)
     if (index === 0) {
-      const form = api.assumeInputObjectAsASTPartialType(
+      const form = code.assumeInputObjectAsMeshPartialType(
         input,
-        AST.Class,
+        Mesh.Class,
       )
       form.name = term
     } else {
       switch (term) {
         case 'link':
-          api.process_codeCard_link(input)
+          code.process_codeCard_link(input)
           break
         case 'task':
-          api.process_codeCard_task(input)
+          code.process_codeCard_task(input)
           break
         case 'head':
-          api.process_codeCard_head(input)
+          code.process_codeCard_head(input)
           break
         case 'wear':
-          api.process_codeCard_formWear(input)
+          code.process_codeCard_formWear(input)
           break
         case 'base':
-          api.process_codeCard_formBase(input)
+          code.process_codeCard_formBase(input)
           break
         case 'case':
-          api.process_codeCard_formCase(input)
+          code.process_codeCard_formCase(input)
           break
         case 'fuse':
-          api.process_codeCard_fuse(input)
+          code.process_codeCard_fuse(input)
           break
         case 'hold':
-          api.process_codeCard_hold(input)
+          code.process_codeCard_hold(input)
           break
         case 'stem':
-          api.process_codeCard_stem(input)
+          code.process_codeCard_stem(input)
           break
         case 'note':
-          api.process_codeCard_note(input)
+          code.process_codeCard_note(input)
           break
         case 'like':
-          api.process_codeCard_like(input)
+          code.process_codeCard_like(input)
           break
         default:
-          api.throwError(api.generateUnknownTermError(input))
+          code.throwError(code.generateUnknownTermError(input))
       }
     }
   } else {
-    api.throwError(
-      api.generateUnhandledNestCaseError(input, type),
+    code.throwError(
+      code.generateUnhandledNestCaseError(input, type),
     )
   }
 }

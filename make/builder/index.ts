@@ -1,4 +1,4 @@
-import { BaseLinkError, api } from '~'
+import { BaseLinkError, code } from '~'
 
 export * from './card/index.js'
 export * from './code.js'
@@ -22,10 +22,10 @@ export function watchUnhandledErrors(): void {
     } else {
       console.log(reason)
       try {
-        api.throwError({
+        code.throwError({
           code: `0025`,
           note:
-            api.isRecord(reason) && 'message' in reason
+            code.isRecord(reason) && 'message' in reason
               ? String(reason.message)
               : String(reason),
         })

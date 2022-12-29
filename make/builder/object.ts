@@ -1,10 +1,10 @@
-import { api } from '~'
+import { code } from '~'
 
 export function getProperty(
   object: Record<string, unknown>,
   path: string,
 ): unknown {
-  if (api.isRecord(object) && path in object) {
+  if (code.isRecord(object) && path in object) {
     return object[path]
   }
 }

@@ -1,6 +1,6 @@
 import chalk from 'chalk'
 
-import { api } from '~'
+import { code } from '~'
 
 export function prettifyJSON(obj: unknown, indent = 0) {
   return makePrettyArray(obj, indent).join('')
@@ -39,7 +39,7 @@ function makePrettyArray(obj: unknown, indent = 0) {
       str.push(chalk.gray(` ]`))
     }
   } else if (obj != null) {
-    if (api.isRecord(obj)) {
+    if (code.isRecord(obj)) {
       str.push(chalk.gray(`{`))
       const keys = Object.keys(obj)
       keys.forEach((key, i) => {
@@ -63,7 +63,7 @@ function makePrettyArray(obj: unknown, indent = 0) {
     } else if (typeof obj === 'string') {
       str.push(quotifyString(obj))
     } else if (
-      api.isRecord(obj) &&
+      code.isRecord(obj) &&
       'toJSON' in obj &&
       typeof obj.toJSON === 'function'
     ) {

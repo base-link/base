@@ -1,30 +1,30 @@
-import { AST, api } from '~'
+import { Mesh, code } from '~'
 import type {
-  APIInputType,
-  ASTConstant_FullType,
-  ASTType,
-  ASTValue_FullType,
+  MeshConstant_FullType,
+  MeshInputType,
+  MeshType,
+  MeshValue_FullType,
 } from '~'
 
 export function assertStringPattern(
-  input: APIInputType,
+  input: MeshInputType,
   string: string,
   pattern: RegExp,
 ): void {
   if (!string.match(pattern)) {
-    api.throwError(
-      api.generateInvalidPatternError(input, pattern),
+    code.throwError(
+      code.generateInvalidPatternError(input, pattern),
     )
   }
 }
 
 export function createConstant(
   name: string,
-  value: ASTValue_FullType | Array<ASTConstant_FullType>,
-): ASTType<AST.Constant> {
+  value: MeshValue_FullType | Array<MeshConstant_FullType>,
+): MeshType<Mesh.Constant> {
   return {
     complete: true,
-    like: AST.Constant,
+    like: Mesh.Constant,
     name,
     partial: false,
     value,
@@ -32,26 +32,26 @@ export function createConstant(
 }
 
 export function process_deckCard_deck_link(
-  input: APIInputType,
+  input: MeshInputType,
 ) {
-  const text = api.resolveText(input)
-  api.assertString(text)
+  const text = code.resolveText(input)
+  code.assertString(text)
 
-  api.assertStringPattern(
+  code.assertStringPattern(
     input,
     text,
     /^@[a-z0-9]+\/[a-z0-9]+$/,
   )
 
-  const deck = api.assumeInputObjectAsASTPartialType(
+  const deck = code.assumeInputObjectAsMeshPartialType(
     input,
-    AST.Package,
+    Mesh.Package,
   )
 
   deck.children.push(
-    api.createConstant('link', {
+    code.createConstant('link', {
       complete: true,
-      like: AST.String,
+      like: Mesh.String,
       partial: false,
       string: text,
     }),

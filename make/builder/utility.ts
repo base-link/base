@@ -1,19 +1,19 @@
 import _ from 'lodash'
 
-import { AST, Tree, api } from '~'
+import { Mesh, Tree, code } from '~'
 import type {
-  APIInputType,
-  ASTModuleBaseType,
-  ASTPartialType,
-  ASTType,
-  ErrorType,
+  MeshInputType,
+  MeshModuleBaseType,
+  MeshPartialType,
+  MeshType,
+  SiteErrorType,
   TreeType,
 } from '~'
 
 export function assertArray<T = unknown>(
   object: unknown,
 ): asserts object is Array<T> {
-  if (!api.isArray(object)) {
+  if (!code.isArray(object)) {
     throw new Error('Object is not array')
   }
 }
@@ -21,8 +21,8 @@ export function assertArray<T = unknown>(
 export function assertBoolean(
   object: unknown,
 ): asserts object is boolean {
-  if (!api.isBoolean(object)) {
-    api.throwError({
+  if (!code.isBoolean(object)) {
+    code.throwError({
       code: '0017',
       note: `Object is not type 'boolean'`,
     })
@@ -32,8 +32,8 @@ export function assertBoolean(
 export function assertNumber(
   object: unknown,
 ): asserts object is number {
-  if (!api.isNumber(object)) {
-    api.throwError({
+  if (!code.isNumber(object)) {
+    code.throwError({
       code: '0016',
       note: 'Compiler error',
     })
@@ -42,12 +42,10 @@ export function assertNumber(
 
 export function assertString(
   object: unknown,
-  error?: () => ErrorType,
+  error: () => SiteErrorType,
 ): asserts object is string {
-  if (!api.isString(object)) {
-    api.throwError(
-      error ? error() : api.generateMissingStringError(object),
-    )
+  if (!code.isString(object)) {
+    code.throwError(error())
   }
 }
 
@@ -55,45 +53,15 @@ export function assertTrue(
   object: unknown,
 ): asserts object is true {
   if (object !== true) {
-    api.throwError({
+    code.throwError({
       code: '0017',
       note: `Object is not type 'true'`,
     })
   }
 }
 
-export function assumeInputObjectAsASTPartialType<
-  T extends AST,
->(
-  input: APIInputType,
-  type: T | Array<T>,
-  rank = 0,
-): ASTPartialType<T> {
-  let objectScope = input.objectScope
-  while (rank > 0 && objectScope.parent) {
-    objectScope = objectScope.parent
-    rank--
-  }
-  api.assertASTPartial(objectScope.data, type)
-  return objectScope.data
-}
-
-export function assumeInputObjectAsASTType<T extends AST>(
-  input: APIInputType,
-  type: T,
-  rank = 0,
-): ASTType<T> {
-  let objectScope = input.objectScope
-  while (rank > 0 && objectScope.parent) {
-    objectScope = objectScope.parent
-    rank--
-  }
-  api.assertAST(objectScope.data, type)
-  return objectScope.data
-}
-
-export function assumeInputObjectAsGenericASTType(
-  input: APIInputType,
+export function assumeInputObjectAsGenericMeshType(
+  input: MeshInputType,
   rank = 0,
 ): Record<string, unknown> {
   let objectScope = input.objectScope
@@ -104,9 +72,39 @@ export function assumeInputObjectAsGenericASTType(
   return objectScope.data
 }
 
+export function assumeInputObjectAsMeshPartialType<
+  T extends Mesh,
+>(
+  input: MeshInputType,
+  type: T | Array<T>,
+  rank = 0,
+): MeshPartialType<T> {
+  let objectScope = input.objectScope
+  while (rank > 0 && objectScope.parent) {
+    objectScope = objectScope.parent
+    rank--
+  }
+  code.assertMeshPartial(objectScope.data, type)
+  return objectScope.data
+}
+
+export function assumeInputObjectAsMeshType<T extends Mesh>(
+  input: MeshInputType,
+  type: T,
+  rank = 0,
+): MeshType<T> {
+  let objectScope = input.objectScope
+  while (rank > 0 && objectScope.parent) {
+    objectScope = objectScope.parent
+    rank--
+  }
+  code.assertMesh(objectScope.data, type)
+  return objectScope.data
+}
+
 export function assumeInputObjectAsTreeType<T extends Tree>(
   type: T,
-  input: APIInputType,
+  input: MeshInputType,
   rank = 0,
 ): TreeType<T> {
   let objectScope = input.objectScope
@@ -114,41 +112,41 @@ export function assumeInputObjectAsTreeType<T extends Tree>(
     objectScope = objectScope.parent
     rank--
   }
-  api.assertTreeType(objectScope.data, type)
+  code.assertTreeType(objectScope.data, type)
   return objectScope.data
 }
 
-export function createInitialAPIInput<
-  T extends ASTModuleBaseType,
+export function createInitialMeshInput<
+  T extends MeshModuleBaseType,
 >(
   card: T,
   objectScopeData: Record<string, unknown>,
   lexicalScopeData: Record<string, unknown>,
-): APIInputType {
+): MeshInputType {
   return {
     card,
-    lexicalScope: api.createScope(lexicalScopeData),
-    objectScope: api.createScope(objectScopeData),
+    lexicalScope: code.createScope(lexicalScopeData),
+    objectScope: code.createScope(objectScopeData),
   }
 }
 
 export function extendWithNestScope(
-  input: APIInputType,
+  input: MeshInputType,
   data: Record<string, unknown>,
-): APIInputType {
+): MeshInputType {
   return {
     ...input,
-    nestScope: api.createScope(data, input.nestScope),
+    nestScope: code.createScope(data, input.nestScope),
   }
 }
 
 export function extendWithObjectScope(
-  input: APIInputType,
+  input: MeshInputType,
   data: Record<string, unknown>,
-): APIInputType {
+): MeshInputType {
   return {
     ...input,
-    objectScope: api.createScope(data, input.objectScope),
+    objectScope: code.createScope(data, input.objectScope),
   }
 }
 

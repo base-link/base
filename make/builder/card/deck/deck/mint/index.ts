@@ -1,12 +1,12 @@
-import { AST, Nest, api } from '~'
-import type { APIInputType } from '~'
+import { Mesh, MeshHint, code } from '~'
+import type { MeshInputType } from '~'
 
 export function process_deckCard_deck_mint(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
-  api.assumeNest(input).nest.forEach((nest, index) => {
+  code.assumeNest(input).nest.forEach((nest, index) => {
     process_deckCard_deck_mint_nestedChildren(
-      api.extendWithNestScope(input, {
+      code.extendWithNestScope(input, {
         index,
         nest,
       }),
@@ -15,22 +15,24 @@ export function process_deckCard_deck_mint(
 }
 
 export function process_deckCard_deck_mint_nestedChildren(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
-  const type = api.determineNestType(input)
+  const type = code.determineNestType(input)
   switch (type) {
-    case Nest.StaticText:
-      const text = api.resolveText(input)
-      api.assertString(text)
-      const deck = api.assumeInputObjectAsASTPartialType(
+    case MeshHint.StaticText:
+      const text = code.resolveText(input)
+      code.assertString(text)
+      const deck = code.assumeInputObjectAsMeshPartialType(
         input,
-        AST.Package,
+        Mesh.Package,
       )
       deck.children.push(
-        api.createStringConstant('version', text),
+        code.createStringConstant('version', text),
       )
       break
     default:
-      api.throwError(api.generateUnhandledTermCaseError(input))
+      code.throwError(
+        code.generateUnhandledTermCaseError(input),
+      )
   }
 }

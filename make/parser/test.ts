@@ -1,4 +1,4 @@
-import { api, prettifyJSON } from '~'
+import { code, prettifyJSON } from '~'
 
 import { parseLinkText as parse } from './index.js'
 
@@ -34,7 +34,7 @@ import { parseLinkText as parse } from './index.js'
 // console.log(prettifyJSON(nest))
 
 async function start() {
-  await api.loadSourceMaps()
+  await code.loadSourceMaps()
   parse({
     path: 'foo.link',
     text: `

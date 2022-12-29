@@ -1,16 +1,16 @@
-import { AST, api } from '~'
-import type { APIInputType } from '~'
+import { Mesh, code } from '~'
+import type { MeshInputType } from '~'
 
 export function process_codeCard_load_find_save(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
-  api.assertNestChildrenLength(input, 1)
+  code.assertNestChildrenLength(input, 1)
 
-  const nest = api.assumeNest(input)
+  const nest = code.assumeNest(input)
 
   nest.nest.forEach((nest, index) => {
-    api.process_codeCard_load_find_save_nestedChildren(
-      api.extendWithNestScope(input, {
+    code.process_codeCard_load_find_save_nestedChildren(
+      code.extendWithNestScope(input, {
         index,
         nest,
       }),
@@ -19,23 +19,23 @@ export function process_codeCard_load_find_save(
 }
 
 export function process_codeCard_load_find_save_nestedChildren(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
-  const type = api.determineNestType(input)
+  const type = code.determineNestType(input)
   if (type === 'static-term') {
-    const term = api.resolveStaticTermFromNest(input)
-    api.assertString(term)
+    const term = code.resolveStaticTermFromNest(input)
+    code.assertString(term)
 
-    const find = api.assumeInputObjectAsASTPartialType(
+    const find = code.assumeInputObjectAsMeshPartialType(
       input,
-      AST.ImportVariable,
+      Mesh.ImportVariable,
     )
 
     find.rename = {
-      like: AST.ImportVariableRename,
+      like: Mesh.ImportVariableRename,
       name: term,
     }
   } else {
-    api.throwError(api.generateUnhandledTermCaseError(input))
+    code.throwError(code.generateUnhandledTermCaseError(input))
   }
 }

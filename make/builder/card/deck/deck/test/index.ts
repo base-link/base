@@ -1,40 +1,40 @@
-import { AST, api } from '~'
-import type { APIInputType } from '~'
+import { Mesh, code } from '~'
+import type { MeshInputType } from '~'
 
 export function finalize_deckCard_deck_test(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
-  const text = api.resolveText(input)
-  api.assertString(text)
+  const text = code.resolveText(input)
+  code.assertString(text)
 
-  const card = api.getProperty(input, 'card')
-  api.assertAST(card, AST.PackageModule)
+  const card = code.getProperty(input, 'card')
+  code.assertMesh(card, Mesh.PackageModule)
 
-  const path = api.findPath(text, card.directory)
-  api.assertString(path, () => {
-    return api.generateUnresolvedPathError(input, text)
+  const path = code.findPath(text, card.directory)
+  code.assertString(path, () => {
+    return code.generateUnresolvedPathError(input, text)
   })
 
-  const deck = api.assumeInputObjectAsASTPartialType(
+  const deck = code.assumeInputObjectAsMeshPartialType(
     input,
-    AST.Package,
+    Mesh.Package,
   )
 
-  deck.children.push(api.createStringConstant('test', path))
+  deck.children.push(code.createStringConstant('test', path))
 }
 
 export function process_deckCard_deck_test(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
-  api.assertNestChildrenLength(input, 1)
+  code.assertNestChildrenLength(input, 1)
 
-  const nest = api.assumeNest(input).nest[0]
+  const nest = code.assumeNest(input).nest[0]
 
-  api.processTextNest(
-    api.extendWithNestScope(input, {
+  code.processTextNest(
+    code.extendWithNestScope(input, {
       index: 0,
       nest,
     }),
-    api.finalize_deckCard_deck_test,
+    code.finalize_deckCard_deck_test,
   )
 }

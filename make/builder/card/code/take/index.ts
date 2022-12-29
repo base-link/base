@@ -1,13 +1,13 @@
-// the api url handlers go here
-import { Nest, api } from '~'
-import type { APIInputType } from '~'
+// the code url handlers go here
+import { MeshHint, code } from '~'
+import type { MeshInputType } from '~'
 
 export function process_codeCard_take(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
-  api.assumeNest(input).nest.forEach((nest, index) => {
+  code.assumeNest(input).nest.forEach((nest, index) => {
     process_codeCard_take_nestedChildren(
-      api.extendWithNestScope(input, {
+      code.extendWithNestScope(input, {
         index,
         nest,
       }),
@@ -16,14 +16,16 @@ export function process_codeCard_take(
 }
 
 export function process_codeCard_take_nestedChildren(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
-  const type = api.determineNestType(input)
+  const type = code.determineNestType(input)
   switch (type) {
-    case Nest.StaticTerm:
-      const term = api.resolveStaticTermFromNest(input)
+    case MeshHint.StaticTerm:
+      const term = code.resolveStaticTermFromNest(input)
       break
     default:
-      api.throwError(api.generateUnhandledTermCaseError(input))
+      code.throwError(
+        code.generateUnhandledTermCaseError(input),
+      )
   }
 }

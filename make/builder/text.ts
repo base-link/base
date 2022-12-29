@@ -1,30 +1,30 @@
-import { Internal, Nest, Tree, api } from '~'
+import { MeshHint, Site, Tree, code } from '~'
 import type {
-  APIInputType,
-  InternalDependencyPartType,
-  InternalDependencyType,
-  InternalScopeType,
+  MeshInputType,
+  SiteDependencyPartType,
+  SiteDependencyType,
+  SiteScopeType,
   TreeNodeType,
 } from '~'
 
 export function parseTextIntoTree(text: string): TreeNodeType {
-  return api.parseLinkText(text)
+  return code.parseLinkText(text)
 }
 
 export function processDynamicTextNest(
-  input: APIInputType,
-  job: (i: APIInputType) => void,
+  input: MeshInputType,
+  job: (i: MeshInputType) => void,
 ): void {
-  const dependencyList = api.resolveTextDependencyList(
+  const dependencyList = code.resolveTextDependencyList(
     input,
     job,
   )
 
-  const card = api.getProperty(input, 'card')
-  api.assertCard(card)
+  const card = code.getProperty(input, 'card')
+  code.assertCard(card)
 
   const unmetDependencyList = dependencyList.filter(
-    dep => !api.checkDependency(input, dep),
+    dep => !code.checkDependency(input, dep),
   )
 
   card.base.dependency.push(...unmetDependencyList)
@@ -35,36 +35,36 @@ export function processDynamicTextNest(
 }
 
 export function processTextNest(
-  input: APIInputType,
-  job: (i: APIInputType) => void,
+  input: MeshInputType,
+  job: (i: MeshInputType) => void,
 ): void {
-  const type = api.determineNestType(input)
+  const type = code.determineNestType(input)
   switch (type) {
-    case Nest.DynamicText: {
-      api.processDynamicTextNest(input, job)
+    case MeshHint.DynamicText: {
+      code.processDynamicTextNest(input, job)
       break
     }
-    case Nest.StaticText:
+    case MeshHint.StaticText:
       job(input)
       break
     default:
-      api.throwError(
-        api.generateUnhandledNestCaseError(input, type),
+      code.throwError(
+        code.generateUnhandledNestCaseError(input, type),
       )
   }
 }
 
 export function readDependency(
-  input: APIInputType,
-  dependency: InternalDependencyType,
+  input: MeshInputType,
+  dependency: SiteDependencyType,
 ): unknown {
-  const scope = api.findInitialScope(input, dependency)
+  const scope = code.findInitialScope(input, dependency)
 
   if (scope) {
     let value: unknown = scope.data
 
     dependency.path.forEach(part => {
-      if (api.isRecord(value)) {
+      if (code.isRecord(value)) {
         const childValue = value[part.name]
         value = childValue
       } else {
@@ -76,20 +76,20 @@ export function readDependency(
   }
 }
 
-export function readNest(input: APIInputType): unknown {
+export function readNest(input: MeshInputType): unknown {
   let value: unknown = input.lexicalScope.data
-  const nest = api.assumeNest(input)
+  const nest = code.assumeNest(input)
 
   nest.line.forEach((nest, i) => {
     switch (nest.like) {
       case Tree.Term:
-        const name = api.resolveStaticTerm(
-          api.extendWithObjectScope(input, nest),
+        const name = code.resolveStaticTerm(
+          code.extendWithObjectScope(input, nest),
         )
 
-        api.assertString(name)
+        code.assertString(name)
 
-        if (api.isRecord(value) && name in value) {
+        if (code.isRecord(value) && name in value) {
           value = value[name]
         } else {
           value = undefined
@@ -104,32 +104,32 @@ export function readNest(input: APIInputType): unknown {
 }
 
 export function resolveNestDependencyList(
-  input: APIInputType,
-  job: (i: APIInputType) => void,
-): Array<InternalDependencyType> {
-  const array: Array<InternalDependencyType> = []
-  const dependency: InternalDependencyType = {
+  input: MeshInputType,
+  job: (i: MeshInputType) => void,
+): Array<SiteDependencyType> {
+  const array: Array<SiteDependencyType> = []
+  const dependency: SiteDependencyType = {
     callbackList: [job],
     children: [],
     context: input,
-    like: Internal.Dependency,
+    like: Site.Dependency,
     partial: false,
     path: [],
   }
   array.push(dependency)
 
-  api.assumeNest(input).line.forEach(nest => {
+  code.assumeNest(input).line.forEach(nest => {
     if (nest.like === Tree.Term) {
       // TODO: solve for interpolated terms too.
-      const name = api.resolveStaticTerm(
-        api.extendWithObjectScope(input, nest),
+      const name = code.resolveStaticTerm(
+        code.extendWithObjectScope(input, nest),
       )
 
-      api.assertString(name)
+      code.assertString(name)
 
-      const dependencyPart: InternalDependencyPartType = {
+      const dependencyPart: SiteDependencyPartType = {
         callbackList: [],
-        like: Internal.DependencyPart,
+        like: Site.DependencyPart,
         name,
         parent: dependency,
       }
@@ -142,9 +142,9 @@ export function resolveNestDependencyList(
 }
 
 export function resolveText(
-  input: APIInputType,
+  input: MeshInputType,
 ): string | undefined {
-  const nest = api.assumeNest(input)
+  const nest = code.assumeNest(input)
 
   if (nest.line.length > 1) {
     return
@@ -168,8 +168,8 @@ export function resolveText(
         break
       case Tree.Slot:
         // TODO
-        const text = api.readNest(
-          api.extendWithNestScope(input, {
+        const text = code.readNest(
+          code.extendWithNestScope(input, {
             index: 0,
             nest: link.nest,
           }),
@@ -186,10 +186,10 @@ export function resolveText(
 }
 
 export function resolveTextDependencyList(
-  input: APIInputType,
-  job: (i: APIInputType) => void,
-): Array<InternalDependencyType> {
-  const nest = api.assumeNest(input)
+  input: MeshInputType,
+  job: (i: MeshInputType) => void,
+): Array<SiteDependencyType> {
+  const nest = code.assumeNest(input)
 
   if (nest.line.length > 1) {
     return []
@@ -204,15 +204,15 @@ export function resolveTextDependencyList(
     return []
   }
 
-  const array: Array<InternalDependencyType> = []
+  const array: Array<SiteDependencyType> = []
 
   line.link.forEach(link => {
     switch (link.like) {
       case Tree.Cord:
         break
       case Tree.Slot:
-        const dependencies = api.resolveNestDependencyList(
-          api.extendWithNestScope(input, {
+        const dependencies = code.resolveNestDependencyList(
+          code.extendWithNestScope(input, {
             index: 0,
             nest: link.nest,
           }),
@@ -229,10 +229,10 @@ export function resolveTextDependencyList(
 }
 
 export function textIsInterpolated(
-  input: APIInputType,
+  input: MeshInputType,
   size: number = 1,
 ): boolean {
-  const nest = api.assumeNest(input)
+  const nest = code.assumeNest(input)
 
   for (let i = 0, n = nest.line.length; i < n; i++) {
     let line = nest.line[i]

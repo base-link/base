@@ -1,34 +1,34 @@
-import { AST, Nest, api } from '~'
-import type { APIInputType } from '~'
+import { Mesh, MeshHint, code } from '~'
+import type { MeshInputType } from '~'
 
 export function finalize_codeCard_bear_nestedChildren(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
-  const text = api.resolveText(input)
+  const text = code.resolveText(input)
 
-  api.assertString(text)
+  code.assertString(text)
 
-  const card = api.getProperty(input, 'card')
+  const card = code.getProperty(input, 'card')
 
-  api.assertASTPartial(card, AST.CodeModule)
+  code.assertMeshPartial(card, Mesh.CodeModule)
 
-  const path = api.resolveModulePath(input, text)
+  const path = code.resolveModulePath(input, text)
 
   card.children.push({
     absolutePath: path,
     complete: true,
-    like: AST.Export,
+    like: Mesh.Export,
     partial: false,
   })
 }
 
 export function process_codeCard_bear(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
-  const nest = api.assumeNest(input)
+  const nest = code.assumeNest(input)
   nest.nest.forEach((nest, index) => {
-    api.process_codeCard_bear_nestedChildren(
-      api.extendWithNestScope(input, {
+    code.process_codeCard_bear_nestedChildren(
+      code.extendWithNestScope(input, {
         index,
         nest,
       }),
@@ -37,32 +37,34 @@ export function process_codeCard_bear(
 }
 
 export function process_codeCard_bear_hide(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {}
 
 export function process_codeCard_bear_nestedChildren(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
-  const type = api.determineNestType(input)
+  const type = code.determineNestType(input)
   switch (type) {
-    case Nest.StaticText:
-      api.finalize_codeCard_bear_nestedChildren(input)
+    case MeshHint.StaticText:
+      code.finalize_codeCard_bear_nestedChildren(input)
       break
-    case Nest.DynamicText:
-      api.processDynamicTextNest(
+    case MeshHint.DynamicText:
+      code.processDynamicTextNest(
         input,
-        api.finalize_codeCard_bear_nestedChildren,
+        code.finalize_codeCard_bear_nestedChildren,
       )
       break
-    case Nest.StaticTerm:
-      const term = api.resolveStaticTermFromNest(input)
+    case MeshHint.StaticTerm:
+      const term = code.resolveStaticTermFromNest(input)
       switch (term) {
         case 'hide':
-          api.process_codeCard_bear_hide(input)
+          code.process_codeCard_bear_hide(input)
           break
       }
       break
     default:
-      api.throwError(api.generateUnhandledTermCaseError(input))
+      code.throwError(
+        code.generateUnhandledTermCaseError(input),
+      )
   }
 }

@@ -1,13 +1,13 @@
-import { api } from '~'
+import { code } from '~'
 
 start()
 
 async function start() {
-  await api.loadSourceMaps()
-  const link = api.findPath('@treesurf/wolf')
-  api.assertString(link)
-  const base = api.createBase()
-  api.setEnvironmentVariable(base, 'dock', 'javascript')
-  api.setEnvironmentVariable(base, 'site', 'test')
-  api.handle_deckCard(base, link)
+  await code.loadSourceMaps()
+  const link = code.findPath('@treesurf/wolf')
+  code.assertString(link)
+  const base = code.createBase()
+  code.setEnvironmentVariable(base, 'dock', 'javascript')
+  code.setEnvironmentVariable(base, 'site', 'test')
+  code.handle_deckCard(base, link)
 }

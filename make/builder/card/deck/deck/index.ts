@@ -1,5 +1,9 @@
-import { AST, Nest, api } from '~'
-import type { APIInputType, ASTPartialType, ASTType } from '~'
+import { Mesh, MeshHint, code } from '~'
+import type {
+  MeshInputType,
+  MeshPartialType,
+  MeshType,
+} from '~'
 
 export * from './bear/index.js'
 export * from './face/index.js'
@@ -9,11 +13,11 @@ export * from './term/index.js'
 export * from './test/index.js'
 
 export function generate_full_deckCard_deck(
-  input: APIInputType,
-): ASTType<AST.Package> {
-  const deck = api.assumeInputObjectAsASTPartialType(
+  input: MeshInputType,
+): MeshType<Mesh.Package> {
+  const deck = code.assumeInputObjectAsMeshPartialType(
     input,
-    AST.Package,
+    Mesh.Package,
   )
   let host
   let name
@@ -24,10 +28,10 @@ export function generate_full_deckCard_deck(
   deck.children.forEach(node => {
     if (!node.partial) {
       switch (node.like) {
-        case AST.Constant:
+        case Mesh.Constant:
           if (
             'like' in node.value &&
-            node.value.like === AST.String
+            node.value.like === Mesh.String
           ) {
             switch (node.name) {
               case 'link':
@@ -52,20 +56,20 @@ export function generate_full_deckCard_deck(
     }
   })
 
-  api.assertString(host)
-  api.assertString(name)
+  code.assertString(host)
+  code.assertString(name)
 
-  api.assertString(version, () =>
-    api.generateMissingStringError(input, 'mark'),
+  code.assertString(version, () =>
+    code.generateMissingStringError(input, 'mark'),
   )
-  // api.assertString(version)
+  // code.assertString(version)
 
   return {
     bear: exportFile,
     complete: false,
     face: [],
     host,
-    like: AST.Package,
+    like: Mesh.Package,
     mark: version,
     name,
     partial: false,
@@ -75,66 +79,66 @@ export function generate_full_deckCard_deck(
 }
 
 export function process_deckCard_deck(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
-  const nest = api.assumeNest(input)
-  const deck: ASTPartialType<AST.Package> = {
+  const nest = code.assumeNest(input)
+  const deck: MeshPartialType<Mesh.Package> = {
     children: [],
-    like: AST.Package,
+    like: Mesh.Package,
     partial: true,
   }
 
-  api.assertASTPartial(input.card, AST.PackageModule)
+  code.assertMeshPartial(input.card, Mesh.PackageModule)
   input.card.children.push(deck)
 
-  const childInput = api.extendWithObjectScope(input, deck)
+  const childInput = code.extendWithObjectScope(input, deck)
 
   nest.nest.forEach((nest, index) => {
-    api.process_deckCard_deck_nestedChildren(
-      api.extendWithNestScope(childInput, {
+    code.process_deckCard_deck_nestedChildren(
+      code.extendWithNestScope(childInput, {
         index,
         nest,
       }),
     )
   })
 
-  if (api.childrenAreComplete(deck)) {
-    api.replaceASTChild(
+  if (code.childrenAreComplete(deck)) {
+    code.replaceMeshChild(
       childInput,
-      AST.PackageModule,
+      Mesh.PackageModule,
       deck,
-      api.generate_full_deckCard_deck(childInput),
+      code.generate_full_deckCard_deck(childInput),
     )
   } else {
-    api.throwError(
-      api.generateModuleUnresolvableError(childInput),
+    code.throwError(
+      code.generateModuleUnresolvableError(childInput),
     )
   }
 }
 
 export function process_deckCard_deck_nestedChildren(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
-  const type = api.determineNestType(input)
-  const index = api.assumeNestIndex(input)
+  const type = code.determineNestType(input)
+  const index = code.assumeNestIndex(input)
   switch (type) {
-    case Nest.DynamicTerm:
-    case Nest.DynamicText:
-      api.throwError(
-        api.generateUnhandledNestCaseError(input, type),
+    case MeshHint.DynamicTerm:
+    case MeshHint.DynamicText:
+      code.throwError(
+        code.generateUnhandledNestCaseError(input, type),
       )
       break
-    case Nest.StaticText: {
+    case MeshHint.StaticText: {
       if (index === 0) {
-        api.process_deckCard_deck_link(input)
+        code.process_deckCard_deck_link(input)
       } else {
         throw new Error('Unhandled text.')
       }
       break
     }
-    case Nest.StaticTerm:
+    case MeshHint.StaticTerm:
       if (index > 0) {
-        api.process_deckCard_deck_nestedTerm(input)
+        code.process_deckCard_deck_nestedTerm(input)
       } else {
         throw new Error('Unhandled term.')
       }
@@ -143,24 +147,24 @@ export function process_deckCard_deck_nestedChildren(
 }
 
 export function process_deckCard_deck_nestedTerm(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
-  const term = api.resolveStaticTermFromNest(input)
+  const term = code.resolveStaticTermFromNest(input)
   switch (term) {
     case 'bear': {
-      api.process_deckCard_deck_bear(input)
+      code.process_deckCard_deck_bear(input)
       break
     }
     case 'test': {
-      api.process_deckCard_deck_test(input)
+      code.process_deckCard_deck_test(input)
       break
     }
     case 'mint': {
-      api.process_deckCard_deck_mint(input)
+      code.process_deckCard_deck_mint(input)
       break
     }
     default: {
-      api.throwError(api.generateUnknownTermError(input))
+      code.throwError(code.generateUnknownTermError(input))
     }
   }
 }

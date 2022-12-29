@@ -1,14 +1,14 @@
-import { api } from '~'
-import type { APIInputType } from '~'
+import { code } from '~'
+import type { MeshInputType } from '~'
 
 export * from './hook/index.js'
 
 export function process_codeCard_zone(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
-  api.assumeNest(input).nest.forEach((nest, index) => {
-    api.process_codeCard_zone_nestedChildren(
-      api.extendWithNestScope(input, {
+  code.assumeNest(input).nest.forEach((nest, index) => {
+    code.process_codeCard_zone_nestedChildren(
+      code.extendWithNestScope(input, {
         index,
         nest,
       }),
@@ -17,25 +17,25 @@ export function process_codeCard_zone(
 }
 
 export function process_codeCard_zone_nestedChildren(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
-  const type = api.determineNestType(input)
+  const type = code.determineNestType(input)
   if (type === 'static-term') {
-    const term = api.resolveStaticTermFromNest(input)
+    const term = code.resolveStaticTermFromNest(input)
     switch (term) {
       case 'take':
-        api.process_codeCard_link(input)
+        code.process_codeCard_link(input)
         break
       case 'hook':
-        api.process_codeCard_zoneHook(input)
+        code.process_codeCard_zoneHook(input)
         break
       case 'head':
-        api.process_codeCard_head(input)
+        code.process_codeCard_head(input)
         break
       default:
-        api.throwError(api.generateUnknownTermError(input))
+        code.throwError(code.generateUnknownTermError(input))
     }
   } else {
-    api.throwError(api.generateUnhandledTermCaseError(input))
+    code.throwError(code.generateUnhandledTermCaseError(input))
   }
 }

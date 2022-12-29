@@ -1,12 +1,12 @@
-import { Nest, api } from '~'
-import type { APIInputType } from '~'
+import { MeshHint, code } from '~'
+import type { MeshInputType } from '~'
 
 export function process_codeCard_call(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
-  api.assumeNest(input).nest.forEach((nest, index) => {
+  code.assumeNest(input).nest.forEach((nest, index) => {
     process_codeCard_call_nestedChildren(
-      api.extendWithNestScope(input, {
+      code.extendWithNestScope(input, {
         index,
         nest,
       }),
@@ -15,17 +15,17 @@ export function process_codeCard_call(
 }
 
 export function process_codeCard_call_nestedChildren(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
-  const type = api.determineNestType(input)
+  const type = code.determineNestType(input)
   switch (type) {
-    case Nest.DynamicTerm:
+    case MeshHint.DynamicTerm:
       break
-    case Nest.StaticText:
+    case MeshHint.StaticText:
       break
-    case Nest.StaticTerm:
-      const term = api.assumeStaticTermFromNest(input)
-      const index = api.assumeNestIndex(input)
+    case MeshHint.StaticTerm:
+      const term = code.assumeStaticTermFromNest(input)
+      const index = code.assumeNestIndex(input)
       if (index === 0) {
         throw new Error('Hint: call name')
       } else {
@@ -35,15 +35,15 @@ export function process_codeCard_call_nestedChildren(
           case 'loan':
             break
           default:
-            api.throwError(
-              api.generateUnhandledTermCaseError(input),
+            code.throwError(
+              code.generateUnhandledTermCaseError(input),
             )
         }
       }
       break
     default:
-      api.throwError(
-        api.generateUnhandledNestCaseError(input, type),
+      code.throwError(
+        code.generateUnhandledNestCaseError(input, type),
       )
   }
 }

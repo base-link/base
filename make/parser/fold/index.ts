@@ -1,6 +1,6 @@
 import chalk from 'chalk'
 
-import { Text, api } from '~'
+import { Text, code } from '~'
 import type {
   TextResultType,
   TextTermFragmentTokenType,
@@ -76,7 +76,7 @@ export function generateLinkTextBuildingDirections(
             break
           }
           default:
-            api.throwError({
+            code.throwError({
               code: '0023',
               note: top,
             })
@@ -99,7 +99,7 @@ export function generateLinkTextBuildingDirections(
             break
           }
           default:
-            api.throwError({
+            code.throwError({
               code: '0023',
               note: top,
             })
@@ -140,7 +140,7 @@ export function generateLinkTextBuildingDirections(
             break
           }
           default:
-            api.throwError({
+            code.throwError({
               code: '0023',
               note: top,
             })
@@ -168,7 +168,7 @@ export function generateLinkTextBuildingDirections(
             break
           }
           default:
-            api.throwError({
+            code.throwError({
               code: '0023',
               note: top,
             })
@@ -202,7 +202,7 @@ export function generateLinkTextBuildingDirections(
             break
           }
           default:
-            api.throwError({
+            code.throwError({
               code: '0023',
               note: top,
             })
@@ -280,7 +280,7 @@ export function generateLinkTextBuildingDirections(
             break
           }
           default:
-            api.throwError({
+            code.throwError({
               code: '0023',
               note: top,
             })
@@ -341,7 +341,7 @@ export function generateLinkTextBuildingDirections(
 
   function assertTop(): string {
     const top = stack[stack.length - 1]
-    api.assertString(top)
+    code.assertString(top)
     return top
   }
 

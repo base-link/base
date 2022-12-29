@@ -3,7 +3,7 @@
 //   scope: ScopeType<Scope>,
 //   handle: (scope: ScopeType<Scope>) => void,
 // ) {
-//   const base = api.getPropertyValueFromScope(
+//   const base = code.getPropertyValueFromScope(
 //     scope,
 //     'base',
 //   ) as Base
@@ -27,7 +27,7 @@
 //   handle: (fork: T) => void,
 // ) {
 //   if (dependencyList.length) {
-//     api.enqueueDependencyResolution<T>(
+//     code.enqueueDependencyResolution<T>(
 //       dependencyList,
 //       scope,
 //       handle,
@@ -40,9 +40,9 @@
 // // export function processSimpleTerm(scope: CompilerNestForkType, callback: (scope: CompilerNestForkType) => void): void {
 // // }
 // export function processTextDependencyList(
-//   input: APIInputType,
+//   input: MeshInputType,
 //   handle: () => void,
 // ): void {
-//   const dependencyList = api.getTextDependencyList(input.nest)
-//   api.processDependencyList(dependencyList, scope, handle)
+//   const dependencyList = code.getTextDependencyList(input.nest)
+//   code.processDependencyList(dependencyList, scope, handle)
 // }

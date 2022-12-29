@@ -4,8 +4,8 @@ import pathResolve, { dirname } from 'path'
 import smc from 'source-map'
 import { fileURLToPath } from 'url'
 
-import { api } from '~'
-import type { APIInputType, Base } from '~'
+import { code } from '~'
+import type { Base, MeshInputType } from '~'
 
 export const SOURCE_MAPS: Record<
   string,
@@ -17,18 +17,18 @@ const __filename = fileURLToPath(import.meta.url)
 export const __dirname = dirname(__filename)
 
 export function assumePath(
-  input: APIInputType,
+  input: MeshInputType,
   inputPath: string,
 ): string {
   const card = input.card
-  api.assertCard(card)
-  const path = api.findPath(inputPath, card.directory)
+  code.assertCard(card)
+  const path = code.findPath(inputPath, card.directory)
   if (!path) {
-    api.throwError(
-      api.generateUnresolvedPathError(input, inputPath),
+    code.throwError(
+      code.generateUnresolvedPathError(input, inputPath),
     )
   }
-  api.assertString(path)
+  code.assertString(path)
   return path
 }
 
@@ -81,7 +81,7 @@ export async function loadSourceMaps(): Promise<void> {
   const startDir = pathResolve.resolve(
     `${__dirname}/../../host`,
   )
-  const paths = await api.findFilePathsRecursively(
+  const paths = await code.findFilePathsRecursively(
     `${startDir}/**/*.js`,
   )
 
@@ -102,17 +102,17 @@ export function resolveDirectoryPath(path: string): string {
 }
 
 export function resolveModulePath(
-  input: APIInputType,
+  input: MeshInputType,
   text: string,
 ): string {
   const { card } = input
-  const path = api.findPath(text, card.directory)
+  const path = code.findPath(text, card.directory)
 
   if (!path) {
     throw new Error('oops, todo')
   }
 
-  api.assertString(path)
+  code.assertString(path)
 
   return path
 }

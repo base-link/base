@@ -2,15 +2,15 @@ import chalk from 'chalk'
 
 import {
   ERROR,
-  NEST_TYPE_TEXT,
-  Nest,
+  MESH_HINT_TEXT,
+  MeshHint,
   SOURCE_MAPS,
   Tree,
-  api,
+  code,
   prettifyJSON,
 } from '~'
 import type {
-  APIInputType,
+  MeshInputType,
   Text,
   TextSplitInputType,
   TextTokenType,
@@ -28,18 +28,18 @@ export type CursorRangeType = {
   start: CursorLinePositionType
 }
 
-export type ErrorConfigType = {
+export type SiteErrorConfigType = {
   code: string
   hint?: string
   note: (props: Record<string, unknown>) => string
   text?: string
 }
 
-export type ErrorInputType = Record<string, unknown>
+export type SiteErrorInputType = Record<string, unknown>
 
 const consumers = {}
 
-export type ErrorType = {
+export type SiteErrorType = {
   code: string
   file?: string
   hint?: string
@@ -49,15 +49,15 @@ export type ErrorType = {
 
 export function assertError(
   error: unknown,
-): asserts error is ErrorConfigType {
-  if (!api.isError(error)) {
+): asserts error is SiteErrorConfigType {
+  if (!code.isError(error)) {
     throw new Error('Error handler undefined')
   }
 }
 
 export function generateForkMissingPropertyError(
   property: string,
-): ErrorType {
+): SiteErrorType {
   return {
     code: `0010`,
     note: `Scope is missing property '${property}'.`,
@@ -73,7 +73,7 @@ export function generateHighlightedError(
     textByLine.length - 1,
   )
   const endLineString = textByLine[endLine]
-  api.assertString(endLineString)
+  code.assertString(endLineString)
   const endCharacter = endLineString.length - 1
   const boundedRange: CursorRangeType = {
     end: {
@@ -96,29 +96,29 @@ export function generateHighlightedError(
 }
 
 export function generateHighlightedErrorForTerm(
-  input: APIInputType,
+  input: MeshInputType,
 ): string {
-  const highlightedRange = api.getCursorRangeForTerm(input)
-  return api.generateHighlightedError(
+  const highlightedRange = code.getCursorRangeForTerm(input)
+  return code.generateHighlightedError(
     input.card.textByLine,
     highlightedRange,
   )
 }
 
 export function generateHighlightedErrorForText(
-  input: APIInputType,
+  input: MeshInputType,
 ): string {
-  const highlightedRange = api.getCursorRangeForText(input)
-  return api.generateHighlightedError(
+  const highlightedRange = code.getCursorRangeForText(input)
+  return code.generateHighlightedError(
     input.card.textByLine,
     highlightedRange,
   )
 }
 
 export function generateInvalidDeckLink(
-  input: APIInputType,
+  input: MeshInputType,
   link: string,
-): ErrorType {
+): SiteErrorType {
   return {
     code: `0008`,
     note: `Invalid deck link '${link}'.`,
@@ -126,9 +126,9 @@ export function generateInvalidDeckLink(
 }
 
 export function generateInvalidNestChildrenLengthError(
-  input: APIInputType,
+  input: MeshInputType,
   length: number,
-): ErrorType {
+): SiteErrorType {
   return {
     code: `0009`,
     note: `Term doesn't have ${length} children.`,
@@ -136,12 +136,12 @@ export function generateInvalidNestChildrenLengthError(
 }
 
 export function generateInvalidPatternError(
-  input: APIInputType,
+  input: MeshInputType,
   pattern: unknown,
-): ErrorType {
+): SiteErrorType {
   const { card } = input
-  const nest = api.assumeNest(input)
-  const text = api.generateHighlightedErrorForText(input)
+  const nest = code.assumeNest(input)
+  const text = code.generateHighlightedErrorForText(input)
   return {
     code: `0012`,
     file: `${card.path}`,
@@ -151,15 +151,15 @@ export function generateInvalidPatternError(
 }
 
 export function generateMissingStringError(
-  input: APIInputType,
+  input: MeshInputType,
   property: string,
-): ErrorType {
-  const nest = api.assumeNest(input)
+): SiteErrorType {
+  const nest = code.assumeNest(input)
   const term = nest.line[0]
-  api.assertTreeType(term, Tree.Term)
-  const childInput = api.extendWithObjectScope(input, term)
-  const name = api.resolveStaticTerm(childInput)
-  const text = api.generateHighlightedErrorForTerm(input)
+  code.assertTreeType(term, Tree.Term)
+  const childInput = code.extendWithObjectScope(input, term)
+  const name = code.resolveStaticTerm(childInput)
+  const text = code.generateHighlightedErrorForTerm(input)
   return {
     code: `0011`,
     file: `${input.card.path}`,
@@ -169,8 +169,8 @@ export function generateMissingStringError(
 }
 
 export function generateModuleUnresolvableError(
-  input: APIInputType,
-): ErrorType {
+  input: MeshInputType,
+): SiteErrorType {
   return {
     code: '0020',
     file: `${input.card.path}`,
@@ -181,7 +181,7 @@ export function generateModuleUnresolvableError(
 export function generateObjectNotTypeError(
   object: unknown,
   like: Array<string>,
-): ErrorType {
+): SiteErrorType {
   const words =
     like.length > 1
       ? like
@@ -199,7 +199,7 @@ export function generateObjectNotTypeError(
 
 export function generateScopeMissingPropertyError(
   property: string,
-): ErrorType {
+): SiteErrorType {
   return {
     code: '0019',
     note: `Scope is missing property ${property}.`,
@@ -209,7 +209,7 @@ export function generateScopeMissingPropertyError(
 export function generateSyntaxTokenError(
   input: TextSplitInputType,
   lastToken?: TextTokenType<Text>,
-): ErrorType {
+): SiteErrorType {
   const highlight: CursorRangeType = {
     end: {
       character: 0,
@@ -227,7 +227,7 @@ export function generateSyntaxTokenError(
     highlight.end.character = lastToken.end.character
   }
 
-  const text = api.generateHighlightedError(
+  const text = code.generateHighlightedError(
     input.textInLines,
     highlight,
   )
@@ -242,10 +242,10 @@ export function generateSyntaxTokenError(
 export function generateTermMissingChildError(): void {}
 
 export function generateTermMissingError(
-  input: APIInputType,
+  input: MeshInputType,
   type: string,
   object: string,
-): ErrorType {
+): SiteErrorType {
   const { card } = input
   return {
     code: `0018`,
@@ -256,10 +256,10 @@ export function generateTermMissingError(
 }
 
 export function generateUnhandledNestCaseBaseError(
-  input: APIInputType,
-): ErrorType {
+  input: MeshInputType,
+): SiteErrorType {
   const { card } = input
-  const text = api.generateHighlightedErrorForTerm(input)
+  const text = code.generateHighlightedErrorForTerm(input)
   return {
     code: `0005`,
     file: `${card.path}`,
@@ -269,36 +269,36 @@ export function generateUnhandledNestCaseBaseError(
 }
 
 export function generateUnhandledNestCaseError(
-  input: APIInputType,
-  type: Nest,
-): ErrorType {
+  input: MeshInputType,
+  type: MeshHint,
+): SiteErrorType {
   let scope
   try {
-    scope = api.resolveStaticTermFromNest(input, 1)
+    scope = code.resolveStaticTermFromNest(input, 1)
   } catch (e) {}
-  const text = api.generateHighlightedErrorForTerm(input)
+  const text = code.generateHighlightedErrorForTerm(input)
   return {
     code: `0004`,
     file: `${input.card.path}`,
     note: `We haven't implemented handling "${
-      NEST_TYPE_TEXT[type]
+      MESH_HINT_TEXT[type]
     }s" yet${scope ? ` on \`${scope}\`` : ''}.`,
     text,
   }
 }
 
 export function generateUnhandledTermCaseError(
-  input: APIInputType,
-): ErrorType {
+  input: MeshInputType,
+): SiteErrorType {
   let scope
   try {
-    scope = api.resolveStaticTermFromNest(input, 1)
+    scope = code.resolveStaticTermFromNest(input, 1)
   } catch (e) {}
-  const name = api.resolveStaticTermFromNest(input)
-  api.assertString(name)
+  const name = code.resolveStaticTermFromNest(input)
+  code.assertString(name)
   const handle = ERROR['0002']
-  api.assertError(handle)
-  const text = api.generateHighlightedErrorForTerm(input)
+  code.assertError(handle)
+  const text = code.generateHighlightedErrorForTerm(input)
   return {
     code: `0002`,
     file: `${input.card.path}`,
@@ -308,8 +308,8 @@ export function generateUnhandledTermCaseError(
 }
 
 export function generateUnhandledTermInterpolationError(
-  input: APIInputType,
-): ErrorType {
+  input: MeshInputType,
+): SiteErrorType {
   return {
     code: `0001`,
     file: `${input.card.path}`,
@@ -319,12 +319,12 @@ export function generateUnhandledTermInterpolationError(
 }
 
 export function generateUnknownTermError(
-  input: APIInputType,
-): ErrorType {
+  input: MeshInputType,
+): SiteErrorType {
   const { card } = input
-  const name = api.resolveStaticTermFromNest(input)
-  const text = api.generateHighlightedErrorForTerm(input)
-  const insideName = api.resolveStaticTermFromNest(input, 1)
+  const name = code.resolveStaticTermFromNest(input)
+  const text = code.generateHighlightedErrorForTerm(input)
+  const insideName = code.resolveStaticTermFromNest(input, 1)
   return {
     code: `0003`,
     file: `${card.path}`,
@@ -336,9 +336,9 @@ export function generateUnknownTermError(
 }
 
 export function generateUnresolvedPathError(
-  input: APIInputType,
+  input: MeshInputType,
   path: string,
-): ErrorType {
+): SiteErrorType {
   const { card } = input
   return {
     code: `0013`,
@@ -348,9 +348,9 @@ export function generateUnresolvedPathError(
 }
 
 export function getCursorRangeForTerm(
-  input: APIInputType,
+  input: MeshInputType,
 ): CursorRangeType {
-  const nest = api.assumeNest(input)
+  const nest = code.assumeNest(input)
 
   const range: CursorRangeType = {
     end: {
@@ -397,8 +397,8 @@ export function getCursorRangeForTerm(
         const lastNest = last.nest
         const lastLine = lastNest.line[lastNest.line.length - 1]
         if (lastLine && lastLine.like === Tree.Term) {
-          const childRange = api.getCursorRangeForTerm(
-            api.extendWithNestScope(input, {
+          const childRange = code.getCursorRangeForTerm(
+            code.extendWithNestScope(input, {
               nest: lastNest,
             }),
           )
@@ -409,8 +409,8 @@ export function getCursorRangeForTerm(
           throw new Error('Unhandled')
         }
       } else if (last.like === Tree.Term) {
-        const childRange = api.getCursorRangeForTerm(
-          api.extendWithNestScope(input, {
+        const childRange = code.getCursorRangeForTerm(
+          code.extendWithNestScope(input, {
             nest: last,
           }),
         )
@@ -427,9 +427,9 @@ export function getCursorRangeForTerm(
 }
 
 export function getCursorRangeForText(
-  input: APIInputType,
+  input: MeshInputType,
 ): CursorRangeType {
-  const nest = api.assumeNest(input)
+  const nest = code.assumeNest(input)
 
   const range: CursorRangeType = {
     end: {
@@ -521,14 +521,14 @@ export function highlightTextRangeForError(
 
 export function isError(
   error: unknown,
-): error is ErrorConfigType {
+): error is SiteErrorConfigType {
   return (
-    api.isRecord(error) &&
-    Boolean((error as ErrorConfigType).code)
+    code.isRecord(error) &&
+    Boolean((error as SiteErrorConfigType).code)
   )
 }
 
-export function throwError(data: ErrorType): void {
+export function throwError(data: SiteErrorType): void {
   const text: Array<string> = []
 
   text.push(``)
@@ -587,11 +587,11 @@ export function throwError(data: ErrorType): void {
 
           if (
             x &&
-            api.isNumber(a) &&
-            api.isNumber(b) &&
-            api.isString(x)
+            code.isNumber(a) &&
+            code.isNumber(b) &&
+            code.isString(x)
           ) {
-            // x = api.resolveNativePath(x.replace(/^file:\/\//, ''))
+            // x = code.resolveNativePath(x.replace(/^file:\/\//, ''))
             const map = SOURCE_MAPS[x]
 
             const trace = {
@@ -605,9 +605,9 @@ export function throwError(data: ErrorType): void {
               if (token.source) {
                 x =
                   token.source &&
-                  api.resolveNativePath(
+                  code.resolveNativePath(
                     token.source,
-                    api.resolveDirectoryPath(
+                    code.resolveDirectoryPath(
                       x.replace(/^file:\/\//, ''),
                     ),
                   )

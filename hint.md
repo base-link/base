@@ -4,13 +4,18 @@ Here is a brief, partial guide for BaseLink.
 
 1. First we show the _idioms_ (i.e. the how-to guide).
 2. Then we show the _keywords_ (i.e. the standard reference).
-3. Finally we show some _examples_, to demonstrate how you might write some common things.
+3. Finally we show some _examples_, to demonstrate how you might
+   write some common things.
 
-Overall this guide is meant to be more like a cheat sheet with basic explanations, to give you a sense of the full possibilities. Moreso than being an introductory tutorial.
+Overall this guide is meant to be more like a cheat sheet with
+basic explanations, to give you a sense of the full
+possibilities. Moreso than being an introductory tutorial.
 
 ## Idioms
 
-BaseLink idioms are standard ways of doing common programming things. Here we show how to write BaseLink for common situations.
+BaseLink idioms are standard ways of doing common programming
+things. Here we show how to write BaseLink for common
+situations.
 
 ### Defining a simple variable
 
@@ -37,13 +42,15 @@ You can read a variable or pass a variable using the read term.
 read x
 ```
 
-But you can also dig into an object sort of like a file path (instead of using `.` like many programming languages).
+But you can also dig into an object sort of like a file path
+(instead of using `.` like many programming languages).
 
 ```
 read x/foo
 ```
 
-You can also interpolate the path like getting dynamically named properties.
+You can also interpolate the path like getting dynamically named
+properties.
 
 ```
 read r/{a}/y
@@ -67,7 +74,8 @@ halt fork, fork term
 halt term
 ```
 
-As long as `term` is not a special halt keyword like `fork` or `flow`.
+As long as `term` is not a special halt keyword like `fork` or
+`flow`.
 
 ### Returning a value
 
@@ -79,7 +87,8 @@ back x
 
 This sends a variable `x` back to the caller.
 
-_Otherwise, with no back being used, the last term in a block is returned implicitly._
+_Otherwise, with no back being used, the last term in a block is
+returned implicitly._
 
 You can pass in more complex stuff in necessary, such as:
 
@@ -87,7 +96,9 @@ You can pass in more complex stuff in necessary, such as:
 back make list
 ```
 
-To pass a constructed list. But it is ideal to try and keep base only taking one flat term, so if possible make the return value into a local variable first.
+To pass a constructed list. But it is ideal to try and keep base
+only taking one flat term, so if possible make the return value
+into a local variable first.
 
 ```
 host x, make list
@@ -115,7 +126,9 @@ fall 1
 
 ### Defining a "class" function
 
-To define a class function, there is one form. You don't define them on the "form", you simply define a namespace, which is all that it really is in the end.
+To define a class function, there is one form. You don't define
+them on the "form", you simply define a namespace, which is all
+that it really is in the end.
 
 ```
 form user
@@ -136,7 +149,8 @@ host x, mark 10
 
 ### Defining an integer
 
-Integers get a special term they are wrapped in typically, to make it clear to the compiler what is being passed.
+Integers get a special term they are wrapped in typically, to
+make it clear to the compiler what is being passed.
 
 ```
 mark 10
@@ -144,7 +158,9 @@ mark 10
 
 ### Defining a decimal number
 
-Decimals (or "doubles" or "floats") get a special term they are wrapped in typically, to make it clear to the compiler what is being passed.
+Decimals (or "doubles" or "floats") get a special term they are
+wrapped in typically, to make it clear to the compiler what is
+being passed.
 
 ```
 comb 3.14159265
@@ -152,7 +168,8 @@ comb 3.14159265
 
 ### Defining a string
 
-In BaseLink, strings are called "text". They are typically wrapped when it helps with a term like integers and decimals.
+In BaseLink, strings are called "text". They are typically
+wrapped when it helps with a term like integers and decimals.
 
 ```
 text <This is some text.>
@@ -176,7 +193,8 @@ make user
 
 ### `form`
 
-A form is a class basically, something that instantiates an object.
+A form is a class basically, something that instantiates an
+object.
 
 ```
 form user
@@ -190,13 +208,20 @@ form user
       read password
 ```
 
-There are 3 syntaxes for forms, depending on what you want to do.
+There are 3 syntaxes for forms, depending on what you want to
+do.
 
 1. **Basic forms**: These are defining constructors for objects.
-2. **Alias forms**: These are giving a new (typically shorter) API to an existing form with a potentially complex signature.
-3. **Enumerated forms**: These "enum forms" are lists of possible values a form can take. Each enum "case" is considered a type of this form, but you can also use the enum form directly to specify a form.
+2. **Alias forms**: These are giving a new (typically shorter)
+   Mesh to an existing form with a potentially complex
+   signature.
+3. **Enumerated forms**: These "enum forms" are lists of
+   possible values a form can take. Each enum "case" is
+   considered a type of this form, but you can also use the enum
+   form directly to specify a form.
 
-The above is a _basic form_ (a "base form"). Next here is an _alias form_ (a "like form").
+The above is a _basic form_ (a "base form"). Next here is an
+_alias form_ (a "like form").
 
 ```
 form x
@@ -242,7 +267,8 @@ A task is a function.
 
 ### `take`
 
-A take is an input value (on a task) or public property (on a form). It takes a type ("like"), and can take a default value.
+A take is an input value (on a task) or public property (on a
+form). It takes a type ("like"), and can take a default value.
 
 ```
 take x, like mark
@@ -251,7 +277,8 @@ take x, like mark
 
 ### `head`
 
-A head has the same syntax as a take, but it is used for "type generics".
+A head has the same syntax as a take, but it is used for "type
+generics".
 
 ```
 head x, like mark
@@ -259,7 +286,10 @@ head x, like mark
 
 ### `like`
 
-This is used to define the type of some variable. It is different from a _form_, which is the definition of the type itself. This is not the definition, but a reference to the type matching its pattern.
+This is used to define the type of some variable. It is
+different from a _form_, which is the definition of the type
+itself. This is not the definition, but a reference to the type
+matching its pattern.
 
 Some examples include:
 
@@ -300,7 +330,8 @@ A text is a string.
 
 ### `code`
 
-A code is a custom representation of binary, octal, hex, or unicode, and potentially others.
+A code is a custom representation of binary, octal, hex, or
+unicode, and potentially others.
 
 ### `term`
 
@@ -308,7 +339,8 @@ A term just references a standard keyword.
 
 ### `time`
 
-A time is a lifetime, as in Rust. It tells the compiler the lifetime of a variable.
+A time is a lifetime, as in Rust. It tells the compiler the
+lifetime of a variable.
 
 ### `read`
 
@@ -320,9 +352,11 @@ A time is a lifetime, as in Rust. It tells the compiler the lifetime of a variab
 
 A call is calling a task (function).
 
-Because a function always has named parameters, there are at least two ways to pass the parameters to the call.
+Because a function always has named parameters, there are at
+least two ways to pass the parameters to the call.
 
-- **Implicit binding**: Pass the value directly, _without_ a name.
+- **Implicit binding**: Pass the value directly, _without_ a
+  name.
 - **Explicit binding**: Pass the value _with_ a name.
 
 ```
@@ -332,19 +366,27 @@ call 1/add, mark 2
 call 1/add, bind other, mark 2
 ```
 
-Much of the time you can use implicit bindings to shorten your code. But sometimes it makes it more readable (and sometimes necessary due to task overloading possibilities) if you are explicit about naming the input parameter.
+Much of the time you can use implicit bindings to shorten your
+code. But sometimes it makes it more readable (and sometimes
+necessary due to task overloading possibilities) if you are
+explicit about naming the input parameter.
 
 ### `make`
 
-This is a constructor function, like calling `new` in other programming languages.
+This is a constructor function, like calling `new` in other
+programming languages.
 
 ### `load`
 
-This is for importing other modules ("cards") into the current card.
+This is for importing other modules ("cards") into the current
+card.
 
 ### `tree`
 
-A tree is a reusable chunk of code, like a macro. There is a "bind hook" which puts you into the context of the thing where the tree is being _fused_. The tree fusion can take parameters as well.
+A tree is a reusable chunk of code, like a macro. There is a
+"bind hook" which puts you into the context of the thing where
+the tree is being _fused_. The tree fusion can take parameters
+as well.
 
 ```
 form mark-8
@@ -372,7 +414,10 @@ tree mark
 
 ### `slot`
 
-A slot is a place which you can mark, which you can return to in future contexts within the code. You return to the slot with `beam`. An example of where you might use this is in a walk (iteration) over some value, to dynamically define a form.
+A slot is a place which you can mark, which you can return to in
+future contexts within the code. You return to the slot with
+`beam`. An example of where you might use this is in a walk
+(iteration) over some value, to dynamically define a form.
 
 ```
 form x
@@ -384,11 +429,15 @@ form x
         take {site/name}, like {site/type}
 ```
 
-Here we dynamically define attributes on the form (`take`). The beam is required so we know what context we are using the DSL terms in.
+Here we dynamically define attributes on the form (`take`). The
+beam is required so we know what context we are using the DSL
+terms in.
 
 ### `walk`
 
-These are for doing loops. You can walk a list, or more generally any _iterator_. Or you can just loop until a condition is met, or loop indefinitely.
+These are for doing loops. You can walk a list, or more
+generally any _iterator_. Or you can just loop until a condition
+is met, or loop indefinitely.
 
 ```
 walk list
@@ -402,7 +451,8 @@ walk test
 walk halt
 ```
 
-You can give each of these walks a name, so we know what the loop is called and can break out of it.
+You can give each of these walks a name, so we know what the
+loop is called and can break out of it.
 
 ```
 walk list, name foo
@@ -411,7 +461,9 @@ walk list, name foo
 
 ### `fork`
 
-A fork is a simple branch in code. These are used for if-statements and switch statements, but not loops. Loops are using `walk`.
+A fork is a simple branch in code. These are used for
+if-statements and switch statements, but not loops. Loops are
+using `walk`.
 
 There are a few types of forks:
 
@@ -520,6 +572,7 @@ Here is a list of standard types.
 
 ### The deck card
 
-This is a special kind of file, the deck file, which allows you to define the structure of a deck.
+This is a special kind of file, the deck file, which allows you
+to define the structure of a deck.
 
 ### The host card

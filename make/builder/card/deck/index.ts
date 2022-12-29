@@ -1,31 +1,31 @@
-import { AST, ASTModuleBaseType, Base, api } from '~'
+import { Base, Mesh, MeshModuleBaseType, code } from '~'
 import type {
-  APIInputType,
-  ASTFullType,
-  ASTPartialType,
+  MeshFullType,
+  MeshInputType,
+  MeshPartialType,
 } from '~'
 
 export * from './deck/index.js'
 
 export function generate_deckCard(
-  input: APIInputType,
-): ASTFullType<AST.PackageModule> {
-  api.assertASTPartial(input.card, AST.PackageModule)
+  input: MeshInputType,
+): MeshFullType<Mesh.PackageModule> {
+  code.assertMeshPartial(input.card, Mesh.PackageModule)
 
   let deck
 
   input.card.children.forEach(node => {
     switch (node.like) {
-      case AST.Package:
+      case Mesh.Package:
         deck = node
         break
     }
   })
 
-  api.assertASTFull(deck, AST.Package)
+  code.assertMeshFull(deck, Mesh.Package)
 
   return {
-    ...api.omit(input.card, ['children']),
+    ...code.omit(input.card, ['children']),
     complete: true,
     deck,
     partial: false,
@@ -36,8 +36,8 @@ export function handle_deckCard(
   base: Base,
   link: string,
 ): void {
-  api.process_deckCard(base, link)
-  api.resolve_deckCard(base, link)
+  code.process_deckCard(base, link)
+  code.resolve_deckCard(base, link)
 }
 
 /**
@@ -47,21 +47,21 @@ export function process_deckCard(
   base: Base,
   link: string,
 ): void {
-  const text = api.readTextFile(base, link)
-  const tree = api.parseTextIntoTree(text)
-  const linkHost = api.getLinkHost(link)
+  const text = code.readTextFile(base, link)
+  const tree = code.parseTextIntoTree(text)
+  const linkHost = code.getLinkHost(link)
   const card = base.card(link)
-  const seed: ASTPartialType<AST.PackageModule> = {
+  const seed: MeshPartialType<Mesh.PackageModule> = {
     base,
     children: [],
     directory: linkHost,
-    like: AST.PackageModule,
+    like: Mesh.PackageModule,
     parseTree: tree,
     partial: true,
     path: link,
     textByLine: text.split(/\n/),
   }
-  const input: APIInputType = api.createInitialAPIInput(
+  const input: MeshInputType = code.createInitialMeshInput(
     seed,
     seed,
     seed,
@@ -69,49 +69,49 @@ export function process_deckCard(
 
   card.bind(seed)
 
-  api.assertNest(tree)
+  code.assertNest(tree)
 
   tree.nest.forEach((nest, index) => {
-    api.process_deckCard_nestedChildren(
-      api.extendWithNestScope(input, {
+    code.process_deckCard_nestedChildren(
+      code.extendWithNestScope(input, {
         index,
         nest,
       }),
     )
   })
 
-  if (api.childrenAreComplete(seed)) {
-    api.replaceSeed(input, api.generate_deckCard(input))
+  if (code.childrenAreComplete(seed)) {
+    code.replaceSeed(input, code.generate_deckCard(input))
   }
 }
 
 export function process_deckCard_nestedChildren(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
-  const type = api.determineNestType(input)
+  const type = code.determineNestType(input)
   switch (type) {
     case 'static-term': {
-      const term = api.resolveStaticTermFromNest(input)
+      const term = code.resolveStaticTermFromNest(input)
       switch (term) {
         case 'deck':
-          api.process_deckCard_deck(input)
+          code.process_deckCard_deck(input)
           break
         default:
-          api.throwError(
-            api.generateUnhandledTermCaseError(input),
+          code.throwError(
+            code.generateUnhandledTermCaseError(input),
           )
       }
       break
     }
     default:
-      api.throwError(
-        api.generateUnhandledNestCaseError(input, type),
+      code.throwError(
+        code.generateUnhandledNestCaseError(input, type),
       )
   }
 }
 
-export function replaceSeed<T extends ASTModuleBaseType>(
-  input: APIInputType,
+export function replaceSeed<T extends MeshModuleBaseType>(
+  input: MeshInputType,
   replacement: T,
 ): void {
   input.card = replacement
@@ -123,17 +123,17 @@ export function resolve_deckCard(
   link: string,
 ): void {
   const card = base.card(link)
-  api.assertASTFull(card.seed, AST.PackageModule)
+  code.assertMeshFull(card.seed, Mesh.PackageModule)
 
   // TODO: deck.hint tells us the parser to use on the code.
 
   const { deck } = card.seed
 
   if (deck.bear) {
-    api.handle_codeCard(base, deck.bear)
+    code.handle_codeCard(base, deck.bear)
   }
 
   if (deck.test) {
-    api.handle_codeCard(base, deck.test)
+    code.handle_codeCard(base, deck.test)
   }
 }

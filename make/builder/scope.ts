@@ -1,22 +1,22 @@
-import { AST, Internal, api } from '~'
-import type { InternalScopeType } from '~'
+import { Site, code } from '~'
+import type { SiteScopeType } from '~'
 
 export function createScope(
   data: Record<string, unknown>,
-  parent?: InternalScopeType,
-): InternalScopeType {
+  parent?: SiteScopeType,
+): SiteScopeType {
   return {
     data,
-    like: Internal.Scope,
+    like: Site.Scope,
     parent,
   }
 }
 
 export function getScopeProperty(
-  scope: InternalScopeType,
+  scope: SiteScopeType,
   path: string | number | symbol,
 ): unknown {
-  let source: InternalScopeType = scope
+  let source: SiteScopeType = scope
 
   while (source) {
     if (path in source.data) {
@@ -35,26 +35,26 @@ export function getScopeProperty(
 
 export function isScope(
   object: unknown,
-): object is InternalScopeType {
+): object is SiteScopeType {
   return (
-    api.isRecord(object) &&
+    code.isRecord(object) &&
     'like' in object &&
-    (object as InternalScopeType).like === Internal.Scope
+    (object as SiteScopeType).like === Site.Scope
   )
 }
 
 export function setScopeProperty(
-  scope: InternalScopeType,
+  scope: SiteScopeType,
   property: string,
   value: unknown,
 ): void {
   if (property in scope) {
     scope.data[property] = value
   } else if (scope.parent) {
-    api.setScopeProperty(scope.parent, property, value)
+    code.setScopeProperty(scope.parent, property, value)
   } else {
-    api.throwError(
-      api.generateScopeMissingPropertyError(property),
+    code.throwError(
+      code.generateScopeMissingPropertyError(property),
     )
   }
 }

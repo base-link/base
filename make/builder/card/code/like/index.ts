@@ -1,12 +1,12 @@
-import { Nest, api } from '~'
-import type { APIInputType } from '~'
+import { MeshHint, code } from '~'
+import type { MeshInputType } from '~'
 
 export function process_codeCard_like(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
-  api.assumeNest(input).nest.forEach((nest, index) => {
+  code.assumeNest(input).nest.forEach((nest, index) => {
     process_codeCard_like_nestedChildren(
-      api.extendWithNestScope(input, {
+      code.extendWithNestScope(input, {
         index,
         nest,
       }),
@@ -15,65 +15,65 @@ export function process_codeCard_like(
 }
 
 export function process_codeCard_like_free(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {}
 
 export function process_codeCard_like_head(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {}
 
 export function process_codeCard_like_list(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {}
 
 export function process_codeCard_like_mesh(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {}
 
 export function process_codeCard_like_nestedChildren(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
-  const type = api.determineNestType(input)
+  const type = code.determineNestType(input)
   switch (type) {
-    case Nest.DynamicTerm:
+    case MeshHint.DynamicTerm:
       break
-    case Nest.StaticTerm:
-      const term = api.resolveStaticTermFromNest(input)
+    case MeshHint.StaticTerm:
+      const term = code.resolveStaticTermFromNest(input)
       switch (term) {
         case 'head':
-          api.process_codeCard_like_head(input)
+          code.process_codeCard_like_head(input)
           break
         case 'like':
-          api.process_codeCard_like(input)
+          code.process_codeCard_like(input)
           break
         case 'list':
-          api.process_codeCard_like_list(input)
+          code.process_codeCard_like_list(input)
           break
         case 'mesh':
-          api.process_codeCard_like_mesh(input)
+          code.process_codeCard_like_mesh(input)
           break
         case 'take':
-          api.process_codeCard_like_take(input)
+          code.process_codeCard_like_take(input)
           break
         case 'free':
-          api.process_codeCard_like_free(input)
+          code.process_codeCard_like_free(input)
           break
         case 'term':
-          api.process_codeCard_like_term(input)
+          code.process_codeCard_like_term(input)
           break
       }
       break
     default:
-      api.throwError(
-        api.generateUnhandledNestCaseError(input, type),
+      code.throwError(
+        code.generateUnhandledNestCaseError(input, type),
       )
   }
 }
 
 export function process_codeCard_like_take(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {}
 
 export function process_codeCard_like_term(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {}

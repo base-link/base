@@ -89,7 +89,7 @@ Types to consider:
 - Result (bill)
 - Unknown (mask)
 
-The definition of types is the public API. But the compiler may deal with them in special ways under the hood.
+The definition of types is the public Mesh. But the compiler may deal with them in special ways under the hood.
 
 task
   take name, like name

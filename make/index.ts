@@ -1,5 +1,5 @@
-import * as api from './api.js'
+import * as code from './code.js'
 
-export * from './api.js'
+export * from './code.js'
 
-export { api }
+export { code }

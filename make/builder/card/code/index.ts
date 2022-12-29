@@ -1,5 +1,5 @@
-import { AST, ASTFullType, Base, api } from '~'
-import type { APIInputType, ASTPartialType } from '~'
+import { Base, Mesh, MeshFullType, code } from '~'
+import type { MeshInputType, MeshPartialType } from '~'
 
 export * from './bear/index.js'
 export * from './bind/index.js'
@@ -39,42 +39,42 @@ export function handle_codeCard(
   if (base.card_mesh.has(link)) {
     return
   }
-  api.process_codeCard(base, link)
-  api.resolve_codeCard(base, link)
+  code.process_codeCard(base, link)
+  code.resolve_codeCard(base, link)
 }
 
 export function process_codeCard(
   base: Base,
   link: string,
 ): void {
-  const text = api.readTextFile(base, link)
-  const textTree = api.parseTextIntoTree(text)
-  const linkHost = api.getLinkHost(link)
+  const text = code.readTextFile(base, link)
+  const textTree = code.parseTextIntoTree(text)
+  const linkHost = code.getLinkHost(link)
   const card = base.card(link)
-  const seed: ASTPartialType<AST.CodeModule> = {
+  const seed: MeshPartialType<Mesh.CodeModule> = {
     base,
     children: [],
     directory: linkHost,
-    like: AST.CodeModule,
+    like: Mesh.CodeModule,
     parseTree: textTree,
     partial: true,
     path: link,
     textByLine: text.split('\n'),
   }
-  const input: APIInputType = {
+  const input: MeshInputType = {
     card: seed,
-    lexicalScope: api.createScope(seed),
-    objectScope: api.createScope(seed),
+    lexicalScope: code.createScope(seed),
+    objectScope: code.createScope(seed),
   }
 
   card.bind(seed)
 
-  api.assertNest(textTree)
+  code.assertNest(textTree)
 
   if (text.trim()) {
     textTree.nest.forEach((nest, index) => {
-      api.process_codeCard_nestedChildren(
-        api.extendWithNestScope(input, {
+      code.process_codeCard_nestedChildren(
+        code.extendWithNestScope(input, {
           index,
           nest,
         }),
@@ -84,69 +84,71 @@ export function process_codeCard(
 }
 
 export function process_codeCard_nestedChildren(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
-  const type = api.determineNestType(input)
+  const type = code.determineNestType(input)
   switch (type) {
     case 'dynamic-text':
     case 'dynamic-term':
-      api.throwError(
-        api.generateUnhandledTermInterpolationError(input),
+      code.throwError(
+        code.generateUnhandledTermInterpolationError(input),
       )
       break
     case 'static-term':
-      api.process_codeCard_nestedChildren_staticTerm(input)
+      code.process_codeCard_nestedChildren_staticTerm(input)
       break
   }
 }
 
 export function process_codeCard_nestedChildren_staticTerm(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
-  const term = api.resolveStaticTermFromNest(input)
+  const term = code.resolveStaticTermFromNest(input)
   switch (term) {
     case 'bear': {
-      api.process_codeCard_bear(input)
+      code.process_codeCard_bear(input)
       break
     }
     case 'load': {
-      api.process_codeCard_load(input)
+      code.process_codeCard_load(input)
       break
     }
     case 'fuse': {
-      api.process_codeCard_fuse(input)
+      code.process_codeCard_fuse(input)
       break
     }
     case 'tree': {
-      api.process_codeCard_tree(input)
+      code.process_codeCard_tree(input)
       break
     }
     case 'face': {
-      api.process_codeCard_face(input)
+      code.process_codeCard_face(input)
       break
     }
     case 'host': {
-      api.process_codeCard_host(input)
+      code.process_codeCard_host(input)
       break
     }
     case 'form': {
-      api.process_codeCard_form(input)
+      code.process_codeCard_form(input)
       break
     }
     case 'suit': {
-      api.process_codeCard_suit(input)
+      code.process_codeCard_suit(input)
       break
     }
     case 'task': {
-      api.process_codeCard_task(input)
+      code.process_codeCard_task(input)
       break
     }
     case 'note': {
-      api.process_codeCard_note(input)
+      code.process_codeCard_note(input)
       break
     }
     default: {
-      api.throwError(api.generateUnhandledTermCaseError(input))
+      code.throwError(
+        code.generateUnhandledTermCaseError(input),
+      )
     }
   }
 }
@@ -156,103 +158,103 @@ export function resolve_codeCard(
   link: string,
 ): void {
   const card = base.card(link)
-  api.assertAST(card.seed, AST.CodeModule)
+  code.assertMesh(card.seed, Mesh.CodeModule)
 
   if (card.seed.partial) {
-    if (api.childrenAreComplete(card.seed)) {
-      const seed: ASTFullType<AST.CodeModule> = {
-        allClassAST: {},
-        allClassInterfaceAST: {},
-        allComponentAST: {},
-        allConstantAST: {},
-        allFunctionAST: {},
-        allTemplateAST: {},
-        allTestAST: {},
+    if (code.childrenAreComplete(card.seed)) {
+      const seed: MeshFullType<Mesh.CodeModule> = {
+        allClassInterfaceMesh: {},
+        allClassMesh: {},
+        allComponentMesh: {},
+        allConstantMesh: {},
+        allFunctionMesh: {},
+        allTemplateMesh: {},
+        allTestMesh: {},
         base: card.seed.base,
-        callbackAST: {},
+        callbackMesh: {},
         complete: false,
-        constantAST: {},
+        constantMesh: {},
         directory: card.seed.directory,
         exportList: [],
         importTree: [],
-        like: AST.CodeModule,
-        nativeClassInterfaceAST: {},
+        like: Mesh.CodeModule,
+        nativeClassInterfaceMesh: {},
         parseTree: card.seed.parseTree,
         partial: false,
         path: card.seed.path,
-        publicClassAST: {},
-        publicClassInterfaceAST: {},
-        publicComponentAST: {},
-        publicConstantAST: {},
-        publicFunctionAST: {},
-        publicNativeClassInterfaceAST: {},
-        publicTemplateAST: {},
-        publicTestAST: {},
+        publicClassInterfaceMesh: {},
+        publicClassMesh: {},
+        publicComponentMesh: {},
+        publicConstantMesh: {},
+        publicFunctionMesh: {},
+        publicNativeClassInterfaceMesh: {},
+        publicTemplateMesh: {},
+        publicTestMesh: {},
         textByLine: card.seed.textByLine,
       }
 
       card.seed.children.forEach(node => {
         switch (node.like) {
-          case AST.Constant: {
-            api.assertASTFull(node, AST.Constant)
+          case Mesh.Constant: {
+            code.assertMeshFull(node, Mesh.Constant)
             if (!node.hidden) {
-              seed.publicConstantAST[node.name] = node
+              seed.publicConstantMesh[node.name] = node
             }
-            seed.allConstantAST[node.name] = node
+            seed.allConstantMesh[node.name] = node
             break
           }
-          case AST.ClassInterface: {
-            api.assertASTFull(node, AST.ClassInterface)
+          case Mesh.ClassInterface: {
+            code.assertMeshFull(node, Mesh.ClassInterface)
             if (!node.hidden) {
-              seed.publicClassInterfaceAST[node.name] = node
+              seed.publicClassInterfaceMesh[node.name] = node
             }
-            seed.allClassInterfaceAST[node.name] = node
+            seed.allClassInterfaceMesh[node.name] = node
             break
           }
-          case AST.Function: {
-            api.assertASTFull(node, AST.Function)
+          case Mesh.Function: {
+            code.assertMeshFull(node, Mesh.Function)
             if (!node.hidden) {
-              seed.publicFunctionAST[node.name] = node
+              seed.publicFunctionMesh[node.name] = node
             }
-            seed.allFunctionAST[node.name] = node
+            seed.allFunctionMesh[node.name] = node
             break
           }
-          case AST.Class: {
-            api.assertASTFull(node, AST.Class)
+          case Mesh.Class: {
+            code.assertMeshFull(node, Mesh.Class)
             if (!node.hidden) {
-              seed.publicClassAST[node.name] = node
+              seed.publicClassMesh[node.name] = node
             }
-            seed.allClassAST[node.name] = node
+            seed.allClassMesh[node.name] = node
             break
           }
-          case AST.Template: {
-            api.assertASTFull(node, AST.Template)
+          case Mesh.Template: {
+            code.assertMeshFull(node, Mesh.Template)
             if (!node.hidden) {
-              seed.publicTemplateAST[node.name] = node
+              seed.publicTemplateMesh[node.name] = node
             }
-            seed.allTemplateAST[node.name] = node
+            seed.allTemplateMesh[node.name] = node
             break
           }
-          case AST.Import: {
-            api.assertASTFull(node, AST.Import)
+          case Mesh.Import: {
+            code.assertMeshFull(node, Mesh.Import)
             seed.importTree.push(node)
             break
           }
-          case AST.Export: {
-            api.assertASTFull(node, AST.Export)
+          case Mesh.Export: {
+            code.assertMeshFull(node, Mesh.Export)
             seed.exportList.push(node)
             break
           }
         }
       })
 
-      const input: APIInputType = {
+      const input: MeshInputType = {
         card: card.seed,
-        lexicalScope: api.createScope(card.seed),
-        objectScope: api.createScope(card.seed),
+        lexicalScope: code.createScope(card.seed),
+        objectScope: code.createScope(card.seed),
       }
 
-      api.replaceSeed(input, seed)
+      code.replaceSeed(input, seed)
 
       seed.importTree.forEach(node => {
         // HACK: TODO: figure out how to get the different file types.
@@ -261,9 +263,9 @@ export function resolve_codeCard(
             '/drumwork/deck/([^/]+)/base.link',
           )
         ) {
-          api.handle_deckCard(seed.base, node.absolutePath)
+          code.handle_deckCard(seed.base, node.absolutePath)
         } else {
-          api.handle_codeCard(seed.base, node.absolutePath)
+          code.handle_codeCard(seed.base, node.absolutePath)
         }
       })
 
@@ -274,19 +276,19 @@ export function resolve_codeCard(
             '/drumwork/deck/([^/]+)/base.link',
           )
         ) {
-          api.handle_deckCard(seed.base, node.absolutePath)
+          code.handle_deckCard(seed.base, node.absolutePath)
         } else {
-          api.handle_codeCard(seed.base, node.absolutePath)
+          code.handle_codeCard(seed.base, node.absolutePath)
         }
       })
     } else {
       card.seed.children.forEach(node => {
         switch (node.like) {
-          case AST.Import:
+          case Mesh.Import:
             if (node.partial) {
             }
             break
-          case AST.Export:
+          case Mesh.Export:
             break
         }
       })

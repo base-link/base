@@ -1,157 +1,157 @@
 import {
-  AST,
-  ASTFullType,
-  ASTImportVariable_FullType,
-  ASTImport_FullType,
-  Nest,
-  api,
+  Mesh,
+  MeshFullType,
+  MeshHint,
+  MeshImportVariable_FullType,
+  MeshImport_FullType,
+  code,
 } from '~'
-import type { APIInputType, ASTPartialType } from '~'
+import type { MeshInputType, MeshPartialType } from '~'
 
 export * from './bear/index.js'
 export * from './find/index.js'
 
 export function finalize_codeCard_load_textNest(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
-  const text = api.resolveText(input)
+  const text = code.resolveText(input)
 
-  api.assertString(text)
+  code.assertString(text)
 
-  const card = api.getProperty(input, 'card')
+  const card = code.getProperty(input, 'card')
 
-  api.assertASTPartial(card, AST.CodeModule)
+  code.assertMeshPartial(card, Mesh.CodeModule)
 
-  const path = api.resolveModulePath(input, text)
+  const path = code.resolveModulePath(input, text)
 
-  const load = api.assumeInputObjectAsASTPartialType(
+  const load = code.assumeInputObjectAsMeshPartialType(
     input,
-    AST.Import,
+    Mesh.Import,
   )
 
   load.children.push(
-    api.createStringConstant('absolutePath', path),
+    code.createStringConstant('absolutePath', path),
   )
 }
 
 export function generateFullImport(
-  start: ASTPartialType<AST.Import>,
-): ASTFullType<AST.Import> {
+  start: MeshPartialType<Mesh.Import>,
+): MeshFullType<Mesh.Import> {
   let absolutePath
-  let variableList: Array<ASTImportVariable_FullType> = []
-  let importList: Array<ASTImport_FullType> = []
+  let variableList: Array<MeshImportVariable_FullType> = []
+  let importList: Array<MeshImport_FullType> = []
 
   start.children.forEach(node => {
     if (!node.partial) {
       switch (node.like) {
-        case AST.Constant:
+        case Mesh.Constant:
           if (
             node.name === 'absolutePath' &&
             'like' in node.value &&
-            node.value.like === AST.String
+            node.value.like === Mesh.String
           ) {
             absolutePath = node.value.string
           }
           break
-        case AST.Import:
+        case Mesh.Import:
           importList.push(node)
           break
-        case AST.ImportVariable:
+        case Mesh.ImportVariable:
           variableList.push(node)
           break
       }
     }
   })
 
-  api.assertString(absolutePath)
+  code.assertString(absolutePath)
 
   return {
     absolutePath,
     complete: false,
     import: importList,
-    like: AST.Import,
+    like: Mesh.Import,
     partial: false,
     variable: variableList,
   }
 }
 
 export function process_codeCard_load(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
-  const load: ASTPartialType<AST.Import> = {
+  const load: MeshPartialType<Mesh.Import> = {
     children: [],
-    like: AST.Import,
+    like: Mesh.Import,
     partial: true,
   }
 
-  const loader = api.assumeInputObjectAsASTPartialType<
-    AST.CodeModule | AST.Import
-  >(input, [AST.CodeModule, AST.Import])
+  const loader = code.assumeInputObjectAsMeshPartialType<
+    Mesh.CodeModule | Mesh.Import
+  >(input, [Mesh.CodeModule, Mesh.Import])
 
   loader.children.push(load)
-  const childInput = api.extendWithObjectScope(input, load)
+  const childInput = code.extendWithObjectScope(input, load)
 
-  api.assumeNest(input).nest.forEach((nest, index) => {
+  code.assumeNest(input).nest.forEach((nest, index) => {
     process_codeCard_load_nestedChildren(
-      api.extendWithNestScope(childInput, {
+      code.extendWithNestScope(childInput, {
         index,
         nest,
       }),
     )
   })
 
-  if (api.childrenAreComplete(load)) {
-    api.replaceASTChild<
-      AST.CodeModule | AST.Import,
-      ASTPartialType<AST.Import>,
-      ASTFullType<AST.Import>
+  if (code.childrenAreComplete(load)) {
+    code.replaceMeshChild<
+      Mesh.CodeModule | Mesh.Import,
+      MeshPartialType<Mesh.Import>,
+      MeshFullType<Mesh.Import>
     >(
       childInput,
-      [AST.CodeModule, AST.Import],
+      [Mesh.CodeModule, Mesh.Import],
       load,
-      api.generateFullImport(load),
+      code.generateFullImport(load),
     )
   } else {
   }
 }
 
 export function process_codeCard_load_nestedChildren(
-  input: APIInputType,
+  input: MeshInputType,
 ) {
-  const type = api.determineNestType(input)
+  const type = code.determineNestType(input)
   switch (type) {
-    case Nest.StaticText: {
-      const index = api.assumeNestIndex(input)
+    case MeshHint.StaticText: {
+      const index = code.assumeNestIndex(input)
       if (index !== 0) {
         throw new Error('Oops')
       } else {
-        api.finalize_codeCard_load_textNest(input)
+        code.finalize_codeCard_load_textNest(input)
       }
       break
     }
 
-    case Nest.StaticTerm: {
-      const term = api.resolveStaticTermFromNest(input)
+    case MeshHint.StaticTerm: {
+      const term = code.resolveStaticTermFromNest(input)
       switch (term) {
         case 'find':
         case 'take':
-          api.process_codeCard_load_find(input)
+          code.process_codeCard_load_find(input)
           break
         case 'load':
-          api.process_codeCard_load(input)
+          code.process_codeCard_load(input)
           break
         case 'bear':
-          api.process_codeCard_load_bear(input)
+          code.process_codeCard_load_bear(input)
           break
         default:
-          api.throwError(api.generateUnknownTermError(input))
+          code.throwError(code.generateUnknownTermError(input))
       }
       break
     }
 
     default:
-      api.throwError(
-        api.generateUnhandledNestCaseError(input, type),
+      code.throwError(
+        code.generateUnhandledNestCaseError(input, type),
       )
   }
 }

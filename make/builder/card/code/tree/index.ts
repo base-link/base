@@ -1,35 +1,35 @@
-import { AST, ExpandRecursively, api } from '~'
+import { ExpandRecursively, Mesh, code } from '~'
 import type {
-  APIInputType,
-  ASTPartialType,
-  ASTType,
-  AST_FullTypeMixin,
-  AST_PartialTypeMixin,
-  InternalScopeType,
+  MeshInputType,
+  MeshPartialType,
+  MeshType,
+  Mesh_FullTypeMixin,
+  Mesh_PartialTypeMixin,
+  SiteScopeType,
 } from '~'
 
 export function assumeObjectScope(
-  input: APIInputType,
+  input: MeshInputType,
   rank = 0,
-): InternalScopeType {
-  const scope = api.getObjectScope(input, rank)
-  api.assertScope(scope)
+): SiteScopeType {
+  const scope = code.getObjectScope(input, rank)
+  code.assertScope(scope)
   return scope
 }
 
 export function childrenAreComplete({
   children,
 }: {
-  children: Array<AST_PartialTypeMixin | AST_FullTypeMixin>
+  children: Array<Mesh_PartialTypeMixin | Mesh_FullTypeMixin>
 }): boolean {
   return children.filter(x => x.partial).length === 0
 }
 
 export function getObjectScope(
-  input: APIInputType,
+  input: MeshInputType,
   rank = 0,
-): InternalScopeType | undefined {
-  let scope: InternalScopeType | undefined = input.objectScope
+): SiteScopeType | undefined {
+  let scope: SiteScopeType | undefined = input.objectScope
   while (rank > 0 && scope) {
     scope = scope.parent
     rank--
@@ -38,49 +38,49 @@ export function getObjectScope(
 }
 
 export function process_codeCard_tree(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
-  const tree: ASTPartialType<AST.Template> = {
+  const tree: MeshPartialType<Mesh.Template> = {
     children: [],
-    like: AST.Template,
+    like: Mesh.Template,
     partial: true,
   }
 
-  const treeInput = api.extendWithObjectScope(input, tree)
+  const treeInput = code.extendWithObjectScope(input, tree)
 
-  api.assumeNest(treeInput).nest.forEach((nest, index) => {
-    api.process_codeCard_tree_nestedChildren(
-      api.extendWithNestScope(treeInput, {
+  code.assumeNest(treeInput).nest.forEach((nest, index) => {
+    code.process_codeCard_tree_nestedChildren(
+      code.extendWithNestScope(treeInput, {
         index,
         nest,
       }),
     )
   })
 
-  // if (api.childrenAreComplete(tree)) {
-  //   api.replaceASTChild(input, tree, {
-  //     like: AST.Template,
+  // if (code.childrenAreComplete(tree)) {
+  //   code.replaceMeshChild(input, tree, {
+  //     like: Mesh.Template,
   //     partial: false,
   //   })
   // }
 }
 
 export function process_codeCard_tree_nestedChildren(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
-  const type = api.determineNestType(input)
+  const type = code.determineNestType(input)
   if (type === 'static-term') {
-    const name = api.assumeStaticTermFromNest(input)
-    const index = api.assumeNestIndex(input)
+    const name = code.assumeStaticTermFromNest(input)
+    const index = code.assumeNestIndex(input)
     if (index === 0) {
-      const tree = api.assumeInputObjectAsASTPartialType(
+      const tree = code.assumeInputObjectAsMeshPartialType(
         input,
-        AST.Template,
+        Mesh.Template,
       )
-      const fullTerm: ASTType<AST.Term> = {
+      const fullTerm: MeshType<Mesh.Term> = {
         complete: true,
         dive: false,
-        like: AST.Term,
+        like: Mesh.Term,
         name,
         nest: [],
         partial: false,
@@ -89,30 +89,30 @@ export function process_codeCard_tree_nestedChildren(
     } else {
       switch (name) {
         case 'take':
-          api.process_codeCard_link(input)
+          code.process_codeCard_link(input)
           break
         case 'hook':
-          api.process_codeCard_hook(input)
+          code.process_codeCard_hook(input)
           break
         case 'head':
-          api.process_codeCard_head(input)
+          code.process_codeCard_head(input)
           break
         default:
-          api.throwError(api.generateUnknownTermError(input))
+          code.throwError(code.generateUnknownTermError(input))
       }
     }
   } else {
-    api.throwError(api.generateUnhandledTermCaseError(input))
+    code.throwError(code.generateUnhandledTermCaseError(input))
   }
 }
 
-export function replaceASTChild<
-  A extends AST,
-  X extends ASTPartialType<AST>,
-  B extends ASTType<AST>,
->(input: APIInputType, a: A | Array<A>, x: X, b: B): void {
-  const { data } = api.assumeObjectScope(input, 1)
-  api.assertASTPartial(data, a)
+export function replaceMeshChild<
+  A extends Mesh,
+  X extends MeshPartialType<Mesh>,
+  B extends MeshType<Mesh>,
+>(input: MeshInputType, a: A | Array<A>, x: X, b: B): void {
+  const { data } = code.assumeObjectScope(input, 1)
+  code.assertMeshPartial(data, a)
   const index: number = (
     data.children as Array<unknown>
   ).indexOf(x)

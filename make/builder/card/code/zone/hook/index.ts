@@ -1,6 +1,6 @@
-import { api } from '~'
-import type { APIInputType } from '~'
+import { code } from '~'
+import type { MeshInputType } from '~'
 
 export function process_codeCard_zoneHook(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {}

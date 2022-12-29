@@ -2,9 +2,9 @@ import chalk from 'chalk'
 
 import type {
   CursorRangeType,
-  ErrorType,
   FoldNodeType,
   FoldResultType,
+  SiteErrorType,
   TextSplitInputType,
   TextTokenType,
   TreeHandleType,
@@ -16,7 +16,7 @@ import type {
   TreeTermType,
   TreeUnsignedIntegerType,
 } from '~'
-import { Fold, TEXT_TYPE, Tree, api } from '~'
+import { Fold, TEXT_TYPE, Tree, code } from '~'
 
 import { Text } from '../text/index.js'
 
@@ -25,8 +25,8 @@ export * from './type.js'
 export function assertTextGenericType(
   object: unknown,
 ): asserts object is TextTokenType<Text> {
-  if (!api.isTextGenericType(object)) {
-    api.throwError()
+  if (!code.isTextGenericType(object)) {
+    code.throwError()
   }
 }
 
@@ -34,8 +34,8 @@ export function assertTextType<T extends Text>(
   object: unknown,
   like: T,
 ): asserts object is TextTokenType<T> {
-  if (!api.isTextType<T>(object, like)) {
-    api.throwError()
+  if (!code.isTextType<T>(object, like)) {
+    code.throwError()
   }
 }
 
@@ -55,7 +55,7 @@ export function attach_handle_module(
 ): void {
   const current =
     input.state.stack[input.state.stack.length - 1]
-  api.assertTreeType(current, Tree.Module)
+  code.assertTreeType(current, Tree.Module)
 
   current.element.push(handle)
 }
@@ -66,7 +66,7 @@ export function buildParseTree(
   const stack: Array<TreeNodeType> = []
   let result: TreeNodeType | undefined = undefined
 
-  // console.log(api.prettifyJSON(input.tokenList))
+  // console.log(code.prettifyJSON(input.tokenList))
 
   const state = { index: 0, stack }
 
@@ -81,98 +81,98 @@ export function buildParseTree(
 
     switch (token.like) {
       case Fold.OpenModule:
-        start = api.parse_openModule({
+        start = code.parse_openModule({
           ...input,
           state,
           token,
         })
         break
       case Fold.CloseModule:
-        api.parse_closeModule({
+        code.parse_closeModule({
           ...input,
           state,
           token,
         })
         break
       case Fold.TermFragment:
-        api.parse_termFragment({
+        code.parse_termFragment({
           ...input,
           state,
           token,
         })
         break
       case Fold.OpenHandle:
-        api.parse_openHandle({
+        code.parse_openHandle({
           ...input,
           state,
           token,
         })
         break
       case Fold.OpenDepth:
-        api.parse_openDepth({
+        code.parse_openDepth({
           ...input,
           state,
           token,
         })
         break
       case Fold.CloseDepth:
-        api.parse_closeDepth({
+        code.parse_closeDepth({
           ...input,
           state,
           token,
         })
         break
       case Fold.OpenPlugin:
-        api.parse_openPlugin({
+        code.parse_openPlugin({
           ...input,
           state,
           token,
         })
         break
       case Fold.ClosePlugin:
-        api.parse_closePlugin({
+        code.parse_closePlugin({
           ...input,
           state,
           token,
         })
         break
       case Fold.OpenTermPath:
-        api.parse_openTermPath({
+        code.parse_openTermPath({
           ...input,
           state,
           token,
         })
         break
       case Fold.CloseTermPath:
-        api.parse_closeTermPath({
+        code.parse_closeTermPath({
           ...input,
           state,
           token,
         })
         break
       case Fold.OpenTerm:
-        api.parse_openTerm({
+        code.parse_openTerm({
           ...input,
           state,
           token,
         })
         break
       case Fold.CloseTerm:
-        api.parse_closeTerm({
+        code.parse_closeTerm({
           ...input,
           state,
           token,
         })
         break
       case Fold.CloseHandle:
-        api.parse_closeHandle({
+        code.parse_closeHandle({
           ...input,
           state,
           token,
         })
         break
       case Fold.UnsignedInteger:
-        api.parse_unsignedInteger({
+        code.parse_unsignedInteger({
           ...input,
           state,
           token,
@@ -183,9 +183,9 @@ export function buildParseTree(
     i++
   }
 
-  printParserAST(result ?? start)
+  printParserMesh(result ?? start)
 
-  api.assertTreeType(start, Tree.Module)
+  code.assertTreeType(start, Tree.Module)
 
   return {
     ...input,
@@ -195,7 +195,7 @@ export function buildParseTree(
 
 export function generateUnhandledTreeResolver(
   input: TreeInputType & { scope?: string },
-): ErrorType {
+): SiteErrorType {
   const token = input.token
 
   const range: CursorRangeType = {
@@ -209,7 +209,7 @@ export function generateUnhandledTreeResolver(
     },
   }
 
-  const text = api.generateHighlightedError(
+  const text = code.generateHighlightedError(
     input.textInLines,
     range,
   )
@@ -230,7 +230,7 @@ export function isTextGenericType(
   object: unknown,
 ): object is TextTokenType<Text> {
   return (
-    api.isRecord(object) &&
+    code.isRecord(object) &&
     'like' in object &&
     TEXT_TYPE.includes((object as TextTokenType<Text>).like)
   )
@@ -241,7 +241,7 @@ export function isTextType<T extends Text>(
   like: T,
 ): object is TextTokenType<T> {
   return (
-    api.isRecord(object) &&
+    code.isRecord(object) &&
     'like' in object &&
     (object as TextTokenType<Text>).like === like
   )
@@ -283,7 +283,7 @@ export function parse_openDepth(input: TreeInputType): void {
       break
     }
     default:
-      api.throwError({
+      code.throwError({
         code: '0024',
         file: current.like,
         note: 'Not implemented yet.',
@@ -338,7 +338,7 @@ export function parse_openHandle(input: TreeInputType): void {
       break
     }
     default:
-      api.throwError({
+      code.throwError({
         code: '0024',
         file: current.like,
         note: 'Not implemented yet.',
@@ -376,7 +376,7 @@ export function parse_openPlugin(input: TreeInputType): void {
       break
     }
     default:
-      api.throwError({
+      code.throwError({
         code: '0024',
         file: current.like,
         note: 'Not implemented yet.',
@@ -465,7 +465,7 @@ export function parse_termFragment(input: TreeInputType): void {
       break
     }
     default:
-      api.throwError({
+      code.throwError({
         code: '0024',
         file: current.like,
         note: 'Not implemented yet.',
@@ -492,7 +492,7 @@ export function parse_unsignedInteger(
       break
     }
     default:
-      api.throwError({
+      code.throwError({
         code: '0024',
         file: current.like,
         note: 'Not implemented yet.',
@@ -500,13 +500,13 @@ export function parse_unsignedInteger(
   }
 }
 
-function printParserAST(base: TreeModuleType | unknown): void {
+function printParserMesh(base: TreeModuleType | unknown): void {
   const text: Array<string> = ['']
 
   if (!base) {
     text.push(`  undefined`)
   } else {
-    printParserASTDetails(base).forEach(line => {
+    printParserMeshDetails(base).forEach(line => {
       text.push(`  ${line}`)
     })
   }
@@ -516,7 +516,7 @@ function printParserAST(base: TreeModuleType | unknown): void {
   console.log(text.join('\n'))
 }
 
-function printParserASTDetails(
+function printParserMeshDetails(
   node: TreeNodeType,
 ): Array<string> {
   const text: Array<string> = []
@@ -527,7 +527,7 @@ function printParserASTDetails(
     case Tree.Module: {
       text.push(`${title}`)
       node.element.forEach(el => {
-        printParserASTDetails(el).forEach(line => {
+        printParserMeshDetails(el).forEach(line => {
           text.push(`  ${line}`)
         })
       })
@@ -541,7 +541,7 @@ function printParserASTDetails(
       text.push(`${title}`)
       if (node.head) {
         text.push(chalk.gray(`  head:`))
-        printParserASTDetails(node.head).forEach(line => {
+        printParserMeshDetails(node.head).forEach(line => {
           text.push(`    ${line}`)
         })
       } else {
@@ -550,7 +550,7 @@ function printParserASTDetails(
       if (node.element.length) {
         text.push(chalk.gray(`  element:`))
         node.element.forEach(el => {
-          printParserASTDetails(el).forEach(line => {
+          printParserMeshDetails(el).forEach(line => {
             text.push(`    ${line}`)
           })
         })
@@ -569,7 +569,7 @@ function printParserASTDetails(
       text.push(chalk.gray(`  size: ${node.size}`))
       if (node.element) {
         text.push(chalk.gray(`  element:`))
-        printParserASTDetails(node.element).forEach(line => {
+        printParserMeshDetails(node.element).forEach(line => {
           text.push(`    ${line}`)
         })
       }
@@ -587,7 +587,7 @@ function printParserASTDetails(
     case Tree.Term: {
       text.push(`${title}`)
       node.segment.forEach(seg => {
-        printParserASTDetails(seg).forEach(line => {
+        printParserMeshDetails(seg).forEach(line => {
           text.push(`  ${line}`)
         })
       })
@@ -596,7 +596,7 @@ function printParserASTDetails(
     case Tree.Path: {
       text.push(`${title}`)
       node.segment.forEach(seg => {
-        printParserASTDetails(seg).forEach(line => {
+        printParserMeshDetails(seg).forEach(line => {
           text.push(`  ${line}`)
         })
       })

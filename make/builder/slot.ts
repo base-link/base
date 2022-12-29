@@ -1,11 +1,11 @@
-import { Tree, api } from '~'
-import type { APIInputType } from '~'
+import { Tree, code } from '~'
+import type { MeshInputType } from '~'
 
 export function nestHasSlot(
-  input: APIInputType,
+  input: MeshInputType,
   size: number = 1,
 ): boolean {
-  const nest = api.assumeNest(input)
+  const nest = code.assumeNest(input)
 
   for (let i = 0, n = nest.line.length; i < n; i++) {
     let line = nest.line[i]

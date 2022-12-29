@@ -1,86 +1,88 @@
-import { Nest, api } from '~'
-import type { APIInputType } from '~'
+import { MeshHint, code } from '~'
+import type { MeshInputType } from '~'
 
 export function process_codeCard_bond(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
   process_codeCard_bond_nestedChildren(input)
 }
 
 export function process_codeCard_bond_code(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {}
 
 export function process_codeCard_bond_comb(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {}
 
 export function process_codeCard_bond_loan(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {}
 
 export function process_codeCard_bond_mark(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {}
 
 export function process_codeCard_bond_move(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {}
 
 export function process_codeCard_bond_nestedChildren(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
-  const type = api.determineNestType(input)
+  const type = code.determineNestType(input)
   switch (type) {
-    case Nest.StaticTerm:
-      const term = api.resolveStaticTermFromNest(input)
+    case MeshHint.StaticTerm:
+      const term = code.resolveStaticTermFromNest(input)
       switch (term) {
         case 'loan':
-          api.process_codeCard_bond_loan(input)
+          code.process_codeCard_bond_loan(input)
           break
         case 'read':
-          api.process_codeCard_bond_read(input)
+          code.process_codeCard_bond_read(input)
           break
         case 'move':
-          api.process_codeCard_bond_move(input)
+          code.process_codeCard_bond_move(input)
           break
         case 'term':
-          api.process_codeCard_bond_term(input)
+          code.process_codeCard_bond_term(input)
           break
         case 'text':
-          api.process_codeCard_bond_text(input)
+          code.process_codeCard_bond_text(input)
           break
         case 'mark':
-          api.process_codeCard_bond_mark(input)
+          code.process_codeCard_bond_mark(input)
           break
         case 'comb':
-          api.process_codeCard_bond_comb(input)
+          code.process_codeCard_bond_comb(input)
           break
         case 'code':
-          api.process_codeCard_bond_code(input)
+          code.process_codeCard_bond_code(input)
           break
         case 'wave':
-          api.process_codeCard_bond_wave(input)
+          code.process_codeCard_bond_wave(input)
           break
       }
       break
     default:
-      api.throwError(api.generateUnhandledTermCaseError(input))
+      code.throwError(
+        code.generateUnhandledTermCaseError(input),
+      )
   }
 }
 
 export function process_codeCard_bond_read(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {}
 
 export function process_codeCard_bond_term(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {}
 
 export function process_codeCard_bond_text(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {}
 
 export function process_codeCard_bond_wave(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {}

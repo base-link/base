@@ -1,4 +1,4 @@
-import { api } from '~'
+import { code } from '~'
 
 export enum Text {
   CloseEvaluation = 'text-close-evaluation',
@@ -376,8 +376,8 @@ export function tokenizeLinkText(
     }
 
     if (textLine.length) {
-      api.throwError(
-        api.generateSyntaxTokenError(
+      code.throwError(
+        code.generateSyntaxTokenError(
           source,
           tokenList[tokenList.length - 1],
         ),

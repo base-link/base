@@ -1,12 +1,12 @@
-import { Nest, api } from '~'
-import type { APIInputType } from '~'
+import { MeshHint, code } from '~'
+import type { MeshInputType } from '~'
 
 export function process_codeCard_link(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
-  api.assumeNest(input).nest.forEach((nest, index) => {
+  code.assumeNest(input).nest.forEach((nest, index) => {
     process_codeCard_link_nestedChildren(
-      api.extendWithNestScope(input, {
+      code.extendWithNestScope(input, {
         index,
         nest,
       }),
@@ -15,35 +15,37 @@ export function process_codeCard_link(
 }
 
 export function process_codeCard_link_base(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {}
 
 export function process_codeCard_link_nestedChildren(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
-  const type = api.determineNestType(input)
+  const type = code.determineNestType(input)
   switch (type) {
-    case Nest.StaticTerm:
-      const term = api.resolveStaticTermFromNest(input)
+    case MeshHint.StaticTerm:
+      const term = code.resolveStaticTermFromNest(input)
       switch (term) {
         case 'like':
-          api.process_codeCard_like(input)
+          code.process_codeCard_like(input)
           break
         case 'list':
-          api.process_codeCard_like_list(input)
+          code.process_codeCard_like_list(input)
           break
         case 'mesh':
-          api.process_codeCard_like_mesh(input)
+          code.process_codeCard_like_mesh(input)
           break
         case 'time':
-          api.process_codeCard_time(input)
+          code.process_codeCard_time(input)
           break
         case 'base':
-          api.process_codeCard_link_base(input)
+          code.process_codeCard_link_base(input)
           break
       }
       break
     default:
-      api.throwError(api.generateUnhandledTermCaseError(input))
+      code.throwError(
+        code.generateUnhandledTermCaseError(input),
+      )
   }
 }

@@ -1,86 +1,91 @@
-import { Internal, Nest, Tree, api } from '~'
+import { MeshHint, Site, Tree, code } from '~'
 import type {
-  APIInputType,
-  InternalScopeType,
+  MeshInputType,
+  SiteScopeType,
   TreeNestType,
 } from '~'
 
 export function assertNest(
   object: unknown,
 ): asserts object is TreeNestType {
-  if (!api.isNest(object)) {
-    throw new Error('Nest error')
+  if (!code.isNest(object)) {
+    throw new Error('MeshHint error')
   }
 }
 
 export function assertNestChildrenLength(
-  input: APIInputType,
+  input: MeshInputType,
   length: number,
 ): void {
-  const nest = api.assumeNest(input)
+  const nest = code.assumeNest(input)
   if (nest.nest.length !== length) {
-    api.throwError(
-      api.generateInvalidNestChildrenLengthError(input, length),
+    code.throwError(
+      code.generateInvalidNestChildrenLengthError(
+        input,
+        length,
+      ),
     )
   }
 }
 
 export function assertScope(
   object: unknown,
-): asserts object is InternalScopeType {
-  if (!api.isScope(object)) {
-    api.throwError(
-      api.generateObjectNotTypeError(object, [Internal.Scope]),
+): asserts object is SiteScopeType {
+  if (!code.isScope(object)) {
+    code.throwError(
+      code.generateObjectNotTypeError(object, [Site.Scope]),
     )
   }
 }
 
 export function assumeNest(
-  input: APIInputType,
+  input: MeshInputType,
   rank = 0,
 ): TreeNestType {
-  const nest = api.getNestScopeProperty(input, 'nest', rank)
-  api.assertNest(nest)
+  const nest = code.getNestScopeProperty(input, 'nest', rank)
+  code.assertNest(nest)
   return nest
 }
 
-export function assumeNestIndex(input: APIInputType): number {
-  const index = api.getNestScopeProperty(input, 'index')
-  api.assertNumber(index)
+export function assumeNestIndex(input: MeshInputType): number {
+  const index = code.getNestScopeProperty(input, 'index')
+  code.assertNumber(index)
   return index
 }
 
-export function determineNestType(input: APIInputType): Nest {
-  if (api.nestIsTerm(input)) {
+export function determineNestType(
+  input: MeshInputType,
+): MeshHint {
+  if (code.nestIsTerm(input)) {
     if (
-      api.termIsInterpolated(input) ||
-      api.termIsNested(input)
+      code.termIsInterpolated(input) ||
+      code.termIsNested(input)
     ) {
-      return Nest.DynamicTerm
+      return MeshHint.DynamicTerm
     } else {
-      return Nest.StaticTerm
+      return MeshHint.StaticTerm
     }
-  } else if (api.nestIsText(input)) {
-    if (api.textIsInterpolated(input)) {
-      return Nest.DynamicText
+  } else if (code.nestIsText(input)) {
+    if (code.textIsInterpolated(input)) {
+      return MeshHint.DynamicText
     } else {
-      return Nest.StaticText
+      return MeshHint.StaticText
     }
-  } else if (api.nestIsMark(input)) {
-    return Nest.Mark
-  } else if (api.nestIsCode(input)) {
-    return Nest.Code
+  } else if (code.nestIsMark(input)) {
+    return MeshHint.Mark
+  } else if (code.nestIsCode(input)) {
+    return MeshHint.Code
   } else {
-    api.throwError(
-      api.generateUnhandledNestCaseBaseError(input),
+    code.throwError(
+      code.generateUnhandledNestCaseBaseError(input),
     )
   }
 
-  return Nest.Empty
+  return MeshHint.Empty
 }
 
 export function getNestScopeProperty(
-  input: APIInputType,
+  input: MeshInputType,
   property: string,
   rank = 0,
 ): unknown {
@@ -89,22 +94,22 @@ export function getNestScopeProperty(
     scope = scope.parent
     rank--
   }
-  api.assertScope(scope)
-  return api.getProperty(scope.data, property)
+  code.assertScope(scope)
+  return code.getProperty(scope.data, property)
 }
 
 export function isNest(
   object: unknown,
 ): object is TreeNestType {
   return (
-    api.isRecord(object) &&
+    code.isRecord(object) &&
     'like' in object &&
-    (object as TreeNestType).like === Tree.Nest
+    (object as TreeNestType).like === Tree.MeshHint
   )
 }
 
-export function nestIsCode(input: APIInputType): boolean {
-  const nest = api.assumeNest(input)
+export function nestIsCode(input: MeshInputType): boolean {
+  const nest = code.assumeNest(input)
 
   if (nest.line.length > 1) {
     return false
@@ -122,8 +127,8 @@ export function nestIsCode(input: APIInputType): boolean {
   return false
 }
 
-export function nestIsMark(input: APIInputType): boolean {
-  const nest = api.assumeNest(input)
+export function nestIsMark(input: MeshInputType): boolean {
+  const nest = code.assumeNest(input)
 
   if (nest.line.length > 1) {
     return false
@@ -141,8 +146,8 @@ export function nestIsMark(input: APIInputType): boolean {
   return false
 }
 
-export function nestIsTerm(input: APIInputType): boolean {
-  const nest = api.assumeNest(input)
+export function nestIsTerm(input: MeshInputType): boolean {
+  const nest = code.assumeNest(input)
 
   if (nest.line.length === 0) {
     return false
@@ -160,8 +165,8 @@ export function nestIsTerm(input: APIInputType): boolean {
   return true
 }
 
-export function nestIsText(input: APIInputType): boolean {
-  const nest = api.assumeNest(input)
+export function nestIsText(input: MeshInputType): boolean {
+  const nest = code.assumeNest(input)
 
   if (nest.line.length > 1) {
     return false

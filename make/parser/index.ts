@@ -8,7 +8,7 @@ export * from './fold/index.js'
 export * from './text/index.js'
 export * from './tree/index.js'
 
-export enum Nest {
+export enum MeshHint {
   Code = 'code',
   DynamicTerm = 'dynamic-term',
   DynamicText = 'dynamic-text',
@@ -19,14 +19,14 @@ export enum Nest {
 }
 
 // eslint-disable-next-line sort-exports/sort-exports
-export const NEST_TYPE_TEXT: Record<Nest, string> = {
-  [Nest.DynamicTerm]: 'dynamic term',
-  [Nest.DynamicText]: 'dynamic text',
-  [Nest.StaticTerm]: 'static term',
-  [Nest.StaticText]: 'static text',
-  [Nest.Empty]: 'empty',
-  [Nest.Code]: 'boolean',
-  [Nest.Mark]: 'unsigned integer',
+export const MESH_HINT_TEXT: Record<MeshHint, string> = {
+  [MeshHint.Code]: 'boolean',
+  [MeshHint.DynamicTerm]: 'dynamic term',
+  [MeshHint.DynamicText]: 'dynamic text',
+  [MeshHint.Empty]: 'empty',
+  [MeshHint.Mark]: 'unsigned integer',
+  [MeshHint.StaticTerm]: 'static term',
+  [MeshHint.StaticText]: 'static text',
 }
 
 export function parseLinkText(

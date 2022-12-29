@@ -1,18 +1,21 @@
-import { Tree, api } from '~'
-import type { APIInputType } from '~'
+import { Tree, code } from '~'
+import type { MeshInputType } from '~'
 
 export function assumeStaticTermFromNest(
-  input: APIInputType,
+  input: MeshInputType,
 ): string {
-  const term = api.resolveStaticTermFromNest(input)
-  api.assertString(term)
+  const term = code.resolveStaticTermFromNest(input)
+  code.assertString(term)
   return term
 }
 
 export function resolveStaticTerm(
-  input: APIInputType,
+  input: MeshInputType,
 ): string | undefined {
-  const term = api.assumeInputObjectAsTreeType(Tree.Term, input)
+  const term = code.assumeInputObjectAsTreeType(
+    Tree.Term,
+    input,
+  )
 
   if (term.link.length !== 1) {
     return
@@ -25,10 +28,10 @@ export function resolveStaticTerm(
 }
 
 export function resolveStaticTermFromNest(
-  input: APIInputType,
+  input: MeshInputType,
   rank = 0,
 ): string | undefined {
-  const nest = api.assumeNest(input, rank)
+  const nest = code.assumeNest(input, rank)
 
   if (nest.line.length > 1) {
     return
@@ -54,9 +57,9 @@ export function resolveStaticTermFromNest(
 }
 
 export function termIsInterpolated(
-  input: APIInputType,
+  input: MeshInputType,
 ): boolean {
-  const nest = api.assumeNest(input)
+  const nest = code.assumeNest(input)
 
   if (nest.line.length > 1) {
     return false
@@ -80,8 +83,8 @@ export function termIsInterpolated(
   return false
 }
 
-export function termIsNested(input: APIInputType): boolean {
-  const nest = api.assumeNest(input)
+export function termIsNested(input: MeshInputType): boolean {
+  const nest = code.assumeNest(input)
 
   let line = nest.line[0]
   if (!line) {

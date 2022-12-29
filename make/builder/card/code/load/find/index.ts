@@ -1,8 +1,8 @@
-import { AST, ASTFullType, ASTTerm_FullType, api } from '~'
+import { Mesh, MeshFullType, MeshTerm_FullType, code } from '~'
 import type {
-  APIInputType,
-  ASTConstant_FullType,
-  ASTPartialType,
+  MeshConstant_FullType,
+  MeshInputType,
+  MeshPartialType,
 } from '~'
 
 export * from './bear/index.js'
@@ -11,27 +11,27 @@ export * from './save/index.js'
 export function createStringConstant(
   name: string,
   value: string,
-): ASTConstant_FullType {
+): MeshConstant_FullType {
   return {
     complete: true,
     hidden: false,
-    like: AST.Constant,
+    like: Mesh.Constant,
     name,
     partial: false,
     value: {
       complete: true,
-      like: AST.String,
+      like: Mesh.String,
       partial: false,
       string: value,
     },
   }
 }
 
-export function createTerm(name: string): ASTTerm_FullType {
+export function createTerm(name: string): MeshTerm_FullType {
   return {
     complete: true,
     dive: false,
-    like: AST.Term,
+    like: Mesh.Term,
     name,
     nest: [],
     partial: false,
@@ -39,8 +39,8 @@ export function createTerm(name: string): ASTTerm_FullType {
 }
 
 export function generateFullImportVariable(
-  input: ASTPartialType<AST.ImportVariable>,
-): ASTFullType<AST.ImportVariable> {
+  input: MeshPartialType<Mesh.ImportVariable>,
+): MeshFullType<Mesh.ImportVariable> {
   let rename
   let name
   let scope
@@ -48,30 +48,30 @@ export function generateFullImportVariable(
   input.children.forEach(node => {
     if (!node.partial) {
       switch (node.like) {
-        case AST.Constant:
+        case Mesh.Constant:
           switch (node.name) {
             case 'scope':
-              scope = api.getStringConstant(node)
+              scope = code.getStringConstant(node)
               break
             case 'name':
-              name = rename = api.getStringConstant(node)
+              name = rename = code.getStringConstant(node)
               break
           }
           break
-        case AST.ImportVariableRename:
+        case Mesh.ImportVariableRename:
           rename = node.name
           break
       }
     }
   })
 
-  api.assertString(name)
-  api.assertString(scope)
-  api.assertString(rename)
+  code.assertString(name)
+  code.assertString(scope)
+  code.assertString(rename)
 
   return {
     complete: true,
-    like: AST.ImportVariable,
+    like: Mesh.ImportVariable,
     name,
     partial: false,
     rename,
@@ -80,12 +80,12 @@ export function generateFullImportVariable(
 }
 
 export function getBooleanConstant(
-  c: ASTFullType<AST.Constant>,
+  c: MeshFullType<Mesh.Constant>,
 ): boolean {
   if (
     c.value &&
     'like' in c.value &&
-    c.value.like === AST.Boolean
+    c.value.like === Mesh.Boolean
   ) {
     return c.value.boolean
   } else {
@@ -94,12 +94,12 @@ export function getBooleanConstant(
 }
 
 export function getStringConstant(
-  c: ASTFullType<AST.Constant>,
+  c: MeshFullType<Mesh.Constant>,
 ): string {
   if (
     c.value &&
     'like' in c.value &&
-    c.value.like === AST.String
+    c.value.like === Mesh.String
   ) {
     return c.value.string
   } else {
@@ -108,83 +108,83 @@ export function getStringConstant(
 }
 
 export function process_codeCard_load_find(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
-  const find: ASTPartialType<AST.ImportVariable> = {
+  const find: MeshPartialType<Mesh.ImportVariable> = {
     children: [],
-    like: AST.ImportVariable,
+    like: Mesh.ImportVariable,
     partial: true,
   }
 
-  const load = api.assumeInputObjectAsASTPartialType(
+  const load = code.assumeInputObjectAsMeshPartialType(
     input,
-    AST.Import,
+    Mesh.Import,
   )
   load.children.push(find)
 
-  const childInput = api.extendWithObjectScope(input, find)
+  const childInput = code.extendWithObjectScope(input, find)
 
-  const nest = api.assumeNest(input)
+  const nest = code.assumeNest(input)
   nest.nest.forEach((nest, index) => {
-    api.process_codeCard_load_find_nestedChildren(
-      api.extendWithNestScope(childInput, {
+    code.process_codeCard_load_find_nestedChildren(
+      code.extendWithNestScope(childInput, {
         index,
         nest,
       }),
     )
   })
 
-  if (api.childrenAreComplete(find)) {
-    api.replaceASTChild(
+  if (code.childrenAreComplete(find)) {
+    code.replaceMeshChild(
       childInput,
-      AST.Import,
+      Mesh.Import,
       find,
-      api.generateFullImportVariable(find),
+      code.generateFullImportVariable(find),
     )
   }
 }
 
 export function process_codeCard_load_find_nestedChildren(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
-  const type = api.determineNestType(input)
+  const type = code.determineNestType(input)
   if (type === 'static-term') {
-    const term = api.resolveStaticTermFromNest(input)
-    const nest = api.assumeNest(input)
-    api.assertString(term)
-    const index = api.assumeNestIndex(input)
+    const term = code.resolveStaticTermFromNest(input)
+    const nest = code.assumeNest(input)
+    code.assertString(term)
+    const index = code.assumeNestIndex(input)
 
     if (index > 0) {
       switch (term) {
         case 'save':
-          api.process_codeCard_load_find_save(input)
+          code.process_codeCard_load_find_save(input)
           break
         case 'bear':
-          api.process_codeCard_load_find_bear(input)
+          code.process_codeCard_load_find_bear(input)
           break
         default:
-          api.throwError(api.generateUnknownTermError(input))
+          code.throwError(code.generateUnknownTermError(input))
       }
     } else {
-      const find = api.assumeInputObjectAsASTPartialType(
+      const find = code.assumeInputObjectAsMeshPartialType(
         input,
-        AST.ImportVariable,
+        Mesh.ImportVariable,
       )
       const scope = term
       const nestedNest = nest.nest[0]
-      api.assertNest(nestedNest)
-      const nestedInput = api.extendWithNestScope(input, {
+      code.assertNest(nestedNest)
+      const nestedInput = code.extendWithNestScope(input, {
         index: 0,
         nest: nestedNest,
       })
-      const name = api.resolveStaticTermFromNest(nestedInput)
-      api.assertString(name)
+      const name = code.resolveStaticTermFromNest(nestedInput)
+      code.assertString(name)
       find.children.push(
-        api.createStringConstant('scope', scope),
-        api.createStringConstant('name', name),
+        code.createStringConstant('scope', scope),
+        code.createStringConstant('name', name),
       )
     }
   } else {
-    api.throwError(api.generateUnhandledTermCaseError(input))
+    code.throwError(code.generateUnhandledTermCaseError(input))
   }
 }

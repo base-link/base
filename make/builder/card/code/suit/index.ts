@@ -1,20 +1,20 @@
-import { AST, ASTPartialType, api } from '~'
-import type { APIInputType } from '~'
+import { Mesh, MeshPartialType, code } from '~'
+import type { MeshInputType } from '~'
 
 export function process_codeCard_suit(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
-  const suit: ASTPartialType<AST.ClassInterface> = {
+  const suit: MeshPartialType<Mesh.ClassInterface> = {
     children: [],
-    like: AST.ClassInterface,
+    like: Mesh.ClassInterface,
     partial: true,
   }
 
-  const childInput = api.extendWithObjectScope(input, suit)
+  const childInput = code.extendWithObjectScope(input, suit)
 
-  api.assumeNest(childInput).nest.forEach((nest, index) => {
-    api.process_codeCard_suit_nestedChildren(
-      api.extendWithNestScope(childInput, {
+  code.assumeNest(childInput).nest.forEach((nest, index) => {
+    code.process_codeCard_suit_nestedChildren(
+      code.extendWithNestScope(childInput, {
         index,
         nest,
       }),
@@ -23,44 +23,44 @@ export function process_codeCard_suit(
 }
 
 export function process_codeCard_suit_nestedChildren(
-  input: APIInputType,
+  input: MeshInputType,
 ): void {
-  const type = api.determineNestType(input)
+  const type = code.determineNestType(input)
   if (type === 'static-term') {
-    const term = api.assumeStaticTermFromNest(input)
-    const index = api.assumeNestIndex(input)
+    const term = code.assumeStaticTermFromNest(input)
+    const index = code.assumeNestIndex(input)
     if (index === 0) {
-      const suit = api.assumeInputObjectAsASTPartialType(
+      const suit = code.assumeInputObjectAsMeshPartialType(
         input,
-        AST.ClassInterface,
+        Mesh.ClassInterface,
       )
-      suit.children.push(api.createTerm(term))
+      suit.children.push(code.createTerm(term))
       return
     }
     switch (term) {
       case 'link':
-        api.process_codeCard_link(input)
+        code.process_codeCard_link(input)
         break
       case 'task':
-        api.process_codeCard_task(input)
+        code.process_codeCard_task(input)
         break
       case 'case':
-        // api.process_codeCard_formTask(input)
+        // code.process_codeCard_formTask(input)
         break
       case 'note':
-        api.process_codeCard_note(input)
+        code.process_codeCard_note(input)
         break
       case 'head':
-        api.process_codeCard_head(input)
+        code.process_codeCard_head(input)
         break
       default:
-        api.throwError(
-          api.generateUnhandledTermCaseError(input),
+        code.throwError(
+          code.generateUnhandledTermCaseError(input),
         )
     }
   } else {
-    api.throwError(
-      api.generateUnhandledNestCaseError(input, type),
+    code.throwError(
+      code.generateUnhandledNestCaseError(input, type),
     )
   }
 }
