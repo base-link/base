@@ -7,6 +7,7 @@ import {
   LexerSplitInputType,
   LexerTokenType,
   Norm,
+  NormNodeType,
   NormResultType,
   api,
 } from '~'
@@ -57,7 +58,7 @@ export type TreeHandleType = {
     | TreeDecimalType
     | TreeStringType
   >
-  hook: TreeTermType | TreePathType
+  hook?: TreeTermType | TreePathType
   like: Tree.Handle
 }
 
@@ -201,309 +202,87 @@ export function assertLexerType<T extends Lexer>(
 }
 
 type TreeInputType = LexerSplitInputType & {
-  token: LexerTokenType<Lexer>
+  state: {
+    index: number
+    stack: Array<TreeNodeType>
+  }
+  token: NormNodeType
 }
 
 type TT = TreeNodeType
 
+export function attach_handle_module(
+  input: TreeInputType,
+  handle: TreeHandleType,
+): void {
+  const current =
+    input.state.stack[input.state.stack.length - 1]
+  api.assertTreeType(current, Tree.Module)
+
+  current.element.push(handle)
+}
+
 export function buildParseTree(
   input: NormResultType,
 ): TreeResultType {
-  const stack: Array<{
-    child?: TreeNodeType
-    parent?: TreeNodeType
-  }> = []
+  const stack: Array<TreeNodeType> = []
   let result: TreeNodeType | undefined = undefined
 
   // console.log(api.prettifyJSON(input.tokenList))
+
+  const state = { index: 0, stack }
 
   let i = 0
   while (i < input.normalizedTokenList.length) {
     const token = input.normalizedTokenList[i]
     if (!token) {
-      i++
       continue
     }
 
-    const state = stack[stack.length - 1]
-    const top = state?.parent?.like
-
-    console.log('->', top)
-    console.log('  ->', token.like, stack.length)
-
     switch (token.like) {
-      case Norm.OpenModule: {
-        const start: TreeModuleType = {
-          element: [],
-          like: Tree.Module,
-        }
-        stack.push({ parent: start })
+      case Norm.OpenModule:
+        api.parse_openModule({
+          ...input,
+          state,
+          token,
+        })
         break
-      }
-
-      case Norm.CloseTermFragment: {
-        switch (top) {
-          case Tree.Path: {
-            // stack.pop()
-            break
-          }
-          case Tree.Plugin: {
-            // stack.pop()
-            break
-          }
-          case Tree.Module: {
-            break
-          }
-        }
+      case Norm.CloseModule:
+        api.parse_closeModule({
+          ...input,
+          state,
+          token,
+        })
         break
-      }
-
-      case Norm.ClosePlugin: {
-        stack.pop()
+      case Norm.OpenTermPath:
+        api.parse_openTermPath({
+          ...input,
+          state,
+          token,
+        })
         break
-      }
-
-      case Norm.MoveInward: {
-        // stack.push({ parent: state?.child })
+      case Norm.CloseTermPath:
+        api.parse_closeTermPath({
+          ...input,
+          state,
+          token,
+        })
         break
-      }
-
-      case Norm.OpenPlugin: {
-        const plugin: TreePluginType = {
-          like: Tree.Plugin,
-          size: token.text.length,
-        }
-
-        switch (top) {
-          case Tree.Path: {
-            const list = (state?.parent as TreePathType).segment
-            const last = list[list.length - 1]
-            if (last) {
-              last.segment.push(plugin)
-            }
-            break
-          }
-          case Tree.Handle: {
-            api.assertTreeType(state?.parent, Tree.Handle)
-            state?.parent.hook.segment.push(plugin)
-            break
-          }
-          case Tree.Plugin: {
-            api.assertTreeType(state?.parent, Tree.Plugin)
-            state?.parent.element
-            break
-          }
-          default:
-            if (top) {
-              api.throwError({
-                code: '0023',
-                note: top,
-              })
-            }
-            break
-        }
-        stack.push({ parent: plugin })
+      case Norm.OpenHandle:
+        api.parse_openHandle({
+          ...input,
+          state,
+          token,
+        })
         break
-      }
-
-      case Norm.CloseTermPath: {
-        stack.pop()
-        stack.pop()
+      case Norm.CloseHandle:
+        api.parse_closeHandle({
+          ...input,
+          state,
+          token,
+        })
         break
-      }
-
-      case Norm.OpenTermFragment: {
-        switch (top) {
-          case Tree.Module: {
-            break
-          }
-          case Tree.Path: {
-            const fragments = parse_termFragment_list(
-              token.text,
-              token.start.line,
-              token.start.character,
-              token.offset.start,
-            )
-
-            ;(state?.parent as TreePathType).segment.push(
-              ...fragments,
-            )
-            break
-          }
-        }
-        break
-      }
-
-      case Norm.OpenTermPath: {
-        switch (top) {
-          case Tree.Module: {
-            const path: TreePathType = {
-              like: Tree.Path,
-              segment: [],
-            }
-
-            const handle: TreeHandleType = {
-              element: [],
-              hook: path,
-              like: Tree.Handle,
-            }
-
-            ;(state?.parent as TreeModuleType).element.push(
-              handle,
-            )
-
-            stack.push({ child: handle, parent: path })
-
-            break
-          }
-
-          case Tree.Plugin: {
-            api.assertTreeType(state?.parent, Tree.Plugin)
-
-            const path: TreePathType = {
-              like: Tree.Path,
-              segment: [],
-            }
-
-            const handle: TreeHandleType = {
-              element: [],
-              hook: path,
-              like: Tree.Handle,
-            }
-
-            ;(state?.parent as TreePluginType).element = handle
-
-            stack.push({ child: handle, parent: path })
-
-            break
-          }
-
-          case Tree.Handle: {
-            api.assertTreeType(state?.parent, Tree.Handle)
-
-            const path: TreePathType = {
-              like: Tree.Path,
-              segment: [],
-            }
-
-            state?.parent.element.push(path)
-            stack.push({ child: state?.handle, parent: path })
-            break
-          }
-
-          default:
-            api.throwError({
-              code: '0023',
-              note: top,
-            })
-        }
-        break
-      }
-
-      // case false: {
-      //   switch (top) {
-      //     // case Tree.Path: {
-      //     //   break
-      //     // }
-      //     case Tree.Module: {
-      //       const fragments = parse_termFragment_list(
-      //         token.text,
-      //         token.start.line,
-      //         token.start.character,
-      //         token.offset.start,
-      //       )
-
-      //       const elementList = (parent as TreeModuleType)
-      //         .element
-
-      //       const existingPath =
-      //         elementList[elementList.length - 1]
-      //       if (
-      //         existingPath &&
-      //         existingPath.like === Tree.Path
-      //       ) {
-      //         const last =
-      //           existingPath.segment[
-      //             existingPath.segment.length - 1
-      //           ]
-
-      //         const newPath: TreePathType = {
-      //           like: Tree.Path,
-      //           segment: fragments,
-      //         }
-
-      //         mergeTreePaths(existingPath, newPath)
-
-      //         existingPath.segment.push(...fragments)
-      //         // }
-
-      //         stack.push(existingPath)
-      //       } else {
-      //         const path: TreePathType = {
-      //           like: Tree.Path,
-      //           segment: fragments,
-      //         }
-
-      //         elementList.push(path)
-
-      //         stack.push(path)
-      //       }
-      //       break
-      //     }
-      //     case Tree.Plugin: {
-      //       const fragments = parse_termFragment_list(
-      //         token.text,
-      //         token.start.line,
-      //         token.start.character,
-      //         token.offset.start,
-      //       )
-
-      //       const path: TreePathType = {
-      //         like: Tree.Path,
-      //         segment: fragments,
-      //       }
-
-      //       ;(parent as TreePluginType).element = path
-      //       break
-      //     }
-      //     case Tree.Path: {
-      //       const fragments = parse_termFragment_list(
-      //         token.text,
-      //         token.start.line,
-      //         token.start.character,
-      //         token.offset.start,
-      //       )
-
-      //       api.assertTreeType(parent, Tree.Path)
-      //       const last =
-      //         parent.segment[parent.segment.length - 1]
-      //       // if (last) {
-      //       //   const first = fragments.shift()
-      //       //   if (first) {
-      //       //     last.segment.push(...first.segment)
-      //       //   }
-      //       // }
-      //       break
-      //     }
-      //     default:
-      //       if (top) {
-      //         api.throwError({
-      //           code: '0023',
-      //           note: top,
-      //         })
-      //       }
-      //   }
-      //   break
-      // }
-
-      case Norm.CloseModule: {
-        result = stack.pop()
-        console.log(api.prettifyJSON(result))
-        break
-      }
     }
-
-    i++
   }
 
   api.assertTreeType(result, Tree.Module)
@@ -616,6 +395,51 @@ export function isLexerType<T extends Lexer>(
     'like' in object &&
     (object as LexerTokenType<Lexer>).like === like
   )
+}
+
+export function parse_closeHandle(input: TreeInputType): void {
+  input.state.stack.pop()
+}
+
+export function parse_closeModule(input: TreeInputType): void {
+  input.state.stack.pop()
+}
+
+export function parse_closeTermPath(
+  input: TreeInputType,
+): void {
+  input.state.stack.pop()
+}
+
+export function parse_openHandle(input: TreeInputType): void {
+  const handle: TreeHandleType = {
+    element: [],
+    like: Tree.Handle,
+  }
+
+  const current =
+    input.state.stack[input.state.stack.length - 1]
+  const currentLike = current?.like
+
+  switch (currentLike) {
+    case Tree.Module: {
+      api.attach_handle_module(input, handle)
+    }
+  }
+}
+
+export function parse_openModule(input: TreeInputType): void {
+  // const current = stack[stack.length - 1]
+  // const parent = stack[stack.length - 2]
+  const container: TreeModuleType = {
+    element: [],
+    like: Tree.Module,
+  }
+  input.state.stack.push(container)
+}
+
+export function parse_openTermPath(input: TreeInputType): void {
+  input.state.stack.pop()
 }
 
 function mergeTreePaths(

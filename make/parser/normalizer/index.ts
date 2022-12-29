@@ -2,6 +2,7 @@ import { Lexer, LexerTokenBaseType, api } from '~'
 import type { LexerResultType, LexerTokenType } from '~'
 
 export enum Norm {
+  CloseHandle = 'norm-close-handle',
   CloseIndex = 'norm-close-index',
   CloseModule = 'norm-close-module',
   CloseParenthesis = 'norm-close-parenthesis',
@@ -17,6 +18,7 @@ export enum Norm {
   Line = 'norm-line',
   MoveInward = 'norm-move-inward',
   MoveOutward = 'norm-move-outward',
+  OpenHandle = 'norm-open-handle',
   OpenIndentation = 'norm-open-indentation',
   OpenIndex = 'norm-open-index',
   OpenModule = 'norm-open-module',
@@ -31,6 +33,11 @@ export enum Norm {
   String = 'norm-string',
   TermFragment = 'norm-term-fragment',
   UnsignedInteger = 'norm-unsigned-integer',
+}
+
+export type NormCloseHandleType = {
+  id: number
+  like: Norm.CloseHandle
 }
 
 export type NormCloseIndexType = {
@@ -138,6 +145,13 @@ export type NormNodeType =
   | NormStringType
   | NormTermFragmentType
   | NormUnsignedIntegerType
+  | NormOpenHandleType
+  | NormCloseHandleType
+
+export type NormOpenHandleType = {
+  id: number
+  like: Norm.OpenHandle
+}
 
 export type NormOpenIndentationType = {
   id: number
@@ -355,15 +369,20 @@ export function normalizeLinkTextAST(
       case Lexer.TermFragment: {
         switch (top) {
           case Norm.OpenModule: {
+            result.push(base(Norm.OpenHandle))
+            stack.push(Norm.OpenHandle)
+
             result.push({
               ...base(Norm.OpenTermPath),
             })
             stack.push(Norm.OpenTermPath)
+
             result.push({
               ...token,
               ...base(Norm.OpenTermFragment),
             })
             stack.push(Norm.OpenTermFragment)
+
             break
           }
           case Norm.OpenTermFragment: {
@@ -375,10 +394,14 @@ export function normalizeLinkTextAST(
             break
           }
           case Norm.OpenPlugin: {
+            result.push(base(Norm.OpenHandle))
+            stack.push(Norm.OpenHandle)
+
             result.push({
               ...base(Norm.OpenTermPath),
             })
             stack.push(Norm.OpenTermPath)
+
             result.push({
               ...token,
               ...base(Norm.OpenTermFragment),
@@ -387,10 +410,14 @@ export function normalizeLinkTextAST(
             break
           }
           case Norm.MoveInward: {
+            result.push(base(Norm.OpenHandle))
+            stack.push(Norm.OpenHandle)
+
             result.push({
               ...base(Norm.OpenTermPath),
             })
             stack.push(Norm.OpenTermPath)
+
             result.push({
               ...token,
               ...base(Norm.OpenTermFragment),
@@ -454,6 +481,8 @@ export function normalizeLinkTextAST(
       })),
     ),
   )
+
+  process.exit()
 
   return {
     ...input,
