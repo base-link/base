@@ -143,7 +143,9 @@ export type ASTClassInterface_FullType = AST_FullTypeMixin & {
 export type ASTClassInterface_PartialType =
   AST_PartialTypeMixin & {
     children: Array<
-      ASTClassInterfaceFunction_Type | ASTInput_Type
+      | ASTClassInterfaceFunction_Type
+      | ASTInput_Type
+      | ASTTerm_Type
     >
     like: AST.ClassInterface
   }

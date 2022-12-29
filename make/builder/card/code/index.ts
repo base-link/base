@@ -71,14 +71,16 @@ export function process_codeCard(
 
   api.assertNest(textTree)
 
-  textTree.nest.forEach((nest, index) => {
-    api.process_codeCard_nestedChildren(
-      api.extendWithNestScope(input, {
-        index,
-        nest,
-      }),
-    )
-  })
+  if (text.trim()) {
+    textTree.nest.forEach((nest, index) => {
+      api.process_codeCard_nestedChildren(
+        api.extendWithNestScope(input, {
+          index,
+          nest,
+        }),
+      )
+    })
+  }
 }
 
 export function process_codeCard_nestedChildren(
@@ -144,7 +146,7 @@ export function process_codeCard_nestedChildren_staticTerm(
       break
     }
     default: {
-      api.throwError(api.generateUnknownTermError(input))
+      api.throwError(api.generateUnhandledTermCaseError(input))
     }
   }
 }
@@ -153,7 +155,6 @@ export function resolve_codeCard(
   base: Base,
   link: string,
 ): void {
-  console.log(link)
   const card = base.card(link)
   api.assertAST(card.seed, AST.CodeModule)
 
@@ -235,10 +236,12 @@ export function resolve_codeCard(
           case AST.Import: {
             api.assertASTFull(node, AST.Import)
             seed.importTree.push(node)
+            break
           }
           case AST.Export: {
             api.assertASTFull(node, AST.Export)
             seed.exportList.push(node)
+            break
           }
         }
       })
@@ -252,11 +255,29 @@ export function resolve_codeCard(
       api.replaceSeed(input, seed)
 
       seed.importTree.forEach(node => {
-        api.handle_codeCard(seed.base, node.absolutePath)
+        // HACK: TODO: figure out how to get the different file types.
+        if (
+          node.absolutePath.match(
+            '/drumwork/deck/([^/]+)/base.link',
+          )
+        ) {
+          api.handle_deckCard(seed.base, node.absolutePath)
+        } else {
+          api.handle_codeCard(seed.base, node.absolutePath)
+        }
       })
 
       seed.exportList.forEach(node => {
-        api.handle_codeCard(seed.base, node.absolutePath)
+        // HACK: TODO: figure out how to get the different file types.
+        if (
+          node.absolutePath.match(
+            '/drumwork/deck/([^/]+)/base.link',
+          )
+        ) {
+          api.handle_deckCard(seed.base, node.absolutePath)
+        } else {
+          api.handle_codeCard(seed.base, node.absolutePath)
+        }
       })
     } else {
       card.seed.children.forEach(node => {

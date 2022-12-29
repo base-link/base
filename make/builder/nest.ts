@@ -1,4 +1,4 @@
-import { Nest, Tree, api } from '~'
+import { Internal, Nest, Tree, api } from '~'
 import type {
   APIInputType,
   InternalScopeType,
@@ -29,10 +29,9 @@ export function assertScope(
   object: unknown,
 ): asserts object is InternalScopeType {
   if (!api.isScope(object)) {
-    api.throwError({
-      code: `0015`,
-      note: `Object is not type`,
-    })
+    api.throwError(
+      api.generateObjectNotTypeError(object, [Internal.Scope]),
+    )
   }
 }
 

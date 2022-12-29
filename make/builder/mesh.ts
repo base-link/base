@@ -13,7 +13,9 @@ export function assertAST<T extends AST>(
   like: T,
 ): asserts object is ASTType<T> {
   if (!api.isAST(object, like)) {
-    api.throwError(api.generateObjectNotASTNodeError(like))
+    api.throwError(
+      api.generateObjectNotTypeError(object, [like]),
+    )
   }
 }
 
@@ -29,7 +31,7 @@ export function assertASTFull<T extends AST>(
     }
   }
 
-  api.throwError(api.generateObjectNotASTNodeError(like))
+  api.throwError(api.generateObjectNotTypeError(object, like))
 }
 
 export function assertASTPartial<T extends AST>(
@@ -44,7 +46,7 @@ export function assertASTPartial<T extends AST>(
     }
   }
 
-  api.throwError(api.generateObjectNotASTNodeError(like))
+  api.throwError(api.generateObjectNotTypeError(object, like))
 }
 
 export function assertTreeType<T extends Tree>(
@@ -53,7 +55,7 @@ export function assertTreeType<T extends Tree>(
 ): asserts object is TreeType<T> {
   if (!api.isTreeType(object, like)) {
     throw new Error('oops')
-    // api.throwError(api.generateObjectNotASTNodeError(like))
+    // api.throwError(api.generateObjectNotTypeError(like))
   }
 }
 

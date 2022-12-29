@@ -97,7 +97,9 @@ export function process_deckCard_nestedChildren(
           api.process_deckCard_deck(input)
           break
         default:
-          api.throwError(api.generateUnknownTermError(input))
+          api.throwError(
+            api.generateUnhandledTermCaseError(input),
+          )
       }
       break
     }

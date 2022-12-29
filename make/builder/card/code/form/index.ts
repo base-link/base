@@ -3,7 +3,6 @@ import type { APIInputType, ASTPartialType } from '~'
 
 export * from './base/index.js'
 export * from './case/index.js'
-export * from './task/index.js'
 export * from './wear/index.js'
 
 export function process_codeCard_form(
@@ -54,7 +53,7 @@ export function process_codeCard_form_nestedChildren(
           api.process_codeCard_link(input)
           break
         case 'task':
-          api.process_codeCard_formTask(input)
+          api.process_codeCard_task(input)
           break
         case 'head':
           api.process_codeCard_head(input)

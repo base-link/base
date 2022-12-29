@@ -1,8 +1,14 @@
 import { buildParseTree } from './builder/index.js'
-import type { TreeNodeType } from './builder/index.js'
+import type {
+  TreeNodeType,
+  TreeResultType,
+} from './builder/index.js'
+import { normalizeLinkTextAST } from './normalizer/index.js'
 import { tokenizeLinkText } from './tokenizer/index.js'
+import type { LexerInputType } from './tokenizer/index.js'
 
 export * from './builder/index.js'
+export * from './normalizer/index.js'
 export * from './tokenizer/index.js'
 
 export enum Nest {
@@ -26,6 +32,8 @@ export const NEST_TYPE_TEXT: Record<Nest, string> = {
   [Nest.Mark]: 'unsigned integer',
 }
 
-export function parseLinkText(str: string): TreeNodeType {
-  return buildParseTree(tokenizeLinkText(str))
+export function parseLinkText(
+  input: LexerInputType,
+): TreeResultType {
+  return buildParseTree(tokenizeLinkText(input))
 }

@@ -1,15 +1,20 @@
 import chalk from 'chalk'
 
 import {
-  AST,
   ERROR,
   NEST_TYPE_TEXT,
   Nest,
   SOURCE_MAPS,
   Tree,
   api,
+  prettifyJSON,
 } from '~'
-import type { APIInputType } from '~'
+import type {
+  APIInputType,
+  Lexer,
+  LexerSplitInputType,
+  LexerTokenType,
+} from '~'
 
 export type CursorLinePositionType = {
   character: number
@@ -58,14 +63,14 @@ export function generateForkMissingPropertyError(
 }
 
 export function generateHighlightedError(
-  input: APIInputType,
+  textByLine: Array<string>,
   highlight: CursorRangeType,
 ): string {
   const endLine = Math.min(
     highlight.start.line + 2,
-    input.card.textByLine.length - 1,
+    textByLine.length - 1,
   )
-  const endLineString = input.card.textByLine[endLine]
+  const endLineString = textByLine[endLine]
   api.assertString(endLineString)
   const endCharacter = endLineString.length - 1
   const boundedRange: CursorRangeType = {
@@ -80,8 +85,8 @@ export function generateHighlightedError(
   }
 
   const text = highlightTextRangeForError(
-    input,
     boundedRange,
+    textByLine,
     highlight,
   )
 
@@ -92,14 +97,20 @@ export function generateHighlightedErrorForTerm(
   input: APIInputType,
 ): string {
   const highlightedRange = api.getCursorRangeForTerm(input)
-  return api.generateHighlightedError(input, highlightedRange)
+  return api.generateHighlightedError(
+    input.card.textByLine,
+    highlightedRange,
+  )
 }
 
 export function generateHighlightedErrorForText(
   input: APIInputType,
 ): string {
   const highlightedRange = api.getCursorRangeForText(input)
-  return api.generateHighlightedError(input, highlightedRange)
+  return api.generateHighlightedError(
+    input.card.textByLine,
+    highlightedRange,
+  )
 }
 
 export function generateInvalidDeckLink(
@@ -165,8 +176,9 @@ export function generateModuleUnresolvableError(
   }
 }
 
-export function generateObjectNotASTNodeError(
-  like: Array<AST>,
+export function generateObjectNotTypeError(
+  object: unknown,
+  like: Array<string>,
 ): ErrorType {
   const words =
     like.length > 1
@@ -177,7 +189,9 @@ export function generateObjectNotASTNodeError(
       : `\`${like[0]}\``
   return {
     code: `0007`,
-    note: `Object isn't AST node ${words}.`,
+    note: `Object isn't type ${words}.`,
+    text:
+      object == null ? String(object) : prettifyJSON(object),
   }
 }
 
@@ -187,6 +201,39 @@ export function generateScopeMissingPropertyError(
   return {
     code: '0019',
     note: `Scope is missing property ${property}.`,
+  }
+}
+
+export function generateSyntaxTokenError(
+  input: LexerSplitInputType,
+  lastToken?: LexerTokenType<Lexer>,
+): ErrorType {
+  const highlight: CursorRangeType = {
+    end: {
+      character: 0,
+      line: 0,
+    },
+    start: {
+      character: 0,
+      line: 0,
+    },
+  }
+
+  if (lastToken) {
+    highlight.start.line = lastToken.start.line
+    highlight.end.line = lastToken.end.line
+    highlight.end.character = lastToken.end.character
+  }
+
+  const text = api.generateHighlightedError(
+    input.textInLines,
+    highlight,
+  )
+
+  return {
+    code: `0021`,
+    note: `Error in the structure of the text tree.`,
+    text,
   }
 }
 
@@ -429,11 +476,10 @@ export function getCursorRangeForText(
 }
 
 export function highlightTextRangeForError(
-  input: APIInputType,
   bound: CursorRangeType,
+  textByLine: Array<string>,
   highlight: CursorRangeType,
 ): string {
-  const { card } = input
   const lines: Array<string> = []
   let i = bound.start.line
   let n = bound.end.line
@@ -441,10 +487,10 @@ export function highlightTextRangeForError(
   const defaultIndent = new Array(pad + 1).join(' ')
   lines.push(chalk.white(`${defaultIndent} |`))
   while (i < n) {
-    const lineText = card.textByLine[i]
+    const lineText = textByLine[i]
     const x = i + 1
     let z =
-      i < card.textByLine.length - 1
+      i < textByLine.length - 1
         ? x.toString().padStart(pad, ' ')
         : defaultIndent
     if (highlight.start.line === i) {
@@ -510,6 +556,12 @@ export function throwError(data: ErrorType): void {
           chalk.gray(`>`),
       )
     }
+  } else if (data.text) {
+    text.push(chalk.gray(`    text <`))
+    data.text.split('\n').forEach(line => {
+      text.push(`      ${line}`)
+    })
+    text.push(chalk.gray('    >'))
   }
   text.push(``)
 

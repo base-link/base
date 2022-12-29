@@ -1,6 +1,6 @@
-import prettify from '@lancejpollard/pretty-compact-json.js/1'
+import { prettifyJSON } from '~'
 
-import { parseLinkText as parse } from '.'
+import { parseLinkText as parse } from './index.js'
 
 // const nest = form(`link 1, foo <bar>`)
 // const nest = form(`link <./{code/ball}>`)
@@ -16,8 +16,24 @@ import { parseLinkText as parse } from '.'
 //     take form mark-8
 
 // `)
-const nest = parse(`
-form bar-{{size}}
-`)
+// const nest = parse({
+//   path: 'foo.link',
+//   text: `
+// # true or false
 
-console.log(prettify(nest))
+// time one
+//   # true
+//   three four # five
+//     six
+//   seven 8
+//     nine
+// ten 11
+// `,
+// })
+
+// console.log(prettifyJSON(nest))
+
+parse({
+  path: 'foo.link',
+  text: `foo bar{x}baz/bear-{bond}`,
+})
