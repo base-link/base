@@ -26,10 +26,10 @@ export enum Tree {
   Module = 'tree-module',
   Path = 'tree-path',
   Plugin = 'tree-plugin',
-  TermFragment = 'tree-term-fragment'
   SignedInteger = 'tree-signed-integer',
   String = 'tree-string',
   Term = 'tree-term',
+  TermFragment = 'tree-term-fragment',
   Text = 'tree-text',
   UnsignedInteger = 'tree-unsigned-integer',
 }
@@ -83,13 +83,9 @@ export type TreeMappingType = {
   'tree-signed-integer': TreeSignedIntegerType
   'tree-string': TreeStringType
   'tree-term': TreeTermType
+  'tree-term-fragment': TreeTermFragmentType
   'tree-text': TreeTextType
   'tree-unsigned-integer': TreeUnsignedIntegerType
-  'tree-term-fragment': TreeTermFragmentType
-}
-
-export type TreeTermFragmentType = {
-  like: Tree.TermFragment
 }
 
 export type TreeModuleType = {
@@ -146,6 +142,10 @@ export type TreeStringType = Omit<
 > & {
   like: Tree.String
   value: string
+}
+
+export type TreeTermFragmentType = {
+  like: Tree.TermFragment
 }
 
 export type TreeTermType = {
@@ -246,7 +246,10 @@ export function buildParseTree(
     return input.tokenList[i + amount]
   }
 
-  function consume_start_termFragment_fragments(token: LexerTokenType<Lexer.TermFragment>, start = false): Array<TreeTermType> {
+  function consume_start_termFragment_fragments(
+    token: LexerTokenType<Lexer.TermFragment>,
+    start = false,
+  ): Array<TreeTermType> {
     const fragments = parse_termFragment_list(
       token.text,
       token.start.line,
@@ -256,8 +259,7 @@ export function buildParseTree(
 
     let next = peek()
 
-    loop:
-    while (next) {
+    loop: while (next) {
       switch (next.like) {
         case Lexer.OpenInterpolation: {
           consume()
@@ -269,15 +271,15 @@ export function buildParseTree(
             throw new Error('oops')
           }
 
-          // last.segment.push(plugin)
-          fragments.push(plugin)
+          last.segment.push(plugin)
 
           break
         }
         case Lexer.TermFragment: {
           consume()
 
-          const childFragments = consume_start_termFragment_fragments(next, false)
+          const childFragments =
+            consume_start_termFragment_fragments(next, false)
           // const first = childFragments.shift()
           const last = fragments[fragments.length - 1]
 
@@ -305,17 +307,19 @@ export function buildParseTree(
     return fragments
   }
 
-  function consume_start_openInterpolation(token: LexerTokenType<Lexer.OpenInterpolation>): TreePluginType {
+  function consume_start_openInterpolation(
+    token: LexerTokenType<Lexer.OpenInterpolation>,
+  ): TreePluginType {
     const fragments: Array<TreeTermType> = []
 
     let next = peek()
-    loop:
-    while (next) {
+    loop: while (next) {
       switch (next.like) {
         case Lexer.TermFragment: {
           consume()
 
-          const childFragments = consume_start_termFragment_fragments(next, true)
+          const childFragments =
+            consume_start_termFragment_fragments(next, true)
           const last = fragments[fragments.length - 1]
           if (last) {
             const first = childFragments.shift()
@@ -327,7 +331,8 @@ export function buildParseTree(
           break
         }
         case Lexer.OpenInterpolation: {
-          const childPlugin = consume_start_openInterpolation(next)
+          const childPlugin =
+            consume_start_openInterpolation(next)
           const last = fragments[fragments.length - 1]
           if (last) {
             last.segment.push(childPlugin)
@@ -337,7 +342,6 @@ export function buildParseTree(
           break
         }
         case Lexer.OpenEvaluation: {
-
         }
         default:
           break loop
@@ -346,21 +350,22 @@ export function buildParseTree(
     }
 
     if (fragments.length > 1) {
+      console.log(fragments)
       const path = build_start_termFragment_path(fragments)
 
       const plugin: TreePluginType = {
+        element: path,
         like: Tree.Plugin,
         size: token.text.length,
-        element: path
       }
 
       return plugin
     } else {
       const handle = build_start_termFragment_term(fragments)
       const plugin: TreePluginType = {
+        element: handle,
         like: Tree.Plugin,
         size: token.text.length,
-        element: handle
       }
       return plugin
     }
@@ -373,7 +378,9 @@ export function buildParseTree(
     return t
   }
 
-  function build_start_termFragment_path(fragments: Array<TreeTermType>): TreePathType {
+  function build_start_termFragment_path(
+    fragments: Array<TreeTermType>,
+  ): TreePathType {
     const path: TreePathType = {
       like: Tree.Path,
       segment: fragments,
@@ -381,18 +388,23 @@ export function buildParseTree(
     return path
   }
 
-  function build_start_termFragment_term(fragments: Array<TreeTermType>): TreeHandleType {
+  function build_start_termFragment_term(
+    fragments: Array<TreeTermType>,
+  ): TreeHandleType {
     const term = fragments[0]
     api.assertTreeType(term, Tree.Term)
     const handle: TreeHandleType = {
+      element: [],
       like: Tree.Handle,
       term,
-      element: []
     }
     return handle
   }
 
-  function append_term_handle_to_parent(parent: TT, handle: TreeHandleType | TreePathType): void {
+  function append_term_handle_to_parent(
+    parent: TT,
+    handle: TreeHandleType | TreePathType,
+  ): void {
     switch (parent.like) {
       case Tree.Module: {
         parent.element.push(handle)
@@ -409,7 +421,10 @@ export function buildParseTree(
     parent: TT,
     token: LexerTokenType<Lexer.TermFragment>,
   ): void {
-    const fragments = consume_start_termFragment_fragments(token, true)
+    const fragments = consume_start_termFragment_fragments(
+      token,
+      true,
+    )
 
     if (fragments.length > 1) {
       const path = build_start_termFragment_path(fragments)
