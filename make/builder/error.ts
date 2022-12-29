@@ -486,7 +486,7 @@ export function highlightTextRangeForError(
   let pad = String(n).length
   const defaultIndent = new Array(pad + 1).join(' ')
   lines.push(chalk.white(`${defaultIndent} |`))
-  while (i < n) {
+  while (i <= n) {
     const lineText = textByLine[i]
     const x = i + 1
     let z =

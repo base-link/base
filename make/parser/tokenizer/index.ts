@@ -24,6 +24,30 @@ export enum Lexer {
 }
 
 // eslint-disable-next-line sort-exports/sort-exports
+export const LEXER_TYPE = [
+  Lexer.CloseEvaluation,
+  Lexer.CloseInterpolation,
+  Lexer.CloseParenthesis,
+  Lexer.CloseText,
+  Lexer.Comma,
+  Lexer.Comment,
+  Lexer.Decimal,
+  Lexer.Hashtag,
+  Lexer.Line,
+  Lexer.OpenEvaluation,
+  Lexer.OpenIndentation,
+  Lexer.OpenInterpolation,
+  Lexer.OpenNesting,
+  Lexer.OpenParenthesis,
+  Lexer.OpenText,
+  Lexer.Path,
+  Lexer.SignedInteger,
+  Lexer.String,
+  Lexer.TermPath,
+  Lexer.UnsignedInteger,
+]
+
+// eslint-disable-next-line sort-exports/sort-exports
 export const LEXER_PATTERN_LIST = [
   Lexer.CloseEvaluation,
   Lexer.CloseInterpolation,
@@ -157,8 +181,8 @@ export type LexerRangeType = {
   start: number
 }
 
-export type LexerResultType = LexerInputType & {
-  token: Array<LexerTokenType<Lexer>>
+export type LexerResultType = LexerSplitInputType & {
+  tokenList: Array<LexerTokenType<Lexer>>
 }
 
 export type LexerSplitInputType = LexerInputType & {
@@ -389,6 +413,6 @@ export function tokenizeLinkText(
 
   return {
     ...source,
-    token: tokenList,
+    tokenList,
   }
 }
