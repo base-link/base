@@ -411,6 +411,25 @@ export function tokenizeLinkText(
     }
   }
 
+  const token: LexerTokenType<Lexer.Line> = {
+    end: {
+      character: character + 1,
+      line: line,
+    },
+    like: Lexer.Line,
+    offset: {
+      end: offset + 1,
+      start: offset,
+    },
+    start: {
+      character: character,
+      line: line,
+    },
+    text: '\n',
+  }
+
+  tokenList.push(token)
+
   return {
     ...source,
     tokenList,

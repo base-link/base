@@ -35,5 +35,7 @@ export const NEST_TYPE_TEXT: Record<Nest, string> = {
 export function parseLinkText(
   input: LexerInputType,
 ): TreeResultType {
-  return buildParseTree(tokenizeLinkText(input))
+  return buildParseTree(
+    normalizeLinkTextAST(tokenizeLinkText(input)),
+  )
 }
