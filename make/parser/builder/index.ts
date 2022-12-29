@@ -214,7 +214,7 @@ export function buildParseTree(
   }
 
   const result = start
-  const stack = [start]
+  const stack: Array<TreeNodeType> = [start]
 
   console.log(api.prettifyJSON(input.tokenList))
 
@@ -222,18 +222,22 @@ export function buildParseTree(
   while (i < input.tokenList.length) {
     const token = input.tokenList[i]
     api.assertLexerGenericType(token)
-    // const parent = stack[stack.length - 1]
-    // if (!parent) {
-    //   i++
-    //   continue
-    // }
+    const parent = stack[stack.length - 1]
+    if (!parent) {
+      i++
+      continue
+    }
 
     switch (token.like) {
       case Lexer.TermFragment: {
         consume()
 
-        consume_start_termFragment(start, token)
+        stack.push(consume_start_termFragment(parent, token))
         break
+      }
+
+      case Lexer.OpenNesting: {
+        stack.pop()
       }
     }
 
@@ -248,7 +252,6 @@ export function buildParseTree(
 
   function consume_start_termFragment_fragments(
     token: LexerTokenType<Lexer.TermFragment>,
-    start = false,
   ): Array<TreeTermType> {
     const fragments = parse_termFragment_list(
       token.text,
@@ -279,21 +282,19 @@ export function buildParseTree(
           consume()
 
           const childFragments =
-            consume_start_termFragment_fragments(next, false)
-          // const first = childFragments.shift()
+            consume_start_termFragment_fragments(next)
+          const first = childFragments.shift()
           const last = fragments[fragments.length - 1]
 
-          // if (!first) {
-          //   throw new Error('Oops')
-          // }
+          if (!first) {
+            throw new Error('Oops')
+          }
 
           if (!last) {
             throw new Error('Oops')
           }
 
-          // if (first.segment[0]) {
-          //   last.segment.push(first.segment[0])
-          // }
+          last.segment.push(...first.segment)
 
           fragments.push(...childFragments)
           break
@@ -319,12 +320,12 @@ export function buildParseTree(
           consume()
 
           const childFragments =
-            consume_start_termFragment_fragments(next, true)
+            consume_start_termFragment_fragments(next)
           const last = fragments[fragments.length - 1]
           if (last) {
             const first = childFragments.shift()
-            if (first && first.segment[0]) {
-              last.segment.push(first.segment[0])
+            if (first) {
+              last.segment.push(...first.segment)
             }
           }
           fragments.push(...childFragments)
@@ -334,6 +335,7 @@ export function buildParseTree(
           const childPlugin =
             consume_start_openInterpolation(next)
           const last = fragments[fragments.length - 1]
+          // fragments.push(childPlugin)
           if (last) {
             last.segment.push(childPlugin)
           } else {
@@ -350,7 +352,6 @@ export function buildParseTree(
     }
 
     if (fragments.length > 1) {
-      console.log(fragments)
       const path = build_start_termFragment_path(fragments)
 
       const plugin: TreePluginType = {
@@ -420,18 +421,18 @@ export function buildParseTree(
   function consume_start_termFragment(
     parent: TT,
     token: LexerTokenType<Lexer.TermFragment>,
-  ): void {
-    const fragments = consume_start_termFragment_fragments(
-      token,
-      true,
-    )
+  ): TreeHandleType | TreePathType {
+    const fragments =
+      consume_start_termFragment_fragments(token)
 
     if (fragments.length > 1) {
       const path = build_start_termFragment_path(fragments)
       append_term_handle_to_parent(parent, path)
+      return path
     } else {
       const term = build_start_termFragment_term(fragments)
       append_term_handle_to_parent(parent, term)
+      return term
     }
   }
 
