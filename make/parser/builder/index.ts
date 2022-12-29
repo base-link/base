@@ -475,6 +475,10 @@ export function parse_termFragment(input: TreeInputType): void {
           value: input.token.value,
         })
 
+        current.segment.push(newTerm)
+
+        stack.push(newTerm)
+
         // if (!input.token.start) {
         //   const termList: Array<TreeTermType> = mergeTerms(
         //     oldTerm,
@@ -509,7 +513,11 @@ export function parse_termFragment(input: TreeInputType): void {
           value: input.token.value,
         })
 
-        current.head = newPath
+        if (!current.head) {
+          current.head = newPath
+        } else {
+          current.head.segment.push(...newPath.segment)
+        }
 
         stack.push(newPath)
         stack.push(newTerm)
@@ -543,6 +551,7 @@ export function parse_termFragment(input: TreeInputType): void {
         //   )
         // }
         parent.segment.push(newTerm)
+        stack.push(newTerm)
       }
       break
     }
@@ -594,9 +603,9 @@ function printParserASTDetails(
     }
     case Tree.Handle: {
       text.push(`${title}`)
-      if (node.hook) {
-        text.push(chalk.gray(`  hook:`))
-        printParserASTDetails(node.hook).forEach(line => {
+      if (node.head) {
+        text.push(chalk.gray(`  head:`))
+        printParserASTDetails(node.head).forEach(line => {
           text.push(`    ${line}`)
         })
       } else {
@@ -624,7 +633,7 @@ function printParserASTDetails(
       if (node.element) {
         text.push(chalk.gray(`  element:`))
         printParserASTDetails(node.element).forEach(line => {
-          text.push(`  ${line}`)
+          text.push(`    ${line}`)
         })
       }
       break
