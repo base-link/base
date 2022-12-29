@@ -1,4 +1,5 @@
 import type {
+  FoldNodeType,
   FoldRangeMetadatType,
   TextSplitInputType,
   TextTokenType,
@@ -59,6 +60,14 @@ export type TreeIndexType = {
   element: TreeHandleType
   like: Tree.Index
   parent: TreePathType
+}
+
+export type TreeInputType = TextSplitInputType & {
+  state: {
+    index: number
+    stack: Array<TreeNodeType>
+  }
+  token: FoldNodeType
 }
 
 export type TreeMappingType = {

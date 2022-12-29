@@ -1,4 +1,4 @@
-import { code, prettifyJSON } from '~'
+import { code } from '~'
 
 import { parseLinkText as parse } from './index.js'
 
