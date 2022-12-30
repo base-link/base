@@ -51,8 +51,8 @@ deck <@treesurf/wolf>
   test ./test
     another deeper more more
       still
-        b c k h i j
-          d
+    another deeper more more
+      still
   mint <
     0.0.1
   >

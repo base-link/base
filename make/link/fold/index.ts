@@ -243,6 +243,7 @@ export function generateLinkTextBuildingDirections(
           }
           case Fold.OpenIndentation: {
             // stack.push(Fold.OpenIndentation)
+            stack.pop()
             break
           }
           case Fold.OpenDepth: {
@@ -291,6 +292,8 @@ export function generateLinkTextBuildingDirections(
             result.push(base(Fold.CloseTermPath))
             stack.pop()
 
+            result.push(base(Fold.OpenDepth))
+            stack.push(Fold.OpenDepth)
             result.push(base(Fold.OpenDepth))
             stack.push(Fold.OpenDepth)
             break
@@ -493,12 +496,12 @@ export function generateLinkTextBuildingDirections(
     //   )
     // }
 
-    if (diff > 1) {
+    if (diff > 0) {
       result.push(base(Fold.OpenDepth))
     } else if (diff < 0) {
-      // while (diff++ < 0) {
-      result.push(base(Fold.CloseDepth))
-      // }
+      while (diff++ < 0) {
+        result.push(base(Fold.CloseDepth))
+      }
     }
   }
 
