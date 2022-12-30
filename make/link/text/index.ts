@@ -180,7 +180,7 @@ export type TextResultType = TextSplitInputType & {
 }
 
 export type TextSplitInputType = TextInputType & {
-  textInLines: Array<string>
+  textByLine: Array<string>
 }
 
 export enum TextState {
@@ -302,7 +302,7 @@ export function tokenizeLinkText(
 
   let source: TextSplitInputType = {
     ...input,
-    textInLines: input.text.split('\n'),
+    textByLine: input.text.split('\n'),
   }
 
   let typeStack = [TextState.Tree]
@@ -312,7 +312,7 @@ export function tokenizeLinkText(
   let offset = 0
 
   let i = 0
-  lineLoop: for (let textLine of source.textInLines) {
+  lineLoop: for (let textLine of source.textByLine) {
     processLoop: while (textLine) {
       const state: TextState =
         typeStack[typeStack.length - 1] || TextState.Tree
@@ -367,6 +367,8 @@ export function tokenizeLinkText(
                 typeStack.pop()
                 break
               }
+              default:
+                break
             }
 
             break patternLoop
@@ -384,13 +386,14 @@ export function tokenizeLinkText(
       )
     }
 
-    if (i < source.textInLines.length - 2) {
-      const token: TextTokenType<Text.Line> = {
+    if (i < source.textByLine.length - 2) {
+      const state = typeStack[typeStack.length - 1]
+      const token: TextTokenType<Text.Line | Text.String> = {
         end: {
           character: character + 1,
           line: line,
         },
-        like: Text.Line,
+        like: state == TextState.Tree ? Text.Line : Text.String,
         offset: {
           end: offset + 1,
           start: offset,

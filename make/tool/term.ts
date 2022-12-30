@@ -12,8 +12,8 @@ export function assumeStaticTermFromNest(
 export function resolveStaticTerm(
   input: MeshInputType,
 ): string | undefined {
-  const term = code.assumeInputObjectAsTreeType(
-    Tree.Term,
+  const term = code.assumeInputObjectAsLinkType(
+    Link.Term,
     input,
   )
 
@@ -22,7 +22,7 @@ export function resolveStaticTerm(
   }
 
   let link = term.link[0]
-  if (link && link.like === Tree.Cord) {
+  if (link && link.like === Link.Cord) {
     return link.cord
   }
 }
@@ -42,7 +42,7 @@ export function resolveStaticTermFromNest(
     return
   }
 
-  if (line.like !== Tree.Term) {
+  if (line.like !== Link.Term) {
     return
   }
 
@@ -51,7 +51,7 @@ export function resolveStaticTermFromNest(
   }
 
   let link = line.link[0]
-  if (link && link.like === Tree.Cord) {
+  if (link && link.like === Link.Cord) {
     return link.cord
   }
 }
@@ -70,12 +70,12 @@ export function termIsInterpolated(
     return false
   }
 
-  if (line.like !== Tree.Term) {
+  if (line.like !== Link.Term) {
     return false
   }
 
   for (const link of line.link) {
-    if (link.like === Tree.Slot) {
+    if (link.like === Link.Slot) {
       return true
     }
   }
@@ -91,7 +91,7 @@ export function termIsNested(input: MeshInputType): boolean {
     return false
   }
 
-  if (line.like !== Tree.Term) {
+  if (line.like !== Link.Term) {
     return false
   }
 

@@ -249,7 +249,7 @@ export function generateSyntaxTokenError(
   }
 
   const text = code.generateHighlightedError(
-    input.textInLines,
+    input.textByLine,
     highlight,
   )
 

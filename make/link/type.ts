@@ -79,6 +79,7 @@ export type LinkNodeType =
   | LinkDecimalType
   | LinkHashtagType
   | LinkPathType
+  | LinkBooleanType
 
 export type LinkPathType = {
   like: Link.Path

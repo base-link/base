@@ -1,11 +1,7 @@
 import chalk from 'chalk'
 
 import { Text, code } from '~'
-import type {
-  TextResultType,
-  TextTermFragmentTokenType,
-  TextTokenType,
-} from '~'
+import type { TextResultType, TextTokenType } from '~'
 
 import { Fold } from './type.js'
 import type {
@@ -21,14 +17,38 @@ export function generateLinkTextBuildingDirections(
 ): FoldResultType {
   const result: Array<FoldNodeType> = []
 
+  console.log(input)
+
   let i = 0
 
   const stack: Array<Fold> = [Fold.OpenModule]
   const counter: Record<string, number> = {}
 
+  let currentIndent = 0
+  let previousIndent = 0
+
+  let previousNestLevel = 0
+  let nextNestLevel = 0
+
   function count(like: Fold): number {
     counter[like] = counter[like] || 1
     return counter[like]++
+  }
+
+  function captureIndent() {
+    if (previousIndent === 0) {
+      previousIndent = currentIndent
+      currentIndent = 0
+    }
+  }
+
+  function clearIndent(prev = 0) {
+    previousIndent = prev
+    currentIndent = 0
+  }
+
+  function indent() {
+    currentIndent += 1
   }
 
   result.push(base(Fold.OpenModule))
@@ -45,6 +65,9 @@ export function generateLinkTextBuildingDirections(
 
     switch (token.like) {
       case Text.CloseEvaluation: {
+        code.throwError(
+          code.generatedNotImplementedYetError(top),
+        )
         break
       }
       case Text.CloseInterpolation: {
@@ -66,6 +89,7 @@ export function generateLinkTextBuildingDirections(
             break
           }
           case Fold.OpenDepth: {
+            // result.push(base(Fold.CloseHandle))
             result.push(base(Fold.CloseDepth))
             stack.pop()
             break
@@ -76,17 +100,39 @@ export function generateLinkTextBuildingDirections(
             break
           }
           default:
-            code.throwError({
-              code: '0023',
-              note: top,
-            })
+            code.throwError(
+              code.generatedNotImplementedYetError(top),
+            )
         }
         break
       }
       case Text.CloseParenthesis: {
+        code.throwError(
+          code.generatedNotImplementedYetError(top),
+        )
         break
       }
       case Text.CloseText: {
+        switch (top) {
+          case Fold.CloseDepth: {
+            result.push(base(Fold.CloseText))
+            // result.push(base(Fold.CloseDepth))
+            // stack.pop()
+            // stack.pop()
+            break
+          }
+          case Fold.OpenText: {
+            result.push(base(Fold.CloseText))
+            // result.push(base(Fold.CloseDepth))
+            stack.pop()
+            // stack.pop()
+            break
+          }
+          default:
+            code.throwError(
+              code.generatedNotImplementedYetError(top),
+            )
+        }
         break
       }
       case Text.Comma: {
@@ -99,39 +145,54 @@ export function generateLinkTextBuildingDirections(
             break
           }
           default:
-            code.throwError({
-              code: '0023',
-              note: top,
-            })
+            code.throwError(
+              code.generatedNotImplementedYetError(top),
+            )
         }
         // console.log(token)
         break
       }
       case Text.Comment: {
+        code.throwError(
+          code.generatedNotImplementedYetError(top),
+        )
         break
       }
       case Text.Decimal: {
+        code.throwError(
+          code.generatedNotImplementedYetError(top),
+        )
         break
       }
       case Text.Hashtag: {
+        code.throwError(
+          code.generatedNotImplementedYetError(top),
+        )
         break
       }
       case Text.Line: {
+        nextNestLevel = 0
         switch (top) {
           case Fold.OpenHandle: {
-            result.push(base(Fold.CloseHandle))
-            stack.pop()
+            // result.push(base(Fold.CloseHandle))
+            // stack.pop()
+            // captureIndent()
             break
           }
           case Fold.OpenDepth: {
-            result.push(base(Fold.CloseHandle))
-            stack.pop()
+            // result.push(base(Fold.CloseDepth))
+            // result.push(base(Fold.CloseHandle))
+            // stack.pop()
+            // stack.pop()
+            // captureIndent()
             break
           }
           case Fold.OpenModule: {
+            // captureIndent()
             break
           }
           case Fold.OpenTerm: {
+            // captureIndent()
             result.push(base(Fold.CloseTerm))
             stack.pop()
 
@@ -139,18 +200,63 @@ export function generateLinkTextBuildingDirections(
             stack.pop()
             break
           }
-          default:
-            code.throwError({
-              code: '0023',
-              note: top,
+          case Fold.String: {
+            // captureIndent()
+            result.push({
+              ...token,
+              ...base(Fold.String),
             })
+            break
+          }
+          case Fold.OpenIndentation: {
+            // clearIndent(previousIndent)
+            // captureIndent()
+            break
+          }
+          default:
+            code.throwError(
+              code.generatedNotImplementedYetError(top),
+            )
         }
         break
       }
       case Text.OpenEvaluation: {
+        code.throwError(
+          code.generatedNotImplementedYetError(top),
+        )
         break
       }
       case Text.OpenIndentation: {
+        nextNestLevel++
+        switch (top) {
+          case Fold.OpenHandle: {
+            stack.pop()
+            stack.push(Fold.OpenIndentation)
+            // result.push(base(Fold.OpenHandle))
+            // stack.push(Fold.OpenHandle)
+            break
+          }
+          case Fold.OpenModule: {
+            stack.pop()
+            stack.push(Fold.OpenIndentation)
+            break
+          }
+          case Fold.OpenIndentation: {
+            // stack.push(Fold.OpenIndentation)
+            break
+          }
+          case Fold.OpenDepth: {
+            stack.pop()
+            // result.push(base(Fold.CloseDepth))
+            // stack.pop()
+            stack.push(Fold.OpenIndentation)
+            break
+          }
+          default:
+            code.throwError(
+              code.generatedNotImplementedYetError(top),
+            )
+        }
         break
       }
       case Text.OpenInterpolation: {
@@ -159,7 +265,7 @@ export function generateLinkTextBuildingDirections(
           case Fold.OpenHandle: {
             stack.push(Fold.OpenPlugin)
             result.push({
-              ...token,
+              size: token.text.length,
               ...base(Fold.OpenPlugin),
             })
             break
@@ -168,16 +274,17 @@ export function generateLinkTextBuildingDirections(
             break
           }
           default:
-            code.throwError({
-              code: '0023',
-              note: top,
-            })
+            code.throwError(
+              code.generatedNotImplementedYetError(top),
+            )
         }
         break
       }
       case Text.OpenNesting: {
+        previousNestLevel++
         switch (top) {
           case Fold.OpenTerm: {
+            indent()
             result.push(base(Fold.CloseTerm))
             stack.pop()
 
@@ -189,6 +296,7 @@ export function generateLinkTextBuildingDirections(
             break
           }
           case Fold.OpenTermPath: {
+            indent()
             result.push(base(Fold.CloseTermPath))
             stack.pop()
 
@@ -197,32 +305,79 @@ export function generateLinkTextBuildingDirections(
             break
           }
           case Fold.OpenHandle: {
+            indent()
             result.push(base(Fold.OpenDepth))
             stack.push(Fold.OpenDepth)
             break
           }
+          // case Fold.OpenIndentation: {
+          //   notifyIndent()
+          //   break
+          // }
           default:
-            code.throwError({
-              code: '0023',
-              note: top,
-            })
+            code.throwError(
+              code.generatedNotImplementedYetError(top),
+            )
         }
         break
       }
       case Text.OpenParenthesis: {
+        code.throwError(
+          code.generatedNotImplementedYetError(top),
+        )
         break
       }
       case Text.OpenText: {
+        switch (top) {
+          case Fold.OpenDepth: {
+            result.push(base(Fold.OpenText))
+            stack.push(Fold.OpenText)
+            break
+          }
+          default:
+            code.throwError(
+              code.generatedNotImplementedYetError(top),
+            )
+        }
         break
       }
       case Text.Path: {
+        switch (top) {
+          case Fold.OpenDepth: {
+            result.push({
+              ...token,
+              ...base(Fold.String),
+            })
+            // stack.push(Fold.String)
+            break
+          }
+          default:
+            code.throwError(
+              code.generatedNotImplementedYetError(top),
+            )
+        }
         break
       }
       case Text.SignedInteger: {
+        code.throwError(
+          code.generatedNotImplementedYetError(top),
+        )
         break
       }
       case Text.String: {
-        break
+        switch (top) {
+          case Fold.OpenText: {
+            result.push({
+              ...token,
+              ...base(Fold.String),
+            })
+            break
+          }
+          default:
+            code.throwError(
+              code.generatedNotImplementedYetError(top),
+            )
+        }
       }
       case Text.TermFragment: {
         switch (top) {
@@ -279,11 +434,32 @@ export function generateLinkTextBuildingDirections(
             applyFragments(token)
             break
           }
+          case Fold.OpenText: {
+            break
+          }
+          case Fold.String: {
+            // stack.pop()
+            break
+          }
+          case Fold.OpenIndentation: {
+            stack.pop()
+            notifyIndent()
+            // result.push(base(Fold.OpenHandle))
+            // stack.push(Fold.OpenHandle)
+
+            result.push(base(Fold.OpenTermPath))
+            stack.push(Fold.OpenTermPath)
+
+            result.push(base(Fold.OpenTerm))
+            stack.push(Fold.OpenTerm)
+
+            applyFragments(token)
+            break
+          }
           default:
-            code.throwError({
-              code: '0023',
-              note: top,
-            })
+            code.throwError(
+              code.generatedNotImplementedYetError(top),
+            )
         }
         break
       }
@@ -294,11 +470,39 @@ export function generateLinkTextBuildingDirections(
         })
         break
       }
+      default:
+        code.throwError(
+          code.generatedNotImplementedYetError(top),
+        )
     }
     i++
   }
 
-  function applyFragments(token: TextTermFragmentTokenType) {
+  clearIndent(previousIndent)
+  // notifyIndent(false)
+
+  function notifyIndent() {
+    let diff = nextNestLevel - previousNestLevel
+    previousNestLevel = nextNestLevel
+    nextNestLevel = 0
+    // if (indentDiff > 1) {
+    //   throw new Error(
+    //     'Too much ' +
+    //       indentDiff +
+    //       ` ${currentIndent} - ${previousIndent}`,
+    //   )
+    // }
+
+    if (diff > 1) {
+      result.push(base(Fold.OpenDepth))
+    } else if (diff < 0) {
+      while (diff++ < 0) {
+        result.push(base(Fold.CloseDepth))
+      }
+    }
+  }
+
+  function applyFragments(token: TextTokenType<Text>) {
     const fragments = generateTermFragments(token)
 
     fragments.forEach((frag, i) => {
@@ -332,6 +536,8 @@ export function generateLinkTextBuildingDirections(
         result.push(base(Fold.CloseModule))
         break
       }
+      default:
+        break
     }
   }
 
@@ -346,7 +552,7 @@ export function generateLinkTextBuildingDirections(
   }
 
   function generateTermFragments(
-    token: TextTermFragmentTokenType,
+    token: TextTokenType<Text>,
   ): Array<FoldTermFragmentType> {
     const parts = token.text.split('/')
 
@@ -386,6 +592,8 @@ export function generateLinkTextBuildingDirections(
     })
   }
 
+  // console.log(result.map(x => x.like).join('\n'))
+
   logDirectionList(result)
 
   return {
@@ -419,9 +627,13 @@ function logDirectionList(
       type = 'close'
     }
 
-    const indentText = new Array(indent + 1).join('  ')
+    const indentText = new Array(Math.max(0, indent + 1)).join(
+      '  ',
+    )
     const value = chalk.whiteBright(
-      'value' in direction ? `${direction.value}` : '',
+      'value' in direction || 'text' in direction
+        ? `${direction.value || direction.text}`
+        : '',
     )
     const symbol = chalk.gray(
       '', // type === 'close' ? nay : type === 'open' ? yay : '',

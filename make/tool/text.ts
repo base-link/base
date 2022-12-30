@@ -1,13 +1,12 @@
-import { Link, LinkHint, Site, code } from '~'
+import { LinkHint, Site, code } from '~'
 import type {
+  LinkTreeType,
   MeshInputType,
   SiteDependencyPartType,
   SiteDependencyType,
-  SiteScopeType,
-  TreeNodeType,
 } from '~'
 
-export function parseTextIntoTree(text: string): TreeNodeType {
+export function parseTextIntoTree(text: string): LinkTreeType {
   return code.parseLinkText(text)
 }
 

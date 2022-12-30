@@ -35,12 +35,29 @@ import { parseLinkText as parse } from './index.js'
 
 async function start() {
   await code.loadSourceMaps()
+  //   parse({
+  //     path: 'foo.link',
+  //     text: `
+  // foo bar{x}-baz/bear-{bond}we, and a123 345
+  //   stuff for you
+  //     more`,
+  //   })
   parse({
     path: 'foo.link',
     text: `
-foo bar{x}-baz/bear-{bond}we, and a123 345
-  stuff for you
-    more`,
+
+deck <@treesurf/wolf>
+  bear ./code
+  test ./test
+    another deeper more more
+      still
+        b c k h i j
+          d
+  mint <
+    0.0.1
+  >
+
+`,
   })
 }
 

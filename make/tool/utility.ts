@@ -88,7 +88,7 @@ export function assumeInputObjectAsMeshPartialType<
     objectScope = objectScope.parent
     rank--
   }
-  code.assertMeshTypePartial(objectScope.data, type)
+  code.assertMeshPartialType(objectScope.data, type)
   return objectScope.data
 }
 

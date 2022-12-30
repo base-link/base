@@ -1,4 +1,10 @@
-import { Base, Mesh, MeshModuleBaseType, code } from '~'
+import {
+  Base,
+  LinkTreeType,
+  Mesh,
+  MeshModuleBaseType,
+  code,
+} from '~'
 import type {
   MeshFullType,
   MeshInputType,
@@ -7,10 +13,18 @@ import type {
 
 export * from './deck/index.js'
 
+export type MeshParseType = {
+  directory: string
+  path: string
+  text: string
+  textByLine: Array<string>
+  tree: LinkTreeType
+}
+
 export function generate_deckCard(
   input: MeshInputType,
 ): MeshFullType<Mesh.PackageModule> {
-  code.assertMeshTypePartial(input.card, Mesh.PackageModule)
+  code.assertMeshPartialType(input.card, Mesh.PackageModule)
 
   let deck
 
@@ -22,7 +36,7 @@ export function generate_deckCard(
     }
   })
 
-  code.assertMeshTypeFull(deck, Mesh.Package)
+  code.assertMeshFullType(deck, Mesh.Package)
 
   return {
     ...code.omit(input.card, ['children']),
@@ -40,6 +54,19 @@ export function handle_deckCard(
   code.resolve_deckCard(base, link)
 }
 
+export function loadLinkModule(
+  base: Base,
+  path: string,
+): MeshParseType {
+  const text = code.readTextFile(base, path)
+  const data = code.parseLinkText({ path, text })
+  const directory = code.getLinkHost(path)
+  return {
+    directory,
+    ...data,
+  }
+}
+
 /**
  * Entrypoint function.
  */
@@ -47,20 +74,16 @@ export function process_deckCard(
   base: Base,
   link: string,
 ): void {
-  const text = code.readTextFile(base, link)
-  const tree = code.parseTextIntoTree(text)
-  const linkHost = code.getLinkHost(link)
   const card = base.card(link)
+  const parse = code.loadLinkModule(base, link)
   const seed: MeshPartialType<Mesh.PackageModule> = {
+    ...parse,
     base,
     children: [],
-    directory: linkHost,
     like: Mesh.PackageModule,
-    parseTree: tree,
     partial: true,
-    path: link,
-    textByLine: text.split(/\n/),
   }
+
   const input: MeshInputType = code.createInitialMeshInput(
     seed,
     seed,
@@ -69,9 +92,7 @@ export function process_deckCard(
 
   card.bind(seed)
 
-  code.assertNest(tree)
-
-  tree.nest.forEach((nest, index) => {
+  seed.tree.nest.forEach((nest, index) => {
     code.process_deckCard_nestedChildren(
       code.extendWithNestScope(input, {
         index,
@@ -123,7 +144,7 @@ export function resolve_deckCard(
   link: string,
 ): void {
   const card = base.card(link)
-  code.assertMeshTypeFull(card.seed, Mesh.PackageModule)
+  code.assertMeshFullType(card.seed, Mesh.PackageModule)
 
   // TODO: deck.hint tells us the parser to use on the code.
 

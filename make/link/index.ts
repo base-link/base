@@ -85,7 +85,7 @@ export function parseLinkTree(
   const stack: Array<LinkNodeType> = []
   let result: LinkNodeType | undefined = undefined
 
-  // console.log(code.prettifyJSON(input.tokenList))
+  // console.log(code.prettifyJSON(input.directions))
 
   const state = { index: 0, stack }
 
@@ -197,14 +197,18 @@ export function parseLinkTree(
           token,
         })
         break
+      default:
+        code.throwError(
+          code.generatedNotImplementedYetError(undefined),
+        )
     }
 
     i++
   }
 
-  printParserMesh(start)
-
   code.assertLinkType(start, Link.Tree)
+
+  printParserMesh(start)
 
   return {
     ...input,
@@ -314,15 +318,17 @@ export function parse_openPlugin(input: LinkInputType): void {
 
   switch (current?.like) {
     case Link.Term: {
-      const plugin: LinkPluginType = {
-        like: Link.Plugin,
-        parent: current,
-        size: input.token.text.length,
+      if (input.token.like === Fold.OpenPlugin) {
+        const plugin: LinkPluginType = {
+          like: Link.Plugin,
+          parent: current,
+          size: input.token.size,
+        }
+
+        current.segment.push(plugin)
+
+        stack.push(plugin)
       }
-
-      current.segment.push(plugin)
-
-      stack.push(plugin)
 
       break
     }
@@ -352,6 +358,10 @@ export function parse_openTerm(input: LinkInputType): void {
 
       current.segment.push(term)
     }
+    default:
+      code.throwError(
+        code.generatedNotImplementedYetError(current?.like),
+      )
   }
 }
 
@@ -377,6 +387,10 @@ export function parse_openTermPath(input: LinkInputType): void {
 
       break
     }
+    default:
+      code.throwError(
+        code.generatedNotImplementedYetError(current?.like),
+      )
   }
 }
 
@@ -420,16 +434,12 @@ export function parse_termFragment(input: LinkInputType): void {
   }
 }
 
-function printParserMesh(base: LinkNodeType | unknown): void {
+function printParserMesh(base: LinkNodeType): void {
   const text: Array<string> = ['']
 
-  if (!base) {
-    text.push(`  undefined`)
-  } else {
-    printParserMeshDetails(base).forEach(line => {
-      text.push(`  ${line}`)
-    })
-  }
+  printParserMeshDetails(base).forEach(line => {
+    text.push(`  ${line}`)
+  })
 
   text.push('')
 
@@ -473,6 +483,12 @@ function printParserMeshDetails(
       break
     }
     case Link.Text: {
+      text.push(`${title}`)
+      node.segment.forEach(seg => {
+        printParserMeshDetails(seg).forEach(line => {
+          text.push(`    ${line}`)
+        })
+      })
       break
     }
     case Link.Plugin: {
@@ -490,9 +506,11 @@ function printParserMeshDetails(
       break
     }
     case Link.Decimal: {
+      text.push(`${title} ${node.value}`)
       break
     }
     case Link.Hashtag: {
+      text.push(`${title} ${node.system}${node.code}`)
       break
     }
     case Link.Term: {
@@ -513,6 +531,10 @@ function printParserMeshDetails(
       })
       break
     }
+    default:
+      code.throwError(
+        code.generatedNotImplementedYetError(undefined),
+      )
   }
 
   return text
