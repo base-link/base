@@ -496,9 +496,9 @@ export function generateLinkTextBuildingDirections(
     if (diff > 1) {
       result.push(base(Fold.OpenDepth))
     } else if (diff < 0) {
-      while (diff++ < 0) {
-        result.push(base(Fold.CloseDepth))
-      }
+      // while (diff++ < 0) {
+      result.push(base(Fold.CloseDepth))
+      // }
     }
   }
 
