@@ -1,7 +1,6 @@
 import chalk from 'chalk'
 
 import type {
-  CursorRangeType,
   FoldResultType,
   LinkInputType,
   LinkNodeType,
@@ -11,7 +10,6 @@ import type {
   LinkTermType,
   LinkTreeType,
   LinkUnsignedIntegerType,
-  SiteErrorType,
   TextTokenType,
 } from '~'
 import { Fold, Link, TEXT_TYPE, code } from '~'
@@ -197,9 +195,30 @@ export function parseLinkTree(
           token,
         })
         break
+      case Fold.OpenText:
+        code.parse_openText({
+          ...input,
+          state,
+          token,
+        })
+        break
+      case Fold.CloseText:
+        code.parse_closeText({
+          ...input,
+          state,
+          token,
+        })
+        break
+      case Fold.String:
+        code.parse_string({
+          ...input,
+          state,
+          token,
+        })
+        break
       default:
         code.throwError(
-          code.generatedNotImplementedYetError(undefined),
+          code.generatedNotImplementedYetError(token.like),
         )
     }
 
@@ -241,6 +260,8 @@ export function parse_closeTermPath(
 ): void {
   input.state.stack.pop()
 }
+
+export function parse_closeText(input: LinkInputType): void {}
 
 export function parse_openDepth(input: LinkInputType): void {
   const { stack } = input.state
@@ -357,6 +378,7 @@ export function parse_openTerm(input: LinkInputType): void {
       stack.push(term)
 
       current.segment.push(term)
+      break
     }
     default:
       code.throwError(
@@ -393,6 +415,10 @@ export function parse_openTermPath(input: LinkInputType): void {
       )
   }
 }
+
+export function parse_openText(input: LinkInputType): void {}
+
+export function parse_string(input: LinkInputType): void {}
 
 export function parse_termFragment(input: LinkInputType): void {
   const { stack } = input.state
