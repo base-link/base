@@ -29,6 +29,8 @@ export function generateLinkTextBuildingDirections(
 
   let previousNestLevel = 0
   let nextNestLevel = 0
+  let previousArrayList = []
+  let nextArrayList = []
 
   function count(like: Fold): number {
     counter[like] = counter[like] || 1
@@ -181,6 +183,7 @@ export function generateLinkTextBuildingDirections(
           }
           case Fold.OpenDepth: {
             // result.push(base(Fold.CloseDepth))
+            // stack.pop()
             // result.push(base(Fold.CloseHandle))
             // stack.pop()
             // stack.pop()
@@ -188,6 +191,7 @@ export function generateLinkTextBuildingDirections(
             break
           }
           case Fold.OpenModule: {
+            // stack.pop()
             // captureIndent()
             break
           }
@@ -230,24 +234,24 @@ export function generateLinkTextBuildingDirections(
         nextNestLevel++
         switch (top) {
           case Fold.OpenHandle: {
-            stack.pop()
+            // stack.pop()
+            // stack.pop()
             stack.push(Fold.OpenIndentation)
-            // result.push(base(Fold.OpenHandle))
             // stack.push(Fold.OpenHandle)
             break
           }
           case Fold.OpenModule: {
-            stack.pop()
+            // stack.pop()
             stack.push(Fold.OpenIndentation)
             break
           }
           case Fold.OpenIndentation: {
             // stack.push(Fold.OpenIndentation)
-            stack.pop()
+            // stack.pop()
             break
           }
           case Fold.OpenDepth: {
-            stack.pop()
+            // stack.pop()
             // result.push(base(Fold.CloseDepth))
             // stack.pop()
             stack.push(Fold.OpenIndentation)
@@ -285,7 +289,6 @@ export function generateLinkTextBuildingDirections(
         previousNestLevel++
         switch (top) {
           case Fold.OpenTerm: {
-            indent()
             result.push(base(Fold.CloseTerm))
             stack.pop()
 
@@ -294,12 +297,9 @@ export function generateLinkTextBuildingDirections(
 
             result.push(base(Fold.OpenDepth))
             stack.push(Fold.OpenDepth)
-            result.push(base(Fold.OpenDepth))
-            stack.push(Fold.OpenDepth)
             break
           }
           case Fold.OpenTermPath: {
-            indent()
             result.push(base(Fold.CloseTermPath))
             stack.pop()
 
@@ -308,7 +308,6 @@ export function generateLinkTextBuildingDirections(
             break
           }
           case Fold.OpenHandle: {
-            indent()
             result.push(base(Fold.OpenDepth))
             stack.push(Fold.OpenDepth)
             break
@@ -447,8 +446,6 @@ export function generateLinkTextBuildingDirections(
           case Fold.OpenIndentation: {
             stack.pop()
             notifyIndent()
-            // result.push(base(Fold.OpenHandle))
-            // stack.push(Fold.OpenHandle)
 
             result.push(base(Fold.OpenTermPath))
             stack.push(Fold.OpenTermPath)
@@ -495,12 +492,39 @@ export function generateLinkTextBuildingDirections(
     //       ` ${currentIndent} - ${previousIndent}`,
     //   )
     // }
+    console.log(diff)
 
     if (diff > 0) {
       result.push(base(Fold.OpenDepth))
     } else if (diff < 0) {
-      while (diff++ < 0) {
-        result.push(base(Fold.CloseDepth))
+      while (diff++ <= 0) {
+        console.log(stack)
+        let top = assertTop()
+        if (top === Fold.OpenHandle) {
+          result.push(base(Fold.CloseHandle))
+          stack.pop()
+        }
+
+        top = assertTop()
+        if (top === Fold.OpenDepth) {
+          result.push(base(Fold.CloseDepth))
+          stack.pop()
+        }
+        // const top = stack[stack.length - 1]
+        // switch (top) {
+        //   case Fold.OpenDepth: {
+        //     result.push(base(Fold.CloseDepth))
+        //     stack.pop()
+        //     break
+        //   }
+        //   case Fold.OpenHandle: {
+        //     result.push(base(Fold.CloseHandle))
+        //     stack.pop()
+        //     break
+        //   }
+        //   default:
+        //     throw new Error(top)
+        // }
       }
     }
   }
@@ -544,13 +568,9 @@ export function generateLinkTextBuildingDirections(
     }
   }
 
-  function peek(amount = 1): TextTokenType<Text> | undefined {
-    return input.tokenList[i + amount]
-  }
-
   function assertTop(): string {
     const top = stack[stack.length - 1]
-    code.assertString(top)
+    code.assertString(top, 'top')
     return top
   }
 

@@ -45,6 +45,8 @@ async function start() {
   parse({
     path: 'foo.link',
     text: `
+a b c d e f g a sd f
+  x y z
 
 deck <@treesurf/wolf>
   bear ./code
@@ -52,11 +54,10 @@ deck <@treesurf/wolf>
     another deeper more more
       still
     another deeper more more
-      still
+      still more to come and more
   mint <
     0.0.1
   >
-
 `,
   })
 }
