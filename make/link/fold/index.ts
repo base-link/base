@@ -24,9 +24,6 @@ export function generateLinkTextBuildingDirections(
   const stack: Array<Fold> = [Fold.OpenModule]
   const counter: Record<string, number> = {}
 
-  let currentIndent = 0
-  let previousIndent = 0
-
   let previousNestLevel = 0
   let nextNestLevel = 0
 
@@ -427,14 +424,6 @@ export function generateLinkTextBuildingDirections(
     let diff = nextNestLevel - previousNestLevel
     previousNestLevel = nextNestLevel
     nextNestLevel = 0
-    // if (indentDiff > 1) {
-    //   throw new Error(
-    //     'Too much ' +
-    //       indentDiff +
-    //       ` ${currentIndent} - ${previousIndent}`,
-    //   )
-    // }
-    console.log(diff)
 
     if (diff > 0) {
       result.push(base(Fold.OpenDepth))
@@ -451,21 +440,6 @@ export function generateLinkTextBuildingDirections(
           result.push(base(Fold.CloseDepth))
           stack.pop()
         }
-        // const top = stack[stack.length - 1]
-        // switch (top) {
-        //   case Fold.OpenDepth: {
-        //     result.push(base(Fold.CloseDepth))
-        //     stack.pop()
-        //     break
-        //   }
-        //   case Fold.OpenHandle: {
-        //     result.push(base(Fold.CloseHandle))
-        //     stack.pop()
-        //     break
-        //   }
-        //   default:
-        //     throw new Error(top)
-        // }
       }
     }
   }
@@ -482,10 +456,6 @@ export function generateLinkTextBuildingDirections(
         result.push(base(Fold.CloseTerm))
         result.push(base(Fold.OpenTerm))
       }
-
-      // if (i < fragments.length - 2) {
-      //   result.push(base(Fold.TermSeparator))
-      // }
     })
   }
 
