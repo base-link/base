@@ -47,7 +47,64 @@ allow this to work.
 Feel free to think about how to rewrite major portions of the
 compiler code, or just add/change/remove a small thing here or
 there. Things are in constant flux at this point, so you are
-welcome to make sweeping changes as well!
+welcome to make sweeping changes as well! Next we will outline
+how the compiler TypeScript code is generally organized.
+
+### Project Structure
+
+Check the `package.json` for more detail, but the project starts
+at `make/task/build.ts`, which gets compiled through
+`npm run watch` to `host/task/build.js`. You can keep the
+`npm run watch` command going and it will rebuild the TypeScript
+output into the `host` directory as things change. So basically:
+
+```bash
+npm run watch
+```
+
+and in another terminal window:
+
+```bash
+node host/task/build
+```
+
+You also need the current suite of dependencies installed. at
+the same level as `base.link`, so it can compile the dependent
+files (this is just a hack for the moment, will abstract it out
+at some point).
+
+So do this to get going:
+
+```bash
+mkdir treesurf
+cd treesurf
+git clone git@github.com:teamtreesurf/base.link.git
+git clone git@github.com:teamtreesurf/wolf.link.git
+git clone git@github.com:teamtreesurf/moon.link.git
+git clone git@github.com:teamtreesurf/nest.link.git
+cd base.link
+# then watch or run files from here.
+```
+
+Those 4 projects should be all you need for now to get going.
+
+Also of note, is that the `code` object which you'll see
+throughout the compiler TypeScript codebase is basically a
+global object which is constructed through circular module
+imports/exports. I feel this way is a simple and clean way to do
+this, despite the circular references. If you have strong
+opinions on a different non-circular way, which isn't hacky and
+you have a clean solution for it, please bring it up as always
+looking for ways to improve the code.
+
+This TS compiler code will eventually (probably in multi-year
+timeframe) ideally be replaced with native link text code
+instead. So not making the TS repo perfect in every way, just
+getting the job done for now. But the more that this gets worked
+on, the more it becomes clear we need to solve some core stuff
+in TS now, like surfacing errors, or how to handle circular
+dependencies, so having a decently nice TS repo is also a good
+thing.
 
 ### Base Type System
 
