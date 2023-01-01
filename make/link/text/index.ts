@@ -71,6 +71,7 @@ export const TEXT_PATTERN_LIST = [
 
 // eslint-disable-next-line sort-exports/sort-exports
 export const TEXT_STRING_PATTERN_LIST = [
+  Text.OpenInterpolation,
   Text.CloseInterpolation,
   Text.CloseText,
   Text.String,

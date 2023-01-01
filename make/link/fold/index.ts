@@ -79,6 +79,11 @@ export function generateLinkTextBuildingDirections(
             stack.pop()
             break
           }
+          case Fold.OpenText: {
+            result.push(base(Fold.CloseText))
+            stack.pop()
+            break
+          }
           default:
             code.throwError(
               code.generatedNotImplementedYetError(top),
@@ -99,6 +104,11 @@ export function generateLinkTextBuildingDirections(
             break
           }
           case Fold.OpenText: {
+            result.push(base(Fold.CloseText))
+            stack.pop()
+            break
+          }
+          case Fold.OpenDepth: {
             result.push(base(Fold.CloseText))
             stack.pop()
             break
@@ -223,6 +233,14 @@ export function generateLinkTextBuildingDirections(
             })
             break
           }
+          case Fold.OpenText: {
+            stack.push(Fold.OpenPlugin)
+            result.push({
+              size: token.text.length,
+              ...base(Fold.OpenPlugin),
+            })
+            break
+          }
           case Fold.OpenDepth: {
             break
           }
@@ -316,6 +334,26 @@ export function generateLinkTextBuildingDirections(
               ...token,
               ...base(Fold.String),
             })
+            break
+          }
+          case Fold.OpenHandle: {
+            result.push(base(Fold.CloseHandle))
+            result.push({
+              ...token,
+              ...base(Fold.String),
+            })
+            break
+          }
+          case Fold.OpenTerm: {
+            result.push(base(Fold.CloseHandle))
+            stack.pop()
+
+            result.push(base(Fold.CloseTermPath))
+            stack.pop()
+
+            result.push(base(Fold.CloseTerm))
+            stack.pop()
+
             break
           }
           default:

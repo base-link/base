@@ -47,17 +47,7 @@ async function start() {
     text: `
 a b c d e f g a sd f
   x y z
-
-deck <@treesurf/wolf>
-  bear ./code
-  test ./test
-    another deeper more more
-      still
-    another deeper more more
-      still more to come and more
-  mint <
-    0.0.1
-  >
+deck <./{base/link}>
 `,
   })
 }
