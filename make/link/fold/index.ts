@@ -498,7 +498,6 @@ export function generateLinkTextBuildingDirections(
       result.push(base(Fold.OpenDepth))
     } else if (diff < 0) {
       while (diff++ <= 0) {
-        console.log(stack)
         let top = assertTop()
         if (top === Fold.OpenHandle) {
           result.push(base(Fold.CloseHandle))

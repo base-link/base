@@ -7,7 +7,9 @@ import type {
   LinkPathType,
   LinkPluginType,
   LinkResultType,
+  LinkStringType,
   LinkTermType,
+  LinkTextType,
   LinkTreeType,
   LinkUnsignedIntegerType,
   TextTokenType,
@@ -261,7 +263,9 @@ export function parse_closeTermPath(
   input.state.stack.pop()
 }
 
-export function parse_closeText(input: LinkInputType): void {}
+export function parse_closeText(input: LinkInputType): void {
+  input.state.stack.pop()
+}
 
 export function parse_openDepth(input: LinkInputType): void {
   const { stack } = input.state
@@ -416,9 +420,63 @@ export function parse_openTermPath(input: LinkInputType): void {
   }
 }
 
-export function parse_openText(input: LinkInputType): void {}
+export function parse_openText(input: LinkInputType): void {
+  const { stack } = input.state
+  const current = stack[stack.length - 1]
 
-export function parse_string(input: LinkInputType): void {}
+  switch (current?.like) {
+    case Link.Tree: {
+      const text: LinkTextType = {
+        like: Link.Text,
+        segment: [],
+      }
+
+      current.nest.push(text)
+      stack.push(text)
+      break
+    }
+    default:
+      code.throwError(
+        code.generatedNotImplementedYetError(current?.like),
+      )
+  }
+}
+
+export function parse_string(input: LinkInputType): void {
+  const { stack } = input.state
+  const current = stack[stack.length - 1]
+
+  switch (current?.like) {
+    case Link.Text: {
+      if (input.token.like === Fold.String) {
+        const string: LinkStringType = {
+          like: Link.String,
+          range: input.token.range,
+          value: input.token.text,
+        }
+
+        current.segment.push(string)
+      }
+      break
+    }
+    case Link.Tree: {
+      if (input.token.like === Fold.String) {
+        const string: LinkStringType = {
+          like: Link.String,
+          range: input.token.range,
+          value: input.token.text,
+        }
+
+        current.nest.push(string)
+      }
+      break
+    }
+    default:
+      code.throwError(
+        code.generatedNotImplementedYetError(current?.like),
+      )
+  }
+}
 
 export function parse_termFragment(input: LinkInputType): void {
   const { stack } = input.state
