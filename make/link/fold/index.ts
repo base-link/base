@@ -29,28 +29,10 @@ export function generateLinkTextBuildingDirections(
 
   let previousNestLevel = 0
   let nextNestLevel = 0
-  let previousArrayList = []
-  let nextArrayList = []
 
   function count(like: Fold): number {
     counter[like] = counter[like] || 1
     return counter[like]++
-  }
-
-  function captureIndent() {
-    if (previousIndent === 0) {
-      previousIndent = currentIndent
-      currentIndent = 0
-    }
-  }
-
-  function clearIndent(prev = 0) {
-    previousIndent = prev
-    currentIndent = 0
-  }
-
-  function indent() {
-    currentIndent += 1
   }
 
   result.push(base(Fold.OpenModule))
@@ -91,7 +73,6 @@ export function generateLinkTextBuildingDirections(
             break
           }
           case Fold.OpenDepth: {
-            // result.push(base(Fold.CloseHandle))
             result.push(base(Fold.CloseDepth))
             stack.pop()
             break
@@ -118,16 +99,11 @@ export function generateLinkTextBuildingDirections(
         switch (top) {
           case Fold.CloseDepth: {
             result.push(base(Fold.CloseText))
-            // result.push(base(Fold.CloseDepth))
-            // stack.pop()
-            // stack.pop()
             break
           }
           case Fold.OpenText: {
             result.push(base(Fold.CloseText))
-            // result.push(base(Fold.CloseDepth))
             stack.pop()
-            // stack.pop()
             break
           }
           default:
@@ -151,7 +127,6 @@ export function generateLinkTextBuildingDirections(
               code.generatedNotImplementedYetError(top),
             )
         }
-        // console.log(token)
         break
       }
       case Text.Comment: {
@@ -176,27 +151,15 @@ export function generateLinkTextBuildingDirections(
         nextNestLevel = 0
         switch (top) {
           case Fold.OpenHandle: {
-            // result.push(base(Fold.CloseHandle))
-            // stack.pop()
-            // captureIndent()
             break
           }
           case Fold.OpenDepth: {
-            // result.push(base(Fold.CloseDepth))
-            // stack.pop()
-            // result.push(base(Fold.CloseHandle))
-            // stack.pop()
-            // stack.pop()
-            // captureIndent()
             break
           }
           case Fold.OpenModule: {
-            // stack.pop()
-            // captureIndent()
             break
           }
           case Fold.OpenTerm: {
-            // captureIndent()
             result.push(base(Fold.CloseTerm))
             stack.pop()
 
@@ -205,7 +168,6 @@ export function generateLinkTextBuildingDirections(
             break
           }
           case Fold.String: {
-            // captureIndent()
             result.push({
               ...token,
               ...base(Fold.String),
@@ -213,8 +175,6 @@ export function generateLinkTextBuildingDirections(
             break
           }
           case Fold.OpenIndentation: {
-            // clearIndent(previousIndent)
-            // captureIndent()
             break
           }
           default:
@@ -234,26 +194,17 @@ export function generateLinkTextBuildingDirections(
         nextNestLevel++
         switch (top) {
           case Fold.OpenHandle: {
-            // stack.pop()
-            // stack.pop()
             stack.push(Fold.OpenIndentation)
-            // stack.push(Fold.OpenHandle)
             break
           }
           case Fold.OpenModule: {
-            // stack.pop()
             stack.push(Fold.OpenIndentation)
             break
           }
           case Fold.OpenIndentation: {
-            // stack.push(Fold.OpenIndentation)
-            // stack.pop()
             break
           }
           case Fold.OpenDepth: {
-            // stack.pop()
-            // result.push(base(Fold.CloseDepth))
-            // stack.pop()
             stack.push(Fold.OpenIndentation)
             break
           }
@@ -312,10 +263,6 @@ export function generateLinkTextBuildingDirections(
             stack.push(Fold.OpenDepth)
             break
           }
-          // case Fold.OpenIndentation: {
-          //   notifyIndent()
-          //   break
-          // }
           default:
             code.throwError(
               code.generatedNotImplementedYetError(top),
@@ -350,7 +297,6 @@ export function generateLinkTextBuildingDirections(
               ...token,
               ...base(Fold.String),
             })
-            // stack.push(Fold.String)
             break
           }
           default:
@@ -440,7 +386,6 @@ export function generateLinkTextBuildingDirections(
             break
           }
           case Fold.String: {
-            // stack.pop()
             break
           }
           case Fold.OpenIndentation: {
@@ -477,9 +422,6 @@ export function generateLinkTextBuildingDirections(
     }
     i++
   }
-
-  clearIndent(previousIndent)
-  // notifyIndent(false)
 
   function notifyIndent() {
     let diff = nextNestLevel - previousNestLevel
