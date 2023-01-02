@@ -2,6 +2,7 @@ import chalk from 'chalk'
 
 import type {
   FoldResultType,
+  LinkInputStateType,
   LinkInputType,
   LinkNodeType,
   LinkPathType,
@@ -86,10 +87,19 @@ export function parseLinkTree(
   let result: LinkNodeType | undefined = undefined
 
   // console.log(code.prettifyJSON(input.directions))
+  const state: LinkInputStateType = {
+    contexts: [],
+    index: 0,
+    tree: { like: Link.Tree, nest: [] },
+  }
 
-  const state = { index: 0, stack }
+  const context: LinkInputStateType['contexts'][0] = {
+    path: [],
+    stack: [state.tree],
+    tree: state.tree,
+  }
 
-  let start
+  state.contexts.push(context)
 
   let i = 0
   while (i < input.directions.length) {
@@ -99,20 +109,6 @@ export function parseLinkTree(
     }
 
     switch (token.like) {
-      case Fold.OpenModule:
-        start = code.parse_openModule({
-          ...input,
-          state,
-          token,
-        })
-        break
-      case Fold.CloseModule:
-        code.parse_closeModule({
-          ...input,
-          state,
-          token,
-        })
-        break
       case Fold.TermFragment:
         code.parse_termFragment({
           ...input,
@@ -122,20 +118,6 @@ export function parseLinkTree(
         break
       case Fold.OpenHandle:
         code.parse_openHandle({
-          ...input,
-          state,
-          token,
-        })
-        break
-      case Fold.OpenDepth:
-        code.parse_openDepth({
-          ...input,
-          state,
-          token,
-        })
-        break
-      case Fold.CloseDepth:
-        code.parse_closeDepth({
           ...input,
           state,
           token,
@@ -218,6 +200,20 @@ export function parseLinkTree(
           token,
         })
         break
+      case Fold.OpenNest:
+        code.parse_openNest({
+          ...input,
+          state,
+          token,
+        })
+        break
+      case Fold.CloseNest:
+        code.parse_closeNest({
+          ...input,
+          state,
+          token,
+        })
+        break
       default:
         code.throwError(
           code.generatedNotImplementedYetError(token.like),
@@ -227,65 +223,64 @@ export function parseLinkTree(
     i++
   }
 
-  code.assertLinkType(start, Link.Tree)
+  code.assertLinkType(state.tree, Link.Tree)
 
-  printParserMesh(start)
+  printParserMesh(state.tree)
 
   return {
     ...input,
-    link: start,
+    link: state.tree,
   }
 }
 
-export function parse_closeDepth(input: LinkInputType): void {
-  // console.log('m')
-}
-
 export function parse_closeHandle(input: LinkInputType): void {
-  input.state.stack.pop()
+  const { contexts } = input.state
+  const context = contexts[contexts.length - 1]
+  const stack = context?.stack
+  stack?.pop()
 }
 
-export function parse_closeModule(input: LinkInputType): void {
-  input.state.stack.pop()
+export function parse_closeNest(input: LinkInputType): void {
+  const { contexts } = input.state
+  const context = contexts[contexts.length - 1]
+  const stack = context?.stack
+  stack?.pop()
+  context?.path.pop()
 }
 
 export function parse_closePlugin(input: LinkInputType): void {
-  input.state.stack.pop()
+  const { contexts } = input.state
+  contexts.pop()
 }
 
 export function parse_closeTerm(input: LinkInputType): void {
-  input.state.stack.pop()
+  const { contexts } = input.state
+  const context = contexts[contexts.length - 1]
+  const stack = context?.stack
+  stack?.pop()
 }
 
 export function parse_closeTermPath(
   input: LinkInputType,
 ): void {
-  input.state.stack.pop()
+  const { contexts } = input.state
+  const context = contexts[contexts.length - 1]
+  const stack = context?.stack
+  stack?.pop()
 }
 
 export function parse_closeText(input: LinkInputType): void {
-  input.state.stack.pop()
-}
-
-export function parse_openDepth(input: LinkInputType): void {
-  const { stack } = input.state
-  const current = stack[stack.length - 1]
-
-  switch (current?.like) {
-    case Link.Tree: {
-      // console.log(current)
-      break
-    }
-    default:
-      code.throwError(
-        code.generatedNotImplementedYetError(current?.like),
-      )
-  }
+  const { contexts } = input.state
+  const context = contexts[contexts.length - 1]
+  const stack = context?.stack
+  stack?.pop()
 }
 
 export function parse_openHandle(input: LinkInputType): void {
-  const { stack } = input.state
-  const current = stack[stack.length - 1]
+  const { contexts } = input.state
+  const context = contexts[contexts.length - 1]
+  const stack = context?.stack ?? []
+  const current = stack?.[stack.length - 1]
 
   switch (current?.like) {
     case Link.Plugin: {
@@ -294,19 +289,8 @@ export function parse_openHandle(input: LinkInputType): void {
         nest: [],
         parent: current,
       }
-      current.element = tree
-      stack.push(tree)
-      break
-    }
-    case Link.Term: {
-      const parent = current.parent.parent
-      const tree: LinkTreeType = {
-        like: Link.Tree,
-        nest: [],
-        parent,
-      }
-      parent.nest.push(tree)
-      stack.push(tree)
+      current.nest.push(tree)
+      stack?.push(tree)
       break
     }
     case Link.Tree: {
@@ -316,7 +300,7 @@ export function parse_openHandle(input: LinkInputType): void {
         parent: current,
       }
       current.nest.push(tree)
-      stack.push(tree)
+      stack?.push(tree)
       break
     }
     default:
@@ -326,33 +310,83 @@ export function parse_openHandle(input: LinkInputType): void {
   }
 }
 
-export function parse_openModule(input: LinkInputType) {
-  // const current = stack[stack.length - 1]
-  // const parent = stack[stack.length - 2]
-  const container: LinkTreeType = {
-    like: Link.Tree,
-    nest: [],
+export function parse_openNest(input: LinkInputType): void {
+  const context =
+    input.state.contexts[input.state.contexts.length - 1]
+
+  if (!context) {
+    return
   }
-  input.state.stack.push(container)
-  return container
+
+  let tree: LinkTreeType | LinkPluginType | undefined =
+    context.tree
+  for (const part of context.path) {
+    if (tree && tree.like === Link.Tree) {
+      const node: LinkNodeType | undefined = tree.nest[part]
+      if (node) {
+        if (node.like === Link.Tree) {
+          tree = node
+        } else {
+          tree = undefined
+        }
+      } else {
+        tree = undefined
+        break
+      }
+    } else if (tree && tree.like === Link.Plugin) {
+      const node: LinkNodeType | undefined = tree.nest[part]
+      if (node) {
+        if (node.like === Link.Tree) {
+          tree = node
+        } else {
+          tree = undefined
+        }
+      } else {
+        tree = undefined
+        break
+      }
+    }
+  }
+
+  if (
+    tree &&
+    (tree.like === Link.Tree || tree.like === Link.Plugin)
+  ) {
+    context.path.push(tree.nest.length - 1)
+    const node = tree.nest[tree.nest.length - 1]
+    if (node) {
+      context.stack.push(node)
+    }
+  }
 }
 
 export function parse_openPlugin(input: LinkInputType): void {
-  const { stack } = input.state
-  const current = stack[stack.length - 1]
+  const { contexts } = input.state
+  const context = contexts[contexts.length - 1]
+  const stack = context?.stack ?? []
+  const current = stack?.[stack.length - 1]
 
   switch (current?.like) {
     case Link.Term: {
       if (input.token.like === Fold.OpenPlugin) {
         const plugin: LinkPluginType = {
           like: Link.Plugin,
+          nest: [],
           parent: current,
           size: input.token.size,
         }
 
         current.segment.push(plugin)
 
-        stack.push(plugin)
+        const tree = plugin
+
+        contexts.push({
+          path: [],
+          stack: [tree],
+          tree,
+        })
+
+        // stack?.push(plugin)
       }
 
       break
@@ -365,8 +399,10 @@ export function parse_openPlugin(input: LinkInputType): void {
 }
 
 export function parse_openTerm(input: LinkInputType): void {
-  const { stack } = input.state
-  const current = stack[stack.length - 1]
+  const { contexts } = input.state
+  const context = contexts[contexts.length - 1]
+  const stack = context?.stack ?? []
+  const current = stack?.[stack.length - 1]
 
   switch (current?.like) {
     case Link.Path: {
@@ -379,9 +415,43 @@ export function parse_openTerm(input: LinkInputType): void {
         segment: [],
       }
 
-      stack.push(term)
+      stack?.push(term)
 
       current.segment.push(term)
+      break
+    }
+    case Link.Plugin: {
+      const term: LinkTermType = {
+        dereference: false,
+        guard: false,
+        like: Link.Term,
+        parent: current,
+        query: false,
+        segment: [],
+      }
+
+      stack?.push(term)
+
+      current.nest.push(term)
+      break
+    }
+    case Link.Tree: {
+      const term: LinkTermType = {
+        dereference: false,
+        guard: false,
+        like: Link.Term,
+        parent: current,
+        query: false,
+        segment: [],
+      }
+
+      stack?.push(term)
+
+      if (current.head) {
+        current.nest.push(term)
+      } else {
+        current.head = term
+      }
       break
     }
     default:
@@ -392,8 +462,10 @@ export function parse_openTerm(input: LinkInputType): void {
 }
 
 export function parse_openTermPath(input: LinkInputType): void {
-  const { stack } = input.state
-  const current = stack[stack.length - 1]
+  const { contexts } = input.state
+  const context = contexts[contexts.length - 1]
+  const stack = context?.stack ?? []
+  const current = stack?.[stack.length - 1]
 
   switch (current?.like) {
     case Link.Tree: {
@@ -403,13 +475,9 @@ export function parse_openTermPath(input: LinkInputType): void {
         segment: [],
       }
 
-      stack.push(path)
+      stack?.push(path)
 
-      if (!current.head) {
-        current.head = path
-      } else {
-        current.nest.push(path)
-      }
+      current.nest.push(path)
 
       break
     }
@@ -421,8 +489,10 @@ export function parse_openTermPath(input: LinkInputType): void {
 }
 
 export function parse_openText(input: LinkInputType): void {
-  const { stack } = input.state
-  const current = stack[stack.length - 1]
+  const { contexts } = input.state
+  const context = contexts[contexts.length - 1]
+  const stack = context?.stack ?? []
+  const current = stack?.[stack.length - 1]
 
   switch (current?.like) {
     case Link.Tree: {
@@ -432,7 +502,7 @@ export function parse_openText(input: LinkInputType): void {
       }
 
       current.nest.push(text)
-      stack.push(text)
+      stack?.push(text)
       break
     }
     default:
@@ -443,8 +513,10 @@ export function parse_openText(input: LinkInputType): void {
 }
 
 export function parse_string(input: LinkInputType): void {
-  const { stack } = input.state
-  const current = stack[stack.length - 1]
+  const { contexts } = input.state
+  const context = contexts[contexts.length - 1]
+  const stack = context?.stack ?? []
+  const current = stack?.[stack.length - 1]
 
   switch (current?.like) {
     case Link.Text: {
@@ -479,8 +551,10 @@ export function parse_string(input: LinkInputType): void {
 }
 
 export function parse_termFragment(input: LinkInputType): void {
-  const { stack } = input.state
-  const current = stack[stack.length - 1]
+  const { contexts } = input.state
+  const context = contexts[contexts.length - 1]
+  const stack = context?.stack ?? []
+  const current = stack?.[stack.length - 1]
 
   switch (current?.like) {
     case Link.Term: {
@@ -578,10 +652,12 @@ function printParserMeshDetails(
     case Link.Plugin: {
       text.push(`${title}`)
       text.push(chalk.gray(`  size: ${node.size}`))
-      if (node.element) {
-        text.push(chalk.gray(`  element:`))
-        printParserMeshDetails(node.element).forEach(line => {
-          text.push(`    ${line}`)
+      if (node.nest.length) {
+        text.push(chalk.gray(`  nest:`))
+        node.nest.forEach(nest => {
+          printParserMeshDetails(nest).forEach(line => {
+            text.push(`    ${line}`)
+          })
         })
       }
       break
@@ -627,8 +703,10 @@ function printParserMeshDetails(
 export function parse_unsignedInteger(
   input: LinkInputType,
 ): void {
-  const { stack } = input.state
-  const current = stack[stack.length - 1]
+  const { contexts } = input.state
+  const context = contexts[contexts.length - 1]
+  const stack = context?.stack ?? []
+  const current = stack?.[stack.length - 1]
 
   switch (current?.like) {
     case Link.Tree: {

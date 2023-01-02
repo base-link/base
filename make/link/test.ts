@@ -45,7 +45,13 @@ async function start() {
   parse({
     path: 'foo.link',
     text: `
-a b/c{x y-{z}}/d, x
+form text
+  link a-{x y}-z foo
+
+  link b{hello}, 123
+form two
+  a b{x y 123, 123}/c, and/y/w
+  b-c 432
 `,
   })
 }
