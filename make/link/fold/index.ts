@@ -379,9 +379,9 @@ export function generateLinkTextBuildingDirections(
           array.push(...handleTermFragment(input))
           break
         }
-        default:
-          state.index--
-          break loop
+        // default:
+        //   state.index--
+        //   break loop
       }
     }
 
