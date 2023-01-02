@@ -45,11 +45,21 @@ async function start() {
   parse({
     path: 'foo.link',
     text: `
-a b c d e f g a sd f
-  x y z
-deck <./{base/link}>
+a b/c{x y-{z}}/d, x
 `,
   })
 }
 
 start()
+
+// a b{x y}/c, and
+// a b c d e f g a sd f
+//   x y z w y
+//     abc
+// deck <./{base/link}>
+
+// a b c d e f g
+//   h i j k
+//     l m n
+//       o p
+//   q
