@@ -39,8 +39,8 @@ export type LinkHashtagType = TextTokenBaseType & {
 }
 
 export type LinkIndexType = {
-  element: LinkTreeType
   like: Link.Index
+  nest: Array<LinkTreeType | LinkTermType | LinkPathType>
   parent: LinkPathType
 }
 
@@ -48,7 +48,7 @@ export type LinkInputStateType = {
   contexts: Array<{
     path: Array<number>
     stack: Array<LinkNodeType>
-    tree: LinkTreeType | LinkPluginType
+    tree: LinkTreeType | LinkPluginType | LinkIndexType
   }>
   index: number
   tree: LinkTreeType
@@ -90,7 +90,7 @@ export type LinkNodeType =
 
 export type LinkPathType = {
   like: Link.Path
-  parent: LinkTreeType | LinkPluginType
+  parent: LinkTreeType | LinkPluginType | LinkIndexType
   segment: Array<LinkTermType | LinkIndexType>
 }
 
@@ -145,7 +145,7 @@ export type LinkTreeType = {
     | LinkBooleanType
     | LinkTermType
   >
-  parent?: LinkTreeType | LinkPluginType
+  parent?: LinkTreeType | LinkPluginType | LinkIndexType
 }
 
 export type LinkType<T extends Link> = LinkMappingType[T]

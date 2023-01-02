@@ -39,6 +39,11 @@ export function generateLinkTextBuildingDirections(
 ): FoldResultType {
   const result: Array<FoldNodeType> = []
 
+  console.log('HERE')
+  console.log(
+    input.tokenList.map(x => `${x.like} => ${x.text}`),
+  )
+
   const stack: Array<Fold> = [Fold.OpenModule]
   const counter: Record<string, number> = {}
 
@@ -72,6 +77,7 @@ export function generateLinkTextBuildingDirections(
   state.index = 0
 
   let indent = 0
+  let fromLine = false
 
   while (state.index < input.tokenList.length) {
     const token = input.tokenList[state.index]
@@ -84,14 +90,25 @@ export function generateLinkTextBuildingDirections(
         //     break
         //   }
         case Text.TermFragment: {
+          fromLine = false
           result.push(...handleTermFragment(stateInput))
           break
         }
         case Text.OpenIndentation: {
+          if (!fromLine) {
+            code.throwError(
+              code.generateInvalidWhitespaceError(stateInput),
+            )
+          }
           indent++
-          console.log(indent)
           result.push(base(Fold.OpenNest))
           state.index++
+          break
+        }
+        case Text.OpenNesting: {
+          code.throwError(
+            code.generateInvalidWhitespaceError(stateInput),
+          )
           break
         }
         case Text.Line: {
@@ -99,6 +116,7 @@ export function generateLinkTextBuildingDirections(
             result.push(base(Fold.CloseNest))
             indent--
           }
+          fromLine = true
           state.index++
           break
         }
@@ -111,16 +129,17 @@ export function generateLinkTextBuildingDirections(
         case Text.OpenNesting:
         case Text.OpenParenthesis:
         case Text.OpenText:
-        case Text.Path:
         case Text.Comma: {
-          throw new Error('Oops')
+          throw new Error(input.text)
         }
         case Text.Comment: {
           state.index++
+          fromLine = false
           break
         }
 
         case Text.UnsignedInteger: {
+          fromLine = false
           result.push({
             ...token,
             value: parseInt(token.text, 10),
@@ -130,6 +149,7 @@ export function generateLinkTextBuildingDirections(
           break
         }
         case Text.SignedInteger: {
+          fromLine = false
           result.push({
             ...token,
             value: parseInt(token.text, 10),
@@ -139,6 +159,7 @@ export function generateLinkTextBuildingDirections(
           break
         }
         case Text.Decimal: {
+          fromLine = false
           result.push({
             ...token,
             value: parseFloat(token.text),
@@ -147,7 +168,13 @@ export function generateLinkTextBuildingDirections(
           state.index++
           break
         }
+        case Text.OpenPath: {
+          fromLine = false
+          result.push(...handlePath(stateInput))
+          break
+        }
         case Text.Hashtag: {
+          fromLine = false
           const [hashtag, system = '', ...code] = token.text
           result.push({
             ...token,
@@ -159,6 +186,7 @@ export function generateLinkTextBuildingDirections(
           break
         }
         default:
+          fromLine = false
           state.index++
           break
       }
@@ -166,6 +194,68 @@ export function generateLinkTextBuildingDirections(
   }
 
   // result.push(base(Fold.CloseModule))
+
+  function handlePath(
+    input: FoldStateInputType,
+  ): Array<FoldNodeType> {
+    const array: Array<FoldNodeType> = []
+    array.push(base(Fold.OpenText))
+
+    let interpolationStack = 0
+
+    loop: while (state.index < input.tokenList.length) {
+      const token = input.tokenList[state.index++]
+      check: switch (token?.like) {
+        case Text.String:
+        case Text.Path: {
+          array.push({
+            ...token,
+            ...base(Fold.String),
+          })
+          break check
+        }
+        case Text.OpenPath: {
+          array.push({
+            ...token,
+            ...base(Fold.String),
+          })
+          break check
+        }
+        case Text.ClosePath: {
+          break loop
+        }
+        case Text.OpenInterpolation: {
+          interpolationStack++
+          array.push({
+            size: token.text.length,
+            ...base(Fold.OpenPlugin),
+          })
+          array.push(...handleTermFragment(input))
+          break check
+        }
+        case Text.CloseInterpolation: {
+          if (interpolationStack > 0) {
+            array.push(base(Fold.ClosePlugin))
+            interpolationStack--
+          } else {
+            state.index--
+            break loop
+          }
+          break check
+        }
+        case Text.TermFragment: {
+          state.index--
+          array.push(...handleTermFragment(input))
+          break
+        }
+        default:
+          break loop
+      }
+    }
+
+    array.push(base(Fold.CloseText))
+    return array
+  }
 
   function handleText(
     input: FoldStateInputType,
@@ -218,7 +308,15 @@ export function generateLinkTextBuildingDirections(
     array: Array<FoldNodeType> = [],
   ): Array<FoldNodeType> {
     array.push(base(Fold.OpenNest))
+    handleNestContent(input, array)
+    array.push(base(Fold.CloseNest))
+    return array
+  }
 
+  function handleNestContent(
+    input: FoldStateInputType,
+    array: Array<FoldNodeType> = [],
+  ): Array<FoldNodeType> {
     loop: while (state.index < input.tokenList.length) {
       const token = input.tokenList[state.index++]
       check: switch (token?.like) {
@@ -244,6 +342,11 @@ export function generateLinkTextBuildingDirections(
             value: parseInt(token.text, 10),
             ...base(Fold.SignedInteger),
           })
+          break
+        }
+        case Text.OpenPath: {
+          state.index--
+          array.push(...handlePath(stateInput))
           break
         }
         case Text.Decimal: {
@@ -274,7 +377,49 @@ export function generateLinkTextBuildingDirections(
       }
     }
 
-    array.push(base(Fold.CloseNest))
+    return array
+  }
+
+  function handleParenthesis(
+    input: FoldStateInputType,
+    array: Array<FoldNodeType> = [],
+  ): Array<FoldNodeType> {
+    let bracketStack = 0
+    loop: while (state.index < input.tokenList.length) {
+      const token = input.tokenList[state.index++]
+      check: switch (token?.like) {
+        case Text.OpenParenthesis: {
+          bracketStack++
+          array.push(base(Fold.OpenNest))
+          handleNestContent(input, array)
+          break
+        }
+        case Text.CloseParenthesis: {
+          if (bracketStack > 0) {
+            array.push(base(Fold.CloseIndex))
+            bracketStack--
+          } else {
+            state.index--
+            break loop
+          }
+          break
+        }
+        // case Text.TermFragment:
+        // case Text.Comma:
+        // case Text.UnsignedInteger:
+        // case Text.SignedInteger:
+        // case Text.OpenPath:
+        // case Text.Decimal:
+        // case Text.Hashtag:
+        // case Text.OpenText:
+        //   handleNestContent(input, array)
+        //   console.log('nest', input.tokenList[state.index])
+        //   break
+        default:
+          state.index--
+          break loop
+      }
+    }
     return array
   }
 
@@ -282,29 +427,60 @@ export function generateLinkTextBuildingDirections(
     input: FoldStateInputType,
     depth = 0,
   ): Array<FoldNodeType> {
-    const array: Array<FoldNodeType> = []
+    let array: Array<FoldNodeType> = []
     const tail: Array<FoldNodeType> = []
-    let interpolationStack = 0
+
+    let bracketStack = 0
+    let hasSeparator = false
+    let hasIndex = false
     loop: while (state.index < input.tokenList.length) {
       const token = input.tokenList[state.index++]
       check: switch (token?.like) {
+        case Text.OpenParenthesis: {
+          state.index--
+          tail.push(...handleParenthesis(input))
+          break
+        }
         case Text.TermFragment: {
           // console.log(token)
           const frags = generateTermFragments(token)
+          const list: Array<FoldNodeType> = []
 
-          frags.forEach(frag => {
+          frags.forEach((frag, i) => {
             if (frag.value) {
-              array.push(frag)
+              list.push(frag)
             }
-            array.push(base(Fold.TermSeparator))
+
+            if (i < frags.length - 1) {
+              hasSeparator = true
+              list.push(base(Fold.CloseTerm))
+              list.push(base(Fold.OpenTerm))
+            }
           })
 
-          array.pop()
+          array.push(...list)
 
           break check
         }
+        case Text.OpenEvaluation: {
+          bracketStack++
+          hasIndex = true
+          array.push(base(Fold.OpenIndex))
+          array.push(...handleTermFragment(input, depth + 1))
+          break
+        }
+        case Text.CloseEvaluation: {
+          if (bracketStack > 0) {
+            array.push(base(Fold.CloseIndex))
+            bracketStack--
+          } else {
+            state.index--
+            break loop
+          }
+          break check
+        }
         case Text.OpenInterpolation: {
-          interpolationStack++
+          bracketStack++
           array.push({
             size: token.text.length,
             ...base(Fold.OpenPlugin),
@@ -312,32 +488,41 @@ export function generateLinkTextBuildingDirections(
           array.push(...handleTermFragment(input, depth + 1))
           break check
         }
-        case Text.OpenNesting: {
-          // array.push(base(Fold.CloseTerm))
-          tail.push(...handleNest(input))
-          break loop
-        }
         case Text.CloseInterpolation: {
-          if (interpolationStack > 0) {
+          if (bracketStack > 0) {
             array.push(base(Fold.ClosePlugin))
-            interpolationStack--
+            bracketStack--
           } else {
             state.index--
             break loop
           }
           break check
         }
+        case Text.OpenNesting: {
+          tail.push(...handleNest(input))
+          break loop
+        }
         case Text.Path: {
           const frags = generateTermFragments(token)
 
+          const list: Array<FoldNodeType> = []
+
+          list.push(base(Fold.OpenTerm))
           frags.forEach((frag, i) => {
             if (frag.value) {
-              array.push(frag)
+              list.push(frag)
             }
-            array.push(base(Fold.TermSeparator))
+
+            if (i < frags.length - 1) {
+              hasSeparator = true
+              list.push(base(Fold.CloseTerm))
+              list.push(base(Fold.OpenTerm))
+            }
           })
 
-          array.pop()
+          list.push(base(Fold.CloseTerm))
+
+          array.push(...list)
           break check
         }
         default:
@@ -346,9 +531,9 @@ export function generateLinkTextBuildingDirections(
       }
     }
 
-    const isPath =
-      array.filter(x => x.like === Fold.TermSeparator).length >
-      0
+    if (array[array.length - 1]?.like === Fold.TermSeparator) {
+      array.pop()
+    }
 
     const result: Array<FoldNodeType> = []
 
@@ -356,17 +541,26 @@ export function generateLinkTextBuildingDirections(
     //   console.log(array)
     // }
 
-    if (isPath) {
+    if (hasIndex) {
       result.push(base(Fold.OpenTermPath))
       result.push(base(Fold.OpenTerm))
-      array.forEach((x, i) => {
-        if (x.like === Fold.TermSeparator) {
+
+      array.forEach(x => {
+        if (x.like === Fold.OpenIndex) {
           result.push(base(Fold.CloseTerm))
-          result.push(base(Fold.OpenTerm))
-        } else {
-          result.push(x)
         }
+        result.push(x)
       })
+
+      result.push(base(Fold.CloseTermPath))
+    } else if (hasSeparator) {
+      result.push(base(Fold.OpenTermPath))
+      result.push(base(Fold.OpenTerm))
+
+      array.forEach(x => {
+        result.push(x)
+      })
+
       result.push(base(Fold.CloseTerm))
       result.push(base(Fold.CloseTermPath))
     } else {

@@ -2,18 +2,17 @@ import chalk from 'chalk'
 
 import {
   ERROR,
+  FoldStateInputType,
   LINK_HINT_TEXT,
   Link,
   LinkHint,
-  SOURCE_MAP_MESH,
-  code,
-  prettifyJSON,
-} from '~'
-import type {
   MeshInputType,
+  SOURCE_MAP_MESH,
   Text,
   TextSplitInputType,
   TextTokenType,
+  code,
+  prettifyJSON,
 } from '~'
 
 export * from './content.js'
@@ -168,6 +167,26 @@ export function generateInvalidPatternError(
     file: `${card.path}`,
     note: `Text does not match pattern ${pattern}.`,
     text: text,
+  }
+}
+
+export function generateInvalidWhitespaceError(
+  input: FoldStateInputType,
+): SiteErrorType {
+  const token = input.tokenList[input.state.index]
+  code.assertTextGenericType(token)
+  const highlightedRange =
+    code.getCursorRangeForTextWhitespaceToken(token, input)
+  const text = code.generateHighlightedError(
+    input.textByLine,
+    highlightedRange,
+  )
+
+  return {
+    code: '0027',
+    file: input.path,
+    note: `Invalid whitespace`,
+    text,
   }
 }
 
@@ -507,6 +526,45 @@ export function getCursorRangeForText(
   }
 
   return range
+}
+
+export function getCursorRangeForTextWhitespaceToken(
+  token: TextTokenType<Text>,
+  input: FoldStateInputType,
+): CursorRangeType {
+  let tokens: Array<TextTokenType<Text>> = []
+  let i = input.state.index
+
+  loop: while (i < input.tokenList.length) {
+    let t = input.tokenList[i]
+    code.assertTextGenericType(t)
+    switch (t.like) {
+      case Text.OpenIndentation:
+      case Text.OpenNesting:
+        tokens.push(t)
+        break
+      default:
+        break loop
+    }
+    i++
+  }
+
+  const start = tokens[0]
+  const end = tokens[tokens.length - 1]
+
+  code.assertTextGenericType(start)
+  code.assertTextGenericType(end)
+
+  return {
+    end: {
+      character: end.range.character.end,
+      line: end.range.line.end,
+    },
+    start: {
+      character: start.range.character.start,
+      line: start.range.line.start,
+    },
+  }
 }
 
 export function highlightTextRangeForError(
