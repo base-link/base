@@ -2,12 +2,15 @@ import chalk from 'chalk'
 
 import type {
   FoldResultType,
+  LinkDecimalType,
+  LinkHashtagType,
   LinkInputStateType,
   LinkInputType,
   LinkNodeType,
   LinkPathType,
   LinkPluginType,
   LinkResultType,
+  LinkSignedIntegerType,
   LinkStringType,
   LinkTermType,
   LinkTextType,
@@ -200,6 +203,27 @@ export function parseLinkTree(
           token,
         })
         break
+      case Fold.Decimal:
+        code.parse_decimal({
+          ...input,
+          state,
+          token,
+        })
+        break
+      case Fold.SignedInteger:
+        code.parse_signedInteger({
+          ...input,
+          state,
+          token,
+        })
+        break
+      case Fold.Hashtag:
+        code.parse_hashtag({
+          ...input,
+          state,
+          token,
+        })
+        break
       case Fold.OpenNest:
         code.parse_openNest({
           ...input,
@@ -274,6 +298,57 @@ export function parse_closeText(input: LinkInputType): void {
   const context = contexts[contexts.length - 1]
   const stack = context?.stack
   stack?.pop()
+}
+
+export function parse_decimal(input: LinkInputType): void {
+  const { contexts } = input.state
+  const context = contexts[contexts.length - 1]
+  const stack = context?.stack ?? []
+  const current = stack?.[stack.length - 1]
+
+  switch (current?.like) {
+    case Link.Tree: {
+      if (input.token.like === Fold.Decimal) {
+        const uint: LinkDecimalType = {
+          like: Link.Decimal,
+          value: input.token.value,
+        }
+
+        current.nest.push(uint)
+      }
+      break
+    }
+    default:
+      code.throwError(
+        code.generatedNotImplementedYetError(current?.like),
+      )
+  }
+}
+
+export function parse_hashtag(input: LinkInputType): void {
+  const { contexts } = input.state
+  const context = contexts[contexts.length - 1]
+  const stack = context?.stack ?? []
+  const current = stack?.[stack.length - 1]
+
+  switch (current?.like) {
+    case Link.Tree: {
+      if (input.token.like === Fold.Hashtag) {
+        const uint: LinkHashtagType = {
+          code: input.token.code,
+          like: Link.Hashtag,
+          system: input.token.system,
+        }
+
+        current.nest.push(uint)
+      }
+      break
+    }
+    default:
+      code.throwError(
+        code.generatedNotImplementedYetError(current?.like),
+      )
+  }
 }
 
 export function parse_openHandle(input: LinkInputType): void {
@@ -391,6 +466,30 @@ export function parse_openPlugin(input: LinkInputType): void {
 
       break
     }
+    case Link.Text: {
+      if (input.token.like === Fold.OpenPlugin) {
+        const plugin: LinkPluginType = {
+          like: Link.Plugin,
+          nest: [],
+          parent: current,
+          size: input.token.size,
+        }
+
+        current.segment.push(plugin)
+
+        const tree = plugin
+
+        contexts.push({
+          path: [],
+          stack: [tree],
+          tree,
+        })
+
+        // stack?.push(plugin)
+      }
+
+      break
+    }
     default:
       code.throwError(
         code.generatedNotImplementedYetError(current?.like),
@@ -481,6 +580,19 @@ export function parse_openTermPath(input: LinkInputType): void {
 
       break
     }
+    case Link.Plugin: {
+      const path: LinkPathType = {
+        like: Link.Path,
+        parent: current,
+        segment: [],
+      }
+
+      stack?.push(path)
+
+      current.nest.push(path)
+
+      break
+    }
     default:
       code.throwError(
         code.generatedNotImplementedYetError(current?.like),
@@ -503,6 +615,260 @@ export function parse_openText(input: LinkInputType): void {
 
       current.nest.push(text)
       stack?.push(text)
+      break
+    }
+    default:
+      code.throwError(
+        code.generatedNotImplementedYetError(current?.like),
+      )
+  }
+}
+
+function printMesh(base: LinkNodeType): void {
+  const text: Array<string> = ['']
+
+  printMeshDetails(base).forEach(line => {
+    text.push(`${line}`)
+  })
+
+  text.push('')
+
+  console.log(text.join('\n'))
+}
+
+function printMeshDetails(
+  node: LinkNodeType,
+  flat = false,
+): Array<string> {
+  const text: Array<string> = []
+
+  switch (node.like) {
+    case Link.String: {
+      text.push(node.value)
+      break
+    }
+    case Link.Tree: {
+      const head: Array<string> = []
+      if (node.head) {
+        printMeshDetails(node.head, flat).forEach(line => {
+          head.push(`${line}`)
+        })
+      }
+      const nest: Array<string> = []
+      node.nest.forEach(el => {
+        printMeshDetails(el, flat).forEach(line => {
+          nest.push(`${line}`)
+        })
+      })
+
+      if (flat) {
+        text.push(`${head.join('')} ${nest.join(', ')}`)
+      } else {
+        text.push(`${head.join('')}`)
+        nest.forEach(line => {
+          text.push(`  ${line}`)
+        })
+      }
+      break
+    }
+    case Link.UnsignedInteger: {
+      text.push(chalk.green(`${node.value}`))
+      break
+    }
+    case Link.Text: {
+      const string: Array<string> = []
+      node.segment.forEach(seg => {
+        printMeshDetails(seg, true).forEach(line => {
+          string.push(`${line}`)
+        })
+      })
+      text.push(`<${string.join('')}>`)
+      break
+    }
+    case Link.Plugin: {
+      if (node.nest.length) {
+        const plugin: Array<string> = []
+        node.nest.forEach(nest => {
+          printMeshDetails(nest, true).forEach(line => {
+            plugin.push(`${line}`)
+          })
+        })
+        text.push(
+          '{'.repeat(node.size) +
+            plugin.join('') +
+            '}'.repeat(node.size),
+        )
+      }
+      break
+    }
+    case Link.Index: {
+      break
+    }
+    case Link.Decimal: {
+      text.push(`${node.value}`)
+      break
+    }
+    case Link.Hashtag: {
+      text.push(`#${node.system}${node.code}`)
+      break
+    }
+    case Link.Term: {
+      const term: Array<string> = []
+      node.segment.forEach(seg => {
+        printMeshDetails(seg, true).forEach(line => {
+          term.push(line)
+        })
+      })
+      text.push(term.join(''))
+      break
+    }
+    case Link.Path: {
+      const path: Array<string> = []
+      node.segment.forEach(seg => {
+        printMeshDetails(seg, true).forEach(line => {
+          path.push(line)
+        })
+      })
+      text.push(path.join('/'))
+      break
+    }
+    default:
+      code.throwError(
+        code.generatedNotImplementedYetError(undefined),
+      )
+  }
+
+  return text
+}
+
+function printParserMesh(base: LinkNodeType): void {
+  const text: Array<string> = ['']
+
+  printParserMeshDetails(base).forEach(line => {
+    text.push(`  ${line}`)
+  })
+
+  text.push('')
+
+  console.log(text.join('\n'))
+
+  printMesh(base)
+}
+
+function printParserMeshDetails(
+  node: LinkNodeType,
+): Array<string> {
+  const text: Array<string> = []
+
+  const title = chalk.white(node.like)
+
+  switch (node.like) {
+    case Link.String: {
+      text.push(`${title} ${chalk.green(node.value)}`)
+      break
+    }
+    case Link.Tree: {
+      text.push(`${title}`)
+      if (node.head) {
+        text.push(chalk.gray(`  head:`))
+        printParserMeshDetails(node.head).forEach(line => {
+          text.push(`    ${line}`)
+        })
+      } else {
+        text.push(chalk.gray('  hook: undefined'))
+      }
+      if (node.nest.length) {
+        text.push(chalk.gray(`  nest:`))
+        node.nest.forEach(el => {
+          printParserMeshDetails(el).forEach(line => {
+            text.push(`    ${line}`)
+          })
+        })
+      }
+      break
+    }
+    case Link.UnsignedInteger: {
+      text.push(`${title} ${node.value}`)
+      break
+    }
+    case Link.Text: {
+      text.push(`${title}`)
+      node.segment.forEach(seg => {
+        printParserMeshDetails(seg).forEach(line => {
+          text.push(`  ${line}`)
+        })
+      })
+      break
+    }
+    case Link.Plugin: {
+      text.push(`${title}`)
+      text.push(chalk.gray(`  size: ${node.size}`))
+      if (node.nest.length) {
+        text.push(chalk.gray(`  nest:`))
+        node.nest.forEach(nest => {
+          printParserMeshDetails(nest).forEach(line => {
+            text.push(`    ${line}`)
+          })
+        })
+      }
+      break
+    }
+    case Link.Index: {
+      break
+    }
+    case Link.Decimal: {
+      text.push(`${title} ${node.value}`)
+      break
+    }
+    case Link.Hashtag: {
+      text.push(`${title} #${node.system}${node.code}`)
+      break
+    }
+    case Link.Term: {
+      text.push(`${title}`)
+      node.segment.forEach(seg => {
+        printParserMeshDetails(seg).forEach(line => {
+          text.push(`  ${line}`)
+        })
+      })
+      break
+    }
+    case Link.Path: {
+      text.push(`${title}`)
+      node.segment.forEach(seg => {
+        printParserMeshDetails(seg).forEach(line => {
+          text.push(`  ${line}`)
+        })
+      })
+      break
+    }
+    default:
+      code.throwError(
+        code.generatedNotImplementedYetError(undefined),
+      )
+  }
+
+  return text
+}
+
+export function parse_signedInteger(
+  input: LinkInputType,
+): void {
+  const { contexts } = input.state
+  const context = contexts[contexts.length - 1]
+  const stack = context?.stack ?? []
+  const current = stack?.[stack.length - 1]
+
+  switch (current?.like) {
+    case Link.Tree: {
+      if (input.token.like === Fold.SignedInteger) {
+        const uint: LinkSignedIntegerType = {
+          like: Link.SignedInteger,
+          value: input.token.value,
+        }
+
+        current.nest.push(uint)
+      }
       break
     }
     default:
@@ -590,114 +956,6 @@ export function parse_termFragment(input: LinkInputType): void {
         code.generatedNotImplementedYetError(current?.like),
       )
   }
-}
-
-function printParserMesh(base: LinkNodeType): void {
-  const text: Array<string> = ['']
-
-  printParserMeshDetails(base).forEach(line => {
-    text.push(`  ${line}`)
-  })
-
-  text.push('')
-
-  console.log(text.join('\n'))
-}
-
-function printParserMeshDetails(
-  node: LinkNodeType,
-): Array<string> {
-  const text: Array<string> = []
-
-  const title = chalk.white(node.like)
-
-  switch (node.like) {
-    case Link.String: {
-      text.push(`${title} ${chalk.green(node.value)}`)
-      break
-    }
-    case Link.Tree: {
-      text.push(`${title}`)
-      if (node.head) {
-        text.push(chalk.gray(`  head:`))
-        printParserMeshDetails(node.head).forEach(line => {
-          text.push(`    ${line}`)
-        })
-      } else {
-        text.push(chalk.gray('  hook: undefined'))
-      }
-      if (node.nest.length) {
-        text.push(chalk.gray(`  nest:`))
-        node.nest.forEach(el => {
-          printParserMeshDetails(el).forEach(line => {
-            text.push(`    ${line}`)
-          })
-        })
-      }
-      break
-    }
-    case Link.UnsignedInteger: {
-      text.push(`${title} ${node.value}`)
-      break
-    }
-    case Link.Text: {
-      text.push(`${title}`)
-      node.segment.forEach(seg => {
-        printParserMeshDetails(seg).forEach(line => {
-          text.push(`    ${line}`)
-        })
-      })
-      break
-    }
-    case Link.Plugin: {
-      text.push(`${title}`)
-      text.push(chalk.gray(`  size: ${node.size}`))
-      if (node.nest.length) {
-        text.push(chalk.gray(`  nest:`))
-        node.nest.forEach(nest => {
-          printParserMeshDetails(nest).forEach(line => {
-            text.push(`    ${line}`)
-          })
-        })
-      }
-      break
-    }
-    case Link.Index: {
-      break
-    }
-    case Link.Decimal: {
-      text.push(`${title} ${node.value}`)
-      break
-    }
-    case Link.Hashtag: {
-      text.push(`${title} ${node.system}${node.code}`)
-      break
-    }
-    case Link.Term: {
-      text.push(`${title}`)
-      node.segment.forEach(seg => {
-        printParserMeshDetails(seg).forEach(line => {
-          text.push(`  ${line}`)
-        })
-      })
-      break
-    }
-    case Link.Path: {
-      text.push(`${title}`)
-      node.segment.forEach(seg => {
-        printParserMeshDetails(seg).forEach(line => {
-          text.push(`  ${line}`)
-        })
-      })
-      break
-    }
-    default:
-      code.throwError(
-        code.generatedNotImplementedYetError(undefined),
-      )
-  }
-
-  return text
 }
 
 export function parse_unsignedInteger(

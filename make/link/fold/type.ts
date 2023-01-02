@@ -75,6 +75,7 @@ export type FoldCommentType = FoldBaseMixinType & {
 
 export type FoldDecimalType = FoldBaseMixinType & {
   like: Fold.Decimal
+  value: number
 }
 
 export type FoldEditorRangeType = {
@@ -83,7 +84,9 @@ export type FoldEditorRangeType = {
 }
 
 export type FoldHashtagType = FoldBaseMixinType & {
+  code: string
   like: Fold.Hashtag
+  system: string
 }
 
 export type FoldNodeType =
@@ -163,6 +166,7 @@ export type FoldResultType = TextResultType & {
 
 export type FoldSignedIntegerType = FoldBaseMixinType & {
   like: Fold.SignedInteger
+  value: number
 }
 
 export type FoldStringType = FoldBaseMixinType & {

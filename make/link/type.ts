@@ -90,13 +90,13 @@ export type LinkNodeType =
 
 export type LinkPathType = {
   like: Link.Path
-  parent: LinkTreeType
+  parent: LinkTreeType | LinkPluginType
   segment: Array<LinkTermType | LinkIndexType>
 }
 
 export type LinkPluginType = {
   like: Link.Plugin
-  nest: Array<LinkTreeType | LinkTermType>
+  nest: Array<LinkTreeType | LinkTermType | LinkPathType>
   parent: LinkTermType | LinkTextType
   size: number
 }

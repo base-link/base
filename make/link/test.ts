@@ -49,9 +49,21 @@ form text
   link a-{x y}-z foo
 
   link b{hello}, 123
+
 form two
   a b{x y 123, 123}/c, and/y/w
-  b-c 432
+  b-c 432.12, <string {value one 12} bar>, 3.14
+  #b0101
+  123
+  1.12
+  true
+  a/b
+
+  foo bar{x}-baz/bear-{bond}we, and a123 345
+    stuff for you
+      more
+
+bear <./{site/deck}>
 `,
   })
 }

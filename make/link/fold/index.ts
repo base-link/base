@@ -106,24 +106,60 @@ export function generateLinkTextBuildingDirections(
         case Text.CloseInterpolation:
         case Text.CloseParenthesis:
         case Text.CloseText:
-        case Text.Decimal:
-        case Text.Hashtag:
         case Text.OpenEvaluation:
         case Text.OpenInterpolation:
         case Text.OpenNesting:
         case Text.OpenParenthesis:
         case Text.OpenText:
         case Text.Path:
-        case Text.SignedInteger:
-        case Text.String:
-        case Text.UnsignedInteger:
         case Text.Comma: {
           throw new Error('Oops')
         }
         case Text.Comment: {
+          state.index++
+          break
+        }
+
+        case Text.UnsignedInteger: {
+          result.push({
+            ...token,
+            value: parseInt(token.text, 10),
+            ...base(Fold.UnsignedInteger),
+          })
+          state.index++
+          break
+        }
+        case Text.SignedInteger: {
+          result.push({
+            ...token,
+            value: parseInt(token.text, 10),
+            ...base(Fold.SignedInteger),
+          })
+          state.index++
+          break
+        }
+        case Text.Decimal: {
+          result.push({
+            ...token,
+            value: parseFloat(token.text),
+            ...base(Fold.Decimal),
+          })
+          state.index++
+          break
+        }
+        case Text.Hashtag: {
+          const [hashtag, system = '', ...code] = token.text
+          result.push({
+            ...token,
+            code: code.join(''),
+            system,
+            ...base(Fold.Hashtag),
+          })
+          state.index++
           break
         }
         default:
+          state.index++
           break
       }
     }
@@ -199,6 +235,32 @@ export function generateLinkTextBuildingDirections(
             ...token,
             value: parseInt(token.text, 10),
             ...base(Fold.UnsignedInteger),
+          })
+          break
+        }
+        case Text.SignedInteger: {
+          array.push({
+            ...token,
+            value: parseInt(token.text, 10),
+            ...base(Fold.SignedInteger),
+          })
+          break
+        }
+        case Text.Decimal: {
+          array.push({
+            ...token,
+            value: parseFloat(token.text),
+            ...base(Fold.Decimal),
+          })
+          break
+        }
+        case Text.Hashtag: {
+          const [hashtag, system = '', ...code] = token.text
+          array.push({
+            ...token,
+            code: code.join(''),
+            system,
+            ...base(Fold.Hashtag),
           })
           break
         }
@@ -372,8 +434,6 @@ export function generateLinkTextBuildingDirections(
       }
     })
   }
-
-  // console.log(result.map(x => x.like).join('\n'))
 
   logDirectionList(result)
 
