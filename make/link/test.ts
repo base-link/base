@@ -45,30 +45,16 @@ async function start() {
   parse({
     path: 'foo.link',
     text: `
-form text
-  link a-{x y}-z foo
-
-  link b{hello}, 123
-
-form two
-  a b{x y 123, 123}/c, and/y/w
-  b-c 432.12, <string {value one 12} bar>, 3.14
-  #b0101
-  123
-  1.12
-  true
-  a/b
-
-  foo bar{x}-baz/bear-{bond}we, and a123 345
-    stuff for you
-      more
-
-bear <./{site/deck}>
+some thing[another(a/b/c, 1, foo(bar(baz)))]
 `,
   })
 }
 
 start()
+
+// invalid whitespace: `foo  bar`
+// invalid whitespace: ` foo`
+// invalid whitespace: `foo     bar`
 
 // a b{x y}/c, and
 // a b c d e f g a sd f
@@ -81,3 +67,27 @@ start()
 //     l m n
 //       o p
 //   q
+// form text
+//   link a-{x y}-z foo
+
+//   link b{hello}, 123
+
+// form two
+//   a b{x y 123, 123}/c, and/y/w
+//   b-c 432.12, <string {value one 12} bar>, 3.14
+//   #b0101
+//   123
+//   1.12
+//   true
+//   a/b
+
+//   foo bar{x}-baz/bear-{bond}we, and a123 345
+//     stuff for you
+//       more
+
+// bear <./{site/deck}>
+
+// deck @treesurf/wolf
+//   bear ./code
+//   mint <0.0.1>
+//   test ./test{{{another 12}}}two/one
