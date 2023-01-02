@@ -27,7 +27,7 @@ export enum Text {
 
 export type TextEditorRangeType = {
   end: number
-  start: number
+  start: number!
 }
 
 // TODO: refactor
