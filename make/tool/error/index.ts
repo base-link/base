@@ -1,4 +1,5 @@
 import chalk from 'chalk'
+import { diffChars } from 'diff'
 
 import {
   ERROR,
@@ -6,9 +7,6 @@ import {
   LINK_HINT_TEXT,
   Link,
   LinkHint,
-  LinkPathType,
-  LinkStringType,
-  LinkType,
   MeshInputType,
   SOURCE_MAP_MESH,
   Text,
@@ -20,7 +18,15 @@ import {
 
 export * from './content.js'
 
-export class BaseLinkError extends Error {}
+export class BaseLinkError extends Error {
+  data: SiteErrorType
+
+  constructor(message: string, data: SiteErrorType) {
+    super(message)
+
+    this.data = data
+  }
+}
 
 export class CompilerError extends Error {}
 
@@ -286,6 +292,19 @@ export function generateScopeMissingPropertyError(
   return {
     code: '0019',
     note: `Scope is missing property ${property}.`,
+  }
+}
+
+export function generateStringMismatchError(
+  input: TextSplitInputType,
+  a: string,
+  b: string,
+): SiteErrorType {
+  return {
+    code: '0030',
+    file: input.path,
+    note: 'String mismatch error',
+    text: code.renderDiffText(a, b),
   }
 }
 
@@ -693,7 +712,7 @@ export function highlightTextRangeForError(
     const lineText = textByLine[i]
     const x = i + 1
     let z =
-      i < textByLine.length - 1
+      i < textByLine.length
         ? x.toString().padStart(pad, ' ')
         : defaultIndent
     if (highlight.start.line === i) {
@@ -727,6 +746,24 @@ export function isError(
     code.isRecord(error) &&
     Boolean((error as SiteErrorConfigType).code)
   )
+}
+
+export function renderDiffText(a: string, b: string): string {
+  const text: Array<string> = []
+  const diff = diffChars(a, b)
+
+  diff.forEach(part => {
+    const value = part.value.replace(/ /g, '◌')
+    if (part.added) {
+      text.push(chalk.green(value))
+    } else if (part.removed) {
+      text.push(chalk.red(value))
+    } else {
+      text.push(chalk.gray(value))
+    }
+  })
+
+  return text.join('')
 }
 
 export function throwError(data: SiteErrorType): void {
@@ -858,7 +895,7 @@ export function throwError(data: SiteErrorType): void {
     )
   }
 
-  const error = new BaseLinkError(text.join('\n'))
+  const error = new BaseLinkError(text.join('\n'), data)
   error.name = ''
 
   Error.captureStackTrace(error)
