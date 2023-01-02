@@ -60,11 +60,15 @@ export function process_codeCard_bear_nestedChildren(
         case 'hide':
           code.process_codeCard_bear_hide(input)
           break
+        default:
+          code.throwError(
+            code.generateUnhandledTermCaseError(input),
+          )
       }
       break
     default:
       code.throwError(
-        code.generateUnhandledTermCaseError(input),
+        code.generateUnhandledNestCaseError(input, type),
       )
   }
 }

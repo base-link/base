@@ -1,6 +1,6 @@
 import type {
   FoldNodeType,
-  FoldRangeMetadatType,
+  FoldRangeType,
   TextSplitInputType,
   TextTokenType,
 } from '~'
@@ -43,14 +43,16 @@ export type LinkBooleanType = {
   value: boolean
 }
 
-export type LinkDecimalType = TextTokenBaseType & {
+export type LinkDecimalType = {
   like: Link.Decimal
+  range: FoldRangeType
   value: number
 }
 
-export type LinkHashtagType = TextTokenBaseType & {
+export type LinkHashtagType = {
   code: string
   like: Link.Hashtag
+  range: FoldRangeType
   system: string
 }
 
@@ -121,14 +123,15 @@ export type LinkResultType = TextSplitInputType & {
   link: LinkTreeType
 }
 
-export type LinkSignedIntegerType = TextTokenBaseType & {
+export type LinkSignedIntegerType = {
   like: Link.SignedInteger
+  range: FoldRangeType
   value: number
 }
 
 export type LinkStringType = {
   like: Link.String
-  range: FoldRangeMetadatType
+  range: FoldRangeType
   value: string
 }
 

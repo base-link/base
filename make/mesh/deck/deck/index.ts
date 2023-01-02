@@ -1,4 +1,4 @@
-import { LinkHint, Mesh, code } from '~'
+import { Link, LinkHint, Mesh, code } from '~'
 import type {
   MeshInputType,
   MeshPartialType,
@@ -49,9 +49,13 @@ export function generate_full_deckCard_deck(
               case 'test':
                 testFile = node.value.string
                 break
+              default:
+                break
             }
             break
           }
+        default:
+          break
       }
     }
   })
@@ -59,10 +63,7 @@ export function generate_full_deckCard_deck(
   code.assertString(host)
   code.assertString(name)
 
-  code.assertString(version, () =>
-    code.generateMissingStringError(input, 'mark'),
-  )
-  // code.assertString(version)
+  code.assertString(version, 'version')
 
   return {
     bear: exportFile,
@@ -81,7 +82,7 @@ export function generate_full_deckCard_deck(
 export function process_deckCard_deck(
   input: MeshInputType,
 ): void {
-  const nest = code.assumeNest(input)
+  const nest = code.assumeLinkType(input, Link.Tree)
   const deck: MeshPartialType<Mesh.Package> = {
     children: [],
     like: Mesh.Package,
@@ -143,6 +144,10 @@ export function process_deckCard_deck_nestedChildren(
         throw new Error('Unhandled term.')
       }
       break
+    default:
+      code.throwError(
+        code.generateUnhandledNestCaseError(input, type),
+      )
   }
 }
 

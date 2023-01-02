@@ -62,11 +62,15 @@ export function process_codeCard_bond_nestedChildren(
         case 'wave':
           code.process_codeCard_bond_wave(input)
           break
+        default:
+          code.throwError(
+            code.generateUnhandledTermCaseError(input),
+          )
       }
       break
     default:
       code.throwError(
-        code.generateUnhandledTermCaseError(input),
+        code.generateUnhandledNestCaseError(input, type),
       )
   }
 }

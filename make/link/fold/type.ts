@@ -75,6 +75,7 @@ export type FoldCommentType = FoldBaseMixinType & {
 
 export type FoldDecimalType = FoldBaseMixinType & {
   like: Fold.Decimal
+  range: FoldRangeType
   value: number
 }
 
@@ -86,6 +87,7 @@ export type FoldEditorRangeType = {
 export type FoldHashtagType = FoldBaseMixinType & {
   code: string
   like: Fold.Hashtag
+  range: FoldRangeType
   system: string
 }
 
@@ -154,7 +156,7 @@ export type FoldOpenTextType = FoldBaseMixinType & {
   like: Fold.OpenText
 }
 
-export type FoldRangeMetadatType = {
+export type FoldRangeType = {
   character: FoldEditorRangeType
   line: FoldEditorRangeType
   offset: FoldEditorRangeType
@@ -166,11 +168,14 @@ export type FoldResultType = TextResultType & {
 
 export type FoldSignedIntegerType = FoldBaseMixinType & {
   like: Fold.SignedInteger
+  range: FoldRangeType
   value: number
 }
 
 export type FoldStringType = FoldBaseMixinType & {
   like: Fold.String
+  range: FoldRangeType
+  value: string
 }
 
 export type FoldTermFragmentType = FoldBaseMixinType & {
@@ -178,7 +183,7 @@ export type FoldTermFragmentType = FoldBaseMixinType & {
   guard: boolean
   like: Fold.TermFragment
   query: boolean
-  range: FoldRangeMetadatType
+  range: FoldRangeType
   start: boolean
   value: string
 }
@@ -189,5 +194,6 @@ export type FoldTermSeparatorType = FoldBaseMixinType & {
 
 export type FoldUnsignedIntegerType = FoldBaseMixinType & {
   like: Fold.UnsignedInteger
+  range: FoldRangeType
   value: number
 }

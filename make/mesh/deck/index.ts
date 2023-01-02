@@ -1,5 +1,6 @@
 import {
   Base,
+  Link,
   LinkTreeType,
   Mesh,
   MeshModuleBaseType,
@@ -93,6 +94,8 @@ export function process_deckCard(
   )
 
   card.bind(seed)
+
+  code.assertLinkType(seed.link, Link.Tree)
 
   seed.link.nest.forEach((nest, index) => {
     code.process_deckCard_nestedChildren(

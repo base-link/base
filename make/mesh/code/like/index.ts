@@ -1,17 +1,19 @@
-import { LinkHint, code } from '~'
+import { Link, LinkHint, code } from '~'
 import type { MeshInputType } from '~'
 
 export function process_codeCard_like(
   input: MeshInputType,
 ): void {
-  code.assumeNest(input).nest.forEach((nest, index) => {
-    process_codeCard_like_nestedChildren(
-      code.extendWithNestScope(input, {
-        index,
-        nest,
-      }),
-    )
-  })
+  code
+    .assumeLinkType(input, Link.Tree)
+    .nest.forEach((nest, index) => {
+      process_codeCard_like_nestedChildren(
+        code.extendWithNestScope(input, {
+          index,
+          nest,
+        }),
+      )
+    })
 }
 
 export function process_codeCard_like_free(
@@ -61,6 +63,10 @@ export function process_codeCard_like_nestedChildren(
         case 'term':
           code.process_codeCard_like_term(input)
           break
+        default:
+          code.throwError(
+            code.generateUnhandledTermCaseError(input),
+          )
       }
       break
     default:

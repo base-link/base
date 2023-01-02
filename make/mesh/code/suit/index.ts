@@ -1,4 +1,4 @@
-import { Mesh, MeshPartialType, code } from '~'
+import { Link, Mesh, MeshPartialType, code } from '~'
 import type { MeshInputType } from '~'
 
 export function process_codeCard_suit(
@@ -12,14 +12,16 @@ export function process_codeCard_suit(
 
   const childInput = code.extendWithObjectScope(input, suit)
 
-  code.assumeNest(childInput).nest.forEach((nest, index) => {
-    code.process_codeCard_suit_nestedChildren(
-      code.extendWithNestScope(childInput, {
-        index,
-        nest,
-      }),
-    )
-  })
+  code
+    .assumeLinkType(childInput, Link.Tree)
+    .nest.forEach((nest, index) => {
+      code.process_codeCard_suit_nestedChildren(
+        code.extendWithNestScope(childInput, {
+          index,
+          nest,
+        }),
+      )
+    })
 }
 
 export function process_codeCard_suit_nestedChildren(

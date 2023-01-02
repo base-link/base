@@ -1,5 +1,20 @@
-import { code } from '~'
+import { Link, code } from '~'
 import type { MeshInputType } from '~'
+
+export function getNestedProperty(
+  object: Record<string, unknown>,
+  path: Array<string>,
+): unknown {
+  let value: unknown = object
+  path.forEach(part => {
+    if (code.isRecord(value)) {
+      value = value[part]
+    } else {
+      value = undefined
+    }
+  })
+  return value
+}
 
 export function getProperty(
   object: Record<string, unknown>,
@@ -10,28 +25,22 @@ export function getProperty(
   }
 }
 
-export function resolveCodeAsNumber(
+export function resolveHashtagAsNumber(
   input: MeshInputType,
-): number {
-  let line = code.assumeNest(input).line[0]
+): number | undefined {
+  let hashtag = code.assumeLinkType(input, Link.Hashtag)
 
-  if (line && line.like === Tree.Code) {
-    let type = line.base
-    let rest = line.code
-
-    switch (type) {
-      case 'b':
-        return parseInt(rest, 2)
-      case 'x':
-        return parseInt(rest, 16)
-      case 'o':
-        return parseInt(rest, 8)
-      case 'h':
-        return parseInt(rest, 16)
-      default:
-        throw new Error(line.code)
-    }
-  } else {
-    throw new Error('Oops')
+  switch (hashtag.system) {
+    case 'b':
+      return parseInt(hashtag.code, 2)
+    case 'x':
+      return parseInt(hashtag.code, 16)
+    case 'o':
+      return parseInt(hashtag.code, 8)
+    case 'h':
+      return parseInt(hashtag.code, 16)
+    default:
+      // this is caught earlier
+      code.throwError(code.generateInvalidCompilerStateError())
   }
 }
