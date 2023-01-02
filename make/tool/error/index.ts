@@ -6,6 +6,7 @@ import {
   LINK_HINT_TEXT,
   Link,
   LinkHint,
+  LinkType,
   MeshInputType,
   SOURCE_MAP_MESH,
   Text,
@@ -53,6 +54,19 @@ export function assertError(
 ): asserts error is SiteErrorConfigType {
   if (!code.isError(error)) {
     throw new Error('Error handler undefined')
+  }
+}
+
+export function createDefaultRange(): CursorRangeType {
+  return {
+    end: {
+      character: 0,
+      line: 0,
+    },
+    start: {
+      character: 0,
+      line: 0,
+    },
   }
 }
 
@@ -403,78 +417,30 @@ export function getCursorRangeForTerm(
 ): CursorRangeType {
   const nest = code.assumeNest(input)
 
-  const range: CursorRangeType = {
-    end: {
-      character: 0,
-      line: 0,
-    },
-    start: {
-      character: 0,
-      line: 0,
-    },
-  }
-
-  let line = nest.line[0]
-  if (!line) {
-    return range
-  }
-
-  if (line.like !== Link.Term) {
-    return range
-  }
-
-  const first = line.link[0]
-  if (!first) {
-    return range
-  }
-
-  if (first.like === Link.Cord) {
-    range.start.line = first.lineNumber
-    range.start.character = first.lineCharacterNumberStart
-    range.end.line = first.lineNumber
-    range.end.character = first.lineCharacterNumberEnd
-  }
-
-  const lastTop = nest.line[nest.line.length - 1]
-
-  if (lastTop && lastTop.like === Link.Term) {
-    const last = lastTop.link[line.link.length - 1]
-
-    if (last && last !== first) {
-      if (last.like === Link.Cord) {
-        range.end.line = last.lineNumber
-        range.end.character = last.lineCharacterNumberEnd
-      } else if (last.like === Link.Slot) {
-        const lastNest = last.nest
-        const lastLine = lastNest.line[lastNest.line.length - 1]
-        if (lastLine && lastLine.like === Link.Term) {
-          const childRange = code.getCursorRangeForTerm(
-            code.extendWithNestScope(input, {
-              nest: lastNest,
-            }),
-          )
-          range.end.line = childRange.end.line
-          range.end.character =
-            childRange.end.character + last.size
-        } else {
-          throw new Error('Unhandled')
-        }
-      } else if (last.like === Link.Term) {
-        const childRange = code.getCursorRangeForTerm(
-          code.extendWithNestScope(input, {
-            nest: last,
-          }),
-        )
-        range.end.line = childRange.end.line
-        range.end.character = childRange.end.character
-      }
+  switch (nest.like) {
+    case Link.Term: {
+      return getTermRange(nest)
     }
-  } else {
-    console.log(lastTop)
-    throw new Error('Unhandled')
+    case Link.Path: {
+      const start = getTermRange(nest.segment[0])
+      const end = getTermRange(
+        nest.segment[nest.segment.length - 1],
+      )
+      const range: CursorRangeType = {
+        end: {
+          character: end.end.character,
+          line: end.end.line,
+        },
+        start: {
+          character: start.start.character,
+          line: start.start.line,
+        },
+      }
+      return range
+    }
+    default:
+      throw new Error('Oops')
   }
-
-  return range
 }
 
 export function getCursorRangeForText(
@@ -565,6 +531,31 @@ export function getCursorRangeForTextWhitespaceToken(
       line: start.range.line.start,
     },
   }
+}
+
+export function getTermRange(
+  term: LinkType<Link.Term>,
+): CursorRangeType {
+  const range: CursorRangeType = createDefaultRange()
+
+  const start = term.segment[0]
+  const end = term.segment[term.segment.length - 1]
+
+  if (!start || start.like !== Link.String) {
+    return range
+  }
+
+  if (!end || end.like !== Link.String) {
+    return range
+  }
+
+  range.end.character = end.range.character.end
+  range.end.line = end.range.line.end
+
+  range.start.character = start.range.character.start
+  range.start.line = start.range.line.start
+
+  return range
 }
 
 export function highlightTextRangeForError(

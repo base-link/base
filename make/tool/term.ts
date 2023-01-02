@@ -1,4 +1,4 @@
-import { Link, code } from '~'
+import { Link, LinkType, code } from '~'
 import type { MeshInputType } from '~'
 
 export function assumeStaticTermFromNest(
@@ -9,73 +9,83 @@ export function assumeStaticTermFromNest(
   return term
 }
 
-export function resolveStaticTerm(
+export function getTerm(
   input: MeshInputType,
-): string | undefined {
-  const term = code.assumeInputObjectAsLinkType(
-    Link.Term,
-    input,
-  )
+  rank = 0,
+): LinkType<Link.Term> | undefined {
+  const nest = code.assumeNest(input, rank)
 
-  if (term.link.length !== 1) {
+  if (nest.like === Link.Term) {
+    return nest
+  }
+
+  if (nest.like !== Link.Tree) {
     return
   }
 
-  let link = term.link[0]
-  if (link && link.like === Link.Cord) {
-    return link.cord
+  const child = nest.head
+  if (!child) {
+    return
   }
+
+  if (child.like !== Link.Term) {
+    return
+  }
+
+  return child
 }
 
 export function resolveStaticTermFromNest(
   input: MeshInputType,
   rank = 0,
 ): string | undefined {
-  const nest = code.assumeNest(input, rank)
+  const term = code.getTerm(input, rank)
+  code.assertLinkType(term, Link.Term)
+  const string: Array<string> = []
 
-  if (nest.line.length > 1) {
-    return
-  }
+  term.segment.forEach(seg => {
+    if (seg.like === Link.String) {
+      string.push(seg.value)
+    } else {
+      string.push('RESOLVE FROM PLUGIN')
+    }
+  })
 
-  let line = nest.line[0]
-  if (!line) {
-    return
-  }
+  return string.join('')
+}
 
-  if (line.like !== Link.Term) {
-    return
-  }
+export function resolveTerm(
+  input: MeshInputType,
+): string | undefined {
+  const term = code.getTerm(input)
+  code.assertLinkType(term, Link.Term)
+  const string: Array<string> = []
 
-  if (line.link.length !== 1) {
-    return
-  }
+  term.segment.forEach(seg => {
+    if (seg.like === Link.String) {
+      string.push(seg.value)
+    }
+  })
 
-  let link = line.link[0]
-  if (link && link.like === Link.Cord) {
-    return link.cord
-  }
+  return string.join('')
 }
 
 export function termIsInterpolated(
   input: MeshInputType,
 ): boolean {
   const nest = code.assumeNest(input)
-
-  if (nest.line.length > 1) {
+  const term = code.getTerm(input)
+  if (!term) {
     return false
   }
+  return code.termIsInterpolatedImpl(term)
+}
 
-  let line = nest.line[0]
-  if (!line) {
-    return false
-  }
-
-  if (line.like !== Link.Term) {
-    return false
-  }
-
-  for (const link of line.link) {
-    if (link.like === Link.Slot) {
+export function termIsInterpolatedImpl(
+  term: LinkType<Link.Term>,
+): boolean {
+  for (const seg of term.segment) {
+    if (seg.like === Link.Plugin) {
       return true
     }
   }
@@ -86,18 +96,5 @@ export function termIsInterpolated(
 export function termIsNested(input: MeshInputType): boolean {
   const nest = code.assumeNest(input)
 
-  let line = nest.line[0]
-  if (!line) {
-    return false
-  }
-
-  if (line.like !== Link.Term) {
-    return false
-  }
-
-  if (nest.line.length > 1) {
-    return true
-  }
-
-  return false
+  return nest.like === Link.Path
 }

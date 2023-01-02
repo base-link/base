@@ -1,14 +1,9 @@
-import { LinkHint, Site, code } from '~'
+import { Link, LinkHint, Site, code } from '~'
 import type {
-  LinkTreeType,
   MeshInputType,
   SiteDependencyPartType,
   SiteDependencyType,
 } from '~'
-
-export function parseTextIntoTree(text: string): LinkTreeType {
-  return code.parseLinkText(text)
-}
 
 export function processDynamicTextNest(
   input: MeshInputType,
@@ -102,75 +97,27 @@ export function readNest(input: MeshInputType): unknown {
   return value
 }
 
-export function resolveNestDependencyList(
-  input: MeshInputType,
-  job: (i: MeshInputType) => void,
-): Array<SiteDependencyType> {
-  const array: Array<SiteDependencyType> = []
-  const dependency: SiteDependencyType = {
-    callbackList: [job],
-    children: [],
-    context: input,
-    like: Site.Dependency,
-    partial: false,
-    path: [],
-  }
-  array.push(dependency)
-
-  code.assumeNest(input).line.forEach(nest => {
-    if (nest.like === Tree.Term) {
-      // TODO: solve for interpolated terms too.
-      const name = code.resolveStaticTerm(
-        code.extendWithObjectScope(input, nest),
-      )
-
-      code.assertString(name)
-
-      const dependencyPart: SiteDependencyPartType = {
-        callbackList: [],
-        like: Site.DependencyPart,
-        name,
-        parent: dependency,
-      }
-
-      dependency.path.push(dependencyPart)
-    }
-  })
-
-  return array
-}
-
 export function resolveText(
   input: MeshInputType,
 ): string | undefined {
   const nest = code.assumeNest(input)
 
-  if (nest.line.length > 1) {
-    return
-  }
-
-  let line = nest.line[0]
-  if (!line) {
-    return
-  }
-
-  if (line.like !== Tree.Text) {
+  if (nest.like !== Link.Text) {
     return
   }
 
   const str: Array<unknown> = []
 
-  line.link.forEach(link => {
-    switch (link.like) {
-      case Tree.Cord:
-        str.push(link.cord)
+  nest.segment.forEach(seg => {
+    switch (seg.like) {
+      case Link.String:
+        str.push(seg.value)
         break
-      case Tree.Slot:
-        // TODO
+      case Link.Plugin:
         const text = code.readNest(
           code.extendWithNestScope(input, {
             index: 0,
-            nest: link.nest,
+            nest: seg.nest[0],
           }),
         )
 
@@ -190,30 +137,21 @@ export function resolveTextDependencyList(
 ): Array<SiteDependencyType> {
   const nest = code.assumeNest(input)
 
-  if (nest.line.length > 1) {
-    return []
-  }
-
-  let line = nest.line[0]
-  if (!line) {
-    return []
-  }
-
-  if (line.like !== Tree.Text) {
+  if (nest.like !== Link.Text) {
     return []
   }
 
   const array: Array<SiteDependencyType> = []
 
-  line.link.forEach(link => {
-    switch (link.like) {
-      case Tree.Cord:
+  nest.segment.forEach(seg => {
+    switch (seg.like) {
+      case Link.String:
         break
-      case Tree.Slot:
-        const dependencies = code.resolveNestDependencyList(
+      case Link.Plugin:
+        const dependencies = code.resolveTreeDependencyList(
           code.extendWithNestScope(input, {
             index: 0,
-            nest: link.nest,
+            nest: seg.nest[0],
           }),
           job,
         )
@@ -227,29 +165,68 @@ export function resolveTextDependencyList(
   return array
 }
 
+export function resolveTreeDependencyList(
+  input: MeshInputType,
+  job: (i: MeshInputType) => void,
+): Array<SiteDependencyType> {
+  const array: Array<SiteDependencyType> = []
+  const dependency: SiteDependencyType = {
+    callbackList: [job],
+    context: input,
+    like: Site.Dependency,
+    path: [],
+  }
+  array.push(dependency)
+
+  const nest = code.assumeNest(input)
+
+  switch (nest.like) {
+    case Link.Term: {
+      const name = code.resolveTerm(
+        code.extendWithNestScope(input, {
+          index: 0,
+          nest,
+        }),
+      )
+
+      code.assertString(name)
+
+      const dependencyPart: SiteDependencyPartType = {
+        callbackList: [],
+        like: Site.DependencyPart,
+        name,
+        parent: dependency,
+      }
+
+      dependency.path.push(dependencyPart)
+      break
+    }
+    case Link.Path: {
+      break
+    }
+    case Link.Tree: {
+      break
+    }
+    default:
+      throw new Error('Oops')
+  }
+
+  return array
+}
+
 export function textIsInterpolated(
   input: MeshInputType,
   size: number = 1,
 ): boolean {
   const nest = code.assumeNest(input)
 
-  for (let i = 0, n = nest.line.length; i < n; i++) {
-    let line = nest.line[i]
-    if (line) {
-      if (line.like !== Tree.Text) {
-        continue
-      }
+  if (nest.like !== Link.Text) {
+    return false
+  }
 
-      for (let j = 0, m = line.link.length; j < m; j++) {
-        let link = line.link[j]
-        if (
-          link &&
-          link.like === Tree.Slot &&
-          link.size === size
-        ) {
-          return true
-        }
-      }
+  for (const seg of nest.segment) {
+    if (seg.like === Link.Plugin) {
+      return true
     }
   }
 

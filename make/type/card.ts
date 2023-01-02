@@ -1,4 +1,4 @@
-import { Base, Mesh } from '~'
+import { Base, LinkTreeType, Mesh } from '~'
 import type {
   MeshCallback_FullType,
   MeshCallback_Type,
@@ -26,7 +26,6 @@ import type {
   MeshTest_Type,
   Mesh_FullTypeMixin,
   Mesh_PartialTypeMixin,
-  TreeNodeType,
 } from '~'
 
 export type MeshBookModule_FullType = Mesh_FullTypeMixin &
@@ -110,8 +109,9 @@ export type MeshCodeModule_Type =
 export type MeshModuleBaseType = {
   base: Base
   directory: string
-  parseTree: TreeNodeType
+  link: LinkTreeType
   path: string
+  text: string
   textByLine: Array<string>
 }
 

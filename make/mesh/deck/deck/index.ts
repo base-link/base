@@ -88,7 +88,7 @@ export function process_deckCard_deck(
     partial: true,
   }
 
-  code.assertMeshTypePartial(input.card, Mesh.PackageModule)
+  code.assertMeshPartialType(input.card, Mesh.PackageModule)
   input.card.children.push(deck)
 
   const childInput = code.extendWithObjectScope(input, deck)
