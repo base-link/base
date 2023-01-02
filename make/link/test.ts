@@ -45,21 +45,39 @@ async function start() {
   parse({
     path: 'foo.link',
     text: `
-a b c d e f g a sd f
-  x y z
+form text
+  link a-{x y}-z foo
 
-deck <@treesurf/wolf>
-  bear ./code
-  test ./test
-    another deeper more more
-      still
-    another deeper more more
-      still more to come and more
-  mint <
-    0.0.1
-  >
+  link b{hello}, 123
+
+form two
+  a b{x y 123, 123}/c, and/y/w
+  b-c 432.12, <string {value one 12} bar>, 3.14
+  #b0101
+  123
+  1.12
+  true
+  a/b
+
+  foo bar{x}-baz/bear-{bond}we, and a123 345
+    stuff for you
+      more
+
+bear <./{site/deck}>
 `,
   })
 }
 
 start()
+
+// a b{x y}/c, and
+// a b c d e f g a sd f
+//   x y z w y
+//     abc
+// deck <./{base/link}>
+
+// a b c d e f g
+//   h i j k
+//     l m n
+//       o p
+//   q

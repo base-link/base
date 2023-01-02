@@ -23,6 +23,17 @@ export enum Text {
   UnsignedInteger = 'text-unsigned-integer',
 }
 
+export type TextEditorRangeType = {
+  end: number
+  start: number
+}
+
+export type TextRangeMetadatType = {
+  character: TextEditorRangeType
+  line: TextEditorRangeType
+  offset: TextEditorRangeType
+}
+
 // eslint-disable-next-line sort-exports/sort-exports
 export const TEXT_TYPE = [
   Text.CloseEvaluation,
@@ -69,8 +80,31 @@ export const TEXT_PATTERN_LIST = [
   Text.UnsignedInteger,
 ]
 
+export type TextType =
+  | TextCloseEvaluationTokenType
+  | TextLineTokenType
+  | TextOpenIndentationTokenType
+  | TextDecimalTokenType
+  | TextSignedIntegerTokenType
+  | TextUnsignedIntegerTokenType
+  | TextOpenNestingTokenType
+  | TextOpenParenthesisTokenType
+  | TextCloseParenthesisTokenType
+  | TextOpenTextTokenType
+  | TextCloseTextTokenType
+  | TextOpenInterpolationTokenType
+  | TextCloseInterpolationTokenType
+  | TextCommaTokenType
+  | TextHashtagTokenType
+  | TextCommentTokenType
+  | TextOpenEvaluationTokenType
+  | TextPathTokenType
+  | TextStringTokenType
+  | TextTermFragmentTokenType
+
 // eslint-disable-next-line sort-exports/sort-exports
 export const TEXT_STRING_PATTERN_LIST = [
+  Text.OpenInterpolation,
   Text.CloseInterpolation,
   Text.CloseText,
   Text.String,
@@ -138,14 +172,6 @@ export type TextLineRangeType = {
   line: number
 }
 
-type TextOpenNestTokenType = TextTokenBaseType & {
-  like: Text.OpenEvaluation
-}
-
-type TextCloseNestTokenType = TextTokenBaseType & {
-  like: Text.CloseEvaluation
-}
-
 type TextCommaTokenType = TextTokenBaseType & {
   like: Text.Comma
 }
@@ -197,9 +223,7 @@ export type TextTermFragmentTokenType = TextTokenBaseType & {
 }
 
 export type TextTokenBaseType = {
-  end: TextLineRangeType
-  offset: TextRangeType
-  start: TextLineRangeType
+  range: TextRangeMetadatType
   text: string
 }
 
@@ -208,7 +232,7 @@ const PATTERN: Record<Text, TextPatternConfigType> = {
     pattern: /^ *\] */,
   },
   [Text.CloseInterpolation]: {
-    pattern: /^\}+/,
+    pattern: /^\}/,
   },
   [Text.CloseParenthesis]: {
     pattern: /^\)/,
@@ -238,7 +262,7 @@ const PATTERN: Record<Text, TextPatternConfigType> = {
     pattern: /^  /,
   },
   [Text.OpenInterpolation]: {
-    pattern: /^\{+/,
+    pattern: /^\{/,
   },
   [Text.OpenNesting]: {
     pattern: /^ /,
@@ -251,7 +275,7 @@ const PATTERN: Record<Text, TextPatternConfigType> = {
   },
   [Text.Path]: {
     pattern:
-      /^(?:(?:@[^\s\/]+(?:\/[^\s\/]*)*)|(?:\.{1,2}(?:\/[^\s\/]*)*)|(?:\/[^\s\/]+)+)/,
+      /^(?:(?:@[^\s\/,\{]+(?:\/[^\s\/,\{]*)*)|(?:\.{1,2}(?:\/[^\s\/,\{]*)*)|(?:\/[^\s\/,\{]+)+)/,
   },
   [Text.SignedInteger]: {
     pattern: /^-\d+(?=\b)/,
@@ -330,18 +354,20 @@ export function tokenizeLinkText(
             const matchedLength = match[0].length
             const matchedText = textLine.slice(0, matchedLength)
             const token: TextTokenType<Text> = {
-              end: {
-                character: character + matchedLength,
-                line: line,
-              },
               like: type as Text,
-              offset: {
-                end: offset + matchedLength,
-                start: offset,
-              },
-              start: {
-                character: character,
-                line: line,
+              range: {
+                character: {
+                  end: character + matchedLength,
+                  start: character,
+                },
+                line: {
+                  end: line,
+                  start: line,
+                },
+                offset: {
+                  end: offset + matchedLength,
+                  start: offset,
+                },
               },
               text: matchedText,
             }
@@ -389,18 +415,20 @@ export function tokenizeLinkText(
     if (i < source.textByLine.length - 2) {
       const state = typeStack[typeStack.length - 1]
       const token: TextTokenType<Text.Line | Text.String> = {
-        end: {
-          character: character + 1,
-          line: line,
-        },
         like: state == TextState.Tree ? Text.Line : Text.String,
-        offset: {
-          end: offset + 1,
-          start: offset,
-        },
-        start: {
-          character: character,
-          line: line,
+        range: {
+          character: {
+            end: character + 1,
+            start: character,
+          },
+          line: {
+            end: line,
+            start: line,
+          },
+          offset: {
+            end: offset + 1,
+            start: offset,
+          },
         },
         text: '\n',
       }
@@ -413,18 +441,20 @@ export function tokenizeLinkText(
   }
 
   const token: TextTokenType<Text.Line> = {
-    end: {
-      character: character + 1,
-      line: line,
-    },
     like: Text.Line,
-    offset: {
-      end: offset + 1,
-      start: offset,
-    },
-    start: {
-      character: character,
-      line: line,
+    range: {
+      character: {
+        end: character + 1,
+        start: character,
+      },
+      line: {
+        end: line,
+        start: line,
+      },
+      offset: {
+        end: offset + 1,
+        start: offset,
+      },
     },
     text: '\n',
   }
