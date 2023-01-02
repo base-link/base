@@ -109,7 +109,9 @@ export function resolveModulePath(
   const path = code.findPath(text, card.directory)
 
   if (!path) {
-    throw new Error('oops, todo')
+    code.throwError(
+      code.generateUnresolvedPathError(input, text),
+    )
   }
 
   code.assertString(path)

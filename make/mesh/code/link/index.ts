@@ -1,6 +1,8 @@
 import { Link, LinkHint, Mesh, code } from '~'
 import type { MeshInputType, MeshPartialType } from '~'
 
+export * from './take/index.js'
+
 export function process_codeCard_link(
   input: MeshInputType,
 ): void {
@@ -61,8 +63,23 @@ export function process_codeCard_link_nestedChildren(
         case 'time':
           code.process_codeCard_time(input)
           break
+        case 'hide':
+          code.process_codeCard_hide(input)
+          break
+        case 'link':
+          code.process_codeCard_link(input)
+          break
+        case 'void':
+          code.process_codeCard_void(input)
+          break
+        case 'take':
+          code.process_codeCard_link_take(input)
+          break
         case 'base':
           code.process_codeCard_link_base(input)
+          break
+        case 'note':
+          code.process_codeCard_note(input)
           break
         default:
           code.throwError(

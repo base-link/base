@@ -59,10 +59,10 @@ export function process_codeCard_form_nestedChildren(
           code.process_codeCard_head(input)
           break
         case 'wear':
-          code.process_codeCard_formWear(input)
+          code.process_codeCard_form_wear(input)
           break
         case 'base':
-          code.process_codeCard_formBase(input)
+          code.process_codeCard_form_base(input)
           break
         case 'case':
           code.process_codeCard_formCase(input)

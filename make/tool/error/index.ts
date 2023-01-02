@@ -84,6 +84,22 @@ export function createDefaultRange(): CursorRangeType {
   }
 }
 
+export function generateCompilerTodoError(
+  hint?: string,
+): SiteErrorType {
+  return {
+    code: `0029`,
+    hint: [
+      `This part of the compiler is unfinished, see the stack trace for where to modify code.`,
+      hint,
+    ]
+      .filter(x => x)
+      .join(' '),
+    note: `Compiler TODO`,
+    term: [ErrorTerm.CompilerError],
+  }
+}
+
 export function generateForkMissingPropertyError(
   property: string,
 ): SiteErrorType {
@@ -124,10 +140,10 @@ export function generateHighlightedError(
   return text
 }
 
-export function generateHighlightedErrorForTerm(
+export function generateHighlightedErrorForLinkTree(
   input: MeshInputType,
 ): string {
-  const highlightedRange = code.getCursorRangeForTerm(input)
+  const highlightedRange = code.getCursorRangeForTree(input)
   return code.generateHighlightedError(
     input.card.textByLine,
     highlightedRange,
@@ -163,10 +179,19 @@ export function generateIncorrectlyTypedVariable(
   }
 }
 
-export function generateInvalidCompilerStateError(): SiteErrorType {
+export function generateInvalidCompilerStateError(
+  hint?: string,
+  path?: string,
+): SiteErrorType {
   return {
     code: `0028`,
-    hint: `This is some bug with the budding compiler. Check the stack trace to see where the error occurred.`,
+    file: path,
+    hint: [
+      hint,
+      `This is some bug with the budding compiler. Check the stack trace to see where the error occurred.`,
+    ]
+      .filter(x => x)
+      .join(' '),
     note: `Invalid compiler state`,
   }
 }
@@ -318,7 +343,7 @@ export function generateUnhandledNestCaseBaseError(
   input: MeshInputType,
 ): SiteErrorType {
   const { card } = input
-  const text = code.generateHighlightedErrorForTerm(input)
+  const text = code.generateHighlightedErrorForLinkTree(input)
   return {
     code: `0005`,
     file: `${card.path}`,
@@ -335,7 +360,7 @@ export function generateUnhandledNestCaseError(
   try {
     scope = code.resolveStaticTermFromNest(input, 1)
   } catch (e) {}
-  const text = code.generateHighlightedErrorForTerm(input)
+  const text = code.generateHighlightedErrorForLinkTree(input)
   return {
     code: `0004`,
     file: `${input.card.path}`,
@@ -357,7 +382,7 @@ export function generateUnhandledTermCaseError(
   code.assertString(name)
   const handle = ERROR['0002']
   code.assertError(handle)
-  const text = code.generateHighlightedErrorForTerm(input)
+  const text = code.generateHighlightedErrorForLinkTree(input)
   return {
     code: `0002`,
     file: `${input.card.path}`,
@@ -383,7 +408,7 @@ export function generateUnknownTermError(
 ): SiteErrorType {
   const { card } = input
   const name = code.resolveStaticTermFromNest(input)
-  const text = code.generateHighlightedErrorForTerm(input)
+  const text = code.generateHighlightedErrorForLinkTree(input)
   const insideName = code.resolveStaticTermFromNest(input, 1)
   return {
     code: `0003`,
@@ -409,9 +434,11 @@ export function generateUnresolvedPathError(
 
 export function generatedNotImplementedYetError(
   name?: string,
+  path?: string,
 ): SiteErrorType {
   return {
     code: '0024',
+    file: path,
     note: `We have not yet implemented ${
       name ? `${name}` : 'something you referenced'
     }.`,
@@ -467,7 +494,7 @@ export function getCursorRangeForPlugin(
       )
     }
     default:
-      throw new Error('Oops')
+      code.throwError(code.generateInvalidCompilerStateError())
   }
 }
 
@@ -623,15 +650,32 @@ export function getCursorRangeForTextWhitespaceToken(
 export function getCursorRangeForTree(
   input: MeshInputType,
 ): CursorRangeType {
-  const tree = code.assumeLinkType(input, Link.Tree)
-  const term = tree.head
-  if (!term) {
-    return createDefaultRange()
-  }
+  const nest = code.assumeNest(input)
 
-  return getCursorRangeForTerm(
-    code.extendWithNestScope(input, { nest: term }),
-  )
+  switch (nest.like) {
+    case Link.Tree: {
+      const term = nest.head
+      if (!term) {
+        code.throwError(
+          code.generateInvalidCompilerStateError(),
+        )
+        throw new CompilerError()
+      }
+
+      return getCursorRangeForTerm(
+        code.extendWithNestScope(input, { nest: term }),
+      )
+    }
+    case Link.Path: {
+      return getCursorRangeForPath(input)
+    }
+    case Link.Term: {
+      return getCursorRangeForTerm(input)
+    }
+    default:
+      code.throwError(code.generateInvalidCompilerStateError())
+      throw new CompilerError()
+  }
 }
 
 export function highlightTextRangeForError(
@@ -642,7 +686,7 @@ export function highlightTextRangeForError(
   const lines: Array<string> = []
   let i = bound.start.line
   let n = bound.end.line
-  let pad = String(n).length
+  let pad = String(n + 1).length
   const defaultIndent = new Array(pad + 1).join(' ')
   lines.push(chalk.white(`${defaultIndent} |`))
   while (i <= n) {

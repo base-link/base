@@ -1,13 +1,13 @@
 import { Link, LinkHint, code } from '~'
 import type { MeshInputType } from '~'
 
-export function process_codeCard_form_base(
+export function process_codeCard_link_take(
   input: MeshInputType,
 ): void {
   code
     .assumeLinkType(input, Link.Tree)
     .nest.forEach((nest, index) => {
-      process_codeCard_form_base_nestedChildren(
+      process_codeCard_link_take_nestedChildren(
         code.extendWithNestScope(input, {
           index,
           nest,
@@ -16,7 +16,7 @@ export function process_codeCard_form_base(
     })
 }
 
-export function process_codeCard_form_base_nestedChildren(
+export function process_codeCard_link_take_nestedChildren(
   input: MeshInputType,
 ): void {
   const type = code.determineNestType(input)

@@ -21,7 +21,7 @@ export function process_codeCard_stem_nestedChildren(
 ): void {
   const type = code.determineNestType(input)
   switch (type) {
-    case LinkHint.StaticText:
+    case LinkHint.StaticTerm:
       break
     default:
       code.throwError(

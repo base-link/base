@@ -8,6 +8,8 @@ import type {
   SiteScopeType,
 } from '~'
 
+export * from './hook/index.js'
+
 export function assumeObjectScope(
   input: MeshInputType,
   rank = 0,
@@ -94,7 +96,7 @@ export function process_codeCard_tree_nestedChildren(
           code.process_codeCard_link(input)
           break
         case 'hook':
-          code.process_codeCard_hook(input)
+          code.process_codeCard_tree_hook(input)
           break
         case 'head':
           code.process_codeCard_head(input)

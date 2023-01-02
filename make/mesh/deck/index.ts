@@ -35,7 +35,9 @@ export function generate_deckCard(
         deck = node
         break
       default:
-        throw new Error('Oops')
+        code.throwError(
+          code.generateInvalidCompilerStateError(),
+        )
     }
   })
 

@@ -26,6 +26,7 @@ export function generateFullFunction(
   data: Record<string, unknown>,
 ): MeshFullType<Mesh.Function> {
   code.assertMeshPartialType(data, Mesh.Function)
+
   let name
   let hidden = false
   let parameterMesh: Record<
@@ -89,7 +90,10 @@ export function potentiallyReplaceWithFullNode(
 
   if (
     'children' in parentData &&
-    code.isArray(parentData.children)
+    code.isArray(parentData.children) &&
+    'children' in data &&
+    code.isArray(data.children) &&
+    data.children.length
   ) {
     parentData.children[parentData.children.indexOf(data)] = fn(
       input,
@@ -188,6 +192,8 @@ export function process_codeCard_task_nestedChildren(
       default:
         code.throwError(code.generateUnknownTermError(input))
     }
+  } else if (type === LinkHint.DynamicTerm) {
+    // TODO
   } else {
     code.throwError(
       code.generateUnhandledNestCaseError(input, type),
