@@ -1,31 +1,27 @@
 import type { TextResultType, TextTokenBaseType } from '~'
 
 export enum Fold {
-  CloseDepth = 'fold-close-depth',
   CloseHandle = 'fold-close-handle',
   CloseIndex = 'fold-close-index',
+  CloseLine = 'fold-close-line',
   CloseModule = 'fold-close-module',
-  CloseParenthesis = 'fold-close-parenthesis',
+  CloseNest = 'fold-close-nest',
   ClosePlugin = 'fold-close-plugin',
   CloseTerm = 'fold-close-term',
   CloseTermPath = 'fold-close-term-path',
   CloseText = 'fold-close-text',
-  Comma = 'fold-comma',
   Comment = 'fold-comment',
   Decimal = 'fold-decimal',
   Hashtag = 'fold-hashtag',
-  Line = 'fold-line',
-  OpenDepth = 'fold-open-depth',
   OpenHandle = 'fold-open-handle',
-  OpenIndentation = 'fold-open-indentation',
   OpenIndex = 'fold-open-index',
+  OpenLine = 'fold-open-line',
   OpenModule = 'fold-open-module',
-  OpenParenthesis = 'fold-open-parenthesis',
+  OpenNest = 'fold-open-nest',
   OpenPlugin = 'fold-open-plugin',
   OpenTerm = 'fold-open-term',
   OpenTermPath = 'fold-open-term-path',
   OpenText = 'fold-open-text',
-  Path = 'fold-path',
   SignedInteger = 'fold-signed-integer',
   String = 'fold-string',
   TermFragment = 'fold-term-fragment',
@@ -37,10 +33,6 @@ export type FoldBaseMixinType = {
   id: number
 }
 
-export type FoldCloseDepthType = FoldBaseMixinType & {
-  like: Fold.CloseDepth
-}
-
 export type FoldCloseHandleType = FoldBaseMixinType & {
   like: Fold.CloseHandle
 }
@@ -49,12 +41,16 @@ export type FoldCloseIndexType = FoldBaseMixinType & {
   like: Fold.CloseIndex
 }
 
+export type FoldCloseLineType = FoldBaseMixinType & {
+  like: Fold.CloseLine
+}
+
 export type FoldCloseModuleType = FoldBaseMixinType & {
   like: Fold.CloseModule
 }
 
-export type FoldCloseParenthesisType = FoldBaseMixinType & {
-  like: Fold.CloseParenthesis
+export type FoldCloseNestType = FoldBaseMixinType & {
+  like: Fold.CloseNest
 }
 
 export type FoldClosePluginType = FoldBaseMixinType & {
@@ -73,16 +69,13 @@ export type FoldCloseTextType = FoldBaseMixinType & {
   like: Fold.CloseText
 }
 
-export type FoldCommaType = FoldBaseMixinType & {
-  like: Fold.Comma
-}
-
 export type FoldCommentType = FoldBaseMixinType & {
   like: Fold.Comment
 }
 
 export type FoldDecimalType = FoldBaseMixinType & {
   like: Fold.Decimal
+  value: number
 }
 
 export type FoldEditorRangeType = {
@@ -91,37 +84,32 @@ export type FoldEditorRangeType = {
 }
 
 export type FoldHashtagType = FoldBaseMixinType & {
+  code: string
   like: Fold.Hashtag
-}
-
-export type FoldLineType = FoldBaseMixinType & {
-  like: Fold.Line
+  system: string
 }
 
 export type FoldNodeType =
   | FoldCloseIndexType
   | FoldCloseModuleType
-  | FoldCloseParenthesisType
   | FoldClosePluginType
   | FoldCloseTermPathType
   | FoldCloseTermType
+  | FoldOpenNestType
+  | FoldCloseNestType
   | FoldCloseTextType
-  | FoldCommaType
   | FoldCommentType
+  | FoldTermSeparatorType
   | FoldDecimalType
+  | FoldOpenLineType
+  | FoldCloseLineType
   | FoldHashtagType
-  | FoldLineType
-  | FoldOpenDepthType
-  | FoldCloseDepthType
-  | FoldOpenIndentationType
   | FoldOpenIndexType
   | FoldOpenModuleType
-  | FoldOpenParenthesisType
   | FoldOpenPluginType
   | FoldOpenTermPathType
   | FoldOpenTermType
   | FoldOpenTextType
-  | FoldPathType
   | FoldSignedIntegerType
   | FoldStringType
   | FoldTermFragmentType
@@ -129,28 +117,24 @@ export type FoldNodeType =
   | FoldOpenHandleType
   | FoldCloseHandleType
 
-export type FoldOpenDepthType = FoldBaseMixinType & {
-  like: Fold.OpenDepth
-}
-
 export type FoldOpenHandleType = FoldBaseMixinType & {
   like: Fold.OpenHandle
-}
-
-export type FoldOpenIndentationType = FoldBaseMixinType & {
-  like: Fold.OpenIndentation
 }
 
 export type FoldOpenIndexType = FoldBaseMixinType & {
   like: Fold.OpenIndex
 }
 
+export type FoldOpenLineType = FoldBaseMixinType & {
+  like: Fold.OpenLine
+}
+
 export type FoldOpenModuleType = FoldBaseMixinType & {
   like: Fold.OpenModule
 }
 
-export type FoldOpenParenthesisType = FoldBaseMixinType & {
-  like: Fold.OpenParenthesis
+export type FoldOpenNestType = FoldBaseMixinType & {
+  like: Fold.OpenNest
 }
 
 export type FoldOpenPluginType = FoldBaseMixinType & {
@@ -170,10 +154,6 @@ export type FoldOpenTextType = FoldBaseMixinType & {
   like: Fold.OpenText
 }
 
-export type FoldPathType = FoldBaseMixinType & {
-  like: Fold.Path
-}
-
 export type FoldRangeMetadatType = {
   character: FoldEditorRangeType
   line: FoldEditorRangeType
@@ -186,6 +166,7 @@ export type FoldResultType = TextResultType & {
 
 export type FoldSignedIntegerType = FoldBaseMixinType & {
   like: Fold.SignedInteger
+  value: number
 }
 
 export type FoldStringType = FoldBaseMixinType & {

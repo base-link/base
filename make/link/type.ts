@@ -44,11 +44,18 @@ export type LinkIndexType = {
   parent: LinkPathType
 }
 
-export type LinkInputType = TextSplitInputType & {
-  state: {
-    index: number
+export type LinkInputStateType = {
+  contexts: Array<{
+    path: Array<number>
     stack: Array<LinkNodeType>
-  }
+    tree: LinkTreeType | LinkPluginType
+  }>
+  index: number
+  tree: LinkTreeType
+}
+
+export type LinkInputType = TextSplitInputType & {
+  state: LinkInputStateType
   token: FoldNodeType
 }
 
@@ -83,13 +90,13 @@ export type LinkNodeType =
 
 export type LinkPathType = {
   like: Link.Path
-  parent: LinkTreeType
+  parent: LinkTreeType | LinkPluginType
   segment: Array<LinkTermType | LinkIndexType>
 }
 
 export type LinkPluginType = {
-  element?: LinkTreeType
   like: Link.Plugin
+  nest: Array<LinkTreeType | LinkTermType | LinkPathType>
   parent: LinkTermType | LinkTextType
   size: number
 }
@@ -113,7 +120,7 @@ export type LinkTermType = {
   dereference: boolean
   guard: boolean
   like: Link.Term
-  parent: LinkPathType
+  parent: LinkPathType | LinkTreeType | LinkPluginType
   query: boolean
   segment: Array<LinkStringType | LinkPluginType>
 }
@@ -124,7 +131,7 @@ export type LinkTextType = {
 }
 
 export type LinkTreeType = {
-  head?: LinkTermType | LinkPathType
+  head?: LinkTermType
   like: Link.Tree
   nest: Array<
     | LinkTextType
@@ -136,6 +143,7 @@ export type LinkTreeType = {
     | LinkDecimalType
     | LinkStringType
     | LinkBooleanType
+    | LinkTermType
   >
   parent?: LinkTreeType | LinkPluginType
 }
