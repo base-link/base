@@ -382,6 +382,7 @@ export function generateLinkTextBuildingDirections(
         // default:
         //   state.index--
         //   break loop
+        //   break loop
       }
     }
 
