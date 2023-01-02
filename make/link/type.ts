@@ -22,6 +22,22 @@ export enum Link {
   UnsignedInteger = 'link-unsigned-integer',
 }
 
+// eslint-disable-next-line sort-exports/sort-exports
+export const LINK_TYPE = [
+  Link.Boolean,
+  Link.Decimal,
+  Link.Hashtag,
+  Link.Index,
+  Link.Path,
+  Link.Plugin,
+  Link.SignedInteger,
+  Link.String,
+  Link.Term,
+  Link.Text,
+  Link.Tree,
+  Link.UnsignedInteger,
+]
+
 export type LinkBooleanType = {
   like: Link.Boolean
   value: boolean

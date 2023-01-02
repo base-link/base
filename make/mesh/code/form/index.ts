@@ -25,7 +25,7 @@ export function process_codeCard_form(
     )
   })
 
-  code.assertMeshTypePartial(input.card, Mesh.CodeModule)
+  code.assertMeshPartialType(input.card, Mesh.CodeModule)
 
   code.assertString(form.name, () =>
     code.generateTermMissingError(input, 'name', 'form'),

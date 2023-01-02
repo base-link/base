@@ -32,10 +32,12 @@ export * from './type.js'
 
 export enum LinkHint {
   Code = 'code',
+  DynamicPath = 'dynamic-path',
   DynamicTerm = 'dynamic-term',
   DynamicText = 'dynamic-text',
   Empty = '',
   Mark = 'mark',
+  StaticPath = 'static-path',
   StaticTerm = 'static-term',
   StaticText = 'static-text',
 }
@@ -1104,10 +1106,12 @@ export const LINK_HINT_TEXT: Record<LinkHint, string> = {
   [LinkHint.Code]: 'boolean',
   [LinkHint.DynamicTerm]: 'dynamic term',
   [LinkHint.DynamicText]: 'dynamic text',
+  [LinkHint.DynamicPath]: 'dynamic path',
   [LinkHint.Empty]: 'empty',
   [LinkHint.Mark]: 'unsigned integer',
   [LinkHint.StaticTerm]: 'static term',
   [LinkHint.StaticText]: 'static text',
+  [LinkHint.StaticPath]: 'static path',
 }
 
 export function parseLinkText(

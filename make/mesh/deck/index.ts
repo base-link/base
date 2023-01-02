@@ -15,10 +15,10 @@ export * from './deck/index.js'
 
 export type MeshParseType = {
   directory: string
+  link: LinkTreeType
   path: string
   text: string
   textByLine: Array<string>
-  tree: LinkTreeType
 }
 
 export function generate_deckCard(
@@ -33,6 +33,8 @@ export function generate_deckCard(
       case Mesh.Package:
         deck = node
         break
+      default:
+        throw new Error('Oops')
     }
   })
 
@@ -92,7 +94,7 @@ export function process_deckCard(
 
   card.bind(seed)
 
-  seed.tree.nest.forEach((nest, index) => {
+  seed.link.nest.forEach((nest, index) => {
     code.process_deckCard_nestedChildren(
       code.extendWithNestScope(input, {
         index,

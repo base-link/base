@@ -1,17 +1,12 @@
-import { Link, LinkHint, Site, code } from '~'
-import type {
-  MeshInputType,
-  SiteScopeType,
-  TreeNestType,
+import {
+  Link,
+  LinkHint,
+  LinkType,
+  Site,
+  code,
+  termIsInterpolated,
 } from '~'
-
-export function assertNest(
-  object: unknown,
-): asserts object is TreeNestType {
-  if (!code.isNest(object)) {
-    throw new Error('LinkHint error')
-  }
-}
+import type { MeshInputType, SiteScopeType } from '~'
 
 export function assertNestChildrenLength(
   input: MeshInputType,
@@ -41,9 +36,9 @@ export function assertScope(
 export function assumeNest(
   input: MeshInputType,
   rank = 0,
-): TreeNestType {
+): LinkType<Link> {
   const nest = code.getNestScopeProperty(input, 'nest', rank)
-  code.assertNest(nest)
+  code.assertGenericLinkType(nest)
   return nest
 }
 
@@ -57,13 +52,16 @@ export function determineNestType(
   input: MeshInputType,
 ): LinkHint {
   if (code.nestIsTerm(input)) {
-    if (
-      code.termIsInterpolated(input) ||
-      code.termIsNested(input)
-    ) {
+    if (code.termIsInterpolated(input)) {
       return LinkHint.DynamicTerm
     } else {
       return LinkHint.StaticTerm
+    }
+  } else if (code.nestIsPath(input)) {
+    if (code.pathIsInterpolated(input)) {
+      return LinkHint.DynamicPath
+    } else {
+      return LinkHint.StaticPath
     }
   } else if (code.nestIsText(input)) {
     if (code.textIsInterpolated(input)) {
@@ -71,9 +69,9 @@ export function determineNestType(
     } else {
       return LinkHint.StaticText
     }
-  } else if (code.nestIsMark(input)) {
+  } else if (code.nestIsUnsignedInteger(input)) {
     return LinkHint.Mark
-  } else if (code.nestIsCode(input)) {
+  } else if (code.nestIsHashtag(input)) {
     return LinkHint.Code
   } else {
     code.throwError(
@@ -98,67 +96,35 @@ export function getNestScopeProperty(
   return code.getProperty(scope.data, property)
 }
 
-export function isNest(
-  object: unknown,
-): object is TreeNestType {
-  return (
-    code.isRecord(object) &&
-    'like' in object &&
-    (object as TreeNestType).like === Tree.LinkHint
-  )
-}
-
-export function nestIsCode(input: MeshInputType): boolean {
+export function nestIsHashtag(input: MeshInputType): boolean {
   const nest = code.assumeNest(input)
 
-  if (nest.line.length > 1) {
-    return false
-  }
-
-  if (nest.line.length === 0) {
-    return false
-  }
-
-  let line = nest.line[0]
-  if (line && line.like === Tree.Code) {
-    return true
-  }
-
-  return false
+  return nest.like === Link.Hashtag
 }
 
-export function nestIsMark(input: MeshInputType): boolean {
+export function nestIsPath(input: MeshInputType): boolean {
   const nest = code.assumeNest(input)
 
-  if (nest.line.length > 1) {
-    return false
-  }
-
-  if (nest.line.length === 0) {
-    return false
-  }
-
-  let line = nest.line[0]
-  if (line && line.like === Tree.Mark) {
-    return true
-  }
-
-  return false
+  return nest.like === Link.Path
 }
 
 export function nestIsTerm(input: MeshInputType): boolean {
   const nest = code.assumeNest(input)
 
-  if (nest.line.length === 0) {
+  if (nest.like === Link.Term) {
+    return true
+  }
+
+  if (nest.like !== Link.Tree) {
     return false
   }
 
-  let line = nest.line[0]
-  if (!line) {
+  const child = nest.head
+  if (!child) {
     return false
   }
 
-  if (line.like !== Tree.Term) {
+  if (child.like !== Link.Term) {
     return false
   }
 
@@ -168,17 +134,33 @@ export function nestIsTerm(input: MeshInputType): boolean {
 export function nestIsText(input: MeshInputType): boolean {
   const nest = code.assumeNest(input)
 
-  if (nest.line.length > 1) {
+  return nest.like === Link.Text
+}
+
+export function nestIsUnsignedInteger(
+  input: MeshInputType,
+): boolean {
+  const nest = code.assumeNest(input)
+
+  return nest.like === Link.UnsignedInteger
+}
+
+export function pathIsInterpolated(
+  input: MeshInputType,
+): boolean {
+  const nest = code.assumeNest(input)
+
+  if (nest.like !== Link.Path) {
     return false
   }
 
-  if (nest.line.length === 0) {
-    return false
-  }
-
-  let line = nest.line[0]
-  if (line && line.like === Tree.Text) {
-    return true
+  for (const seg of nest.segment) {
+    if (seg.like === Link.Index) {
+      return true
+    }
+    if (code.termIsInterpolatedImpl(seg)) {
+      return true
+    }
   }
 
   return false

@@ -1,4 +1,4 @@
-import { LinkHint, Mesh, code } from '~'
+import { Link, LinkHint, Mesh, code } from '~'
 import type { MeshInputType } from '~'
 
 export function finalize_codeCard_bear_nestedChildren(
@@ -10,7 +10,7 @@ export function finalize_codeCard_bear_nestedChildren(
 
   const card = code.getProperty(input, 'card')
 
-  code.assertMeshTypePartial(card, Mesh.CodeModule)
+  code.assertMeshPartialType(card, Mesh.CodeModule)
 
   const path = code.resolveModulePath(input, text)
 
@@ -25,7 +25,7 @@ export function finalize_codeCard_bear_nestedChildren(
 export function process_codeCard_bear(
   input: MeshInputType,
 ): void {
-  const nest = code.assumeNest(input)
+  const nest = code.assumeLinkType(input, Link.Tree)
   nest.nest.forEach((nest, index) => {
     code.process_codeCard_bear_nestedChildren(
       code.extendWithNestScope(input, {
