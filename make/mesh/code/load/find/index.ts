@@ -172,7 +172,7 @@ export function process_codeCard_load_find_nestedChildren(
       )
       const scope = term
       const nestedNest = nest.nest[0]
-      code.assertNest(nestedNest)
+      code.assertGenericLinkType(nestedNest)
       const nestedInput = code.extendWithNestScope(input, {
         index: 0,
         nest: nestedNest,

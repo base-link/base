@@ -20,7 +20,7 @@ export function finalize_codeCard_load_textNest(
 
   const card = code.getProperty(input, 'card')
 
-  code.assertMeshTypePartial(card, Mesh.CodeModule)
+  code.assertMeshPartialType(card, Mesh.CodeModule)
 
   const path = code.resolveModulePath(input, text)
 

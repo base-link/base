@@ -47,20 +47,16 @@ export function process_codeCard(
   base: Base,
   link: string,
 ): void {
-  const text = code.readTextFile(base, link)
-  const textTree = code.parseTextIntoTree(text)
-  const linkHost = code.getLinkHost(link)
+  const parse = code.loadLinkModule(base, link)
   const card = base.card(link)
   const seed: MeshPartialType<Mesh.CodeModule> = {
+    ...parse,
     base,
     children: [],
-    directory: linkHost,
     like: Mesh.CodeModule,
-    parseTree: textTree,
     partial: true,
-    path: link,
-    textByLine: text.split('\n'),
   }
+
   const input: MeshInputType = {
     card: seed,
     lexicalScope: code.createScope(seed),
@@ -69,10 +65,8 @@ export function process_codeCard(
 
   card.bind(seed)
 
-  code.assertNest(textTree)
-
-  if (text.trim()) {
-    textTree.nest.forEach((nest, index) => {
+  if (seed.text.trim()) {
+    seed.link.nest.forEach((nest, index) => {
       code.process_codeCard_nestedChildren(
         code.extendWithNestScope(input, {
           index,
@@ -97,6 +91,11 @@ export function process_codeCard_nestedChildren(
     case 'static-term':
       code.process_codeCard_nestedChildren_staticTerm(input)
       break
+    default: {
+      code.throwError(
+        code.generateUnhandledNestCaseError(input, type),
+      )
+    }
   }
 }
 
@@ -196,7 +195,7 @@ export function resolve_codeCard(
       card.seed.children.forEach(node => {
         switch (node.like) {
           case Mesh.Constant: {
-            code.assertMeshTypeFull(node, Mesh.Constant)
+            code.assertMeshFullType(node, Mesh.Constant)
             if (!node.hidden) {
               seed.publicConstantMesh[node.name] = node
             }
@@ -204,7 +203,7 @@ export function resolve_codeCard(
             break
           }
           case Mesh.ClassInterface: {
-            code.assertMeshTypeFull(node, Mesh.ClassInterface)
+            code.assertMeshFullType(node, Mesh.ClassInterface)
             if (!node.hidden) {
               seed.publicClassInterfaceMesh[node.name] = node
             }
@@ -212,7 +211,7 @@ export function resolve_codeCard(
             break
           }
           case Mesh.Function: {
-            code.assertMeshTypeFull(node, Mesh.Function)
+            code.assertMeshFullType(node, Mesh.Function)
             if (!node.hidden) {
               seed.publicFunctionMesh[node.name] = node
             }
@@ -220,7 +219,7 @@ export function resolve_codeCard(
             break
           }
           case Mesh.Class: {
-            code.assertMeshTypeFull(node, Mesh.Class)
+            code.assertMeshFullType(node, Mesh.Class)
             if (!node.hidden) {
               seed.publicClassMesh[node.name] = node
             }
@@ -228,7 +227,7 @@ export function resolve_codeCard(
             break
           }
           case Mesh.Template: {
-            code.assertMeshTypeFull(node, Mesh.Template)
+            code.assertMeshFullType(node, Mesh.Template)
             if (!node.hidden) {
               seed.publicTemplateMesh[node.name] = node
             }
@@ -236,12 +235,12 @@ export function resolve_codeCard(
             break
           }
           case Mesh.Import: {
-            code.assertMeshTypeFull(node, Mesh.Import)
+            code.assertMeshFullType(node, Mesh.Import)
             seed.importTree.push(node)
             break
           }
           case Mesh.Export: {
-            code.assertMeshTypeFull(node, Mesh.Export)
+            code.assertMeshFullType(node, Mesh.Export)
             seed.exportList.push(node)
             break
           }

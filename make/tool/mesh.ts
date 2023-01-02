@@ -1,19 +1,33 @@
 import {
+  LINK_TYPE,
   Link,
   LinkType,
   Mesh,
   MeshFullType,
+  MeshInputType,
   MeshPartialType,
   MeshType,
   code,
 } from '~'
+
+export function assertGenericLinkType(
+  object: unknown,
+  name?: string,
+): asserts object is LinkType<Link> {
+  if (!code.isGenericLinkType(object)) {
+    code.throwError(
+      code.generateIncorrectlyTypedVariable('link', name),
+    )
+    // code.throwError(code.generateObjectNotTypeError(like))
+  }
+}
 
 export function assertLinkType<T extends Link>(
   object: unknown,
   like: T,
   name?: string,
 ): asserts object is LinkType<T> {
-  if (!code.isLinkType(object, like)) {
+  if (!code.isGenericLinkType(object)) {
     code.throwError(
       code.generateIncorrectlyTypedVariable(like, name),
     )
@@ -67,6 +81,26 @@ export function assertMeshType<T extends Mesh>(
       code.generateIncorrectlyTypedVariable(like, name),
     )
   }
+}
+
+export function assumeLinkType<T extends Link>(
+  input: MeshInputType,
+  like: T,
+  name?: string,
+): LinkType<T> {
+  const nest = code.assumeNest(input)
+  code.assertLinkType(nest, like, name)
+  return nest
+}
+
+export function isGenericLinkType(
+  object: unknown,
+): object is LinkType<Link> {
+  return (
+    code.isRecord(object) &&
+    'like' in object &&
+    LINK_TYPE.includes((object as LinkType<Link>).like)
+  )
 }
 
 export function isLinkType<T extends Link>(
