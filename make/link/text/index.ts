@@ -30,6 +30,7 @@ export type TextEditorRangeType = {
   start: number
 }
 
+// TODO: refactor
 export type TextRangeMetadatType = {
   character: TextEditorRangeType
   line: TextEditorRangeType
