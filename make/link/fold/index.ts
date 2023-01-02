@@ -113,7 +113,9 @@ export function generateLinkTextBuildingDirections(
         }
         case Text.OpenInterpolation:
           fromLine = false
-          result.push(...handleTermFragment(stateInput))
+          result.push(
+            ...handleTermFragment(stateInput, 0, true),
+          )
           break
         case Text.CloseEvaluation:
         case Text.CloseInterpolation:
@@ -404,7 +406,7 @@ export function generateLinkTextBuildingDirections(
         }
         case Text.CloseParenthesis: {
           if (bracketStack > 0) {
-            array.push(base(Fold.CloseIndex))
+            array.push(base(Fold.CloseNest))
             bracketStack--
           } else {
             state.index--
@@ -434,6 +436,7 @@ export function generateLinkTextBuildingDirections(
   function handleTermFragment(
     input: FoldStateInputType,
     depth = 0,
+    close = false,
   ): Array<FoldNodeType> {
     let array: Array<FoldNodeType> = []
     const tail: Array<FoldNodeType> = []
@@ -501,8 +504,10 @@ export function generateLinkTextBuildingDirections(
             array.push(base(Fold.ClosePlugin))
             bracketStack--
           } else {
-            state.index--
-            break loop
+            if (!close) {
+              state.index--
+              break loop
+            }
           }
           break check
         }
@@ -637,7 +642,9 @@ export function generateLinkTextBuildingDirections(
     })
   }
 
-  logDirectionList(result)
+  // console.log(logDirectionList(result))
+
+  // console.log(result.map(x => `${x.like} => ${x.value}`))
 
   return {
     ...input,
@@ -696,7 +703,7 @@ function logDirectionList(
 
   tree.push('')
 
-  // console.log(tree.join('\n'))
+  return tree.join('\n')
 }
 
 function cleanText(text: string): string {

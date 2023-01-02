@@ -30,6 +30,7 @@ export type TextEditorRangeType = {
   start: number
 }
 
+// TODO: refactor
 export type TextRangeMetadatType = {
   character: TextEditorRangeType
   line: TextEditorRangeType
@@ -192,7 +193,7 @@ export type TextPathTokenType = TextTokenBaseType & {
 }
 
 export type TextPatternConfigType = {
-  end?: boolean
+  after?: Array<Text>
   pattern: RegExp
   skip?: boolean
 }
@@ -301,13 +302,13 @@ const PATTERN: Record<Text, TextPatternConfigType> = {
     pattern: /^</,
   },
   [Text.OpenPath]: {
+    after: [Text.OpenIndentation, Text.OpenNesting, Text.Comma],
     pattern: /^(?:(?:@[\w:\-\.]+\/)|(?:\.{1,2}\/)|(?:\/))/,
   },
   [Text.Path]: {
-    pattern: /^[\w:\-\.]+(\/[\w:\-\.]+)*/,
+    pattern: /^[\w:\-\.]*(\/[\w:\-\.]*)*/,
   },
   [Text.ClosePath]: {
-    end: true,
     pattern: /^[\n, ]/,
     skip: true,
   },
@@ -316,7 +317,7 @@ const PATTERN: Record<Text, TextPatternConfigType> = {
   },
   [Text.TermFragment]: {
     pattern:
-      /^-?(?:[*~]?[a-z][a-z0-9]*(?:-[a-z0-9]+)*\??)(?:\/[a-z][a-z0-9]*(?:-[a-z0-9]+)*\??)*-?/,
+      /^-?(?:[*~]?[a-z0-9]*(?:-[a-z0-9]+)*\??)(?:\/[a-z0-9]*(?:-[a-z0-9]+)*\??)*-?|-|\//,
   },
   [Text.UnsignedInteger]: {
     pattern: /^\d+(?=\b)/,
@@ -395,12 +396,32 @@ export function tokenizeLinkText(
           break
       }
 
+      let progressed = false
+
       patternLoop: for (const type of patternList) {
         const config = PATTERN[type as Text]
         if (config && config.pattern instanceof RegExp) {
           let match = textLine.match(config.pattern)
 
           if (match) {
+            // console.log(
+            //   state,
+            //   type,
+            //   match?.[0],
+            //   textLine,
+            //   config.pattern,
+            // )
+            if (config.after) {
+              const token = tokenList[tokenList.length - 1]
+              if (!token) {
+                continue
+              }
+              if (!config.after.includes(token.like)) {
+                continue
+              }
+            }
+
+            progressed = true
             if (config.skip) {
               const token: TextTokenType<Text> = {
                 like: type as Text,
@@ -488,6 +509,15 @@ export function tokenizeLinkText(
             break patternLoop
           }
         }
+      }
+
+      if (!progressed) {
+        code.throwError(
+          code.generateSyntaxTokenError(
+            source,
+            tokenList[tokenList.length - 1],
+          ),
+        )
       }
     }
 
