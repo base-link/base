@@ -1,4 +1,4 @@
-import { Mesh, code } from '~'
+import { Link, Mesh, code } from '~'
 import type { MeshInputType } from '~'
 
 export function finalize_deckCard_deck_test(
@@ -11,9 +11,7 @@ export function finalize_deckCard_deck_test(
   code.assertMeshType(card, Mesh.PackageModule)
 
   const path = code.findPath(text, card.directory)
-  code.assertString(path, () => {
-    return code.generateUnresolvedPathError(input, text)
-  })
+  code.assertString(path, 'path')
 
   const deck = code.assumeInputObjectAsMeshPartialType(
     input,
@@ -28,7 +26,7 @@ export function process_deckCard_deck_test(
 ): void {
   code.assertNestChildrenLength(input, 1)
 
-  const nest = code.assumeNest(input).nest[0]
+  const nest = code.assumeLinkType(input, Link.Tree).nest[0]
 
   code.processTextNest(
     code.extendWithNestScope(input, {

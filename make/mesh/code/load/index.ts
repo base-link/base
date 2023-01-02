@@ -1,4 +1,5 @@
 import {
+  Link,
   LinkHint,
   Mesh,
   MeshFullType,
@@ -59,6 +60,8 @@ export function generateFullImport(
         case Mesh.ImportVariable:
           variableList.push(node)
           break
+        default:
+          break
       }
     }
   })
@@ -91,14 +94,16 @@ export function process_codeCard_load(
   loader.children.push(load)
   const childInput = code.extendWithObjectScope(input, load)
 
-  code.assumeNest(input).nest.forEach((nest, index) => {
-    process_codeCard_load_nestedChildren(
-      code.extendWithNestScope(childInput, {
-        index,
-        nest,
-      }),
-    )
-  })
+  code
+    .assumeLinkType(input, Link.Tree)
+    .nest.forEach((nest, index) => {
+      process_codeCard_load_nestedChildren(
+        code.extendWithNestScope(childInput, {
+          index,
+          nest,
+        }),
+      )
+    })
 
   if (code.childrenAreComplete(load)) {
     code.replaceMeshChild<

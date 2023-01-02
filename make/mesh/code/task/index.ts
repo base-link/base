@@ -1,4 +1,5 @@
 import {
+  Link,
   LinkHint,
   Mesh,
   MeshFullType,
@@ -22,8 +23,9 @@ export function createMeshPartial<T extends Mesh>(like: T) {
 
 export function generateFullFunction(
   input: MeshInputType,
-  data: MeshPartialType<Mesh.Function>,
+  data: Record<string, unknown>,
 ): MeshFullType<Mesh.Function> {
+  code.assertMeshPartialType(data, Mesh.Function)
   let name
   let hidden = false
   let parameterMesh: Record<
@@ -47,8 +49,12 @@ export function generateFullFunction(
             case 'hidden':
               hidden = code.getBooleanConstant(node)
               break
+            default:
+              break
           }
           name = node.name
+          break
+        default:
           break
       }
     }
@@ -101,14 +107,16 @@ export function process_codeCard_task(
 
   const childInput = code.extendWithObjectScope(input, task)
 
-  code.assumeNest(childInput).nest.forEach((nest, index) => {
-    code.process_codeCard_task_nestedChildren(
-      code.extendWithNestScope(childInput, {
-        index,
-        nest,
-      }),
-    )
-  })
+  code
+    .assumeLinkType(childInput, Link.Tree)
+    .nest.forEach((nest, index) => {
+      code.process_codeCard_task_nestedChildren(
+        code.extendWithNestScope(childInput, {
+          index,
+          nest,
+        }),
+      )
+    })
 
   code.potentiallyReplaceWithFullNode(
     childInput,
@@ -181,7 +189,9 @@ export function process_codeCard_task_nestedChildren(
         code.throwError(code.generateUnknownTermError(input))
     }
   } else {
-    code.throwError(code.generateUnhandledTermCaseError(input))
+    code.throwError(
+      code.generateUnhandledNestCaseError(input, type),
+    )
   }
 }
 

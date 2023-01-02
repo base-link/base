@@ -1,17 +1,27 @@
-import { LinkHint, code } from '~'
-import type { MeshInputType } from '~'
+import { Link, LinkHint, Mesh, code } from '~'
+import type { MeshInputType, MeshPartialType } from '~'
 
 export function process_codeCard_link(
   input: MeshInputType,
 ): void {
-  code.assumeNest(input).nest.forEach((nest, index) => {
-    process_codeCard_link_nestedChildren(
-      code.extendWithNestScope(input, {
-        index,
-        nest,
-      }),
-    )
-  })
+  const link: MeshPartialType<Mesh.Input> = {
+    children: [],
+    like: Mesh.Input,
+    partial: true,
+  }
+
+  const linkInput = code.extendWithObjectScope(input, link)
+
+  code
+    .assumeLinkType(linkInput, Link.Tree)
+    .nest.forEach((nest, index) => {
+      process_codeCard_link_nestedChildren(
+        code.extendWithNestScope(linkInput, {
+          index,
+          nest,
+        }),
+      )
+    })
 }
 
 export function process_codeCard_link_base(
@@ -24,7 +34,20 @@ export function process_codeCard_link_nestedChildren(
   const type = code.determineNestType(input)
   switch (type) {
     case LinkHint.StaticTerm:
-      const term = code.resolveStaticTermFromNest(input)
+      const term = code.assumeStaticTermFromNest(input)
+      const index = code.assumeNestIndex(input)
+      if (index === 0) {
+        const link = code.assumeInputObjectAsMeshPartialType(
+          input,
+          Mesh.Input,
+        )
+
+        link.children.push(
+          code.createStringConstant('name', term),
+        )
+        return
+      }
+
       switch (term) {
         case 'like':
           code.process_codeCard_like(input)
@@ -41,11 +64,15 @@ export function process_codeCard_link_nestedChildren(
         case 'base':
           code.process_codeCard_link_base(input)
           break
+        default:
+          code.throwError(
+            code.generateUnhandledTermCaseError(input),
+          )
       }
       break
     default:
       code.throwError(
-        code.generateUnhandledTermCaseError(input),
+        code.generateUnhandledNestCaseError(input, type),
       )
   }
 }

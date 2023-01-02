@@ -70,31 +70,135 @@ export function readDependency(
   }
 }
 
-export function readNest(input: MeshInputType): unknown {
+export function readLinkIndex(input: MeshInputType): unknown {
   let value: unknown = input.lexicalScope.data
   const nest = code.assumeNest(input)
 
-  nest.line.forEach((nest, i) => {
-    switch (nest.like) {
-      case Tree.Term:
-        const name = code.resolveStaticTerm(
-          code.extendWithObjectScope(input, nest),
+  if (nest.like === Link.Index) {
+    const child = nest.nest[0]
+    code.assertGenericLinkType(child)
+
+    switch (child.like) {
+      case Link.Tree:
+        return readLinkTree(
+          code.extendWithNestScope(input, {
+            nest: child,
+          }),
+        )
+      case Link.Path:
+        return readLinkPath(
+          code.extendWithNestScope(input, {
+            nest: child,
+          }),
+        )
+      case Link.Term:
+        return readLinkTerm(
+          code.extendWithNestScope(input, {
+            nest: child,
+          }),
+        )
+      default:
+        throw new Error('Never')
+    }
+  }
+}
+
+export function readLinkPath(input: MeshInputType): unknown {
+  const nest = code.assumeNest(input)
+  code.assertLinkType(nest, Link.Path)
+
+  let i = 0
+
+  const first = nest.segment[i++]
+  const firstTerm = code.getTerm(
+    code.extendWithNestScope(input, { nest: first }),
+  )
+  code.assertString(firstTerm)
+  let value = code.getScopeProperty(
+    input.lexicalScope,
+    firstTerm,
+  )
+
+  while (i < nest.segment.length) {
+    const seg = nest.segment[i++]
+
+    switch (seg?.like) {
+      case Link.Index: {
+        const index = code.readLinkIndex(
+          code.extendWithNestScope(input, { nest: seg }),
         )
 
-        code.assertString(name)
-
-        if (code.isRecord(value) && name in value) {
-          value = value[name]
+        if (code.isRecord(value) && code.isString(index)) {
+          value = code.getProperty(value, index)
         } else {
           value = undefined
         }
         break
+      }
+      case Link.Term: {
+        const term = code.readLinkTerm(
+          code.extendWithNestScope(input, { nest: seg }),
+        )
+
+        if (code.isRecord(value) && code.isString(term)) {
+          value = code.getProperty(value, term)
+        } else {
+          value = undefined
+        }
+        break
+      }
       default:
-        throw new Error(nest.like)
+        throw new Error('Compiler error')
     }
-  })
+  }
 
   return value
+}
+
+export function readLinkPlugin(input: MeshInputType): unknown {
+  let value: unknown = input.lexicalScope.data
+  const nest = code.assumeNest(input)
+
+  if (nest.like === Link.Plugin) {
+    const child = nest.nest[0]
+    code.assertGenericLinkType(child)
+
+    switch (child.like) {
+      case Link.Tree:
+        return readLinkTree(
+          code.extendWithNestScope(input, {
+            nest: child,
+          }),
+        )
+      case Link.Path:
+        return readLinkPath(
+          code.extendWithNestScope(input, {
+            nest: child,
+          }),
+        )
+      case Link.Term:
+        return readLinkTerm(
+          code.extendWithNestScope(input, {
+            nest: child,
+          }),
+        )
+      default:
+        throw new Error('Never')
+    }
+  }
+}
+
+export function readLinkTerm(input: MeshInputType): unknown {
+  const term = code.resolveTerm(input)
+  code.assertString(term)
+  return code.getScopeProperty(input.lexicalScope, term)
+}
+
+export function readLinkTree(input: MeshInputType): unknown {
+  const nest = code.assumeNest(input)
+  code.assertLinkType(nest, Link.Tree)
+  throw new Error('TODO')
+  return undefined
 }
 
 export function resolveText(
@@ -114,10 +218,10 @@ export function resolveText(
         str.push(seg.value)
         break
       case Link.Plugin:
-        const text = code.readNest(
+        const text = code.readLinkPlugin(
           code.extendWithNestScope(input, {
             index: 0,
-            nest: seg.nest[0],
+            nest: seg,
           }),
         )
 

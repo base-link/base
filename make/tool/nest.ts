@@ -8,21 +8,6 @@ import {
 } from '~'
 import type { MeshInputType, SiteScopeType } from '~'
 
-export function assertNestChildrenLength(
-  input: MeshInputType,
-  length: number,
-): void {
-  const nest = code.assumeNest(input)
-  if (nest.nest.length !== length) {
-    code.throwError(
-      code.generateInvalidNestChildrenLengthError(
-        input,
-        length,
-      ),
-    )
-  }
-}
-
 export function assertScope(
   object: unknown,
 ): asserts object is SiteScopeType {

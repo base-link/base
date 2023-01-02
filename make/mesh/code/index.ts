@@ -177,8 +177,8 @@ export function resolve_codeCard(
         exportList: [],
         importTree: [],
         like: Mesh.CodeModule,
+        link: card.seed.link,
         nativeClassInterfaceMesh: {},
-        parseTree: card.seed.parseTree,
         partial: false,
         path: card.seed.path,
         publicClassInterfaceMesh: {},
@@ -189,6 +189,7 @@ export function resolve_codeCard(
         publicNativeClassInterfaceMesh: {},
         publicTemplateMesh: {},
         publicTestMesh: {},
+        text: card.seed.text,
         textByLine: card.seed.textByLine,
       }
 
@@ -244,6 +245,10 @@ export function resolve_codeCard(
             seed.exportList.push(node)
             break
           }
+          default:
+            code.throwError(
+              code.generatedNotImplementedYetError(node.like),
+            )
         }
       })
 
@@ -289,6 +294,10 @@ export function resolve_codeCard(
             break
           case Mesh.Export:
             break
+          default:
+            code.throwError(
+              code.generatedNotImplementedYetError(node.like),
+            )
         }
       })
     }

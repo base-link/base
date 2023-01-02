@@ -475,13 +475,15 @@ export function tokenizeLinkText(
       const state = typeStack[typeStack.length - 1]
       const token: TextTokenType<Text.Line | Text.String> = {
         like: state == TextState.Text ? Text.String : Text.Line,
-        range: createNewLineRange(line, character, offset),
+        range: createBasicRange(line, character, offset, 1),
         text: '\n',
       }
 
       if (state === TextState.Path) {
         const close = {
           like: Text.ClosePath,
+          range: createBasicRange(line, character, offset),
+          text: '',
         }
         tokenList.push(close)
       }
@@ -495,7 +497,7 @@ export function tokenizeLinkText(
 
   const token: TextTokenType<Text.Line> = {
     like: Text.Line,
-    range: createNewLineRange(line, character, offset),
+    range: createBasicRange(line, character, offset, 1),
     text: '\n',
   }
 
@@ -507,14 +509,15 @@ export function tokenizeLinkText(
   }
 }
 
-function createNewLineRange(
+function createBasicRange(
   line: number,
   character: number,
   offset: number,
+  length = 0,
 ) {
   return {
     character: {
-      end: character + 1,
+      end: character + length,
       start: character,
     },
     line: {
@@ -522,7 +525,7 @@ function createNewLineRange(
       start: line,
     },
     offset: {
-      end: offset + 1,
+      end: offset + length,
       start: offset,
     },
   }

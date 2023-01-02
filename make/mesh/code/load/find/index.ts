@@ -1,4 +1,10 @@
-import { Mesh, MeshFullType, MeshTerm_FullType, code } from '~'
+import {
+  Link,
+  Mesh,
+  MeshFullType,
+  MeshTerm_FullType,
+  code,
+} from '~'
 import type {
   MeshConstant_FullType,
   MeshInputType,
@@ -56,10 +62,14 @@ export function generateFullImportVariable(
             case 'name':
               name = rename = code.getStringConstant(node)
               break
+            default:
+              break
           }
           break
         case Mesh.ImportVariableRename:
           rename = node.name
+          break
+        default:
           break
       }
     }
@@ -124,7 +134,7 @@ export function process_codeCard_load_find(
 
   const childInput = code.extendWithObjectScope(input, find)
 
-  const nest = code.assumeNest(input)
+  const nest = code.assumeLinkType(input, Link.Tree)
   nest.nest.forEach((nest, index) => {
     code.process_codeCard_load_find_nestedChildren(
       code.extendWithNestScope(childInput, {
@@ -170,6 +180,7 @@ export function process_codeCard_load_find_nestedChildren(
         input,
         Mesh.ImportVariable,
       )
+      code.assertLinkType(nest, Link.Tree)
       const scope = term
       const nestedNest = nest.nest[0]
       code.assertGenericLinkType(nestedNest)

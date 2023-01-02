@@ -24,6 +24,7 @@ export function createConstant(
 ): MeshType<Mesh.Constant> {
   return {
     complete: true,
+    hidden: false,
     like: Mesh.Constant,
     name,
     partial: false,
