@@ -1,4 +1,4 @@
-import { LinkHint, Mesh, MeshPartialType, code } from '~'
+import { Link, LinkHint, Mesh, MeshPartialType, code } from '~'
 import type { MeshInputType } from '~'
 
 export function process_codeCard_fuse(
@@ -15,14 +15,16 @@ export function process_codeCard_fuse(
 
   const fuseInput = code.extendWithObjectScope(input, fuse)
 
-  code.assumeNest(input).nest.forEach((nest, index) => {
-    process_codeCard_fuse_nestedChildren(
-      code.extendWithNestScope(fuseInput, {
-        index,
-        nest,
-      }),
-    )
-  })
+  code
+    .assumeLinkType(input, Link.Tree)
+    .nest.forEach((nest, index) => {
+      process_codeCard_fuse_nestedChildren(
+        code.extendWithNestScope(fuseInput, {
+          index,
+          nest,
+        }),
+      )
+    })
 }
 
 export function process_codeCard_fuse_nestedChildren(
@@ -38,7 +40,9 @@ export function process_codeCard_fuse_nestedChildren(
           input,
           Mesh.Inject,
         )
-        fuse.name = term
+        fuse.children.push(
+          code.createStringConstant('name', term),
+        )
       } else {
         switch (term) {
           case 'bind':

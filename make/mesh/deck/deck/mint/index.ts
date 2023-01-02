@@ -1,17 +1,19 @@
-import { LinkHint, Mesh, code } from '~'
+import { Link, LinkHint, Mesh, code } from '~'
 import type { MeshInputType } from '~'
 
 export function process_deckCard_deck_mint(
   input: MeshInputType,
 ): void {
-  code.assumeNest(input).nest.forEach((nest, index) => {
-    process_deckCard_deck_mint_nestedChildren(
-      code.extendWithNestScope(input, {
-        index,
-        nest,
-      }),
-    )
-  })
+  code
+    .assumeLinkType(input, Link.Tree)
+    .nest.forEach((nest, index) => {
+      process_deckCard_deck_mint_nestedChildren(
+        code.extendWithNestScope(input, {
+          index,
+          nest,
+        }),
+      )
+    })
 }
 
 export function process_deckCard_deck_mint_nestedChildren(
@@ -32,7 +34,7 @@ export function process_deckCard_deck_mint_nestedChildren(
       break
     default:
       code.throwError(
-        code.generateUnhandledTermCaseError(input),
+        code.generateUnhandledNestCaseError(input, type),
       )
   }
 }

@@ -1,4 +1,4 @@
-import { ExpandRecursively, Mesh, code } from '~'
+import { Link, Mesh, code } from '~'
 import type {
   MeshInputType,
   MeshPartialType,
@@ -48,14 +48,16 @@ export function process_codeCard_tree(
 
   const treeInput = code.extendWithObjectScope(input, tree)
 
-  code.assumeNest(treeInput).nest.forEach((nest, index) => {
-    code.process_codeCard_tree_nestedChildren(
-      code.extendWithNestScope(treeInput, {
-        index,
-        nest,
-      }),
-    )
-  })
+  code
+    .assumeLinkType(treeInput, Link.Tree)
+    .nest.forEach((nest, index) => {
+      code.process_codeCard_tree_nestedChildren(
+        code.extendWithNestScope(treeInput, {
+          index,
+          nest,
+        }),
+      )
+    })
 
   // if (code.childrenAreComplete(tree)) {
   //   code.replaceMeshChild(input, tree, {

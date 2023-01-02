@@ -1,6 +1,21 @@
 import { Link, LinkType, code } from '~'
 import type { MeshInputType } from '~'
 
+export function assertNestChildrenLength(
+  input: MeshInputType,
+  length: number,
+): void {
+  const nest = code.assumeLinkType(input, Link.Tree)
+  if (nest.nest.length !== length) {
+    code.throwError(
+      code.generateInvalidNestChildrenLengthError(
+        input,
+        length,
+      ),
+    )
+  }
+}
+
 export function assumeStaticTermFromNest(
   input: MeshInputType,
 ): string {

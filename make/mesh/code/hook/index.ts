@@ -1,4 +1,4 @@
-import { LinkHint, Mesh, code } from '~'
+import { Link, LinkHint, Mesh, code } from '~'
 import type { MeshInputType, MeshPartialType } from '~'
 
 export function process_codeCard_hook(
@@ -12,14 +12,16 @@ export function process_codeCard_hook(
 
   const childInput = code.extendWithObjectScope(input, hook)
 
-  code.assumeNest(childInput).nest.forEach((nest, index) => {
-    code.process_codeCard_hook_nestedChildren(
-      code.extendWithNestScope(childInput, {
-        index,
-        nest,
-      }),
-    )
-  })
+  code
+    .assumeLinkType(childInput, Link.Tree)
+    .nest.forEach((nest, index) => {
+      code.process_codeCard_hook_nestedChildren(
+        code.extendWithNestScope(childInput, {
+          index,
+          nest,
+        }),
+      )
+    })
 }
 
 export function process_codeCard_hook_nestedChildren(

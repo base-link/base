@@ -333,6 +333,7 @@ export function parse_decimal(input: LinkInputType): void {
       if (input.token.like === Fold.Decimal) {
         const uint: LinkDecimalType = {
           like: Link.Decimal,
+          range: input.token.range,
           value: input.token.value,
         }
 
@@ -359,6 +360,7 @@ export function parse_hashtag(input: LinkInputType): void {
         const uint: LinkHashtagType = {
           code: input.token.code,
           like: Link.Hashtag,
+          range: input.token.range,
           system: input.token.system,
         }
 
@@ -732,7 +734,7 @@ function printMesh(base: LinkNodeType): void {
 
   text.push('')
 
-  console.log(text.join('\n'))
+  // console.log(text.join('\n'))
 }
 
 function printMeshDetails(
@@ -859,7 +861,7 @@ function printParserMesh(base: LinkNodeType): void {
 
   text.push('')
 
-  console.log(text.join('\n'))
+  // console.log(text.join('\n'))
 
   printMesh(base)
 }
@@ -978,12 +980,13 @@ export function parse_signedInteger(
   switch (current?.like) {
     case Link.Tree: {
       if (input.token.like === Fold.SignedInteger) {
-        const uint: LinkSignedIntegerType = {
+        const int: LinkSignedIntegerType = {
           like: Link.SignedInteger,
+          range: input.token.range,
           value: input.token.value,
         }
 
-        current.nest.push(uint)
+        current.nest.push(int)
       }
       break
     }
@@ -1006,7 +1009,7 @@ export function parse_string(input: LinkInputType): void {
         const string: LinkStringType = {
           like: Link.String,
           range: input.token.range,
-          value: input.token.text,
+          value: input.token.value,
         }
 
         current.segment.push(string)
@@ -1018,7 +1021,7 @@ export function parse_string(input: LinkInputType): void {
         const string: LinkStringType = {
           like: Link.String,
           range: input.token.range,
-          value: input.token.text,
+          value: input.token.value,
         }
 
         current.nest.push(string)

@@ -39,11 +39,6 @@ export function generateLinkTextBuildingDirections(
 ): FoldResultType {
   const result: Array<FoldNodeType> = []
 
-  console.log('HERE')
-  console.log(
-    input.tokenList.map(x => `${x.like} => ${x.text}`),
-  )
-
   const stack: Array<Fold> = [Fold.OpenModule]
   const counter: Record<string, number> = {}
 
@@ -210,6 +205,7 @@ export function generateLinkTextBuildingDirections(
         case Text.Path: {
           array.push({
             ...token,
+            value: token.text,
             ...base(Fold.String),
           })
           break check
@@ -217,6 +213,7 @@ export function generateLinkTextBuildingDirections(
         case Text.OpenPath: {
           array.push({
             ...token,
+            value: token.text,
             ...base(Fold.String),
           })
           break check
@@ -271,6 +268,7 @@ export function generateLinkTextBuildingDirections(
         case Text.String: {
           array.push({
             ...token,
+            value: token.text,
             ...base(Fold.String),
           })
           break check
@@ -688,7 +686,7 @@ function logDirectionList(
 
   tree.push('')
 
-  console.log(tree.join('\n'))
+  // console.log(tree.join('\n'))
 }
 
 function cleanText(text: string): string {

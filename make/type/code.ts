@@ -1,5 +1,5 @@
 import { Mesh } from '~'
-import type { TreeNestType } from '~'
+import type { LinkTreeType } from '~'
 
 export type MeshAssertion_FullType = Mesh_FullTypeMixin & {
   bind: Array<MeshBind_FullType | MeshValue_FullType>
@@ -207,7 +207,7 @@ export type MeshClass_Type =
 export type MeshCloneVariable_FullType = Mesh_FullTypeMixin &
   Mesh_MutableTypeMixin & {
     like: Mesh.CloneVariable
-    link: TreeNestType
+    link: LinkTreeType
   }
 
 export type MeshCloneVariable_PartialType =
@@ -380,7 +380,10 @@ export type MeshInject_FullType = Mesh_FullTypeMixin & {
 
 export type MeshInject_PartialType = Mesh_PartialTypeMixin & {
   children: Array<
-    MeshBind_Type | MeshValue_Type | MeshTerm_Type
+    | MeshBind_Type
+    | MeshValue_Type
+    | MeshTerm_Type
+    | MeshConstant_Type
   >
   like: Mesh.Inject
 }
@@ -396,7 +399,9 @@ export type MeshInput_FullType = Mesh_FullTypeMixin & {
 }
 
 export type MeshInput_PartialType = Mesh_PartialTypeMixin & {
-  children: Array<MeshClassReference_Type | MeshTerm_Type>
+  children: Array<
+    MeshClassReference_Type | MeshTerm_Type | MeshConstant_Type
+  >
   like: Mesh.Input
 }
 
@@ -498,7 +503,7 @@ export type MeshTest_Type =
 
 export type MeshText_FullType = Mesh_FullTypeMixin & {
   like: Mesh.String
-  text: TreeNestType
+  text: LinkTreeType
 }
 
 export type MeshText_Type = MeshText_FullType

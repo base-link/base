@@ -1,4 +1,4 @@
-import { Mesh, code } from '~'
+import { Link, Mesh, code } from '~'
 import type { MeshInputType } from '~'
 
 export function process_codeCard_load_find_save(
@@ -6,7 +6,7 @@ export function process_codeCard_load_find_save(
 ): void {
   code.assertNestChildrenLength(input, 1)
 
-  const nest = code.assumeNest(input)
+  const nest = code.assumeLinkType(input, Link.Tree)
 
   nest.nest.forEach((nest, index) => {
     code.process_codeCard_load_find_save_nestedChildren(
@@ -31,10 +31,12 @@ export function process_codeCard_load_find_save_nestedChildren(
       Mesh.ImportVariable,
     )
 
-    find.rename = {
+    find.children.push({
+      complete: true,
       like: Mesh.ImportVariableRename,
       name: term,
-    }
+      partial: false,
+    })
   } else {
     code.throwError(code.generateUnhandledTermCaseError(input))
   }

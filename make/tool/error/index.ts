@@ -6,6 +6,8 @@ import {
   LINK_HINT_TEXT,
   Link,
   LinkHint,
+  LinkPathType,
+  LinkStringType,
   LinkType,
   MeshInputType,
   SOURCE_MAP_MESH,
@@ -20,6 +22,8 @@ export * from './content.js'
 
 export class BaseLinkError extends Error {}
 
+export class CompilerError extends Error {}
+
 export type CursorLinePositionType = {
   character: number
   line: number
@@ -30,6 +34,13 @@ export type CursorRangeType = {
   start: CursorLinePositionType
 }
 
+export enum ErrorTerm {
+  CompilationError = 'compilation-error',
+  CompilerError = 'compiler-error',
+  SyntaxError = 'syntax-error',
+  SystemError = 'system-error',
+}
+
 export type SiteErrorConfigType = {
   code: string
   hint?: string
@@ -37,17 +48,20 @@ export type SiteErrorConfigType = {
   text?: string
 }
 
-export type SiteErrorInputType = Record<string, unknown>
-
 const consumers = {}
+
+export type SiteErrorInputType = Record<string, unknown>
 
 export type SiteErrorType = {
   code: string
   file?: string
   hint?: string
   note: string
+  term?: Array<string>
   text?: string
 }
+
+export class TypescriptError extends Error {}
 
 export function assertError(
   error: unknown,
@@ -149,6 +163,14 @@ export function generateIncorrectlyTypedVariable(
   }
 }
 
+export function generateInvalidCompilerStateError(): SiteErrorType {
+  return {
+    code: `0028`,
+    hint: `This is some bug with the budding compiler. Check the stack trace to see where the error occurred.`,
+    note: `Invalid compiler state`,
+  }
+}
+
 export function generateInvalidDeckLink(
   input: MeshInputType,
   link: string,
@@ -200,24 +222,6 @@ export function generateInvalidWhitespaceError(
     code: '0027',
     file: input.path,
     note: `Invalid whitespace`,
-    text,
-  }
-}
-
-export function generateMissingStringError(
-  input: MeshInputType,
-  property: string,
-): SiteErrorType {
-  const nest = code.assumeNest(input)
-  const term = nest.line[0]
-  code.assertLinkType(term, Link.Term)
-  const childInput = code.extendWithObjectScope(input, term)
-  const name = code.resolveStaticTerm(childInput)
-  const text = code.generateHighlightedErrorForTerm(input)
-  return {
-    code: `0011`,
-    file: `${input.card.path}`,
-    note: `String property \`${property} <...>\` missing in \`${name}\`.`,
     text,
   }
 }
@@ -276,9 +280,10 @@ export function generateSyntaxTokenError(
   }
 
   if (lastToken) {
-    highlight.start.line = lastToken.start.line
-    highlight.end.line = lastToken.end.line
-    highlight.end.character = lastToken.end.character
+    highlight.start.line = lastToken.range.line.start
+    highlight.end.line = lastToken.range.line.end
+    highlight.start.character = lastToken.range.character.start
+    highlight.end.character = lastToken.range.character.end
   }
 
   const text = code.generateHighlightedError(
@@ -357,6 +362,7 @@ export function generateUnhandledTermCaseError(
     code: `0002`,
     file: `${input.card.path}`,
     note: handle.note({ name, scope }),
+    term: [ErrorTerm.CompilerError],
     text,
   }
 }
@@ -409,44 +415,109 @@ export function generatedNotImplementedYetError(
     note: `We have not yet implemented ${
       name ? `${name}` : 'something you referenced'
     }.`,
+    term: [ErrorTerm.CompilerError],
   }
 }
 
-export function getCursorRangeForTerm(
+export function getCursorRangeForPath(
   input: MeshInputType,
 ): CursorRangeType {
-  const nest = code.assumeNest(input)
+  const path = code.assumeLinkType(input, Link.Path)
+  const start = getCursorRangeForTerm(
+    code.extendWithNestScope(input, { nest: path.segment[0] }),
+  )
+  const end = getCursorRangeForTerm(
+    code.extendWithNestScope(input, {
+      nest: path.segment[path.segment.length - 1],
+    }),
+  )
+  const range: CursorRangeType = {
+    end: {
+      character: end.end.character,
+      line: end.end.line,
+    },
+    start: {
+      character: start.start.character,
+      line: start.start.line,
+    },
+  }
+  return range
+}
 
-  switch (nest.like) {
+export function getCursorRangeForPlugin(
+  input: MeshInputType,
+): CursorRangeType {
+  const nest = code.assumeLinkType(input, Link.Plugin)
+  const child = nest.nest[0]
+
+  switch (child?.like) {
     case Link.Term: {
-      return getTermRange(nest)
+      return code.getCursorRangeForTerm(
+        code.extendWithNestScope(input, { nest }),
+      )
     }
     case Link.Path: {
-      const start = getTermRange(nest.segment[0])
-      const end = getTermRange(
-        nest.segment[nest.segment.length - 1],
+      return code.getCursorRangeForPath(
+        code.extendWithNestScope(input, { nest }),
       )
-      const range: CursorRangeType = {
-        end: {
-          character: end.end.character,
-          line: end.end.line,
-        },
-        start: {
-          character: start.start.character,
-          line: start.start.line,
-        },
-      }
-      return range
+    }
+    case Link.Tree: {
+      return code.getCursorRangeForTree(
+        code.extendWithNestScope(input, { nest }),
+      )
     }
     default:
       throw new Error('Oops')
   }
 }
 
+export function getCursorRangeForString(
+  input: MeshInputType,
+): CursorRangeType {
+  const string = code.assumeLinkType(input, Link.String)
+
+  return {
+    end: {
+      character: string.range.character.end,
+      line: string.range.line.end,
+    },
+    start: {
+      character: string.range.character.start,
+      line: string.range.line.start,
+    },
+  }
+}
+
+export function getCursorRangeForTerm(
+  input: MeshInputType,
+): CursorRangeType {
+  const term = code.assumeLinkType(input, Link.Term)
+  const range: CursorRangeType = createDefaultRange()
+
+  const start = term.segment[0]
+  const end = term.segment[term.segment.length - 1]
+
+  if (!start || start.like !== Link.String) {
+    return range
+  }
+
+  if (!end || end.like !== Link.String) {
+    return range
+  }
+
+  range.end.character = end.range.character.end
+  range.end.line = end.range.line.end
+
+  range.start.character = start.range.character.start
+  range.start.line = start.range.line.start
+
+  return range
+}
+
 export function getCursorRangeForText(
   input: MeshInputType,
 ): CursorRangeType {
-  const nest = code.assumeNest(input)
+  const nest = code.assumeLinkType(input, Link.Text)
 
   const range: CursorRangeType = {
     end: {
@@ -459,36 +530,52 @@ export function getCursorRangeForText(
     },
   }
 
-  if (nest.line.length > 1) {
-    return range
+  const first = nest.segment[0]
+  const last = nest.segment[nest.segment.length - 1]
+
+  code.assertGenericLinkType(first)
+  code.assertGenericLinkType(last)
+
+  let firstRange: CursorRangeType
+
+  if (first.like === Link.String) {
+    firstRange = code.getCursorRangeForString(
+      code.extendWithNestScope(input, { nest: first }),
+    )
+  } else if (first.like === Link.Plugin) {
+    firstRange = code.getCursorRangeForPlugin(
+      code.extendWithNestScope(input, { nest: first }),
+    )
+  } else {
+    code.throwError(code.generateInvalidCompilerStateError())
+    throw new CompilerError()
   }
 
-  let line = nest.line[0]
-  if (!line) {
-    return range
+  if (firstRange) {
+    range.start.line = firstRange.start.line
+    range.start.character = firstRange.start.character
+    range.end.line = firstRange.end.line
+    range.end.character = firstRange.end.character
   }
 
-  if (line.like !== Link.Text) {
-    return range
+  let lastRange: CursorRangeType
+
+  if (last.like === Link.String) {
+    lastRange = code.getCursorRangeForString(
+      code.extendWithNestScope(input, { nest: last }),
+    )
+  } else if (last.like === Link.Plugin) {
+    lastRange = code.getCursorRangeForPlugin(
+      code.extendWithNestScope(input, { nest: last }),
+    )
+  } else {
+    code.throwError(code.generateInvalidCompilerStateError())
+    throw new CompilerError()
   }
 
-  const first = line.link[0]
-  if (!first) {
-    return range
-  }
-
-  if (first.like === Link.Cord) {
-    range.start.line = first.lineNumber
-    range.start.character = first.lineCharacterNumberStart
-    range.end.line = first.lineNumber
-    range.end.character = first.lineCharacterNumberEnd
-  }
-
-  const last = line.link[line.link.length - 1]
-
-  if (last && last !== first && last.like === Link.Cord) {
-    range.end.line = last.lineNumber
-    range.end.character = last.lineCharacterNumberEnd
+  if (lastRange) {
+    range.end.line = lastRange.end.line
+    range.end.character = lastRange.end.character
   }
 
   return range
@@ -533,29 +620,18 @@ export function getCursorRangeForTextWhitespaceToken(
   }
 }
 
-export function getTermRange(
-  term: LinkType<Link.Term>,
+export function getCursorRangeForTree(
+  input: MeshInputType,
 ): CursorRangeType {
-  const range: CursorRangeType = createDefaultRange()
-
-  const start = term.segment[0]
-  const end = term.segment[term.segment.length - 1]
-
-  if (!start || start.like !== Link.String) {
-    return range
+  const tree = code.assumeLinkType(input, Link.Tree)
+  const term = tree.head
+  if (!term) {
+    return createDefaultRange()
   }
 
-  if (!end || end.like !== Link.String) {
-    return range
-  }
-
-  range.end.character = end.range.character.end
-  range.end.line = end.range.line.end
-
-  range.start.character = start.range.character.start
-  range.start.line = start.range.line.start
-
-  return range
+  return getCursorRangeForTerm(
+    code.extendWithNestScope(input, { nest: term }),
+  )
 }
 
 export function highlightTextRangeForError(
@@ -618,9 +694,23 @@ export function throwError(data: SiteErrorType): void {
       chalk.whiteBright(`${data.note}`) +
       chalk.gray('>'),
   )
+
+  if (data.hint) {
+    text.push(
+      chalk.gray(`  hint <`) +
+        chalk.whiteBright(`${data.hint}`) +
+        chalk.gray('>'),
+    )
+  }
+
+  data.term?.forEach(term => {
+    text.push(chalk.gray(`    term `) + chalk.white(`${term}`))
+  })
+
   text.push(
     chalk.gray(`    code `) + chalk.white(`#${data.code}`),
   )
+
   if (data.file) {
     if (data.text) {
       text.push(

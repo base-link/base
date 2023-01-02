@@ -1,4 +1,4 @@
-import { Mesh, code } from '~'
+import { Link, Mesh, code } from '~'
 import type { MeshInputType, MeshPartialType } from '~'
 
 export * from './base/index.js'
@@ -16,20 +16,20 @@ export function process_codeCard_form(
 
   const formInput = code.extendWithObjectScope(input, form)
 
-  code.assumeNest(formInput).nest.forEach((nest, index) => {
-    code.process_codeCard_form_nestedChildren(
-      code.extendWithNestScope(formInput, {
-        index,
-        nest,
-      }),
-    )
-  })
+  code
+    .assumeLinkType(formInput, Link.Tree)
+    .nest.forEach((nest, index) => {
+      code.process_codeCard_form_nestedChildren(
+        code.extendWithNestScope(formInput, {
+          index,
+          nest,
+        }),
+      )
+    })
 
   code.assertMeshPartialType(input.card, Mesh.CodeModule)
 
-  code.assertString(form.name, () =>
-    code.generateTermMissingError(input, 'name', 'form'),
-  )
+  // code.assertString(formInput.name, `name on form`)
 
   input.card.children.push(form)
 }
@@ -46,7 +46,7 @@ export function process_codeCard_form_nestedChildren(
         input,
         Mesh.Class,
       )
-      form.name = term
+      // form.name = term
     } else {
       switch (term) {
         case 'link':

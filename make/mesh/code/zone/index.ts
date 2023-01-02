@@ -1,4 +1,4 @@
-import { code } from '~'
+import { Link, code } from '~'
 import type { MeshInputType } from '~'
 
 export * from './hook/index.js'
@@ -6,14 +6,16 @@ export * from './hook/index.js'
 export function process_codeCard_zone(
   input: MeshInputType,
 ): void {
-  code.assumeNest(input).nest.forEach((nest, index) => {
-    code.process_codeCard_zone_nestedChildren(
-      code.extendWithNestScope(input, {
-        index,
-        nest,
-      }),
-    )
-  })
+  code
+    .assumeLinkType(input, Link.Tree)
+    .nest.forEach((nest, index) => {
+      code.process_codeCard_zone_nestedChildren(
+        code.extendWithNestScope(input, {
+          index,
+          nest,
+        }),
+      )
+    })
 }
 
 export function process_codeCard_zone_nestedChildren(
@@ -36,6 +38,8 @@ export function process_codeCard_zone_nestedChildren(
         code.throwError(code.generateUnknownTermError(input))
     }
   } else {
-    code.throwError(code.generateUnhandledTermCaseError(input))
+    code.throwError(
+      code.generateUnhandledNestCaseError(input, type),
+    )
   }
 }
