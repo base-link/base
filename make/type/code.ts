@@ -74,7 +74,10 @@ export type MeshCall_FullType = Mesh_FullTypeMixin & {
 
 export type MeshCall_PartialType = Mesh_PartialTypeMixin & {
   children: Array<
-    MeshTerm_Type | MeshValue_Type | MeshBind_Type
+    | MeshTerm_Type
+    | MeshValue_Type
+    | MeshBind_Type
+    | MeshConstant_Type
   >
   like: Mesh.Call
 }
@@ -167,7 +170,7 @@ export type MeshClassReference_FullType = Mesh_FullTypeMixin & {
 
 export type MeshClassReference_PartialType =
   Mesh_PartialTypeMixin & {
-    children: Array<MeshClassReference_Type>
+    children: Array<MeshClassReference_Type | MeshConstant_Type>
     like: Mesh.ClassReference
   }
 
@@ -441,6 +444,23 @@ export type MeshNativeClassInterface_PartialType =
 export type MeshNativeClassInterface_Type =
   | MeshNativeClassInterface_PartialType
   | MeshNativeClassInterface_FullType
+
+export type MeshOutput_FullType = Mesh_FullTypeMixin & {
+  like: Mesh.Output
+  name: string
+  sourceLike: MeshClassReference_Type
+}
+
+export type MeshOutput_PartialType = Mesh_PartialTypeMixin & {
+  children: Array<
+    MeshClassReference_Type | MeshTerm_Type | MeshConstant_Type
+  >
+  like: Mesh.Output
+}
+
+export type MeshOutput_Type =
+  | MeshOutput_PartialType
+  | MeshOutput_FullType
 
 export type MeshString_FullType = Mesh_FullTypeMixin & {
   like: Mesh.String

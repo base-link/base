@@ -23,8 +23,16 @@ export function process_codeCard_head_nestedChildren(
   switch (type) {
     case LinkHint.StaticTerm:
       const term = code.resolveStaticTermFromNest(input)
+      const index = code.assumeNestIndex(input)
+      if (index === 0) {
+        return
+      }
+
       switch (term) {
         case 'like':
+          break
+        case 'base':
+          code.process_codeCard_like(input)
           break
         default:
           code.throwError(

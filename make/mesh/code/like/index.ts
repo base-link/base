@@ -1,14 +1,22 @@
-import { Link, LinkHint, code } from '~'
+import { Link, LinkHint, Mesh, MeshPartialType, code } from '~'
 import type { MeshInputType } from '~'
 
 export function process_codeCard_like(
   input: MeshInputType,
 ): void {
+  const like: MeshPartialType<Mesh.ClassReference> = {
+    children: [],
+    like: Mesh.ClassReference,
+    partial: true,
+  }
+
+  const likeInput = code.extendWithObjectScope(input, like)
+
   code
     .assumeLinkType(input, Link.Tree)
     .nest.forEach((nest, index) => {
       process_codeCard_like_nestedChildren(
-        code.extendWithNestScope(input, {
+        code.extendWithNestScope(likeInput, {
           index,
           nest,
         }),
@@ -40,7 +48,20 @@ export function process_codeCard_like_nestedChildren(
     case LinkHint.DynamicTerm:
       break
     case LinkHint.StaticTerm:
-      const term = code.resolveStaticTermFromNest(input)
+      const term = code.assumeStaticTermFromNest(input)
+      const index = code.assumeNestIndex(input)
+      if (index === 0) {
+        const like = code.assumeInputObjectAsMeshPartialType(
+          input,
+          Mesh.ClassReference,
+        )
+
+        like.children.push(
+          code.createStringConstant('class', term),
+        )
+        return
+      }
+
       switch (term) {
         case 'head':
           code.process_codeCard_like_head(input)
@@ -62,6 +83,15 @@ export function process_codeCard_like_nestedChildren(
           break
         case 'term':
           code.process_codeCard_like_term(input)
+          break
+        case 'link':
+          code.process_codeCard_link(input)
+          break
+        case 'task':
+          code.process_codeCard_task(input)
+          break
+        case 'stem':
+          code.process_codeCard_stem(input)
           break
         default:
           code.throwError(

@@ -55,6 +55,27 @@ export function process_codeCard_suit_nestedChildren(
       case 'head':
         code.process_codeCard_head(input)
         break
+      case 'fuse':
+        code.process_codeCard_fuse(input)
+        break
+      case 'hold':
+        code.process_codeCard_hold(input)
+        break
+      case 'slot':
+        code.process_codeCard_slot(input)
+        break
+      case 'walk':
+        code.process_codeCard_walk(input)
+        break
+      case 'stem':
+        code.process_codeCard_stem(input)
+        break
+      case 'base':
+        code.process_codeCard_form_base(input)
+        break
+      case 'like':
+        code.process_codeCard_like(input)
+        break
       default:
         code.throwError(
           code.generateUnhandledTermCaseError(input),

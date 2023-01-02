@@ -110,9 +110,10 @@ export function readLinkPath(input: MeshInputType): unknown {
   let i = 0
 
   const first = nest.segment[i++]
-  const firstTerm = code.getTerm(
+  const firstTerm = code.resolveTerm(
     code.extendWithNestScope(input, { nest: first }),
   )
+
   code.assertString(firstTerm)
   let value = code.getScopeProperty(
     input.lexicalScope,
@@ -136,7 +137,7 @@ export function readLinkPath(input: MeshInputType): unknown {
         break
       }
       case Link.Term: {
-        const term = code.readLinkTerm(
+        const term = code.resolveTerm(
           code.extendWithNestScope(input, { nest: seg }),
         )
 
@@ -156,7 +157,6 @@ export function readLinkPath(input: MeshInputType): unknown {
 }
 
 export function readLinkPlugin(input: MeshInputType): unknown {
-  let value: unknown = input.lexicalScope.data
   const nest = code.assumeNest(input)
 
   if (nest.like === Link.Plugin) {
@@ -201,6 +201,48 @@ export function readLinkTree(input: MeshInputType): unknown {
   return undefined
 }
 
+export function resolvePathDependencyList(
+  input: MeshInputType,
+  parent: SiteDependencyType,
+): Array<SiteDependencyPartType> {
+  const array: Array<SiteDependencyPartType> = []
+
+  const path = code.assumeLinkType(input, Link.Path)
+
+  path.segment.forEach(seg => {
+    if (seg.like === Link.Index) {
+      code.throwError(code.generateCompilerTodoError())
+    } else {
+      array.push(
+        ...resolveTermDependencyList(
+          code.extendWithNestScope(input, { nest: seg }),
+          parent,
+        ),
+      )
+    }
+  })
+
+  return array
+}
+
+export function resolveTermDependencyList(
+  input: MeshInputType,
+  parent: SiteDependencyType,
+): Array<SiteDependencyPartType> {
+  const name = code.resolveTerm(input)
+
+  code.assertString(name)
+
+  const dependencyPart: SiteDependencyPartType = {
+    callbackList: [],
+    like: Site.DependencyPart,
+    name,
+    parent,
+  }
+
+  return [dependencyPart]
+}
+
 export function resolveText(
   input: MeshInputType,
 ): string | undefined {
@@ -228,7 +270,9 @@ export function resolveText(
         str.push(text)
         break
       default:
-        throw new Error('Oops')
+        code.throwError(
+          code.generateInvalidCompilerStateError(),
+        )
     }
   })
 
@@ -262,7 +306,9 @@ export function resolveTextDependencyList(
         array.push(...dependencies)
         break
       default:
-        throw new Error('Oops')
+        code.throwError(
+          code.generateInvalidCompilerStateError(),
+        )
     }
   })
 
@@ -286,33 +332,23 @@ export function resolveTreeDependencyList(
 
   switch (nest.like) {
     case Link.Term: {
-      const name = code.resolveTerm(
-        code.extendWithNestScope(input, {
-          index: 0,
-          nest,
-        }),
+      dependency.path.push(
+        ...resolveTermDependencyList(input, dependency),
       )
-
-      code.assertString(name)
-
-      const dependencyPart: SiteDependencyPartType = {
-        callbackList: [],
-        like: Site.DependencyPart,
-        name,
-        parent: dependency,
-      }
-
-      dependency.path.push(dependencyPart)
       break
     }
     case Link.Path: {
+      dependency.path.push(
+        ...resolvePathDependencyList(input, dependency),
+      )
       break
     }
     case Link.Tree: {
+      code.throwError(code.generateCompilerTodoError())
       break
     }
     default:
-      throw new Error('Oops')
+      code.throwError(code.generateInvalidCompilerStateError())
   }
 
   return array

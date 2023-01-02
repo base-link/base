@@ -54,7 +54,9 @@ export function generateLinkTextBuildingDirections(
     }
   }
 
-  // result.push(base(Fold.OpenModule))
+  // console.log(
+  //   input.tokenList.map(x => `${x.like} => ${x.text}`),
+  // )
 
   const state: FoldStateType = {
     base,
@@ -78,12 +80,6 @@ export function generateLinkTextBuildingDirections(
     const token = input.tokenList[state.index]
     if (token) {
       switch (token.like) {
-        //   case Fold.OpenLine:
-        //   case Fold.CloseLine: {
-        //     intermediate2.push(token)
-        //     state.index++
-        //     break
-        //   }
         case Text.TermFragment: {
           fromLine = false
           result.push(...handleTermFragment(stateInput))
@@ -115,17 +111,25 @@ export function generateLinkTextBuildingDirections(
           state.index++
           break
         }
+        case Text.OpenInterpolation:
+          fromLine = false
+          result.push(...handleTermFragment(stateInput))
+          break
         case Text.CloseEvaluation:
         case Text.CloseInterpolation:
         case Text.CloseParenthesis:
         case Text.CloseText:
         case Text.OpenEvaluation:
-        case Text.OpenInterpolation:
         case Text.OpenNesting:
         case Text.OpenParenthesis:
         case Text.OpenText:
         case Text.Comma: {
-          throw new Error(input.text)
+          code.throwError(
+            code.generateInvalidCompilerStateError(
+              `Unhandled text type ${token.like}.`,
+              input.path,
+            ),
+          )
         }
         case Text.Comment: {
           state.index++
@@ -246,6 +250,7 @@ export function generateLinkTextBuildingDirections(
           break
         }
         default:
+          // state.index--
           break loop
       }
     }
@@ -367,6 +372,11 @@ export function generateLinkTextBuildingDirections(
         }
         case Text.OpenText: {
           array.push(...handleText(input))
+          break
+        }
+        case Text.OpenInterpolation: {
+          state.index--
+          array.push(...handleTermFragment(input))
           break
         }
         default:

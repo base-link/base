@@ -54,6 +54,9 @@ export function process_codeCard_fuse_nestedChildren(
           case 'loan':
             code.process_codeCard_bond_loan(input)
             break
+          case 'term':
+            code.process_codeCard_term(input)
+            break
           default:
             code.throwError(
               code.generateUnhandledTermCaseError(input),

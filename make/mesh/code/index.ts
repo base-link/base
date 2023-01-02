@@ -25,9 +25,11 @@ export * from './stem/index.js'
 export * from './suit/index.js'
 export * from './take/index.js'
 export * from './task/index.js'
+export * from './term/index.js'
 export * from './test/index.js'
 export * from './time/index.js'
 export * from './tree/index.js'
+export * from './void/index.js'
 export * from './wait/index.js'
 export * from './walk/index.js'
 export * from './zone/index.js'
@@ -294,6 +296,12 @@ export function resolve_codeCard(
             break
           case Mesh.Export:
             break
+          case Mesh.Class: {
+            break
+          }
+          case Mesh.Function: {
+            break
+          }
           default:
             code.throwError(
               code.generatedNotImplementedYetError(node.like),
