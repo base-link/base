@@ -11,12 +11,15 @@
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.0.0",
+    "@types/diff": "^5.0.2",
     "@types/glob": "^8.0.0",
     "@types/lodash": "^4.14.191",
     "@types/node": "^18.11.17",
+    "@types/tap": "^15.0.7",
     "@typescript-eslint/eslint-plugin": "^5.46.1",
     "@typescript-eslint/parser": "^5.46.1",
     "concurrently": "^7.6.0",
+    "diff": "^5.1.0",
     "eslint": "^8.30.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-config-standard-with-typescript": "^24.0.0",
@@ -37,8 +40,14 @@
   "dependencies": {
     "@lancejpollard/pretty-compact-json.js": "^0.2.0",
     "chalk": "^5.2.0",
+    "colors": "^1.4.0",
+    "error-stack-parser": "^2.1.4",
     "glob": "^8.0.3",
     "lodash": "^4.17.21",
-    "source-map": "^0.7.4"
+    "source-map": "^0.7.4",
+    "stacktrace-js": "^2.0.2",
+    "strip-ansi": "^7.0.1",
+    "tap": "^16.3.2",
+    "tap-parser": "^12.0.1"
   }
 }

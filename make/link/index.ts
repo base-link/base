@@ -106,9 +106,8 @@ export function parseLinkTree(
 
   state.contexts.push(context)
 
-  let i = 0
-  while (i < input.directions.length) {
-    const token = input.directions[i]
+  while (state.index < input.directions.length) {
+    const token = input.directions[state.index]
     if (!token) {
       continue
     }
@@ -263,12 +262,12 @@ export function parseLinkTree(
         )
     }
 
-    i++
+    state.index++
   }
 
   code.assertLinkType(state.tree, Link.Tree)
 
-  printParserMesh(state.tree)
+  // console.log(printParserMesh(state.tree))
 
   return {
     ...input,

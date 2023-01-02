@@ -97,7 +97,7 @@
     "sort-keys/sort-keys-fix": 2,
     "prettier/prettier": 2,
     "@typescript-eslint/no-unused-vars": "off",
-    "default-case": 2,
-    "default-case-last": 2
+    "default-case": "error",
+    "default-case-last": "error"
   }
 }
