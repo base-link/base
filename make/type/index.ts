@@ -78,6 +78,9 @@ import type {
   MeshNativeClassInterface_FullType,
   MeshNativeClassInterface_PartialType,
   MeshNativeClassInterface_Type,
+  MeshOutput_FullType,
+  MeshOutput_PartialType,
+  MeshOutput_Type,
   MeshPackageLicense_FullType,
   MeshPackageLicense_PartialType,
   MeshPackageLicense_Type,
@@ -141,6 +144,7 @@ export enum Mesh {
   Input = 'mesh-input',
   MoveVariable = 'mesh-move-variable',
   NativeClassInterface = 'mesh-native-class-interface',
+  Output = 'mesh-output',
   Package = 'mesh-package',
   PackageLicense = 'mesh-package-license',
   PackageModule = 'mesh-package-module',
@@ -196,6 +200,7 @@ export type MeshMappingFullType = {
   'mesh-input': MeshInput_FullType
   'mesh-move-variable': MeshMoveVariable_FullType
   'mesh-native-class-interface': MeshNativeClassInterface_FullType
+  'mesh-output': MeshOutput_FullType
   'mesh-package': MeshPackage_FullType
   'mesh-package-license': MeshPackageLicense_FullType
   'mesh-package-module': MeshPackageModule_FullType
@@ -234,10 +239,12 @@ export type MeshMappingPartialType = {
   'mesh-input': MeshInput_PartialType
   'mesh-move-variable': MeshMoveVariable_PartialType
   'mesh-native-class-interface': MeshNativeClassInterface_PartialType
+  'mesh-output': MeshOutput_PartialType
   'mesh-package': MeshPackage_PartialType
   'mesh-package-license': MeshPackageLicense_PartialType
   'mesh-package-module': MeshPackageModule_PartialType
   'mesh-package-user': MeshPackageUser_PartialType
+  'mesh-partial': MeshOutput_PartialType
   'mesh-scope': SiteScopeType
   'mesh-string': MeshString_PartialType
   'mesh-template': MeshTemplate_PartialType
@@ -273,6 +280,7 @@ export type MeshMappingType = {
   'mesh-input': MeshInput_Type
   'mesh-move-variable': MeshMoveVariable_Type
   'mesh-native-class-interface': MeshNativeClassInterface_Type
+  'mesh-output': MeshOutput_Type
   'mesh-package': MeshPackage_Type
   'mesh-package-license': MeshPackageLicense_Type
   'mesh-package-module': MeshPackageModule_Type

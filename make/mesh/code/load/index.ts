@@ -128,7 +128,9 @@ export function process_codeCard_load_nestedChildren(
     case LinkHint.StaticText: {
       const index = code.assumeNestIndex(input)
       if (index !== 0) {
-        throw new Error('Oops')
+        code.throwError(
+          code.generateInvalidCompilerStateError(),
+        )
       } else {
         code.finalize_codeCard_load_textNest(input)
       }

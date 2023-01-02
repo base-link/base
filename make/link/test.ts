@@ -1,6 +1,9 @@
 import { code } from '~'
 
-import { parseLinkText as parse } from './index.js'
+import {
+  TextInputType,
+  parseLinkText as parse,
+} from './index.js'
 
 // const nest = form(`link 1, foo <bar>`)
 // const nest = form(`link <./{code/ball}>`)
@@ -42,19 +45,35 @@ async function start() {
   //   stuff for you
   //     more`,
   //   })
-  parse({
+  print({
     path: 'foo.link',
     text: `
-some thing[another(a/b/c, 1, foo(bar(baz)))]
+
+take {name}
+  like index
+    like t
+    like p
+
 `,
   })
 }
 
 start()
 
+function print(input: TextInputType) {
+  const { link } = parse(input)
+  console.log(code.printMesh(link))
+  console.log(code.printParserMesh(link))
+}
+
+// some thing[another(a/b/c, 1, foo(bar(baz)))]
+
 // invalid whitespace: `foo  bar`
 // invalid whitespace: ` foo`
 // invalid whitespace: `foo     bar`
+
+// bear ./mark
+//   {{something}}-strange here
 
 // a b{x y}/c, and
 // a b c d e f g a sd f

@@ -89,7 +89,6 @@ export function isTextType<T extends Text>(
 export function parseLinkTree(
   input: FoldResultType,
 ): LinkResultType {
-  const stack: Array<LinkNodeType> = []
   let result: LinkNodeType | undefined = undefined
 
   // console.log(code.prettifyJSON(input.directions))
@@ -257,7 +256,10 @@ export function parseLinkTree(
         break
       default:
         code.throwError(
-          code.generatedNotImplementedYetError(token.like),
+          code.generatedNotImplementedYetError(
+            token.like,
+            input.path,
+          ),
         )
     }
 
@@ -343,7 +345,10 @@ export function parse_decimal(input: LinkInputType): void {
     }
     default:
       code.throwError(
-        code.generatedNotImplementedYetError(current?.like),
+        code.generatedNotImplementedYetError(
+          current?.like,
+          input.path,
+        ),
       )
   }
 }
@@ -370,7 +375,10 @@ export function parse_hashtag(input: LinkInputType): void {
     }
     default:
       code.throwError(
-        code.generatedNotImplementedYetError(current?.like),
+        code.generatedNotImplementedYetError(
+          current?.like,
+          input.path,
+        ),
       )
   }
 }
@@ -414,7 +422,10 @@ export function parse_openHandle(input: LinkInputType): void {
     }
     default:
       code.throwError(
-        code.generatedNotImplementedYetError(current?.like),
+        code.generatedNotImplementedYetError(
+          current?.like,
+          input.path,
+        ),
       )
   }
 }
@@ -447,7 +458,10 @@ export function parse_openIndex(input: LinkInputType): void {
     }
     default:
       code.throwError(
-        code.generatedNotImplementedYetError(current?.like),
+        code.generatedNotImplementedYetError(
+          current?.like,
+          input.path,
+        ),
       )
   }
 }
@@ -580,7 +594,10 @@ export function parse_openPlugin(input: LinkInputType): void {
     }
     default:
       code.throwError(
-        code.generatedNotImplementedYetError(current?.like),
+        code.generatedNotImplementedYetError(
+          current?.like,
+          input.path,
+        ),
       )
   }
 }
@@ -643,7 +660,10 @@ export function parse_openTerm(input: LinkInputType): void {
     }
     default:
       code.throwError(
-        code.generatedNotImplementedYetError(current?.like),
+        code.generatedNotImplementedYetError(
+          current?.like,
+          input.path,
+        ),
       )
   }
 }
@@ -696,7 +716,10 @@ export function parse_openTermPath(input: LinkInputType): void {
     }
     default:
       code.throwError(
-        code.generatedNotImplementedYetError(current?.like),
+        code.generatedNotImplementedYetError(
+          current?.like,
+          input.path,
+        ),
       )
   }
 }
@@ -720,21 +743,43 @@ export function parse_openText(input: LinkInputType): void {
     }
     default:
       code.throwError(
-        code.generatedNotImplementedYetError(current?.like),
+        code.generatedNotImplementedYetError(
+          current?.like,
+          input.path,
+        ),
       )
   }
 }
 
-function printMesh(base: LinkNodeType): void {
-  const text: Array<string> = ['']
+export function parse_signedInteger(
+  input: LinkInputType,
+): void {
+  const { contexts } = input.state
+  const context = contexts[contexts.length - 1]
+  const stack = context?.stack ?? []
+  const current = stack?.[stack.length - 1]
 
-  printMeshDetails(base).forEach(line => {
-    text.push(`${line}`)
-  })
+  switch (current?.like) {
+    case Link.Tree: {
+      if (input.token.like === Fold.SignedInteger) {
+        const int: LinkSignedIntegerType = {
+          like: Link.SignedInteger,
+          range: input.token.range,
+          value: input.token.value,
+        }
 
-  text.push('')
-
-  // console.log(text.join('\n'))
+        current.nest.push(int)
+      }
+      break
+    }
+    default:
+      code.throwError(
+        code.generatedNotImplementedYetError(
+          current?.like,
+          input.path,
+        ),
+      )
+  }
 }
 
 function printMeshDetails(
@@ -852,18 +897,45 @@ function printMeshDetails(
   return text
 }
 
-function printParserMesh(base: LinkNodeType): void {
-  const text: Array<string> = ['']
+export function parse_string(input: LinkInputType): void {
+  const { contexts } = input.state
+  const context = contexts[contexts.length - 1]
+  const stack = context?.stack ?? []
+  const current = stack?.[stack.length - 1]
 
-  printParserMeshDetails(base).forEach(line => {
-    text.push(`  ${line}`)
-  })
+  switch (current?.like) {
+    case Link.Text: {
+      if (input.token.like === Fold.String) {
+        const string: LinkStringType = {
+          like: Link.String,
+          range: input.token.range,
+          value: input.token.value,
+        }
 
-  text.push('')
+        current.segment.push(string)
+      }
+      break
+    }
+    case Link.Tree: {
+      if (input.token.like === Fold.String) {
+        const string: LinkStringType = {
+          like: Link.String,
+          range: input.token.range,
+          value: input.token.value,
+        }
 
-  // console.log(text.join('\n'))
-
-  printMesh(base)
+        current.nest.push(string)
+      }
+      break
+    }
+    default:
+      code.throwError(
+        code.generatedNotImplementedYetError(
+          current?.like,
+          input.path,
+        ),
+      )
+  }
 }
 
 function printParserMeshDetails(
@@ -969,72 +1041,6 @@ function printParserMeshDetails(
   return text
 }
 
-export function parse_signedInteger(
-  input: LinkInputType,
-): void {
-  const { contexts } = input.state
-  const context = contexts[contexts.length - 1]
-  const stack = context?.stack ?? []
-  const current = stack?.[stack.length - 1]
-
-  switch (current?.like) {
-    case Link.Tree: {
-      if (input.token.like === Fold.SignedInteger) {
-        const int: LinkSignedIntegerType = {
-          like: Link.SignedInteger,
-          range: input.token.range,
-          value: input.token.value,
-        }
-
-        current.nest.push(int)
-      }
-      break
-    }
-    default:
-      code.throwError(
-        code.generatedNotImplementedYetError(current?.like),
-      )
-  }
-}
-
-export function parse_string(input: LinkInputType): void {
-  const { contexts } = input.state
-  const context = contexts[contexts.length - 1]
-  const stack = context?.stack ?? []
-  const current = stack?.[stack.length - 1]
-
-  switch (current?.like) {
-    case Link.Text: {
-      if (input.token.like === Fold.String) {
-        const string: LinkStringType = {
-          like: Link.String,
-          range: input.token.range,
-          value: input.token.value,
-        }
-
-        current.segment.push(string)
-      }
-      break
-    }
-    case Link.Tree: {
-      if (input.token.like === Fold.String) {
-        const string: LinkStringType = {
-          like: Link.String,
-          range: input.token.range,
-          value: input.token.value,
-        }
-
-        current.nest.push(string)
-      }
-      break
-    }
-    default:
-      code.throwError(
-        code.generatedNotImplementedYetError(current?.like),
-      )
-  }
-}
-
 export function parse_termFragment(input: LinkInputType): void {
   const { contexts } = input.state
   const context = contexts[contexts.length - 1]
@@ -1072,7 +1078,10 @@ export function parse_termFragment(input: LinkInputType): void {
     }
     default:
       code.throwError(
-        code.generatedNotImplementedYetError(current?.like),
+        code.generatedNotImplementedYetError(
+          current?.like,
+          input.path,
+        ),
       )
   }
 }
@@ -1099,9 +1108,36 @@ export function parse_unsignedInteger(
     }
     default:
       code.throwError(
-        code.generatedNotImplementedYetError(current?.like),
+        code.generatedNotImplementedYetError(
+          current?.like,
+          input.path,
+        ),
       )
   }
+}
+
+export function printMesh(base: LinkNodeType): string {
+  const text: Array<string> = ['']
+
+  printMeshDetails(base).forEach(line => {
+    text.push(`${line}`)
+  })
+
+  text.push('')
+
+  return text.join('\n')
+}
+
+export function printParserMesh(base: LinkNodeType): string {
+  const text: Array<string> = ['']
+
+  printParserMeshDetails(base).forEach(line => {
+    text.push(`  ${line}`)
+  })
+
+  text.push('')
+
+  return text.join('\n')
 }
 
 // eslint-disable-next-line sort-exports/sort-exports

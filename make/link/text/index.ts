@@ -38,10 +38,10 @@ export type TextRangeMetadatType = {
 
 // eslint-disable-next-line sort-exports/sort-exports
 export const TEXT_PATH_PATTERN_LIST = [
+  Text.ClosePath,
   Text.OpenInterpolation,
   Text.CloseInterpolation,
   Text.Path,
-  Text.ClosePath,
 ]
 
 // eslint-disable-next-line sort-exports/sort-exports
@@ -54,6 +54,7 @@ export const TEXT_STRING_PATTERN_LIST = [
 
 // eslint-disable-next-line sort-exports/sort-exports
 export const TEXT_TYPE = [
+  Text.ClosePath,
   Text.CloseEvaluation,
   Text.CloseInterpolation,
   Text.CloseParenthesis,
@@ -70,7 +71,6 @@ export const TEXT_TYPE = [
   Text.OpenParenthesis,
   Text.OpenText,
   Text.OpenPath,
-  Text.ClosePath,
   Text.Path,
   Text.SignedInteger,
   Text.String,
@@ -88,6 +88,7 @@ export const TEXT_PATTERN_LIST = [
   Text.Comment,
   Text.Decimal,
   Text.Hashtag,
+  Text.Line,
   Text.OpenEvaluation,
   Text.OpenIndentation,
   Text.OpenInterpolation,
@@ -191,6 +192,7 @@ export type TextPathTokenType = TextTokenBaseType & {
 }
 
 export type TextPatternConfigType = {
+  end?: boolean
   pattern: RegExp
   skip?: boolean
 }
@@ -305,6 +307,7 @@ const PATTERN: Record<Text, TextPatternConfigType> = {
     pattern: /^[\w:\-\.]+(\/[\w:\-\.]+)*/,
   },
   [Text.ClosePath]: {
+    end: true,
     pattern: /^[\n, ]/,
     skip: true,
   },
@@ -369,6 +372,8 @@ export function tokenizeLinkText(
 
   let i = 0
   lineLoop: for (let textLine of source.textByLine) {
+    // append `\n` so pattern matching works as expected
+    textLine = `${textLine}\n`
     processLoop: while (textLine) {
       const state: TextState =
         typeStack[typeStack.length - 1] || TextState.Tree
@@ -393,10 +398,30 @@ export function tokenizeLinkText(
       patternLoop: for (const type of patternList) {
         const config = PATTERN[type as Text]
         if (config && config.pattern instanceof RegExp) {
-          const match = textLine.match(config.pattern)
+          let match = textLine.match(config.pattern)
 
           if (match) {
-            if (!config.skip) {
+            if (config.skip) {
+              const token: TextTokenType<Text> = {
+                like: type as Text,
+                range: {
+                  character: {
+                    end: character,
+                    start: character,
+                  },
+                  line: {
+                    end: line,
+                    start: line,
+                  },
+                  offset: {
+                    end: offset,
+                    start: offset,
+                  },
+                },
+                text: '',
+              }
+              tokenList.push(token)
+            } else {
               const matchedLength = match[0].length
               const matchedText = textLine.slice(
                 0,
@@ -428,6 +453,10 @@ export function tokenizeLinkText(
             }
 
             switch (type) {
+              case Text.Line: {
+                line++
+                character = 0
+              }
               case Text.OpenInterpolation: {
                 typeStack.push(TextState.Tree)
                 break
@@ -470,63 +499,10 @@ export function tokenizeLinkText(
         ),
       )
     }
-
-    if (i < source.textByLine.length - 2) {
-      const state = typeStack[typeStack.length - 1]
-      const token: TextTokenType<Text.Line | Text.String> = {
-        like: state == TextState.Text ? Text.String : Text.Line,
-        range: createBasicRange(line, character, offset, 1),
-        text: '\n',
-      }
-
-      if (state === TextState.Path) {
-        const close = {
-          like: Text.ClosePath,
-          range: createBasicRange(line, character, offset),
-          text: '',
-        }
-        tokenList.push(close)
-      }
-
-      line++
-      character = 0
-
-      tokenList.push(token)
-    }
   }
-
-  const token: TextTokenType<Text.Line> = {
-    like: Text.Line,
-    range: createBasicRange(line, character, offset, 1),
-    text: '\n',
-  }
-
-  tokenList.push(token)
 
   return {
     ...source,
     tokenList,
-  }
-}
-
-function createBasicRange(
-  line: number,
-  character: number,
-  offset: number,
-  length = 0,
-) {
-  return {
-    character: {
-      end: character + length,
-      start: character,
-    },
-    line: {
-      end: line,
-      start: line,
-    },
-    offset: {
-      end: offset + length,
-      start: offset,
-    },
   }
 }
