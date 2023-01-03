@@ -654,7 +654,7 @@ export function generateLinkTextBuildingDirections(
 
 function logDirectionList(
   directionList: Array<FoldNodeType>,
-): void {
+): Array<string> {
   const tree: Array<string> = ['']
 
   let indent = 1
@@ -703,7 +703,7 @@ function logDirectionList(
 
   tree.push('')
 
-  return tree.join('\n')
+  return tree
 }
 
 function cleanText(text: string): string {
