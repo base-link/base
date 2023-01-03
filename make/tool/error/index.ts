@@ -975,7 +975,7 @@ export function renderStackTrace(
 
     const end = suffix.length ? ':' + suffix.join(':') : ''
     text.push(
-      `${g(`file ${g('<')}`)}${bw(`${node.file}${end}`)}${g(
+      `${g(`site ${g('<')}`)}${bw(`${node.file}${end}`)}${g(
         '>',
       )}`,
     )
@@ -1029,18 +1029,26 @@ export function throwError(data: SiteErrorType): void {
             ? [t, f].join('.')
             : f || '[anonymous]'
           label = label ? label : ''
-          let line =
-            chalk.gray('      call <') +
-            chalk.white(label) +
-            chalk.gray('>')
-
-          if (x && a && b) {
-            line +=
-              chalk.gray('\n        site <') +
-              chalk.whiteBright([x, a, b].join(':')) +
-              chalk.gray('>')
+          const lastLines: Array<string> = []
+          if (x) {
+            lastLines.push(
+              chalk.gray('      site <') +
+                chalk.whiteBright(
+                  [x, a, b].filter(x => x).join(':'),
+                ) +
+                chalk.gray('>'),
+            )
+          } else {
+            lastLines.push(chalk.gray('      site <unknown>'))
           }
-          return line
+
+          lastLines.push(
+            chalk.gray('        call <') +
+              chalk.white(label) +
+              chalk.gray('>'),
+          )
+
+          return lastLines.join('\n')
         })
         .join('\n') +
       '\n'
