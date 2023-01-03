@@ -514,6 +514,7 @@ export function getCursorRangeForPlugin(
     }
     default:
       code.throwError(code.generateInvalidCompilerStateError())
+      throw new CompilerError()
   }
 }
 

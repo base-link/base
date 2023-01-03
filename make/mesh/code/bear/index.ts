@@ -8,7 +8,7 @@ export function finalize_codeCard_bear_nestedChildren(
 
   code.assertString(text)
 
-  const card = code.getProperty(input, 'card')
+  const card = input.card
 
   code.assertMeshPartialType(card, Mesh.CodeModule)
 
