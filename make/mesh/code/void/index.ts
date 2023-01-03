@@ -22,7 +22,7 @@ export function process_codeCard_void_nestedChildren(
   const type = code.determineNestType(input)
   switch (type) {
     case LinkHint.StaticTerm:
-      const term = code.resolveStaticTermFromNest(input)
+      const term = code.resolveTerm(input)
       // term === 'true'
       break
     default:

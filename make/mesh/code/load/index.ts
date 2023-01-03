@@ -16,55 +16,39 @@ export function finalize_codeCard_load_textNest(
   input: MeshInputType,
 ): void {
   const text = code.resolveText(input)
-
   code.assertString(text)
 
   const card = input.module
-
   code.assertMeshPartialType(card, Mesh.CodeModule)
 
   const path = code.resolveModulePath(input, text)
 
-  const load = code.assumeBranchAsMeshPartialType(
+  code.pushIntoParentObject(
     input,
-    Mesh.Import,
-  )
-
-  load.children.push(
     code.createStringConstant('absolutePath', path),
   )
 }
 
 export function generateFullImport(
-  start: MeshPartialType<Mesh.Import>,
+  input: MeshInputType,
 ): MeshFullType<Mesh.Import> {
-  let absolutePath
-  let variableList: Array<MeshImportVariable_FullType> = []
-  let importList: Array<MeshImport_FullType> = []
+  const parent = code.assumeBranchAsGenericMeshType(input)
+  const children = code.assumeChildrenFromParent(parent)
 
-  start.children.forEach(node => {
-    if (!node.partial) {
-      switch (node.like) {
-        case Mesh.Constant:
-          if (
-            node.name === 'absolutePath' &&
-            'like' in node.value &&
-            node.value.like === Mesh.String
-          ) {
-            absolutePath = node.value.string
-          }
-          break
-        case Mesh.Import:
-          importList.push(node)
-          break
-        case Mesh.ImportVariable:
-          variableList.push(node)
-          break
-        default:
-          break
-      }
-    }
-  })
+  const absolutePath = code.findFullStringConstantByName(
+    input,
+    'absolutePath',
+  )
+
+  const variableList = children.filter(
+    (node): node is MeshFullType<Mesh.ImportVariable> =>
+      code.isMeshFullType(node, Mesh.ImportVariable),
+  )
+
+  const importList = children.filter(
+    (node): node is MeshFullType<Mesh.Import> =>
+      code.isMeshFullType(node, Mesh.Import),
+  )
 
   code.assertString(absolutePath)
 
@@ -74,13 +58,12 @@ export function generateFullImport(
     import: importList,
     like: Mesh.Import,
     partial: false,
+    scope: input.scope,
     variable: variableList,
   }
 }
 
-export function process_codeCard_load(
-  input: MeshInputType,
-): void {
+export function process_codeCard_load(input: MeshInputType): void {
   const load: MeshPartialType<Mesh.Import> = {
     children: [],
     like: Mesh.Import,
@@ -88,29 +71,23 @@ export function process_codeCard_load(
     scope: input.scope,
   }
 
-  const loader = code.assumeBranchAsMeshPartialType<
-    Mesh.CodeModule | Mesh.Import
-  >(input, [Mesh.CodeModule, Mesh.Import])
-
-  loader.children.push(load)
+  code.pushIntoParentObject(input, load)
   const childInput = code.withBranch(input, load)
+  const nest = code.assumeLinkType(input, Link.Tree)
 
-  code
-    .assumeLinkType(input, Link.Tree)
-    .nest.forEach((nest, index) => {
-      process_codeCard_load_nestedChildren(
-        code.withEnvironment(childInput, {
-          index,
-          nest,
-        }),
-      )
-    })
+  nest.nest.forEach((nest, index) => {
+    process_codeCard_load_nestedChildren(
+      code.withEnvironment(childInput, {
+        index,
+        nest,
+      }),
+    )
+  })
 
   if (code.childrenAreComplete(load)) {
     code.potentiallyReplaceWithFullNode(childInput, () =>
-      code.generateFullImport(load),
+      code.generateFullImport(childInput),
     )
-  } else {
   }
 }
 
@@ -122,9 +99,7 @@ export function process_codeCard_load_nestedChildren(
     case LinkHint.StaticText: {
       const index = code.assumeNestIndex(input)
       if (index !== 0) {
-        code.throwError(
-          code.generateInvalidCompilerStateError(),
-        )
+        code.throwError(code.generateInvalidCompilerStateError())
       } else {
         code.finalize_codeCard_load_textNest(input)
       }
@@ -132,7 +107,7 @@ export function process_codeCard_load_nestedChildren(
     }
 
     case LinkHint.StaticTerm: {
-      const term = code.resolveStaticTermFromNest(input)
+      const term = code.resolveTerm(input)
       switch (term) {
         case 'find':
         case 'take':
@@ -151,8 +126,6 @@ export function process_codeCard_load_nestedChildren(
     }
 
     default:
-      code.throwError(
-        code.generateUnhandledNestCaseError(input, type),
-      )
+      code.throwError(code.generateUnhandledNestCaseError(input, type))
   }
 }

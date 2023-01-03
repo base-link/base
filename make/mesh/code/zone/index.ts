@@ -3,19 +3,15 @@ import type { MeshInputType } from '~'
 
 export * from './hook/index.js'
 
-export function process_codeCard_zone(
-  input: MeshInputType,
-): void {
-  code
-    .assumeLinkType(input, Link.Tree)
-    .nest.forEach((nest, index) => {
-      code.process_codeCard_zone_nestedChildren(
-        code.withEnvironment(input, {
-          index,
-          nest,
-        }),
-      )
-    })
+export function process_codeCard_zone(input: MeshInputType): void {
+  code.assumeLinkType(input, Link.Tree).nest.forEach((nest, index) => {
+    code.process_codeCard_zone_nestedChildren(
+      code.withEnvironment(input, {
+        index,
+        nest,
+      }),
+    )
+  })
 }
 
 export function process_codeCard_zone_nestedChildren(
@@ -23,7 +19,7 @@ export function process_codeCard_zone_nestedChildren(
 ): void {
   const type = code.determineNestType(input)
   if (type === 'static-term') {
-    const term = code.resolveStaticTermFromNest(input)
+    const term = code.resolveTerm(input)
     switch (term) {
       case 'take':
         code.process_codeCard_link(input)
@@ -38,8 +34,6 @@ export function process_codeCard_zone_nestedChildren(
         code.throwError(code.generateUnknownTermError(input))
     }
   } else {
-    code.throwError(
-      code.generateUnhandledNestCaseError(input, type),
-    )
+    code.throwError(code.generateUnhandledNestCaseError(input, type))
   }
 }

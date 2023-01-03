@@ -1,28 +1,45 @@
-import { Link, LinkHint, Mesh, MeshPartialType, code } from '~'
+import { Link, LinkHint, Mesh, MeshFullType, code } from '~'
 import type { MeshInputType } from '~'
 
-export function process_codeCard_like(
+export function generateFullClassReference(
   input: MeshInputType,
-): void {
-  const like: MeshPartialType<Mesh.ClassReference> = {
-    children: [],
+): MeshFullType<Mesh.ClassReference> {
+  const children = code.assumeChildren(input)
+  const name = code.findFullStringConstantByName(input, 'name')
+
+  code.assertString(name)
+
+  const sourceLike = children.filter(
+    (node): node is MeshFullType<Mesh.ClassReference> =>
+      code.isMeshFullType(node, Mesh.ClassReference),
+  )
+
+  return {
+    bind: sourceLike,
+    complete: false,
     like: Mesh.ClassReference,
-    partial: true,
-    scope: input.scope,
+    name,
+    partial: false,
   }
+}
+
+export function process_codeCard_like(input: MeshInputType): void {
+  const like = code.createMeshPartial(Mesh.ClassReference, input.scope)
+  code.pushIntoParentObject(input, like)
 
   const likeInput = code.withBranch(input, like)
+  code.assumeLinkType(input, Link.Tree).nest.forEach((nest, index) => {
+    process_codeCard_like_nestedChildren(
+      code.withEnvironment(likeInput, {
+        index,
+        nest,
+      }),
+    )
+  })
 
-  code
-    .assumeLinkType(input, Link.Tree)
-    .nest.forEach((nest, index) => {
-      process_codeCard_like_nestedChildren(
-        code.withEnvironment(likeInput, {
-          index,
-          nest,
-        }),
-      )
-    })
+  code.replaceIfComplete(likeInput, like, () =>
+    code.generateFullClassReference(likeInput),
+  )
 }
 
 export function process_codeCard_like_free(
@@ -49,16 +66,12 @@ export function process_codeCard_like_nestedChildren(
     case LinkHint.DynamicTerm:
       break
     case LinkHint.StaticTerm:
-      const term = code.assumeStaticTermFromNest(input)
+      const term = code.assumeTerm(input)
       const index = code.assumeNestIndex(input)
       if (index === 0) {
-        const like = code.assumeBranchAsMeshPartialType(
+        code.pushIntoParentObject(
           input,
-          Mesh.ClassReference,
-        )
-
-        like.children.push(
-          code.createStringConstant('class', term),
+          code.createStringConstant('name', term),
         )
         return
       }
@@ -95,15 +108,11 @@ export function process_codeCard_like_nestedChildren(
           code.process_codeCard_stem(input)
           break
         default:
-          code.throwError(
-            code.generateUnhandledTermCaseError(input),
-          )
+          code.throwError(code.generateUnhandledTermCaseError(input))
       }
       break
     default:
-      code.throwError(
-        code.generateUnhandledNestCaseError(input, type),
-      )
+      code.throwError(code.generateUnhandledNestCaseError(input, type))
   }
 }
 

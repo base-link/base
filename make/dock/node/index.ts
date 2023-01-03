@@ -17,6 +17,7 @@ import {
   DockJS,
   DockJSPropertyTokenType,
   Mesh,
+  MeshFullType,
   MeshType,
   code,
 } from '~'
@@ -45,7 +46,7 @@ export function generateNodeJS(base: Base): DockJSTokenType {
   }
 
   for (const [key, val] of base.card_mesh) {
-    // console.log(key, val.seed.like)
+    console.log(key)
     // console.log(val.seed)
     switch (val.seed.like) {
       case Mesh.CodeModule:
@@ -59,53 +60,76 @@ export function generateNodeJS(base: Base): DockJSTokenType {
     }
   }
 
-  console.log(
-    prettier.format(code.printJSAST(program), {
-      arrowParens: 'avoid',
-      bracketSpacing: true,
-      endOfLine: 'lf',
-      importOrder: [
-        '^\\w(.*)$',
-        '^@(.*)$',
-        '~(.*)$',
-        '\\..(.*)$',
-        '\\.(.*)$',
-      ],
-      importOrderSeparation: true,
-      importOrderSortSpecifiers: true,
-      parser: 'typescript',
-      prettierPath: './node_modules/prettier',
-      printWidth: 64,
-      proseWrap: 'always',
-      quoteProps: 'as-needed',
-      semi: false,
-      singleAttributePerLine: true,
-      singleQuote: true,
-      tabWidth: 2,
-      trailingComma: 'all',
-      useTabs: false,
-    }),
-  )
+  // console.log(
+  //   prettier.format(code.printJSAST(program), {
+  //     arrowParens: 'avoid',
+  //     bracketSpacing: true,
+  //     endOfLine: 'lf',
+  //     importOrder: [
+  //       '^\\w(.*)$',
+  //       '^@(.*)$',
+  //       '~(.*)$',
+  //       '\\..(.*)$',
+  //       '\\.(.*)$',
+  //     ],
+  //     importOrderSeparation: true,
+  //     importOrderSortSpecifiers: true,
+  //     parser: 'typescript',
+  //     prettierPath: './node_modules/prettier',
+  //     printWidth: 64,
+  //     proseWrap: 'always',
+  //     quoteProps: 'as-needed',
+  //     semi: false,
+  //     singleAttributePerLine: true,
+  //     singleQuote: true,
+  //     tabWidth: 2,
+  //     trailingComma: 'all',
+  //     useTabs: false,
+  //   }),
+  // )
 
   return program
 }
 
 export function generateNodeJSCardModule(
   program: DockJSProgramTokenType,
-  module: MeshType<Mesh.CardModule>,
+  module: MeshFullType<Mesh.CodeModule>,
 ): void {
-  const imports = []
-  // module.exportList.forEach(exp => {})
-  module.importTree.forEach((imp, i) => {
-    imports.push(
-      createVariableDeclaration(
-        'const',
-        createVariableDeclarator(createIdentifier(`i${i + 1}`)),
-      ),
-    )
-  })
+  const imports: Array<string> = []
+  const classes: Array<string> = []
 
-  program.body.push(writeBaseLoad(imports))
+  return
+
+  let i = 1
+  for (const name of Object.keys(module.allClassMesh)) {
+    const cls = module.allClassMesh[name]
+    if (!cls) {
+      continue
+    }
+
+    classes.push(`const c${i} = {`)
+    classes.push(`  properties: {`)
+
+    // for (const propName of Object.keys(cls.properties)) {
+    //   const prop = cls.properties[propName]
+    //   classes.push(`    '${propName}': {}`)
+    // }
+    classes.push(`  }`)
+    classes.push(`}`)
+  }
+
+  console.log(classes.join('\n'))
+  // module.exportList.forEach(exp => {})
+  // module.importTree.forEach((imp, i) => {
+  //   imports.push(
+  //     createVariableDeclaration(
+  //       'const',
+  //       createVariableDeclarator(createIdentifier(`i${i + 1}`)),
+  //     ),
+  //   )
+  // })
+
+  // program.body.push(writeBaseLoad(imports))
 }
 
 export function generateNodeJSDeckModule(

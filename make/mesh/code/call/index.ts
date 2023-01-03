@@ -1,9 +1,7 @@
 import { Link, LinkHint, Mesh, MeshPartialType, code } from '~'
 import type { MeshInputType } from '~'
 
-export function process_codeCard_call(
-  input: MeshInputType,
-): void {
+export function process_codeCard_call(input: MeshInputType): void {
   const call: MeshPartialType<Mesh.Call> = {
     children: [],
     lexicalScope: input.lexicalScope,
@@ -13,16 +11,14 @@ export function process_codeCard_call(
 
   const childInput = code.withBranch(input, call)
 
-  code
-    .assumeLinkType(input, Link.Tree)
-    .nest.forEach((nest, index) => {
-      process_codeCard_call_nestedChildren(
-        code.withEnvironment(childInput, {
-          index,
-          nest,
-        }),
-      )
-    })
+  code.assumeLinkType(input, Link.Tree).nest.forEach((nest, index) => {
+    process_codeCard_call_nestedChildren(
+      code.withEnvironment(childInput, {
+        index,
+        nest,
+      }),
+    )
+  })
 }
 
 export function process_codeCard_call_nestedChildren(
@@ -38,7 +34,7 @@ export function process_codeCard_call_nestedChildren(
       console.log('TODO call.staticPath')
       break
     case LinkHint.StaticTerm:
-      const term = code.assumeStaticTermFromNest(input)
+      const term = code.assumeTerm(input)
       const index = code.assumeNestIndex(input)
       if (index === 0) {
         const call = code.assumeBranchAsMeshPartialType(
@@ -46,9 +42,7 @@ export function process_codeCard_call_nestedChildren(
           Mesh.Call,
         )
 
-        call.children.push(
-          code.createStringConstant('name', term),
-        )
+        call.children.push(code.createStringConstant('name', term))
       } else {
         switch (term) {
           case 'read':
@@ -59,15 +53,11 @@ export function process_codeCard_call_nestedChildren(
             code.process_codeCard_bind(input)
             break
           default:
-            code.throwError(
-              code.generateUnhandledTermCaseError(input),
-            )
+            code.throwError(code.generateUnhandledTermCaseError(input))
         }
       }
       break
     default:
-      code.throwError(
-        code.generateUnhandledNestCaseError(input, type),
-      )
+      code.throwError(code.generateUnhandledNestCaseError(input, type))
   }
 }

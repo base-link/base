@@ -1,13 +1,8 @@
 import { Link, LinkHint, Mesh, code } from '~'
 import type { MeshInputType } from '~'
 
-export function process_codeCard_form_wear(
-  input: MeshInputType,
-): void {
-  const container = code.createContainerScope(
-    {},
-    input.scope.container,
-  )
+export function process_codeCard_form_wear(input: MeshInputType): void {
+  const container = code.createContainerScope({}, input.scope.container)
   const scope = code.createStepScope(container)
   const scopeInput = code.withScope(input, scope)
   const wear = code.createMeshPartial(
@@ -16,16 +11,14 @@ export function process_codeCard_form_wear(
   )
   const childInput = code.withBranch(scopeInput, wear)
 
-  code
-    .assumeLinkType(input, Link.Tree)
-    .nest.forEach((nest, index) => {
-      process_codeCard_form_wear_nestedChildren(
-        code.withEnvironment(childInput, {
-          index,
-          nest,
-        }),
-      )
-    })
+  code.assumeLinkType(input, Link.Tree).nest.forEach((nest, index) => {
+    process_codeCard_form_wear_nestedChildren(
+      code.withEnvironment(childInput, {
+        index,
+        nest,
+      }),
+    )
+  })
 }
 
 export function process_codeCard_form_wear_nestedChildren(
@@ -34,16 +27,14 @@ export function process_codeCard_form_wear_nestedChildren(
   const type = code.determineNestType(input)
   switch (type) {
     case LinkHint.StaticTerm: {
-      const term = code.assumeStaticTermFromNest(input)
+      const term = code.assumeTerm(input)
       const index = code.assumeNestIndex(input)
       if (index === 0) {
         const wear = code.assumeBranchAsMeshPartialType(
           input,
           Mesh.ClassInterfaceImplementation,
         )
-        wear.children.push(
-          code.createStringConstant('name', term),
-        )
+        wear.children.push(code.createStringConstant('name', term))
         return
       }
 
@@ -57,8 +48,6 @@ export function process_codeCard_form_wear_nestedChildren(
       break
     }
     default:
-      code.throwError(
-        code.generateUnhandledTermCaseError(input),
-      )
+      code.throwError(code.generateUnhandledTermCaseError(input))
   }
 }

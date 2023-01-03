@@ -1,19 +1,15 @@
 import { Link, LinkHint, code } from '~'
 import type { MeshInputType } from '~'
 
-export function process_codeCard_walk(
-  input: MeshInputType,
-): void {
-  code
-    .assumeLinkType(input, Link.Tree)
-    .nest.forEach((nest, index) => {
-      process_codeCard_walk_nestedChildren(
-        code.withEnvironment(input, {
-          index,
-          nest,
-        }),
-      )
-    })
+export function process_codeCard_walk(input: MeshInputType): void {
+  code.assumeLinkType(input, Link.Tree).nest.forEach((nest, index) => {
+    process_codeCard_walk_nestedChildren(
+      code.withEnvironment(input, {
+        index,
+        nest,
+      }),
+    )
+  })
 }
 
 export function process_codeCard_walk_nestedChildren(
@@ -22,11 +18,9 @@ export function process_codeCard_walk_nestedChildren(
   const type = code.determineNestType(input)
   switch (type) {
     case LinkHint.StaticTerm:
-      const term = code.resolveStaticTermFromNest(input)
+      const term = code.resolveTerm(input)
       break
     default:
-      code.throwError(
-        code.generateUnhandledNestCaseError(input, type),
-      )
+      code.throwError(code.generateUnhandledNestCaseError(input, type))
   }
 }

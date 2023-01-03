@@ -1,9 +1,5 @@
 import { Link, LinkHint, Mesh, code } from '~'
-import type {
-  MeshInputType,
-  MeshPartialType,
-  MeshType,
-} from '~'
+import type { MeshInputType, MeshPartialType, MeshType } from '~'
 
 export * from './bear/index.js'
 export * from './face/index.js'
@@ -12,58 +8,31 @@ export * from './mint/index.js'
 export * from './term/index.js'
 export * from './test/index.js'
 
+export function assumeChildrenFromParent(
+  parent: Record<string, unknown>,
+): Array<unknown> {
+  if ('children' in parent && code.isArray(parent.children)) {
+    return parent.children
+  } else {
+    return []
+  }
+}
+
 export function generate_full_deckCard_deck(
   input: MeshInputType,
 ): MeshType<Mesh.Package> {
-  const deck = code.assumeBranchAsMeshPartialType(
-    input,
-    Mesh.Package,
-  )
-  let host
-  let name
-  let version
-  let exportFile
-  let testFile
+  const link = code.findFullStringConstantByName(input, 'link')
+  const version = code.findFullStringConstantByName(input, 'version')
+  const exportFile = code.findFullStringConstantByName(input, 'export')
+  const testFile = code.findFullStringConstantByName(input, 'test')
 
-  deck.children.forEach(node => {
-    if (!node.partial) {
-      switch (node.like) {
-        case Mesh.Constant:
-          if (
-            'like' in node.value &&
-            node.value.like === Mesh.String
-          ) {
-            switch (node.name) {
-              case 'link':
-                ;[host, name] = node.value.string.split('/')
-                break
-              case 'name':
-                name = node.value.string
-                break
-              case 'version':
-                version = node.value.string
-                break
-              case 'export':
-                exportFile = node.value.string
-                break
-              case 'test':
-                testFile = node.value.string
-                break
-              default:
-                break
-            }
-            break
-          }
-        default:
-          break
-      }
-    }
-  })
+  code.assertString(link)
+  code.assertString(version)
+
+  const [host, name] = code.splitPackageModuleName(link)
 
   code.assertString(host)
   code.assertString(name)
-
-  code.assertString(version, 'version', input.module.path)
 
   return {
     bear: exportFile,
@@ -80,9 +49,7 @@ export function generate_full_deckCard_deck(
   }
 }
 
-export function process_deckCard_deck(
-  input: MeshInputType,
-): void {
+export function process_deckCard_deck(input: MeshInputType): void {
   const nest = code.assumeLinkType(input, Link.Tree)
   const deck: MeshPartialType<Mesh.Package> = {
     children: [],
@@ -91,30 +58,19 @@ export function process_deckCard_deck(
     scope: input.scope,
   }
 
-  code.assertMeshPartialType(input.module, Mesh.PackageModule)
-  input.module.children.push(deck)
+  code.pushIntoParentObject(input, deck)
 
   const childInput = code.withBranch(input, deck)
 
-  nest.nest.forEach((nest, index) => {
-    code.process_deckCard_deck_nestedChildren(
-      code.withEnvironment(childInput, {
-        index,
-        nest,
-      }),
-    )
-  })
+  code.processNestedChildren(
+    childInput,
+    nest,
+    code.process_deckCard_deck_nestedChildren,
+  )
 
-  if (code.childrenAreComplete(deck)) {
-    code.potentiallyReplaceWithFullNode(
-      childInput,
-      code.generate_full_deckCard_deck,
-    )
-  } else {
-    code.throwError(
-      code.generateModuleUnresolvableError(childInput),
-    )
-  }
+  code.replaceIfComplete(childInput, deck, () =>
+    code.generate_full_deckCard_deck(childInput),
+  )
 }
 
 export function process_deckCard_deck_nestedChildren(
@@ -125,9 +81,9 @@ export function process_deckCard_deck_nestedChildren(
   switch (type) {
     case LinkHint.DynamicTerm:
     case LinkHint.DynamicText:
-      code.throwError(
-        code.generateUnhandledNestCaseError(input, type),
-      )
+    case LinkHint.DynamicPath:
+    case LinkHint.StaticPath:
+      code.throwError(code.generateInvalidNestCaseError(input, type))
       break
     case LinkHint.StaticText: {
       if (index === 0) {
@@ -145,16 +101,14 @@ export function process_deckCard_deck_nestedChildren(
       }
       break
     default:
-      code.throwError(
-        code.generateUnhandledNestCaseError(input, type),
-      )
+      code.throwError(code.generateUnhandledNestCaseError(input, type))
   }
 }
 
 export function process_deckCard_deck_nestedTerm(
   input: MeshInputType,
 ): void {
-  const term = code.resolveStaticTermFromNest(input)
+  const term = code.resolveTerm(input)
   switch (term) {
     case 'bear': {
       code.process_deckCard_deck_bear(input)
@@ -172,4 +126,16 @@ export function process_deckCard_deck_nestedTerm(
       code.throwError(code.generateUnknownTermError(input))
     }
   }
+}
+
+export function splitPackageModuleName(string: string): Array<string> {
+  const [host, name] = string.split('/')
+  const array: Array<string> = []
+  if (host) {
+    array.push(host.replace(/^@/, ''))
+  }
+  if (name) {
+    array.push(name)
+  }
+  return array
 }

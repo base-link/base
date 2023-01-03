@@ -139,7 +139,7 @@ export function isLinkType<T extends Link>(
 export function isMeshFullType<T extends Mesh>(
   object: unknown,
   like: T,
-): object is MeshType<T> {
+): object is MeshFullType<T> {
   return (
     code.isRecord(object) &&
     'like' in object &&

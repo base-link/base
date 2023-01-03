@@ -1,4 +1,10 @@
-import { Base, Mesh, MeshFullType, code } from '~'
+import {
+  Base,
+  DEFAULT_CONTAINER_SCOPE,
+  Mesh,
+  MeshFullType,
+  code,
+} from '~'
 import type { MeshInputType, MeshPartialType } from '~'
 
 export * from './bear/index.js'
@@ -34,10 +40,7 @@ export * from './wait/index.js'
 export * from './walk/index.js'
 export * from './zone/index.js'
 
-export function handle_codeCard(
-  base: Base,
-  link: string,
-): void {
+export function handle_codeCard(base: Base, link: string): void {
   if (base.card_mesh.has(link)) {
     return
   }
@@ -45,17 +48,10 @@ export function handle_codeCard(
   code.resolve_codeCard(base, link)
 }
 
-export function process_codeCard(
-  base: Base,
-  link: string,
-): void {
+export function process_codeCard(base: Base, link: string): void {
   const parse = code.loadLinkModule(base, link)
   const card = base.card(link)
-  const container = code.createContainerScope({
-    base: { like: 'base' },
-    path: { like: 'string' },
-    text: { like: 'string' },
-  })
+  const container = code.createContainerScope(DEFAULT_CONTAINER_SCOPE)
   const scope = code.createStepScope(container)
   const seed: MeshPartialType<Mesh.CodeModule> = {
     ...parse,
@@ -66,23 +62,16 @@ export function process_codeCard(
     scope,
   }
 
-  const input: MeshInputType = code.createInput(
-    seed,
-    scope,
-    seed,
-  )
+  const input: MeshInputType = code.createInput(seed, scope, seed)
 
   card.bind(seed)
 
   if (seed.text.trim()) {
-    seed.link.nest.forEach((nest, index) => {
-      code.process_codeCard_nestedChildren(
-        code.withEnvironment(input, {
-          index,
-          nest,
-        }),
-      )
-    })
+    code.processNestedChildren(
+      input,
+      seed.link,
+      code.process_codeCard_nestedChildren,
+    )
   }
 }
 
@@ -101,9 +90,7 @@ export function process_codeCard_nestedChildren(
       code.process_codeCard_nestedChildren_staticTerm(input)
       break
     default: {
-      code.throwError(
-        code.generateUnhandledNestCaseError(input, type),
-      )
+      code.throwError(code.generateUnhandledNestCaseError(input, type))
     }
   }
 }
@@ -111,7 +98,7 @@ export function process_codeCard_nestedChildren(
 export function process_codeCard_nestedChildren_staticTerm(
   input: MeshInputType,
 ): void {
-  const term = code.resolveStaticTermFromNest(input)
+  const term = code.resolveTerm(input)
   switch (term) {
     case 'bear': {
       code.process_codeCard_bear(input)
@@ -154,17 +141,12 @@ export function process_codeCard_nestedChildren_staticTerm(
       break
     }
     default: {
-      code.throwError(
-        code.generateUnhandledTermCaseError(input),
-      )
+      code.throwError(code.generateUnhandledTermCaseError(input))
     }
   }
 }
 
-export function resolve_codeCard(
-  base: Base,
-  link: string,
-): void {
+export function resolve_codeCard(base: Base, link: string): void {
   const card = base.card(link)
   code.assertMeshType(card.seed, Mesh.CodeModule)
 
@@ -273,9 +255,7 @@ export function resolve_codeCard(
       seed.importTree.forEach(node => {
         // HACK: TODO: figure out how to get the different file types.
         if (
-          node.absolutePath.match(
-            '/drumwork/deck/([^/]+)/base.link',
-          )
+          node.absolutePath.match('/drumwork/deck/([^/]+)/base.link')
         ) {
           code.handle_deckCard(seed.base, node.absolutePath)
         } else {
@@ -286,9 +266,7 @@ export function resolve_codeCard(
       seed.exportList.forEach(node => {
         // HACK: TODO: figure out how to get the different file types.
         if (
-          node.absolutePath.match(
-            '/drumwork/deck/([^/]+)/base.link',
-          )
+          node.absolutePath.match('/drumwork/deck/([^/]+)/base.link')
         ) {
           code.handle_deckCard(seed.base, node.absolutePath)
         } else {
@@ -306,6 +284,12 @@ export function resolve_codeCard(
             break
           }
           case Mesh.Function: {
+            break
+          }
+          case Mesh.Template: {
+            break
+          }
+          case Mesh.Inject: {
             break
           }
           default:

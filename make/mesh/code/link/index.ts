@@ -3,7 +3,6 @@ import {
   LinkHint,
   Mesh,
   MeshFullType,
-  MeshType,
   Mesh_FullTypeMixin,
   Mesh_PartialTypeMixin,
   code,
@@ -26,19 +25,31 @@ export function attemptPartialRollup(
   // }
 }
 
-export function process_codeCard_link(
+export function generateFullInput(
   input: MeshInputType,
-): void {
-  const link: MeshPartialType<Mesh.Input> = {
-    children: [],
+): MeshFullType<Mesh.Input> {
+  const name = code.findFullStringConstantByName(input, 'name')
+  code.assertString(name)
+  const children = code.assumeChildren(input)
+  const sourceLike = children.find(
+    (node): node is MeshFullType<Mesh.ClassReference> =>
+      code.isMeshFullType(node, Mesh.ClassReference),
+  )
+
+  return {
+    complete: false,
     like: Mesh.Input,
-    partial: true,
-    scope: input.scope,
+    name,
+    partial: false,
+    sourceLike,
   }
+}
+
+export function process_codeCard_link(input: MeshInputType): void {
+  const link = code.createMeshPartial(Mesh.Input, input.scope)
+  code.pushIntoParentObject(input, link)
 
   const linkInput = code.withBranch(input, link)
-
-  code.pushIntoParentObject(input, link)
 
   code
     .assumeLinkType(linkInput, Link.Tree)
@@ -51,11 +62,9 @@ export function process_codeCard_link(
       )
     })
 
-  // code.attemptPartialRollup(
-  //   input,
-  //   link,
-  //   code.generate_full_codeCard_link,
-  // )
+  code.replaceIfComplete(linkInput, link, () =>
+    code.generateFullInput(linkInput),
+  )
 }
 
 export function process_codeCard_link_base(
@@ -68,15 +77,11 @@ export function process_codeCard_link_nestedChildren(
   const type = code.determineNestType(input)
   switch (type) {
     case LinkHint.StaticTerm:
-      const term = code.assumeStaticTermFromNest(input)
+      const term = code.assumeTerm(input)
       const index = code.assumeNestIndex(input)
       if (index === 0) {
-        const link = code.assumeBranchAsMeshPartialType(
+        code.pushIntoParentObject(
           input,
-          Mesh.Input,
-        )
-
-        link.children.push(
           code.createStringConstant('name', term),
         )
         return
@@ -114,14 +119,10 @@ export function process_codeCard_link_nestedChildren(
           code.process_codeCard_note(input)
           break
         default:
-          code.throwError(
-            code.generateUnhandledTermCaseError(input),
-          )
+          code.throwError(code.generateUnhandledTermCaseError(input))
       }
       break
     default:
-      code.throwError(
-        code.generateUnhandledNestCaseError(input, type),
-      )
+      code.throwError(code.generateUnhandledNestCaseError(input, type))
   }
 }

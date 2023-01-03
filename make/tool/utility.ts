@@ -4,7 +4,6 @@ import { Link, MESH_TYPE, Mesh, code } from '~'
 import type {
   LinkType,
   MeshInputType,
-  MeshModuleBaseType,
   MeshPartialType,
   MeshType,
 } from '~'
@@ -39,6 +38,14 @@ export function assertNumber(
   }
 }
 
+export function assertRecord(
+  object: unknown,
+): asserts object is Record<string, unknown> {
+  if (!code.isRecord(object)) {
+    code.throwError(code.generateIncorrectlyTypedVariable('record'))
+  }
+}
+
 export function assertString(
   object: unknown,
   name?: string,
@@ -46,11 +53,7 @@ export function assertString(
 ): asserts object is string {
   if (!code.isString(object)) {
     code.throwError(
-      code.generateIncorrectlyTypedVariable(
-        'string',
-        name,
-        path,
-      ),
+      code.generateIncorrectlyTypedVariable('string', name, path),
     )
   }
 }
@@ -66,7 +69,6 @@ export function assertString(
 //   code.assertGenericMeshPartialType(branch?.element, type)
 //   return branch?.element
 // }
-
 export function assumeBranchAsGenericMeshType(
   input: MeshInputType,
   rank = 0,
@@ -167,4 +169,5 @@ export function isString(object: unknown): object is string {
   return _.isString(object)
 }
 
+export const keyBy = _.keyBy
 export const omit = _.omit

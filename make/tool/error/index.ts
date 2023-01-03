@@ -84,9 +84,7 @@ export function assertError(
   }
 }
 
-export function buildErrorMessage(
-  data: SiteErrorType,
-): Array<string> {
+export function buildErrorMessage(data: SiteErrorType): Array<string> {
   const text: Array<string> = []
 
   text.push(``)
@@ -108,9 +106,7 @@ export function buildErrorMessage(
     text.push(chalk.gray(`    term `) + chalk.white(`${term}`))
   })
 
-  text.push(
-    chalk.gray(`    code `) + chalk.white(`#${data.code}`),
-  )
+  text.push(chalk.gray(`    code `) + chalk.white(`#${data.code}`))
 
   if (data.file) {
     if (data.text) {
@@ -287,6 +283,23 @@ export function generateInvalidDeckLink(
   }
 }
 
+export function generateInvalidNestCaseError(
+  input: MeshInputType,
+  type: LinkHint,
+): SiteErrorType {
+  let scope
+  try {
+    scope = code.resolveTerm(input, 1)
+  } catch (e) {}
+  const text = code.generateHighlightedErrorForLinkTree(input)
+  return {
+    code: `0032`,
+    file: `${input.module.path}`,
+    note: `The "${LINK_HINT_TEXT[type]}" elements are invalid in this context.`,
+    text,
+  }
+}
+
 export function generateInvalidNestChildrenLengthError(
   input: MeshInputType,
   length: number,
@@ -317,8 +330,10 @@ export function generateInvalidWhitespaceError(
 ): SiteErrorType {
   const token = input.tokenList[input.state.index]
   code.assertTextGenericType(token)
-  const highlightedRange =
-    code.getCursorRangeForTextWhitespaceToken(token, input)
+  const highlightedRange = code.getCursorRangeForTextWhitespaceToken(
+    token,
+    input,
+  )
   const text = code.generateHighlightedError(
     input.textByLine,
     highlightedRange,
@@ -356,8 +371,7 @@ export function generateObjectNotTypeError(
   return {
     code: `0007`,
     note: `Object isn't type ${words}.`,
-    text:
-      object == null ? String(object) : prettifyJSON(object),
+    text: object == null ? String(object) : prettifyJSON(object),
   }
 }
 
@@ -443,7 +457,7 @@ export function generateUnhandledNestCaseError(
 ): SiteErrorType {
   let scope
   try {
-    scope = code.resolveStaticTermFromNest(input, 1)
+    scope = code.resolveTerm(input, 1)
   } catch (e) {}
   const text = code.generateHighlightedErrorForLinkTree(input)
   return {
@@ -461,9 +475,9 @@ export function generateUnhandledTermCaseError(
 ): SiteErrorType {
   let scope
   try {
-    scope = code.resolveStaticTermFromNest(input, 1)
+    scope = code.resolveTerm(input, 1)
   } catch (e) {}
-  const name = code.resolveStaticTermFromNest(input)
+  const name = code.resolveTerm(input)
   code.assertString(name)
   const handle = ERROR['0002']
   code.assertError(handle)
@@ -492,9 +506,9 @@ export function generateUnknownTermError(
   input: MeshInputType,
 ): SiteErrorType {
   const { module } = input
-  const name = code.resolveStaticTermFromNest(input)
+  const name = code.resolveTerm(input)
   const text = code.generateHighlightedErrorForLinkTree(input)
-  const insideName = code.resolveStaticTermFromNest(input, 1)
+  const insideName = code.resolveTerm(input, 1)
   return {
     code: `0003`,
     file: `${module.path}`,
@@ -742,9 +756,7 @@ export function getCursorRangeForTree(
     case Link.Tree: {
       const term = nest.head
       if (!term) {
-        code.throwError(
-          code.generateInvalidCompilerStateError(),
-        )
+        code.throwError(code.generateInvalidCompilerStateError())
         throw new CompilerError()
       }
 
@@ -783,9 +795,7 @@ export function getSourceMappedFile(
       return [
         code.resolveNativePath(
           token.source,
-          code.resolveDirectoryPath(
-            path.replace(/^file:\/\//, ''),
-          ),
+          code.resolveDirectoryPath(path.replace(/^file:\/\//, '')),
         ),
         token.line == null ? undefined : token.line,
         token.column == null ? undefined : token.column,
@@ -819,9 +829,7 @@ export function highlightTextRangeForError(
     if (highlight.start.line === i) {
       lines.push(chalk.whiteBright(`${z} | ${lineText}`))
       const indentA = new Array(z.length + 1).join(' ')
-      const indentB = new Array(
-        highlight.start.character + 1,
-      ).join(' ')
+      const indentB = new Array(highlight.start.character + 1).join(' ')
       const squiggly = new Array(
         highlight.end.character - highlight.start.character + 1,
       ).join('~')
@@ -840,12 +848,9 @@ export function highlightTextRangeForError(
   return lines.join('\n')
 }
 
-export function isError(
-  error: unknown,
-): error is SiteErrorConfigType {
+export function isError(error: unknown): error is SiteErrorConfigType {
   return (
-    code.isRecord(error) &&
-    Boolean((error as SiteErrorConfigType).code)
+    code.isRecord(error) && Boolean((error as SiteErrorConfigType).code)
   )
 }
 
@@ -867,9 +872,7 @@ export function parseStackLineFileOnly(
 ): SiteStackTraceType {
   const parts = text.replace(/[\(\)]/g, '').split(':')
   const character = parts.pop()
-  let characterN = character
-    ? parseInt(character, 10)
-    : undefined
+  let characterN = character ? parseInt(character, 10) : undefined
   const line = parts.pop()
   let lineN = line ? parseInt(line, 10) : undefined
   let file = parts.join(':')
@@ -935,9 +938,7 @@ export function renderError(stackTrace: string): Array<string> {
   while (i >= 0) {
     const line = parts[i--]
     if (!intoMessage && line?.startsWith('    at ')) {
-      stack.push(
-        code.parseStackLine(line.slice('    at '.length)),
-      )
+      stack.push(code.parseStackLine(line.slice('    at '.length)))
     } else if (line) {
       intoMessage = true
       messageLine.push(line)
@@ -977,14 +978,10 @@ export function renderStackTrace(
 
     const end = suffix.length ? ':' + suffix.join(':') : ''
     text.push(
-      `${g(`site ${g('<')}`)}${bw(`${node.file}${end}`)}${g(
-        '>',
-      )}`,
+      `${g(`site ${g('<')}`)}${bw(`${node.file}${end}`)}${g('>')}`,
     )
     if (node.function) {
-      text.push(
-        `${g(`  call ${g('<')}${w(node.function)}${g('>')}`)}`,
-      )
+      text.push(`${g(`  call ${g('<')}${w(node.function)}${g('>')}`)}`)
     }
   })
   return text
@@ -1009,10 +1006,8 @@ export function throwError(data: SiteErrorType): void {
         .slice(1)
         .map((site: NodeJS.CallSite) => {
           let x = site.getFileName()
-          let a: number | null | undefined =
-            site.getLineNumber()
-          let b: number | null | undefined =
-            site.getColumnNumber()
+          let a: number | null | undefined = site.getLineNumber()
+          let b: number | null | undefined = site.getColumnNumber()
 
           if (
             x &&
@@ -1035,9 +1030,7 @@ export function throwError(data: SiteErrorType): void {
           if (x) {
             lastLines.push(
               chalk.gray('      site <') +
-                chalk.whiteBright(
-                  [x, a, b].filter(x => x).join(':'),
-                ) +
+                chalk.whiteBright([x, a, b].filter(x => x).join(':')) +
                 chalk.gray('>'),
             )
           } else {

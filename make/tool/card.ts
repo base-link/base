@@ -16,9 +16,7 @@ export function assertCard(
   }
 }
 
-export function isCard(
-  object: unknown,
-): object is MeshModule_FullType {
+export function isCard(object: unknown): object is MeshModule_FullType {
   return (
     code.isRecord(object) &&
     'like' in object &&

@@ -1,52 +1,44 @@
-import { Link, Mesh, code } from '~'
-import type {
-  MeshInputType,
-  MeshPartialType,
-  MeshType,
-  Mesh_FullTypeMixin,
-  Mesh_PartialTypeMixin,
-  SiteScopeType,
-} from '~'
+import { Link, LinkNodeType, Mesh, MeshFullType, code } from '~'
+import type { MeshInputType } from '~'
 
 export * from './hook/index.js'
 
-export function assumeObjectScope(
+export function generateFullTemplate(
   input: MeshInputType,
-  rank = 0,
-): SiteScopeType {
-  const scope = code.getObjectScope(input, rank)
-  code.assertScope(scope)
-  return scope
-}
+): MeshFullType<Mesh.Template> {
+  const children = code.assumeChildren(input)
 
-export function childrenAreComplete({
-  children,
-}: {
-  children: Array<Mesh_PartialTypeMixin | Mesh_FullTypeMixin>
-}): boolean {
-  return children.filter(x => x.partial).length === 0
-}
+  const inputList = children.filter(
+    (node): node is MeshFullType<Mesh.Input> =>
+      code.isMeshFullType(node, Mesh.Input),
+  )
 
-export function getObjectScope(
-  input: MeshInputType,
-  rank = 0,
-): SiteScopeType | undefined {
-  let scope: SiteScopeType | undefined = input.objectScope
-  while (rank > 0 && scope) {
-    scope = scope.parent
-    rank--
-  }
-  return scope
-}
+  const linkList = children.filter((node): node is LinkNodeType =>
+    code.isGenericLinkType(node),
+  )
 
-export function process_codeCard_tree(
-  input: MeshInputType,
-): void {
-  const tree: MeshPartialType<Mesh.Template> = {
-    children: [],
+  const hidden =
+    code.findFullBooleanConstantByName(input, 'hidden') ?? false
+  const name = code.findFullStringConstantByName(input, 'name')
+
+  const inputs = code.keyBy(inputList, 'name')
+
+  code.assertString(name)
+
+  return {
+    complete: false,
+    hidden,
+    inputs,
     like: Mesh.Template,
-    partial: true,
+    link: linkList,
+    name,
+    partial: false,
   }
+}
+
+export function process_codeCard_tree(input: MeshInputType): void {
+  const tree = code.createMeshPartial(Mesh.Template, input.scope)
+  code.pushIntoParentObject(input, tree)
 
   const treeInput = code.withBranch(input, tree)
 
@@ -61,12 +53,9 @@ export function process_codeCard_tree(
       )
     })
 
-  // if (code.childrenAreComplete(tree)) {
-  //   code.replaceMeshChild(input, tree, {
-  //     like: Mesh.Template,
-  //     partial: false,
-  //   })
-  // }
+  code.replaceIfComplete(treeInput, tree, () =>
+    code.generateFullTemplate(treeInput),
+  )
 }
 
 export function process_codeCard_tree_nestedChildren(
@@ -74,22 +63,13 @@ export function process_codeCard_tree_nestedChildren(
 ): void {
   const type = code.determineNestType(input)
   if (type === 'static-term') {
-    const name = code.assumeStaticTermFromNest(input)
+    const name = code.assumeTerm(input)
     const index = code.assumeNestIndex(input)
     if (index === 0) {
-      const tree = code.assumeBranchAsMeshPartialType(
+      code.pushIntoParentObject(
         input,
-        Mesh.Template,
+        code.createStringConstant('name', name),
       )
-      const fullTerm: MeshType<Mesh.Term> = {
-        complete: true,
-        dive: false,
-        like: Mesh.Term,
-        name,
-        nest: [],
-        partial: false,
-      }
-      tree.children.push(fullTerm)
     } else {
       switch (name) {
         case 'take':
@@ -98,6 +78,7 @@ export function process_codeCard_tree_nestedChildren(
         case 'hook':
           code.process_codeCard_tree_hook(input)
           break
+
         case 'head':
           code.process_codeCard_head(input)
           break

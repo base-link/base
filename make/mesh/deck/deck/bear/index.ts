@@ -5,18 +5,13 @@ export function finalize_deckCard_deck_bear(
   input: MeshInputType,
 ): void {
   const text = code.resolveText(input)
-  const { module } = input
-  code.assertMeshType(module, Mesh.PackageModule)
   code.assertString(text)
-  const path = code.findPath(text, module.directory)
+  const path = code.resolveModulePath(input, text)
   code.assertString(path, 'path')
-
-  const deck = code.assumeBranchAsMeshPartialType(
+  code.pushIntoParentObject(
     input,
-    Mesh.Package,
+    code.createStringConstant('export', path),
   )
-
-  deck.children.push(code.createStringConstant('export', path))
 }
 
 export function process_deckCard_deck_bear(

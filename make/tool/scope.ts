@@ -7,6 +7,12 @@ import {
   code,
 } from '~'
 
+export const DEFAULT_CONTAINER_SCOPE = {
+  base: { like: 'base' },
+  path: { like: 'string' },
+  text: { like: 'string' },
+}
+
 export function createContainerScope(
   declarations: Record<string, SiteVariableDeclarationType>,
   parent?: SiteContainerScopeType,
@@ -31,10 +37,7 @@ export function createEnvironment(
 
 export function createStepScope(
   container: SiteContainerScopeType,
-  declarations: Record<
-    string,
-    SiteVariableDeclarationType
-  > = {},
+  declarations: Record<string, SiteVariableDeclarationType> = {},
 ): SiteStepScopeType {
   const previous = container.steps[container.steps.length - 1]
   const step: SiteStepScopeType = {
@@ -55,17 +58,15 @@ export function getEnvironmentProperty(
 
   while (source) {
     if (path in source.bindings) {
-      break
+      return (
+        source.bindings as Record<string | symbol | number, unknown>
+      )[path]
     } else if (source.parent) {
       source = source.parent
     } else {
       return
     }
   }
-
-  return (
-    source.bindings as Record<string | symbol | number, unknown>
-  )[path]
 }
 
 export function setEnvironmentProperty(

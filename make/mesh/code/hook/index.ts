@@ -1,9 +1,7 @@
 import { Link, LinkHint, Mesh, code } from '~'
 import type { MeshInputType, MeshPartialType } from '~'
 
-export function process_codeCard_hook(
-  input: MeshInputType,
-): void {
+export function process_codeCard_hook(input: MeshInputType): void {
   const hook: MeshPartialType<Mesh.Callback> = {
     children: [],
     like: Mesh.Callback,
@@ -31,7 +29,7 @@ export function process_codeCard_hook_nestedChildren(
   switch (type) {
     case LinkHint.StaticTerm: {
       const index = code.assumeNestIndex(input)
-      const term = code.assumeStaticTermFromNest(input)
+      const term = code.assumeTerm(input)
       if (index === 0) {
         const callback = code.assumeBranchAsMeshPartialType(
           input,
@@ -93,16 +91,12 @@ export function process_codeCard_hook_nestedChildren(
             code.process_codeCard_note(input)
             break
           default:
-            code.throwError(
-              code.generateUnhandledTermCaseError(input),
-            )
+            code.throwError(code.generateUnhandledTermCaseError(input))
         }
       }
       break
     }
     default:
-      code.throwError(
-        code.generateUnhandledNestCaseError(input, type),
-      )
+      code.throwError(code.generateUnhandledNestCaseError(input, type))
   }
 }

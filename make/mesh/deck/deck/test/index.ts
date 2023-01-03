@@ -13,12 +13,10 @@ export function finalize_deckCard_deck_test(
   const path = code.findPath(text, card.directory)
   code.assertString(path, 'path')
 
-  const deck = code.assumeBranchAsMeshPartialType(
+  code.pushIntoParentObject(
     input,
-    Mesh.Package,
+    code.createStringConstant('test', path),
   )
-
-  deck.children.push(code.createStringConstant('test', path))
 }
 
 export function process_deckCard_deck_test(
