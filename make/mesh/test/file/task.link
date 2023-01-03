@@ -1,0 +1,8 @@
+
+tree empty-task
+  task a
+
+tree task-from-base
+  task x
+
+  task a, base x

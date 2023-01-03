@@ -1,0 +1,9 @@
+
+tree class-with-no-properties
+  form x
+
+tree class-with-static-untyped-property
+  form x
+    link a
+
+tree build-stack

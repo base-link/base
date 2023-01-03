@@ -132,12 +132,19 @@ function handlePass(data: Result): void {
 }
 
 function handleComplete(data: FinalResults): void {
-  const rise = chalk.green(data.pass)
-  const fall = chalk.red(data.fail)
   const text: Array<string> = []
 
+  const ratio: Array<string> = []
+  if (data.pass) {
+    ratio.push(chalk.green(data.pass))
+  }
+  if (data.fail) {
+    ratio.push(chalk.red(data.fail))
+  }
+  ratio.push(chalk.white(data.count))
+
   text.push('')
-  text.push(`  rate ${rise}${chalk.gray(', ')}${fall}`)
+  text.push(`  rate ${ratio.join(chalk.gray(', '))}`)
   text.push('')
 
   console.log(text.join('\n'))
@@ -151,6 +158,7 @@ function parseStackTrace(
     .split(/\n+/)
     .map(line => {
       const [a, b] = line.split(/\s+/)
+      code.assertString(a)
       if (!b) {
         return parseStackLineFileOnly(a)
       } else {

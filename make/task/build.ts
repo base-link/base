@@ -10,4 +10,5 @@ async function start() {
   code.setEnvironmentVariable(base, 'dock', 'javascript')
   code.setEnvironmentVariable(base, 'site', 'test')
   code.handle_deckCard(base, link)
+  code.exportNodeJS(base)
 }
