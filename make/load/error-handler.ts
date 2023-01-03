@@ -4,27 +4,24 @@ export function watchUnhandledErrors(): void {
   process.on('unhandledRejection', (reason: unknown) => {
     if (reason instanceof BaseLinkError) {
       console.log(reason.stack)
+    } else if (
+      reason instanceof Error &&
+      'stack' in reason &&
+      code.isString(reason.stack)
+    ) {
+      const text = code.renderError(reason.stack)
+      console.log(text.join('\n'))
     } else {
       console.log(reason)
-      try {
-        code.throwError({
-          code: `0025`,
-          note:
-            code.isRecord(reason) && 'message' in reason
-              ? String(reason.message)
-              : String(reason),
-        })
-      } catch (e: unknown) {
-        if (e instanceof Error) {
-          console.log(e.stack)
-        } else {
-          console.log(e)
-        }
-      }
     }
   })
 
   process.on('uncaughtException', (error: Error) => {
-    console.log(error.stack)
+    if (code.isString(error.stack)) {
+      const text = code.renderError(error.stack)
+      console.log(text.join('\n'))
+    } else {
+      console.log(error.message ?? error)
+    }
   })
 }

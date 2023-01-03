@@ -1,4 +1,4 @@
-import { Base, DockJS, code } from '~'
+import { Base, DockJS, Mesh, MeshType, code } from '~'
 import type { DockJSProgramTokenType, DockJSTokenType } from '~'
 
 export * from '../js/type.js'
@@ -12,7 +12,9 @@ export type DockNodeJSStateType = {
 }
 
 // sort the things in topological order.
-export function exportNodeJS(base: Base): void {}
+export function exportNodeJS(base: Base): void {
+  const program = code.generateNodeJS(base)
+}
 
 export function generateNodeJS(base: Base): DockJSTokenType {
   const program: DockJSProgramTokenType = {
@@ -21,14 +23,33 @@ export function generateNodeJS(base: Base): DockJSTokenType {
   }
 
   for (const [key, val] of base.card_mesh) {
-    code.generateNodeJSModule()
+    // console.log(val.seed)
+    switch (val.seed.like) {
+      case Mesh.CodeModule:
+        code.generateNodeJSCardModule(program, val.seed)
+        break
+      case Mesh.DeckModule:
+        code.generateNodeJSDeckModule(program, val.seed)
+        break
+    }
   }
 
   return program
 }
 
-export function generateNodeJSModule(
-  input: DockNodeJSInputType,
+export function generateNodeJSCardModule(
+  program: DockJSProgramTokenType,
+  module: MeshType<Mesh.CardModule>,
+): void {
+  module.exportList.forEach(exp => {})
+  module.importTree.forEach(imp => {
+    console.log(imp)
+  })
+}
+
+export function generateNodeJSDeckModule(
+  program: DockJSProgramTokenType,
+  module: MeshType<Mesh.DeckModule>,
 ): void {}
 
 export function renderNodeJS(): string {
