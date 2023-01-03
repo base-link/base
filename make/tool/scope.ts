@@ -6,7 +6,6 @@ import {
   SiteVariableDeclarationType,
   code,
 } from '~'
-import type { SiteScopeType } from '~'
 
 export function createContainerScope(
   declarations: Record<string, SiteVariableDeclarationType>,
@@ -38,12 +37,14 @@ export function createStepScope(
   > = {},
 ): SiteStepScopeType {
   const previous = container.steps[container.steps.length - 1]
-  return {
+  const step: SiteStepScopeType = {
     container,
-    declarations: {},
+    declarations,
     like: Site.StepScope,
     previous,
   }
+  container.steps.push(step)
+  return step
 }
 
 export function getEnvironmentProperty(

@@ -224,7 +224,7 @@ export function generateHighlightedErrorForLinkTree(
 ): string {
   const highlightedRange = code.getCursorRangeForTree(input)
   return code.generateHighlightedError(
-    input.card.textByLine,
+    input.module.textByLine,
     highlightedRange,
   )
 }
@@ -234,7 +234,7 @@ export function generateHighlightedErrorForText(
 ): string {
   const highlightedRange = code.getCursorRangeForText(input)
   return code.generateHighlightedError(
-    input.card.textByLine,
+    input.module.textByLine,
     highlightedRange,
   )
 }
@@ -299,12 +299,12 @@ export function generateInvalidPatternError(
   input: MeshInputType,
   pattern: unknown,
 ): SiteErrorType {
-  const { card } = input
+  const { module } = input
   const nest = code.assumeNest(input)
   const text = code.generateHighlightedErrorForText(input)
   return {
     code: `0012`,
-    file: `${card.path}`,
+    file: `${module.path}`,
     note: `Text does not match pattern ${pattern}.`,
     text: text,
   }
@@ -335,7 +335,7 @@ export function generateModuleUnresolvableError(
 ): SiteErrorType {
   return {
     code: '0020',
-    file: `${input.card.path}`,
+    file: `${input.module.path}`,
     note: `Module has unresolvable references`,
   }
 }
@@ -413,10 +413,10 @@ export function generateTermMissingError(
   type: string,
   object: string,
 ): SiteErrorType {
-  const { card } = input
+  const { module } = input
   return {
     code: `0018`,
-    file: `${card.path}`,
+    file: `${module.path}`,
     note: `Term ${type} is missing on ${object}.`,
     text: '',
   }
@@ -425,11 +425,11 @@ export function generateTermMissingError(
 export function generateUnhandledNestCaseBaseError(
   input: MeshInputType,
 ): SiteErrorType {
-  const { card } = input
+  const { module } = input
   const text = code.generateHighlightedErrorForLinkTree(input)
   return {
     code: `0005`,
-    file: `${card.path}`,
+    file: `${module.path}`,
     note: `We haven't implemented handling this type of nest yet.`,
     text,
   }
@@ -446,7 +446,7 @@ export function generateUnhandledNestCaseError(
   const text = code.generateHighlightedErrorForLinkTree(input)
   return {
     code: `0004`,
-    file: `${input.card.path}`,
+    file: `${input.module.path}`,
     note: `We haven't implemented handling "${
       LINK_HINT_TEXT[type]
     }s" yet${scope ? ` on \`${scope}\`` : ''}.`,
@@ -468,7 +468,7 @@ export function generateUnhandledTermCaseError(
   const text = code.generateHighlightedErrorForLinkTree(input)
   return {
     code: `0002`,
-    file: `${input.card.path}`,
+    file: `${input.module.path}`,
     note: handle.note({ name, scope }),
     term: [ErrorTerm.CompilerError],
     text,
@@ -480,7 +480,7 @@ export function generateUnhandledTermInterpolationError(
 ): SiteErrorType {
   return {
     code: `0001`,
-    file: `${input.card.path}`,
+    file: `${input.module.path}`,
     note: `We haven't implemented handling term interpolation yet.`,
     text: '',
   }
@@ -489,13 +489,13 @@ export function generateUnhandledTermInterpolationError(
 export function generateUnknownTermError(
   input: MeshInputType,
 ): SiteErrorType {
-  const { card } = input
+  const { module } = input
   const name = code.resolveStaticTermFromNest(input)
   const text = code.generateHighlightedErrorForLinkTree(input)
   const insideName = code.resolveStaticTermFromNest(input, 1)
   return {
     code: `0003`,
-    file: `${card.path}`,
+    file: `${module.path}`,
     note: `Unknown term \`${name}\`${
       insideName ? ` inside \`${insideName}\`` : ''
     }.`,
@@ -507,10 +507,10 @@ export function generateUnresolvedPathError(
   input: MeshInputType,
   path: string,
 ): SiteErrorType {
-  const { card } = input
+  const { module } = input
   return {
     code: `0013`,
-    file: card.path,
+    file: module.path,
     note: `File not found ${path}.`,
   }
 }
