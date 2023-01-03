@@ -51,26 +51,33 @@ export function process_codeCard(
 ): void {
   const parse = code.loadLinkModule(base, link)
   const card = base.card(link)
+  const container = code.createContainerScope({
+    base: { like: 'base' },
+    path: { like: 'string' },
+    text: { like: 'string' },
+  })
+  const scope = code.createStepScope(container)
   const seed: MeshPartialType<Mesh.CodeModule> = {
     ...parse,
     base,
     children: [],
     like: Mesh.CodeModule,
     partial: true,
+    scope,
   }
 
-  const input: MeshInputType = {
-    card: seed,
-    lexicalScope: code.createScope(seed),
-    objectScope: code.createScope(seed),
-  }
+  const input: MeshInputType = code.createInput(
+    seed,
+    scope,
+    seed,
+  )
 
   card.bind(seed)
 
   if (seed.text.trim()) {
     seed.link.nest.forEach((nest, index) => {
       code.process_codeCard_nestedChildren(
-        code.extendWithNestScope(input, {
+        code.withEnvironment(input, {
           index,
           nest,
         }),
@@ -191,6 +198,7 @@ export function resolve_codeCard(
         publicNativeClassInterfaceMesh: {},
         publicTemplateMesh: {},
         publicTestMesh: {},
+        scope: card.seed.scope,
         text: card.seed.text,
         textByLine: card.seed.textByLine,
       }
@@ -254,11 +262,11 @@ export function resolve_codeCard(
         }
       })
 
-      const input: MeshInputType = {
-        card: card.seed,
-        lexicalScope: code.createScope(card.seed),
-        objectScope: code.createScope(card.seed),
-      }
+      const input: MeshInputType = code.createInput(
+        card.seed,
+        card.scope,
+        card.seed,
+      )
 
       code.replaceSeed(input, seed)
 

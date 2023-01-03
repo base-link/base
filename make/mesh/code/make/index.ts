@@ -8,7 +8,7 @@ export function process_codeCard_make(
     .assumeLinkType(input, Link.Tree)
     .nest.forEach((nest, index) => {
       process_codeCard_make_nestedChildren(
-        code.extendWithNestScope(input, {
+        code.withEnvironment(input, {
           index,
           nest,
         }),

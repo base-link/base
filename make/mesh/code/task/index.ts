@@ -4,7 +4,7 @@ import {
   Mesh,
   MeshFullType,
   MeshFunctionFlow_FullType,
-  MeshPartialType,
+  SiteStepScopeType,
   code,
 } from '~'
 import type { MeshInputType } from '~'
@@ -13,11 +13,15 @@ export * from './back/index.js'
 export * from './base/index.js'
 export * from './free/index.js'
 
-export function createMeshPartial<T extends Mesh>(like: T) {
+export function createMeshPartial<T extends Mesh>(
+  like: T,
+  scope?: SiteStepScopeType,
+) {
   return {
     children: [],
     like: like,
     partial: true,
+    scope,
   }
 }
 
@@ -72,6 +76,7 @@ export function generateFullFunction(
     name,
     parameter: parameterMesh,
     partial: false,
+    scope: input.scope,
   }
 }
 
@@ -82,8 +87,8 @@ export function potentiallyReplaceWithFullNode(
     data: Record<string, unknown>,
   ) => void,
 ): void {
-  const data = code.assumeInputObjectAsGenericMeshType(input)
-  const parentData = code.assumeInputObjectAsGenericMeshType(
+  const data = code.assumeBranchAsGenericMeshType(input)
+  const parentData = code.assumeBranchAsGenericMeshType(
     input,
     1,
   )
@@ -105,17 +110,21 @@ export function potentiallyReplaceWithFullNode(
 export function process_codeCard_task(
   input: MeshInputType,
 ): void {
-  const task = code.createMeshPartial(Mesh.Function)
-
+  const container = code.createContainerScope(
+    {},
+    input.scope.container,
+  )
+  const scope = code.createStepScope(container)
+  const scopeInput = code.withScope(input, scope)
+  const task = code.createMeshPartial(Mesh.Function, scope)
   code.pushIntoParentObject(input, task)
-
-  const childInput = code.extendWithObjectScope(input, task)
+  const childInput = code.withBranch(scopeInput, task)
 
   code
     .assumeLinkType(childInput, Link.Tree)
     .nest.forEach((nest, index) => {
       code.process_codeCard_task_nestedChildren(
-        code.extendWithNestScope(childInput, {
+        code.withEnvironment(childInput, {
           index,
           nest,
         }),
@@ -136,7 +145,7 @@ export function process_codeCard_task_nestedChildren(
     const term = code.assumeStaticTermFromNest(input)
     const index = code.assumeNestIndex(input)
     if (index === 0) {
-      const task = code.assumeInputObjectAsMeshPartialType(
+      const task = code.assumeBranchAsMeshPartialType(
         input,
         Mesh.Function,
       )
@@ -205,8 +214,12 @@ export function pushIntoParentObject(
   input: MeshInputType,
   pushed: Record<string, unknown>,
 ): void {
-  const data = input.objectScope.data
-  if ('children' in data && code.isArray(data.children)) {
+  const data = input.branch?.element
+  if (
+    code.isRecord(data) &&
+    'children' in data &&
+    code.isArray(data.children)
+  ) {
     data.children.push(pushed)
   }
 }

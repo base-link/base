@@ -54,7 +54,7 @@ export function process_codeCard_tree(
     .assumeLinkType(treeInput, Link.Tree)
     .nest.forEach((nest, index) => {
       code.process_codeCard_tree_nestedChildren(
-        code.extendWithNestScope(treeInput, {
+        code.withEnvironment(treeInput, {
           index,
           nest,
         }),
@@ -77,7 +77,7 @@ export function process_codeCard_tree_nestedChildren(
     const name = code.assumeStaticTermFromNest(input)
     const index = code.assumeNestIndex(input)
     if (index === 0) {
-      const tree = code.assumeInputObjectAsMeshPartialType(
+      const tree = code.assumeBranchAsMeshPartialType(
         input,
         Mesh.Template,
       )
@@ -108,17 +108,4 @@ export function process_codeCard_tree_nestedChildren(
   } else {
     code.throwError(code.generateUnhandledTermCaseError(input))
   }
-}
-
-export function replaceMeshChild<
-  A extends Mesh,
-  X extends MeshPartialType<Mesh>,
-  B extends MeshType<Mesh>,
->(input: MeshInputType, a: A | Array<A>, x: X, b: B): void {
-  const { data } = code.assumeObjectScope(input, 1)
-  code.assertMeshPartialType(data, a)
-  const index: number = (
-    data.children as Array<unknown>
-  ).indexOf(x)
-  data.children[index] = b
 }

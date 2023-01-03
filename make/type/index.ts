@@ -20,6 +20,9 @@ import type {
   MeshCallback_FullType,
   MeshCallback_PartialType,
   MeshCallback_Type,
+  MeshClassInput_FullType,
+  MeshClassInput_PartialType,
+  MeshClassInput_Type,
   MeshClassInterfaceFunction_FullType,
   MeshClassInterfaceFunction_PartialType,
   MeshClassInterfaceFunction_Type,
@@ -108,7 +111,10 @@ import type {
   MeshUnsignedInteger_FullType,
   MeshUnsignedInteger_PartialType,
   MeshUnsignedInteger_Type,
+  SiteBranchType,
+  SiteEnvironmentType,
   SiteScopeType,
+  SiteStepScopeType,
 } from '~'
 
 export * from './book.js'
@@ -126,6 +132,7 @@ export enum Mesh {
   Call = 'mesh-call',
   Callback = 'mesh-callback',
   Class = 'mesh-class',
+  ClassInput = 'mesh-class-input',
   ClassInterface = 'mesh-class-interface',
   ClassInterfaceFunction = 'mesh-class-interface-function',
   ClassInterfaceImplementation = 'mesh-class-interface-implementation',
@@ -157,6 +164,47 @@ export enum Mesh {
 }
 
 // eslint-disable-next-line sort-exports/sort-exports
+export const MESH_TYPE = [
+  Mesh.Assertion,
+  Mesh.Bind,
+  Mesh.BookModule,
+  Mesh.Boolean,
+  Mesh.BorrowVariable,
+  Mesh.Call,
+  Mesh.Callback,
+  Mesh.Class,
+  Mesh.ClassInput,
+  Mesh.ClassInterface,
+  Mesh.ClassInterfaceFunction,
+  Mesh.ClassInterfaceImplementation,
+  Mesh.ClassReference,
+  Mesh.CloneVariable,
+  Mesh.CodeModule,
+  Mesh.Component,
+  Mesh.Constant,
+  Mesh.Element,
+  Mesh.Export,
+  Mesh.Function,
+  Mesh.Import,
+  Mesh.ImportVariable,
+  Mesh.ImportVariableRename,
+  Mesh.Inject,
+  Mesh.Input,
+  Mesh.MoveVariable,
+  Mesh.NativeClassInterface,
+  Mesh.Output,
+  Mesh.Package,
+  Mesh.PackageLicense,
+  Mesh.PackageModule,
+  Mesh.PackageUser,
+  Mesh.String,
+  Mesh.Template,
+  Mesh.Term,
+  Mesh.Test,
+  Mesh.UnsignedInteger,
+]
+
+// eslint-disable-next-line sort-exports/sort-exports
 export const CARD_TYPE = [
   Mesh.CodeModule,
   Mesh.BookModule,
@@ -167,10 +215,10 @@ export type MeshFullType<T extends Mesh> =
   MeshMappingFullType[T]
 
 export type MeshInputType = {
-  card: MeshModuleBaseType
-  lexicalScope: SiteScopeType
-  nestScope?: SiteScopeType
-  objectScope: SiteScopeType
+  branch?: SiteBranchType
+  environment: SiteEnvironmentType
+  module: MeshModuleBaseType
+  scope: SiteStepScopeType
 }
 
 export type MeshMappingFullType = {
@@ -182,6 +230,7 @@ export type MeshMappingFullType = {
   'mesh-call': MeshCall_FullType
   'mesh-callback': MeshCallback_FullType
   'mesh-class': MeshClass_FullType
+  'mesh-class-input': MeshClassInput_FullType
   'mesh-class-interface': MeshClassInterface_FullType
   'mesh-class-interface-function': MeshClassInterfaceFunction_FullType
   'mesh-class-interface-implementation': MeshClassInterfaceImplementation_FullType
@@ -221,6 +270,7 @@ export type MeshMappingPartialType = {
   'mesh-call': MeshCall_PartialType
   'mesh-callback': MeshCallback_PartialType
   'mesh-class': MeshClass_PartialType
+  'mesh-class-input': MeshClassInput_PartialType
   'mesh-class-interface': MeshClassInterface_PartialType
   'mesh-class-interface-function': MeshClassInterfaceFunction_PartialType
   'mesh-class-interface-implementation': MeshClassInterfaceImplementation_PartialType
@@ -262,6 +312,7 @@ export type MeshMappingType = {
   'mesh-call': MeshCall_Type
   'mesh-callback': MeshCallback_Type
   'mesh-class': MeshClass_Type
+  'mesh-class-input': MeshClassInput_Type
   'mesh-class-interface': MeshClassInterface_Type
   'mesh-class-interface-function': MeshClassInterfaceFunction_Type
   'mesh-class-interface-implementation': MeshClassInterfaceImplementation_Type

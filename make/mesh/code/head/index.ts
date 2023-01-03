@@ -1,14 +1,19 @@
-import { Link, LinkHint, code } from '~'
+import { Link, LinkHint, Mesh, code } from '~'
 import type { MeshInputType } from '~'
 
 export function process_codeCard_head(
   input: MeshInputType,
 ): void {
+  const head = code.createMeshPartial(
+    Mesh.ClassInput,
+    input.scope,
+  )
+
   code
     .assumeLinkType(input, Link.Tree)
     .nest.forEach((nest, index) => {
       process_codeCard_head_nestedChildren(
-        code.extendWithNestScope(input, {
+        code.withEnvironment(input, {
           index,
           nest,
         }),
@@ -30,6 +35,7 @@ export function process_codeCard_head_nestedChildren(
 
       switch (term) {
         case 'like':
+          code.process_codeCard_like(input)
           break
         case 'base':
           code.process_codeCard_like(input)

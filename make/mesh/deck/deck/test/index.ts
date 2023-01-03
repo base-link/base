@@ -7,13 +7,13 @@ export function finalize_deckCard_deck_test(
   const text = code.resolveText(input)
   code.assertString(text)
 
-  const card = code.getProperty(input, 'card')
+  const card = input.module
   code.assertMeshType(card, Mesh.PackageModule)
 
   const path = code.findPath(text, card.directory)
   code.assertString(path, 'path')
 
-  const deck = code.assumeInputObjectAsMeshPartialType(
+  const deck = code.assumeBranchAsMeshPartialType(
     input,
     Mesh.Package,
   )
@@ -29,7 +29,7 @@ export function process_deckCard_deck_test(
   const nest = code.assumeLinkType(input, Link.Tree).nest[0]
 
   code.processTextNest(
-    code.extendWithNestScope(input, {
+    code.withEnvironment(input, {
       index: 0,
       nest,
     }),

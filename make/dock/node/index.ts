@@ -41,10 +41,10 @@ export function generateNodeJSCardModule(
   program: DockJSProgramTokenType,
   module: MeshType<Mesh.CardModule>,
 ): void {
-  module.exportList.forEach(exp => {})
-  module.importTree.forEach(imp => {
-    console.log(imp)
-  })
+  // module.exportList.forEach(exp => {})
+  // module.importTree.forEach(imp => {
+  //   console.log(imp)
+  // })
 }
 
 export function generateNodeJSDeckModule(

@@ -170,6 +170,15 @@ export function generateCompilerTodoError(
   }
 }
 
+export function generateEnvironmentMissingPropertyError(
+  property: string,
+): SiteErrorType {
+  return {
+    code: '0019',
+    note: `Environment is missing property ${property}.`,
+  }
+}
+
 export function generateForkMissingPropertyError(
   property: string,
 ): SiteErrorType {
@@ -350,15 +359,6 @@ export function generateObjectNotTypeError(
   }
 }
 
-export function generateScopeMissingPropertyError(
-  property: string,
-): SiteErrorType {
-  return {
-    code: '0019',
-    note: `Scope is missing property ${property}.`,
-  }
-}
-
 export function generateStringMismatchError(
   input: TextSplitInputType,
   a: string,
@@ -534,10 +534,10 @@ export function getCursorRangeForPath(
 ): CursorRangeType {
   const path = code.assumeLinkType(input, Link.Path)
   const start = getCursorRangeForTerm(
-    code.extendWithNestScope(input, { nest: path.segment[0] }),
+    code.withEnvironment(input, { nest: path.segment[0] }),
   )
   const end = getCursorRangeForTerm(
-    code.extendWithNestScope(input, {
+    code.withEnvironment(input, {
       nest: path.segment[path.segment.length - 1],
     }),
   )
@@ -563,17 +563,17 @@ export function getCursorRangeForPlugin(
   switch (child?.like) {
     case Link.Term: {
       return code.getCursorRangeForTerm(
-        code.extendWithNestScope(input, { nest }),
+        code.withEnvironment(input, { nest }),
       )
     }
     case Link.Path: {
       return code.getCursorRangeForPath(
-        code.extendWithNestScope(input, { nest }),
+        code.withEnvironment(input, { nest }),
       )
     }
     case Link.Tree: {
       return code.getCursorRangeForTree(
-        code.extendWithNestScope(input, { nest }),
+        code.withEnvironment(input, { nest }),
       )
     }
     default:
@@ -651,11 +651,11 @@ export function getCursorRangeForText(
 
   if (first.like === Link.String) {
     firstRange = code.getCursorRangeForString(
-      code.extendWithNestScope(input, { nest: first }),
+      code.withEnvironment(input, { nest: first }),
     )
   } else if (first.like === Link.Plugin) {
     firstRange = code.getCursorRangeForPlugin(
-      code.extendWithNestScope(input, { nest: first }),
+      code.withEnvironment(input, { nest: first }),
     )
   } else {
     code.throwError(code.generateInvalidCompilerStateError())
@@ -673,11 +673,11 @@ export function getCursorRangeForText(
 
   if (last.like === Link.String) {
     lastRange = code.getCursorRangeForString(
-      code.extendWithNestScope(input, { nest: last }),
+      code.withEnvironment(input, { nest: last }),
     )
   } else if (last.like === Link.Plugin) {
     lastRange = code.getCursorRangeForPlugin(
-      code.extendWithNestScope(input, { nest: last }),
+      code.withEnvironment(input, { nest: last }),
     )
   } else {
     code.throwError(code.generateInvalidCompilerStateError())
@@ -747,7 +747,7 @@ export function getCursorRangeForTree(
       }
 
       return getCursorRangeForTerm(
-        code.extendWithNestScope(input, { nest: term }),
+        code.withEnvironment(input, { nest: term }),
       )
     }
     case Link.Path: {

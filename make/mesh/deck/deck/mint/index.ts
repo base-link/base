@@ -8,7 +8,7 @@ export function process_deckCard_deck_mint(
     .assumeLinkType(input, Link.Tree)
     .nest.forEach((nest, index) => {
       process_deckCard_deck_mint_nestedChildren(
-        code.extendWithNestScope(input, {
+        code.withEnvironment(input, {
           index,
           nest,
         }),
@@ -24,7 +24,7 @@ export function process_deckCard_deck_mint_nestedChildren(
     case LinkHint.StaticText:
       const text = code.resolveText(input)
       code.assertString(text)
-      const deck = code.assumeInputObjectAsMeshPartialType(
+      const deck = code.assumeBranchAsMeshPartialType(
         input,
         Mesh.Package,
       )

@@ -10,7 +10,7 @@ export function process_codeCard_zone(
     .assumeLinkType(input, Link.Tree)
     .nest.forEach((nest, index) => {
       code.process_codeCard_zone_nestedChildren(
-        code.extendWithNestScope(input, {
+        code.withEnvironment(input, {
           index,
           nest,
         }),

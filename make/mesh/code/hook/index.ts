@@ -16,7 +16,7 @@ export function process_codeCard_hook(
     .assumeLinkType(childInput, Link.Tree)
     .nest.forEach((nest, index) => {
       code.process_codeCard_hook_nestedChildren(
-        code.extendWithNestScope(childInput, {
+        code.withEnvironment(childInput, {
           index,
           nest,
         }),
@@ -33,11 +33,10 @@ export function process_codeCard_hook_nestedChildren(
       const index = code.assumeNestIndex(input)
       const term = code.assumeStaticTermFromNest(input)
       if (index === 0) {
-        const callback =
-          code.assumeInputObjectAsMeshPartialType(
-            input,
-            Mesh.Callback,
-          )
+        const callback = code.assumeBranchAsMeshPartialType(
+          input,
+          Mesh.Callback,
+        )
         callback.children.push({
           complete: true,
           dive: false,

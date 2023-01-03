@@ -22,6 +22,28 @@ export function assertGenericLinkType(
   }
 }
 
+export function assertGenericMeshPartialType(
+  object: unknown,
+  name?: string,
+): asserts object is MeshPartialType<Mesh> {
+  if (!code.isGenericMeshPartialType(object)) {
+    code.throwError(
+      code.generateIncorrectlyTypedVariable('mesh', name),
+    )
+  }
+}
+
+export function assertGenericMeshType(
+  object: unknown,
+  name?: string,
+): asserts object is MeshType<Mesh> {
+  if (!code.isGenericMeshType(object)) {
+    code.throwError(
+      code.generateIncorrectlyTypedVariable('mesh', name),
+    )
+  }
+}
+
 export function assertLinkType<T extends Link>(
   object: unknown,
   like: T,

@@ -20,7 +20,7 @@ export function assumePath(
   input: MeshInputType,
   inputPath: string,
 ): string {
-  const card = input.card
+  const card = input.module
   code.assertCard(card)
   const path = code.findPath(inputPath, card.directory)
   if (!path) {
@@ -105,8 +105,8 @@ export function resolveModulePath(
   input: MeshInputType,
   text: string,
 ): string {
-  const { card } = input
-  const path = code.findPath(text, card.directory)
+  const { module } = input
+  const path = code.findPath(text, module.directory)
 
   if (!path) {
     code.throwError(

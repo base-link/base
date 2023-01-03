@@ -10,7 +10,7 @@ export function process_codeCard_load_find_save(
 
   nest.nest.forEach((nest, index) => {
     code.process_codeCard_load_find_save_nestedChildren(
-      code.extendWithNestScope(input, {
+      code.withEnvironment(input, {
         index,
         nest,
       }),
@@ -26,7 +26,7 @@ export function process_codeCard_load_find_save_nestedChildren(
     const term = code.resolveStaticTermFromNest(input)
     code.assertString(term)
 
-    const find = code.assumeInputObjectAsMeshPartialType(
+    const find = code.assumeBranchAsMeshPartialType(
       input,
       Mesh.ImportVariable,
     )

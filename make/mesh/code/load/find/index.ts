@@ -127,32 +127,23 @@ export function process_codeCard_load_find(
     partial: true,
   }
 
-  const load = code.assumeInputObjectAsMeshPartialType(
+  const load = code.assumeBranchAsMeshPartialType(
     input,
     Mesh.Import,
   )
   load.children.push(find)
 
-  const childInput = code.extendWithObjectScope(input, find)
+  const childInput = code.withBranch(input, find)
 
   const nest = code.assumeLinkType(input, Link.Tree)
   nest.nest.forEach((nest, index) => {
     code.process_codeCard_load_find_nestedChildren(
-      code.extendWithNestScope(childInput, {
+      code.withEnvironment(childInput, {
         index,
         nest,
       }),
     )
   })
-
-  if (code.childrenAreComplete(find)) {
-    code.replaceMeshChild(
-      childInput,
-      Mesh.Import,
-      find,
-      code.generateFullImportVariable(find),
-    )
-  }
 }
 
 export function process_codeCard_load_find_nestedChildren(
@@ -177,7 +168,7 @@ export function process_codeCard_load_find_nestedChildren(
           code.throwError(code.generateUnknownTermError(input))
       }
     } else {
-      const find = code.assumeInputObjectAsMeshPartialType(
+      const find = code.assumeBranchAsMeshPartialType(
         input,
         Mesh.ImportVariable,
       )
@@ -185,7 +176,7 @@ export function process_codeCard_load_find_nestedChildren(
       const scope = term
       const nestedNest = nest.nest[0]
       code.assertGenericLinkType(nestedNest)
-      const nestedInput = code.extendWithNestScope(input, {
+      const nestedInput = code.withEnvironment(input, {
         index: 0,
         nest: nestedNest,
       })

@@ -5,13 +5,13 @@ export function finalize_deckCard_deck_bear(
   input: MeshInputType,
 ): void {
   const text = code.resolveText(input)
-  const { card } = input
-  code.assertMeshType(card, Mesh.PackageModule)
+  const { module } = input
+  code.assertMeshType(module, Mesh.PackageModule)
   code.assertString(text)
-  const path = code.findPath(text, card.directory)
+  const path = code.findPath(text, module.directory)
   code.assertString(path, 'path')
 
-  const deck = code.assumeInputObjectAsMeshPartialType(
+  const deck = code.assumeBranchAsMeshPartialType(
     input,
     Mesh.Package,
   )
@@ -27,7 +27,7 @@ export function process_deckCard_deck_bear(
   const nest = code.assumeLinkType(input, Link.Tree).nest[0]
 
   code.processTextNest(
-    code.extendWithNestScope(input, { index: 0, nest }),
+    code.withEnvironment(input, { nest }),
     code.finalize_deckCard_deck_bear,
   )
 }

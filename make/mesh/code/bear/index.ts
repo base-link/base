@@ -28,7 +28,7 @@ export function process_codeCard_bear(
   const nest = code.assumeLinkType(input, Link.Tree)
   nest.nest.forEach((nest, index) => {
     code.process_codeCard_bear_nestedChildren(
-      code.extendWithNestScope(input, {
+      code.withEnvironment(input, {
         index,
         nest,
       }),

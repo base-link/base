@@ -1,6 +1,6 @@
 import _ from 'lodash'
 
-import { Link, Mesh, code } from '~'
+import { Link, MESH_TYPE, Mesh, code } from '~'
 import type {
   LinkType,
   MeshInputType,
@@ -50,94 +50,71 @@ export function assertString(
   }
 }
 
-export function assumeInputObjectAsGenericMeshType(
+// export function assumeBranchAsGenericMeshPartialType<
+//   T extends Mesh,
+// >(input: MeshInputType, type: T, rank = 0): MeshPartialType<T> {
+//   let branch = input.branch
+//   while (rank > 0 && branch && branch.parent) {
+//     branch = branch.parent
+//     rank--
+//   }
+//   code.assertGenericMeshPartialType(branch?.element, type)
+//   return branch?.element
+// }
+
+export function assumeBranchAsGenericMeshType(
   input: MeshInputType,
   rank = 0,
 ): Record<string, unknown> {
-  let objectScope = input.objectScope
-  while (rank > 0 && objectScope.parent) {
-    objectScope = objectScope.parent
+  let branch = input.branch
+  while (rank > 0 && branch && branch.parent) {
+    branch = branch.parent
     rank--
   }
-  return objectScope.data
+  code.assertGenericMeshType(branch?.element)
+  return branch?.element
 }
 
-export function assumeInputObjectAsLinkType<T extends Link>(
+export function assumeBranchAsLinkType<T extends Link>(
   type: T,
   input: MeshInputType,
   rank = 0,
 ): LinkType<T> {
-  let objectScope = input.objectScope
-  while (rank > 0 && objectScope.parent) {
-    objectScope = objectScope.parent
+  let branch = input.branch
+  while (rank > 0 && branch && branch.parent) {
+    branch = branch.parent
     rank--
   }
-  code.assertLinkType(objectScope.data, type)
-  return objectScope.data
+  code.assertLinkType(branch?.element, type)
+  return branch?.element
 }
 
-export function assumeInputObjectAsMeshPartialType<
-  T extends Mesh,
->(
+export function assumeBranchAsMeshPartialType<T extends Mesh>(
   input: MeshInputType,
   type: T | Array<T>,
   rank = 0,
 ): MeshPartialType<T> {
-  let objectScope = input.objectScope
-  while (rank > 0 && objectScope.parent) {
-    objectScope = objectScope.parent
+  let branch = input.branch
+  while (rank > 0 && branch && branch.parent) {
+    branch = branch.parent
     rank--
   }
-  code.assertMeshPartialType(objectScope.data, type)
-  return objectScope.data
+  code.assertMeshPartialType(branch?.element, type)
+  return branch?.element
 }
 
-export function assumeInputObjectAsMeshType<T extends Mesh>(
+export function assumeBranchAsMeshType<T extends Mesh>(
   input: MeshInputType,
   type: T,
   rank = 0,
 ): MeshType<T> {
-  let objectScope = input.objectScope
-  while (rank > 0 && objectScope.parent) {
-    objectScope = objectScope.parent
+  let branch = input.branch
+  while (rank > 0 && branch && branch.parent) {
+    branch = branch.parent
     rank--
   }
-  code.assertMeshType(objectScope.data, type)
-  return objectScope.data
-}
-
-export function createInitialMeshInput<
-  T extends MeshModuleBaseType,
->(
-  card: T,
-  objectScopeData: Record<string, unknown>,
-  lexicalScopeData: Record<string, unknown>,
-): MeshInputType {
-  return {
-    card,
-    lexicalScope: code.createScope(lexicalScopeData),
-    objectScope: code.createScope(objectScopeData),
-  }
-}
-
-export function extendWithNestScope(
-  input: MeshInputType,
-  data: Record<string, unknown>,
-): MeshInputType {
-  return {
-    ...input,
-    nestScope: code.createScope(data, input.nestScope),
-  }
-}
-
-export function extendWithObjectScope(
-  input: MeshInputType,
-  data: Record<string, unknown>,
-): MeshInputType {
-  return {
-    ...input,
-    objectScope: code.createScope(data, input.objectScope),
-  }
+  code.assertMeshType(branch?.element, type)
+  return branch?.element
 }
 
 export function isArray<T = unknown>(
@@ -148,6 +125,27 @@ export function isArray<T = unknown>(
 
 export function isBoolean(object: unknown): object is boolean {
   return _.isBoolean(object)
+}
+
+export function isGenericMeshPartialType(
+  object: unknown,
+): object is MeshType<Mesh> {
+  return (
+    code.isRecord(object) &&
+    'like' in object &&
+    MESH_TYPE.includes((object as MeshType<Mesh>).like) &&
+    (object as MeshType<Mesh>).partial === true
+  )
+}
+
+export function isGenericMeshType(
+  object: unknown,
+): object is MeshType<Mesh> {
+  return (
+    code.isRecord(object) &&
+    'like' in object &&
+    MESH_TYPE.includes((object as MeshType<Mesh>).like)
+  )
 }
 
 export function isNumber(object: unknown): object is number {

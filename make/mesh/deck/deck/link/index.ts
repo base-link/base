@@ -44,7 +44,7 @@ export function process_deckCard_deck_link(
     /^@[a-z0-9]+\/[a-z0-9]+$/,
   )
 
-  const deck = code.assumeInputObjectAsMeshPartialType(
+  const deck = code.assumeBranchAsMeshPartialType(
     input,
     Mesh.Package,
   )
@@ -52,7 +52,6 @@ export function process_deckCard_deck_link(
   deck.children.push(
     code.createConstant('link', {
       complete: true,
-      lexicalScope: input.lexicalScope,
       like: Mesh.String,
       partial: false,
       string: text,

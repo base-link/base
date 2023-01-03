@@ -4,6 +4,9 @@ import {
   LinkTreeType,
   Mesh,
   MeshModuleBaseType,
+  Site,
+  SiteBranchType,
+  SiteStepScopeType,
   code,
 } from '~'
 import type {
@@ -22,14 +25,37 @@ export type MeshParseType = {
   textByLine: Array<string>
 }
 
+export function createBranch(
+  element: Record<string, unknown>,
+  parent?: SiteBranchType,
+): SiteBranchType {
+  return {
+    element,
+    parent,
+  }
+}
+
+export function createInput(
+  module: MeshModuleBaseType,
+  scope: SiteStepScopeType,
+  bindings: Record<string, unknown>,
+): MeshInputType {
+  return {
+    branch: code.createBranch(bindings),
+    environment: code.createEnvironment(bindings),
+    module,
+    scope,
+  }
+}
+
 export function generate_deckCard(
   input: MeshInputType,
 ): MeshFullType<Mesh.PackageModule> {
-  code.assertMeshPartialType(input.card, Mesh.PackageModule)
+  code.assertMeshPartialType(input.module, Mesh.PackageModule)
 
   let deck
 
-  input.card.children.forEach(node => {
+  input.module.children.forEach(node => {
     switch (node.like) {
       case Mesh.Package:
         deck = node
@@ -44,11 +70,17 @@ export function generate_deckCard(
   code.assertMeshFullType(deck, Mesh.Package)
 
   return {
-    ...code.omit(input.card, ['children']),
+    base: input.module.base,
     complete: true,
     deck,
-    lexicalScope: input.card.lexicalScope,
+    directory: input.module.directory,
+    like: Mesh.PackageModule,
+    link: input.module.link,
     partial: false,
+    path: input.module.path,
+    scope: input.scope,
+    text: input.module.text,
+    textByLine: input.module.textByLine,
   }
 }
 
@@ -82,21 +114,26 @@ export function process_deckCard(
 ): void {
   const card = base.card(link)
   const parse = code.loadLinkModule(base, link)
+  const container = code.createContainerScope({
+    base: { like: 'base' },
+    path: { like: 'string' },
+    text: { like: 'string' },
+  })
+  const scope = code.createStepScope(container)
   const seed: MeshPartialType<Mesh.PackageModule> = {
     ...parse,
     base,
     children: [],
     like: Mesh.PackageModule,
     partial: true,
+    scope,
   }
 
-  const input: MeshInputType = code.createInitialMeshInput(
+  const input: MeshInputType = code.createInput(
     seed,
-    seed,
+    scope,
     seed,
   )
-
-  seed.lexicalScope = input.lexicalScope
 
   card.bind(seed)
 
@@ -104,7 +141,7 @@ export function process_deckCard(
 
   seed.link.nest.forEach((nest, index) => {
     code.process_deckCard_nestedChildren(
-      code.extendWithNestScope(input, {
+      code.withEnvironment(input, {
         index,
         nest,
       }),
@@ -145,8 +182,8 @@ export function replaceSeed<T extends MeshModuleBaseType>(
   input: MeshInputType,
   replacement: T,
 ): void {
-  input.card = replacement
-  input.card.base.card(input.card.path).bind(replacement)
+  input.module = replacement
+  input.module.base.card(input.module.path).bind(replacement)
 }
 
 export function resolve_deckCard(
@@ -166,5 +203,38 @@ export function resolve_deckCard(
 
   if (deck.test) {
     code.handle_codeCard(base, deck.test)
+  }
+}
+
+export function withBranch(
+  input: MeshInputType,
+  element: Record<string, unknown>,
+): MeshInputType {
+  return {
+    ...input,
+    branch: code.createBranch(element, input.branch),
+  }
+}
+
+export function withEnvironment(
+  input: MeshInputType,
+  bindings: Record<string, unknown>,
+): MeshInputType {
+  return {
+    ...input,
+    environment: code.createEnvironment(
+      bindings,
+      input.environment,
+    ),
+  }
+}
+
+export function withScope(
+  input: MeshInputType,
+  scope: SiteStepScopeType,
+): MeshInputType {
+  return {
+    ...input,
+    scope,
   }
 }

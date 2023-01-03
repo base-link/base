@@ -6,6 +6,7 @@ export function process_codeCard_call(
 ): void {
   const call: MeshPartialType<Mesh.Call> = {
     children: [],
+    lexicalScope: input.lexicalScope,
     like: Mesh.Call,
     partial: true,
   }
@@ -16,7 +17,7 @@ export function process_codeCard_call(
     .assumeLinkType(input, Link.Tree)
     .nest.forEach((nest, index) => {
       process_codeCard_call_nestedChildren(
-        code.extendWithNestScope(childInput, {
+        code.withEnvironment(childInput, {
           index,
           nest,
         }),
@@ -40,7 +41,7 @@ export function process_codeCard_call_nestedChildren(
       const term = code.assumeStaticTermFromNest(input)
       const index = code.assumeNestIndex(input)
       if (index === 0) {
-        const call = code.assumeInputObjectAsMeshPartialType(
+        const call = code.assumeBranchAsMeshPartialType(
           input,
           Mesh.Call,
         )

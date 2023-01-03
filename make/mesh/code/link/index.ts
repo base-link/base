@@ -1,29 +1,61 @@
-import { Link, LinkHint, Mesh, code } from '~'
+import {
+  Link,
+  LinkHint,
+  Mesh,
+  MeshFullType,
+  MeshType,
+  Mesh_FullTypeMixin,
+  Mesh_PartialTypeMixin,
+  code,
+} from '~'
 import type { MeshInputType, MeshPartialType } from '~'
 
 export * from './take/index.js'
 
+export function attemptPartialRollup(
+  input: MeshInputType,
+  node: Mesh_PartialTypeMixin | Mesh_FullTypeMixin,
+) {
+  // if (code.childrenAreComplete(node)) {
+  //   code.replaceMeshChild(
+  //     childInput,
+  //     Mesh.Import,
+  //     find,
+  //     code.generateFullImportVariable(find),
+  //   )
+  // }
+}
+
 export function process_codeCard_link(
   input: MeshInputType,
-): void {
+): MeshType<Mesh.Input> {
   const link: MeshPartialType<Mesh.Input> = {
     children: [],
+    lexicalScope: input.lexicalScope,
     like: Mesh.Input,
     partial: true,
   }
 
   const linkInput = code.extendWithObjectScope(input, link)
 
+  code.pushIntoParentObject(input, link)
+
   code
     .assumeLinkType(linkInput, Link.Tree)
     .nest.forEach((nest, index) => {
       process_codeCard_link_nestedChildren(
-        code.extendWithNestScope(linkInput, {
+        code.withEnvironment(linkInput, {
           index,
           nest,
         }),
       )
     })
+
+  code.attemptPartialRollup(
+    input,
+    link,
+    code.generate_full_codeCard_link,
+  )
 }
 
 export function process_codeCard_link_base(
@@ -39,7 +71,7 @@ export function process_codeCard_link_nestedChildren(
       const term = code.assumeStaticTermFromNest(input)
       const index = code.assumeNestIndex(input)
       if (index === 0) {
-        const link = code.assumeInputObjectAsMeshPartialType(
+        const link = code.assumeBranchAsMeshPartialType(
           input,
           Mesh.Input,
         )

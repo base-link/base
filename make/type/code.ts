@@ -1,4 +1,10 @@
-import { Mesh, SiteScopeType } from '~'
+import {
+  Mesh,
+  SiteContainerScopeType,
+  SitePotentialScopeType,
+  SiteScopeType,
+  SiteStepScopeType,
+} from '~'
 import type { LinkTreeType } from '~'
 
 export type MeshAssertion_FullType = Mesh_FullTypeMixin & {
@@ -105,6 +111,27 @@ export type MeshCallback_Type =
   | MeshCallback_PartialType
   | MeshCallback_FullType
 
+export type MeshClassInput_FullType = Mesh_FullTypeMixin & {
+  base?: MeshClassReference_Type
+  like: Mesh.ClassInput
+  name: string
+  sourceLike?: MeshClassReference_Type
+}
+
+export type MeshClassInput_PartialType =
+  Mesh_PartialTypeMixin & {
+    children: Array<
+      | MeshClassReference_Type
+      | MeshTerm_Type
+      | MeshConstant_Type
+    >
+    like: Mesh.ClassInput
+  }
+
+export type MeshClassInput_Type =
+  | MeshClassInput_PartialType
+  | MeshClassInput_FullType
+
 export type MeshClassInterfaceFunction_FullType =
   Mesh_FullTypeMixin & {
     function: Record<string, MeshFunction_FullType>
@@ -132,7 +159,9 @@ export type MeshClassInterfaceImplementation_FullType =
 
 export type MeshClassInterfaceImplementation_PartialType =
   Mesh_PartialTypeMixin & {
-    children: Array<MeshFunction_Type | MeshInput_Type>
+    children: Array<
+      MeshFunction_Type | MeshInput_Type | MeshConstant_Type
+    >
     like: Mesh.ClassInterfaceImplementation
   }
 
@@ -199,6 +228,7 @@ export type MeshClass_PartialType = Mesh_PartialTypeMixin & {
     | MeshFunction_Type
     | MeshClassReference_Type
     | MeshInput_Type
+    | MeshConstant_Type
   >
   like: Mesh.Class
 }
@@ -561,8 +591,8 @@ export type MeshValue_Type =
 
 export type Mesh_FullTypeMixin = {
   complete: boolean
-  lexicalScope?: SiteScopeType
   partial: false
+  scope?: SiteStepScopeType
 }
 
 export type Mesh_MutableTypeMixin = {
@@ -570,6 +600,6 @@ export type Mesh_MutableTypeMixin = {
 }
 
 export type Mesh_PartialTypeMixin = {
-  lexicalScope?: SiteScopeType
   partial: true
+  scope?: SiteStepScopeType
 }

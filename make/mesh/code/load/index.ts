@@ -19,13 +19,13 @@ export function finalize_codeCard_load_textNest(
 
   code.assertString(text)
 
-  const card = code.getProperty(input, 'card')
+  const card = input.module
 
   code.assertMeshPartialType(card, Mesh.CodeModule)
 
   const path = code.resolveModulePath(input, text)
 
-  const load = code.assumeInputObjectAsMeshPartialType(
+  const load = code.assumeBranchAsMeshPartialType(
     input,
     Mesh.Import,
   )
@@ -85,39 +85,26 @@ export function process_codeCard_load(
     children: [],
     like: Mesh.Import,
     partial: true,
+    scope: input.scope,
   }
 
-  const loader = code.assumeInputObjectAsMeshPartialType<
+  const loader = code.assumeBranchAsMeshPartialType<
     Mesh.CodeModule | Mesh.Import
   >(input, [Mesh.CodeModule, Mesh.Import])
 
   loader.children.push(load)
-  const childInput = code.extendWithObjectScope(input, load)
+  const childInput = code.withBranch(input, load)
 
   code
     .assumeLinkType(input, Link.Tree)
     .nest.forEach((nest, index) => {
       process_codeCard_load_nestedChildren(
-        code.extendWithNestScope(childInput, {
+        code.withEnvironment(childInput, {
           index,
           nest,
         }),
       )
     })
-
-  if (code.childrenAreComplete(load)) {
-    code.replaceMeshChild<
-      Mesh.CodeModule | Mesh.Import,
-      MeshPartialType<Mesh.Import>,
-      MeshFullType<Mesh.Import>
-    >(
-      childInput,
-      [Mesh.CodeModule, Mesh.Import],
-      load,
-      code.generateFullImport(load),
-    )
-  } else {
-  }
 }
 
 export function process_codeCard_load_nestedChildren(

@@ -16,7 +16,7 @@ export function process_codeCard_suit(
     .assumeLinkType(childInput, Link.Tree)
     .nest.forEach((nest, index) => {
       code.process_codeCard_suit_nestedChildren(
-        code.extendWithNestScope(childInput, {
+        code.withEnvironment(childInput, {
           index,
           nest,
         }),
@@ -32,7 +32,7 @@ export function process_codeCard_suit_nestedChildren(
     const term = code.assumeStaticTermFromNest(input)
     const index = code.assumeNestIndex(input)
     if (index === 0) {
-      const suit = code.assumeInputObjectAsMeshPartialType(
+      const suit = code.assumeBranchAsMeshPartialType(
         input,
         Mesh.ClassInterface,
       )

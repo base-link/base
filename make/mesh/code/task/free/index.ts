@@ -16,7 +16,7 @@ export function process_codeCard_task_free(
     .assumeLinkType(input, Link.Tree)
     .nest.forEach((nest, index) => {
       process_codeCard_task_free_nestedChildren(
-        code.extendWithNestScope(childInput, {
+        code.withEnvironment(childInput, {
           index,
           nest,
         }),
@@ -33,7 +33,7 @@ export function process_codeCard_task_free_nestedChildren(
       const term = code.assumeStaticTermFromNest(input)
       const index = code.assumeNestIndex(input)
       if (index === 0) {
-        const task = code.assumeInputObjectAsMeshPartialType(
+        const task = code.assumeBranchAsMeshPartialType(
           input,
           Mesh.Output,
         )

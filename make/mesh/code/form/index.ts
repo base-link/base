@@ -8,19 +8,22 @@ export * from './wear/index.js'
 export function process_codeCard_form(
   input: MeshInputType,
 ): void {
+  const scopeInput = code.extendWithLexicalScope(input, {})
+
   const form: MeshPartialType<Mesh.Class> = {
     children: [],
+    lexicalScope: scopeInput.lexicalScope,
     like: Mesh.Class,
     partial: true,
   }
 
-  const formInput = code.extendWithObjectScope(input, form)
+  const formInput = code.extendWithObjectScope(scopeInput, form)
 
   code
     .assumeLinkType(formInput, Link.Tree)
     .nest.forEach((nest, index) => {
       code.process_codeCard_form_nestedChildren(
-        code.extendWithNestScope(formInput, {
+        code.withEnvironment(formInput, {
           index,
           nest,
         }),
@@ -42,11 +45,13 @@ export function process_codeCard_form_nestedChildren(
     const term = code.assumeStaticTermFromNest(input)
     const index = code.assumeNestIndex(input)
     if (index === 0) {
-      const form = code.assumeInputObjectAsMeshPartialType(
+      const form = code.assumeBranchAsMeshPartialType(
         input,
         Mesh.Class,
       )
-      // form.name = term
+      form.children.push(
+        code.createStringConstant('name', term),
+      )
     } else {
       switch (term) {
         case 'link':

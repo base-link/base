@@ -6,6 +6,7 @@ export function process_codeCard_fuse(
 ): void {
   const fuse: MeshPartialType<Mesh.Inject> = {
     children: [],
+    lexicalScope: input.lexicalScope,
     like: Mesh.Inject,
     partial: true,
   }
@@ -19,7 +20,7 @@ export function process_codeCard_fuse(
     .assumeLinkType(input, Link.Tree)
     .nest.forEach((nest, index) => {
       process_codeCard_fuse_nestedChildren(
-        code.extendWithNestScope(fuseInput, {
+        code.withEnvironment(fuseInput, {
           index,
           nest,
         }),
@@ -36,7 +37,7 @@ export function process_codeCard_fuse_nestedChildren(
       const term = code.assumeStaticTermFromNest(input)
       const index = code.assumeNestIndex(input)
       if (index === 0) {
-        const fuse = code.assumeInputObjectAsMeshPartialType(
+        const fuse = code.assumeBranchAsMeshPartialType(
           input,
           Mesh.Inject,
         )

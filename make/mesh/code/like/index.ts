@@ -6,6 +6,7 @@ export function process_codeCard_like(
 ): void {
   const like: MeshPartialType<Mesh.ClassReference> = {
     children: [],
+    lexicalScope: input.lexicalScope,
     like: Mesh.ClassReference,
     partial: true,
   }
@@ -16,7 +17,7 @@ export function process_codeCard_like(
     .assumeLinkType(input, Link.Tree)
     .nest.forEach((nest, index) => {
       process_codeCard_like_nestedChildren(
-        code.extendWithNestScope(likeInput, {
+        code.withEnvironment(likeInput, {
           index,
           nest,
         }),
@@ -51,7 +52,7 @@ export function process_codeCard_like_nestedChildren(
       const term = code.assumeStaticTermFromNest(input)
       const index = code.assumeNestIndex(input)
       if (index === 0) {
-        const like = code.assumeInputObjectAsMeshPartialType(
+        const like = code.assumeBranchAsMeshPartialType(
           input,
           Mesh.ClassReference,
         )
@@ -64,7 +65,7 @@ export function process_codeCard_like_nestedChildren(
 
       switch (term) {
         case 'head':
-          code.process_codeCard_like_head(input)
+          code.process_codeCard_head(input)
           break
         case 'like':
           code.process_codeCard_like(input)

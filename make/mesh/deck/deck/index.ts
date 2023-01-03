@@ -15,7 +15,7 @@ export * from './test/index.js'
 export function generate_full_deckCard_deck(
   input: MeshInputType,
 ): MeshType<Mesh.Package> {
-  const deck = code.assumeInputObjectAsMeshPartialType(
+  const deck = code.assumeBranchAsMeshPartialType(
     input,
     Mesh.Package,
   )
@@ -70,11 +70,11 @@ export function generate_full_deckCard_deck(
     complete: false,
     face: [],
     host,
-    lexicalScope: deck.lexicalScope,
     like: Mesh.Package,
     mark: version,
     name,
     partial: false,
+    scope: input.scope,
     term: [],
     test: testFile,
   }
@@ -86,19 +86,19 @@ export function process_deckCard_deck(
   const nest = code.assumeLinkType(input, Link.Tree)
   const deck: MeshPartialType<Mesh.Package> = {
     children: [],
-    lexicalScope: input.lexicalScope,
     like: Mesh.Package,
     partial: true,
+    scope: input.scope,
   }
 
-  code.assertMeshPartialType(input.card, Mesh.PackageModule)
-  input.card.children.push(deck)
+  code.assertMeshPartialType(input.module, Mesh.PackageModule)
+  input.module.children.push(deck)
 
-  const childInput = code.extendWithObjectScope(input, deck)
+  const childInput = code.withBranch(input, deck)
 
   nest.nest.forEach((nest, index) => {
     code.process_deckCard_deck_nestedChildren(
-      code.extendWithNestScope(childInput, {
+      code.withEnvironment(childInput, {
         index,
         nest,
       }),
@@ -106,11 +106,9 @@ export function process_deckCard_deck(
   })
 
   if (code.childrenAreComplete(deck)) {
-    code.replaceMeshChild(
+    code.potentiallyReplaceWithFullNode(
       childInput,
-      Mesh.PackageModule,
-      deck,
-      code.generate_full_deckCard_deck(childInput),
+      code.generate_full_deckCard_deck,
     )
   } else {
     code.throwError(

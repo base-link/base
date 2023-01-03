@@ -1,25 +1,59 @@
-import { Site, code } from '~'
+import {
+  Site,
+  SiteContainerScopeType,
+  SiteEnvironmentType,
+  SiteStepScopeType,
+  SiteVariableDeclarationType,
+  code,
+} from '~'
 import type { SiteScopeType } from '~'
 
-export function createScope(
-  data: Record<string, unknown>,
-  parent?: SiteScopeType,
-): SiteScopeType {
+export function createContainerScope(
+  declarations: Record<string, SiteVariableDeclarationType>,
+  parent?: SiteContainerScopeType,
+): SiteContainerScopeType {
   return {
-    data,
-    like: Site.Scope,
+    declarations,
+    like: Site.ContainerScope,
+    parent,
+    steps: [],
+  }
+}
+
+export function createEnvironment(
+  bindings: Record<string, unknown>,
+  parent?: SiteEnvironmentType,
+): SiteEnvironmentType {
+  return {
+    bindings,
     parent,
   }
 }
 
-export function getScopeProperty(
-  scope: SiteScopeType,
+export function createStepScope(
+  container: SiteContainerScopeType,
+  declarations: Record<
+    string,
+    SiteVariableDeclarationType
+  > = {},
+): SiteStepScopeType {
+  const previous = container.steps[container.steps.length - 1]
+  return {
+    container,
+    declarations: {},
+    like: Site.StepScope,
+    previous,
+  }
+}
+
+export function getEnvironmentProperty(
+  scope: SiteEnvironmentType,
   path: string | number | symbol,
 ): unknown {
-  let source: SiteScopeType = scope
+  let source: SiteEnvironmentType = scope
 
   while (source) {
-    if (path in source.data) {
+    if (path in source.bindings) {
       break
     } else if (source.parent) {
       source = source.parent
@@ -29,32 +63,22 @@ export function getScopeProperty(
   }
 
   return (
-    source.data as Record<string | symbol | number, unknown>
+    source.bindings as Record<string | symbol | number, unknown>
   )[path]
 }
 
-export function isScope(
-  object: unknown,
-): object is SiteScopeType {
-  return (
-    code.isRecord(object) &&
-    'like' in object &&
-    (object as SiteScopeType).like === Site.Scope
-  )
-}
-
-export function setScopeProperty(
-  scope: SiteScopeType,
+export function setEnvironmentProperty(
+  scope: SiteEnvironmentType,
   property: string,
   value: unknown,
 ): void {
-  if (property in scope) {
-    scope.data[property] = value
+  if (property in scope.bindings) {
+    scope.bindings[property] = value
   } else if (scope.parent) {
-    code.setScopeProperty(scope.parent, property, value)
+    code.setEnvironmentProperty(scope.parent, property, value)
   } else {
     code.throwError(
-      code.generateScopeMissingPropertyError(property),
+      code.generateEnvironmentMissingPropertyError(property),
     )
   }
 }
