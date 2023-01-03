@@ -105,6 +105,13 @@ export function process_codeCard_load(
         }),
       )
     })
+
+  if (code.childrenAreComplete(load)) {
+    code.potentiallyReplaceWithFullNode(childInput, () =>
+      code.generateFullImport(load),
+    )
+  } else {
+  }
 }
 
 export function process_codeCard_load_nestedChildren(

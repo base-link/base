@@ -63,7 +63,7 @@ export function generate_full_deckCard_deck(
   code.assertString(host)
   code.assertString(name)
 
-  code.assertString(version, 'version')
+  code.assertString(version, 'version', input.module.path)
 
   return {
     bear: exportFile,

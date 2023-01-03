@@ -303,10 +303,11 @@ const PATTERN: Record<Text, TextPatternConfigType> = {
   },
   [Text.OpenPath]: {
     after: [Text.OpenIndentation, Text.OpenNesting, Text.Comma],
-    pattern: /^(?:(?:@[\w:\-\.]+\/)|(?:\.{1,2}\/)|(?:\/))/,
+    pattern:
+      /^(?:(?:@[\w:\-\.]+\/)|(?:\.{1,2}\/)|\*{1,2}\/|(?:\/))/,
   },
   [Text.Path]: {
-    pattern: /^[\w:\-\.]*(\/[\w:\-\.]*)*/,
+    pattern: /^[\w:\-\.\*]*(\/[\w:\-\.\*]*)*/,
   },
   [Text.ClosePath]: {
     pattern: /^[\n, ]/,

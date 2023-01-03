@@ -42,10 +42,15 @@ export function assertNumber(
 export function assertString(
   object: unknown,
   name?: string,
+  path?: string,
 ): asserts object is string {
   if (!code.isString(object)) {
     code.throwError(
-      code.generateIncorrectlyTypedVariable('string', name),
+      code.generateIncorrectlyTypedVariable(
+        'string',
+        name,
+        path,
+      ),
     )
   }
 }

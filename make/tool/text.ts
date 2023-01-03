@@ -52,7 +52,7 @@ export function readDependency(
   input: MeshInputType,
   dependency: SiteDependencyType,
 ): unknown {
-  const scope = code.findInitialScope(input, dependency)
+  const scope = code.findInitialEnvironment(input, dependency)
 
   if (scope) {
     let value: unknown = scope.data

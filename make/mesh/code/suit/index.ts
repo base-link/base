@@ -10,7 +10,7 @@ export function process_codeCard_suit(
     partial: true,
   }
 
-  const childInput = code.extendWithObjectScope(input, suit)
+  const childInput = code.withBranch(input, suit)
 
   code
     .assumeLinkType(childInput, Link.Tree)

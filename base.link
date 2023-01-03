@@ -1,16 +1,16 @@
 
 deck @treesurf/base
   head <Link Script Compiler>
-  make <Link Script>
-  make <Computation>
-  make <Philosophy>
-  make <Information>
-  make <Platform>
-  make <White Label>
+  term <Link Script>
+  term <Computation>
+  term <Philosophy>
+  term <Information>
+  term <Platform>
+  term <White Label>
   face <Lance Pollard>, site <lp@elk.fm>
-  mark <0.0.1>
-  dock mint
+  mint <0.0.1>
   dock task # the task loader
   dock code # the library loader
   read book # also a default
-  term <apache-2.0>
+  lock <apache-2.0>
+  deck ../moon.link

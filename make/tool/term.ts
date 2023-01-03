@@ -26,9 +26,8 @@ export function assumeStaticTermFromNest(
 
 export function getTerm(
   input: MeshInputType,
-  rank = 0,
 ): LinkType<Link.Term> | undefined {
-  const nest = code.assumeNest(input, rank)
+  const nest = code.assumeNest(input)
 
   if (nest.like === Link.Term) {
     return nest
@@ -52,9 +51,8 @@ export function getTerm(
 
 export function resolveStaticTermFromNest(
   input: MeshInputType,
-  rank = 0,
 ): string | undefined {
-  const term = code.getTerm(input, rank)
+  const term = code.getTerm(input)
   code.assertLinkType(term, Link.Term)
   const string: Array<string> = []
 

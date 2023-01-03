@@ -28,15 +28,15 @@ export function attemptPartialRollup(
 
 export function process_codeCard_link(
   input: MeshInputType,
-): MeshType<Mesh.Input> {
+): void {
   const link: MeshPartialType<Mesh.Input> = {
     children: [],
-    lexicalScope: input.lexicalScope,
     like: Mesh.Input,
     partial: true,
+    scope: input.scope,
   }
 
-  const linkInput = code.extendWithObjectScope(input, link)
+  const linkInput = code.withBranch(input, link)
 
   code.pushIntoParentObject(input, link)
 
@@ -51,11 +51,11 @@ export function process_codeCard_link(
       )
     })
 
-  code.attemptPartialRollup(
-    input,
-    link,
-    code.generate_full_codeCard_link,
-  )
+  // code.attemptPartialRollup(
+  //   input,
+  //   link,
+  //   code.generate_full_codeCard_link,
+  // )
 }
 
 export function process_codeCard_link_base(

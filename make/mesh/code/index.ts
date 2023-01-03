@@ -299,8 +299,6 @@ export function resolve_codeCard(
       card.seed.children.forEach(node => {
         switch (node.like) {
           case Mesh.Import:
-            if (node.partial) {
-            }
             break
           case Mesh.Export:
             break

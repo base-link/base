@@ -11,7 +11,7 @@ export function process_codeCard_call(
     partial: true,
   }
 
-  const childInput = code.extendWithObjectScope(input, call)
+  const childInput = code.withBranch(input, call)
 
   code
     .assumeLinkType(input, Link.Tree)

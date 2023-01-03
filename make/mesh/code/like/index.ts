@@ -6,12 +6,12 @@ export function process_codeCard_like(
 ): void {
   const like: MeshPartialType<Mesh.ClassReference> = {
     children: [],
-    lexicalScope: input.lexicalScope,
     like: Mesh.ClassReference,
     partial: true,
+    scope: input.scope,
   }
 
-  const likeInput = code.extendWithObjectScope(input, like)
+  const likeInput = code.withBranch(input, like)
 
   code
     .assumeLinkType(input, Link.Tree)

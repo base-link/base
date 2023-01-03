@@ -15,6 +15,7 @@
     "@types/glob": "^8.0.0",
     "@types/lodash": "^4.14.191",
     "@types/node": "^18.11.17",
+    "@types/prettier": "^2.7.2",
     "@types/tap": "^15.0.7",
     "@typescript-eslint/eslint-plugin": "^5.46.1",
     "@typescript-eslint/parser": "^5.46.1",
@@ -32,7 +33,7 @@
     "eslint-plugin-sort-exports": "^0.8.0",
     "eslint-plugin-sort-keys": "^2.3.5",
     "eslint-plugin-typescript-sort-keys": "^2.1.0",
-    "prettier": "2.8.1",
+    "prettier": "^2.8.1",
     "ts-node": "^10.9.1",
     "tsc-alias": "^1.8.2",
     "typescript": "^4.9.4"

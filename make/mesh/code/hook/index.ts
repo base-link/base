@@ -10,7 +10,7 @@ export function process_codeCard_hook(
     partial: true,
   }
 
-  const childInput = code.extendWithObjectScope(input, hook)
+  const childInput = code.withBranch(input, hook)
 
   code
     .assumeLinkType(childInput, Link.Tree)

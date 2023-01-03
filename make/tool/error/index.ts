@@ -242,6 +242,7 @@ export function generateHighlightedErrorForText(
 export function generateIncorrectlyTypedVariable(
   like: string | Array<string>,
   name?: string,
+  path?: string,
 ): SiteErrorType {
   like = Array.isArray(like) ? like : [like]
   const words =
@@ -254,6 +255,7 @@ export function generateIncorrectlyTypedVariable(
   const text = name ? ` \`${name}\`` : ''
   return {
     code: `0027`,
+    file: path,
     note: `Variable${text} is not typed as a ${words}.`,
   }
 }

@@ -10,7 +10,7 @@ export function process_codeCard_task_free(
     partial: true,
   }
 
-  const childInput = code.extendWithObjectScope(input, output)
+  const childInput = code.withBranch(input, output)
 
   code
     .assumeLinkType(input, Link.Tree)

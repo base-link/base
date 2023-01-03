@@ -48,7 +48,7 @@ export function process_codeCard_tree(
     partial: true,
   }
 
-  const treeInput = code.extendWithObjectScope(input, tree)
+  const treeInput = code.withBranch(input, tree)
 
   code
     .assumeLinkType(treeInput, Link.Tree)

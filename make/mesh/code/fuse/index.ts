@@ -6,15 +6,15 @@ export function process_codeCard_fuse(
 ): void {
   const fuse: MeshPartialType<Mesh.Inject> = {
     children: [],
-    lexicalScope: input.lexicalScope,
     like: Mesh.Inject,
     partial: true,
+    scope: input.scope,
   }
 
-  const card = code.getProperty(input, 'card')
+  const card = input.module
   code.assertMeshType(card, Mesh.CodeModule)
 
-  const fuseInput = code.extendWithObjectScope(input, fuse)
+  const fuseInput = code.withBranch(input, fuse)
 
   code
     .assumeLinkType(input, Link.Tree)

@@ -144,6 +144,12 @@ export function process_codeCard_load_find(
       }),
     )
   })
+
+  if (code.childrenAreComplete(find)) {
+    code.potentiallyReplaceWithFullNode(childInput, () =>
+      code.generateFullImportVariable(find),
+    )
+  }
 }
 
 export function process_codeCard_load_find_nestedChildren(
