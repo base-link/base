@@ -1,4 +1,4 @@
-import { Mesh } from '~'
+import { Mesh, SiteScopeType } from '~'
 import type { LinkTreeType } from '~'
 
 export type MeshAssertion_FullType = Mesh_FullTypeMixin & {
@@ -561,6 +561,7 @@ export type MeshValue_Type =
 
 export type Mesh_FullTypeMixin = {
   complete: boolean
+  lexicalScope?: SiteScopeType
   partial: false
 }
 
@@ -569,5 +570,6 @@ export type Mesh_MutableTypeMixin = {
 }
 
 export type Mesh_PartialTypeMixin = {
+  lexicalScope?: SiteScopeType
   partial: true
 }

@@ -3,6 +3,7 @@ import {
   Mesh,
   MeshFullType,
   MeshTerm_FullType,
+  SiteScopeType,
   code,
 } from '~'
 import type {

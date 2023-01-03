@@ -52,6 +52,7 @@ export function process_deckCard_deck_link(
   deck.children.push(
     code.createConstant('link', {
       complete: true,
+      lexicalScope: input.lexicalScope,
       like: Mesh.String,
       partial: false,
       string: text,

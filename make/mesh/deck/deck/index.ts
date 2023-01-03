@@ -70,6 +70,7 @@ export function generate_full_deckCard_deck(
     complete: false,
     face: [],
     host,
+    lexicalScope: deck.lexicalScope,
     like: Mesh.Package,
     mark: version,
     name,
@@ -85,6 +86,7 @@ export function process_deckCard_deck(
   const nest = code.assumeLinkType(input, Link.Tree)
   const deck: MeshPartialType<Mesh.Package> = {
     children: [],
+    lexicalScope: input.lexicalScope,
     like: Mesh.Package,
     partial: true,
   }

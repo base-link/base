@@ -47,6 +47,7 @@ export function generate_deckCard(
     ...code.omit(input.card, ['children']),
     complete: true,
     deck,
+    lexicalScope: input.card.lexicalScope,
     partial: false,
   }
 }
@@ -94,6 +95,8 @@ export function process_deckCard(
     seed,
     seed,
   )
+
+  seed.lexicalScope = input.lexicalScope
 
   card.bind(seed)
 
