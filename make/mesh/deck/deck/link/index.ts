@@ -44,7 +44,7 @@ export function process_deckCard_deck_link(
     /^@[a-z0-9]+\/[a-z0-9]+$/,
   )
 
-  const deck = code.assumeInputObjectAsMeshPartialType(
+  const deck = code.assumeBranchAsMeshPartialType(
     input,
     Mesh.Package,
   )

@@ -8,7 +8,7 @@ export function finalize_codeCard_bear_nestedChildren(
 
   code.assertString(text)
 
-  const card = input.card
+  const card = input.module
 
   code.assertMeshPartialType(card, Mesh.CodeModule)
 
@@ -22,13 +22,11 @@ export function finalize_codeCard_bear_nestedChildren(
   })
 }
 
-export function process_codeCard_bear(
-  input: MeshInputType,
-): void {
+export function process_codeCard_bear(input: MeshInputType): void {
   const nest = code.assumeLinkType(input, Link.Tree)
   nest.nest.forEach((nest, index) => {
     code.process_codeCard_bear_nestedChildren(
-      code.extendWithNestScope(input, {
+      code.withEnvironment(input, {
         index,
         nest,
       }),
@@ -55,20 +53,16 @@ export function process_codeCard_bear_nestedChildren(
       )
       break
     case LinkHint.StaticTerm:
-      const term = code.resolveStaticTermFromNest(input)
+      const term = code.resolveTerm(input)
       switch (term) {
         case 'hide':
           code.process_codeCard_bear_hide(input)
           break
         default:
-          code.throwError(
-            code.generateUnhandledTermCaseError(input),
-          )
+          code.throwError(code.generateUnhandledTermCaseError(input))
       }
       break
     default:
-      code.throwError(
-        code.generateUnhandledNestCaseError(input, type),
-      )
+      code.throwError(code.generateUnhandledNestCaseError(input, type))
   }
 }

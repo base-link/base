@@ -8,7 +8,7 @@ export function process_deckCard_deck_face(
     .assumeLinkType(input, Link.Tree)
     .nest.forEach((nest, index) => {
       process_deckCard_deck_face_nestedChildren(
-        code.extendWithNestScope(input, {
+        code.withEnvironment(input, {
           index,
           nest,
         }),

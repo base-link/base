@@ -14,7 +14,7 @@ export function processDynamicTextNest(
     job,
   )
 
-  const card = code.getProperty(input, 'card')
+  const card = input.module
   code.assertCard(card)
 
   const unmetDependencyList = dependencyList.filter(
@@ -52,7 +52,7 @@ export function readDependency(
   input: MeshInputType,
   dependency: SiteDependencyType,
 ): unknown {
-  const scope = code.findInitialScope(input, dependency)
+  const scope = code.findInitialEnvironment(input, dependency)
 
   if (scope) {
     let value: unknown = scope.data
@@ -71,7 +71,6 @@ export function readDependency(
 }
 
 export function readLinkIndex(input: MeshInputType): unknown {
-  let value: unknown = input.lexicalScope.data
   const nest = code.assumeNest(input)
 
   if (nest.like === Link.Index) {
@@ -81,19 +80,19 @@ export function readLinkIndex(input: MeshInputType): unknown {
     switch (child.like) {
       case Link.Tree:
         return readLinkTree(
-          code.extendWithNestScope(input, {
+          code.withEnvironment(input, {
             nest: child,
           }),
         )
       case Link.Path:
         return readLinkPath(
-          code.extendWithNestScope(input, {
+          code.withEnvironment(input, {
             nest: child,
           }),
         )
       case Link.Term:
         return readLinkTerm(
-          code.extendWithNestScope(input, {
+          code.withEnvironment(input, {
             nest: child,
           }),
         )
@@ -111,12 +110,12 @@ export function readLinkPath(input: MeshInputType): unknown {
 
   const first = nest.segment[i++]
   const firstTerm = code.resolveTerm(
-    code.extendWithNestScope(input, { nest: first }),
+    code.withEnvironment(input, { nest: first }),
   )
 
   code.assertString(firstTerm)
-  let value = code.getScopeProperty(
-    input.lexicalScope,
+  let value = code.getEnvironmentProperty(
+    input.environment,
     firstTerm,
   )
 
@@ -126,7 +125,7 @@ export function readLinkPath(input: MeshInputType): unknown {
     switch (seg?.like) {
       case Link.Index: {
         const index = code.readLinkIndex(
-          code.extendWithNestScope(input, { nest: seg }),
+          code.withEnvironment(input, { nest: seg }),
         )
 
         if (code.isRecord(value) && code.isString(index)) {
@@ -138,7 +137,7 @@ export function readLinkPath(input: MeshInputType): unknown {
       }
       case Link.Term: {
         const term = code.resolveTerm(
-          code.extendWithNestScope(input, { nest: seg }),
+          code.withEnvironment(input, { nest: seg }),
         )
 
         if (code.isRecord(value) && code.isString(term)) {
@@ -166,19 +165,19 @@ export function readLinkPlugin(input: MeshInputType): unknown {
     switch (child.like) {
       case Link.Tree:
         return readLinkTree(
-          code.extendWithNestScope(input, {
+          code.withEnvironment(input, {
             nest: child,
           }),
         )
       case Link.Path:
         return readLinkPath(
-          code.extendWithNestScope(input, {
+          code.withEnvironment(input, {
             nest: child,
           }),
         )
       case Link.Term:
         return readLinkTerm(
-          code.extendWithNestScope(input, {
+          code.withEnvironment(input, {
             nest: child,
           }),
         )
@@ -191,7 +190,7 @@ export function readLinkPlugin(input: MeshInputType): unknown {
 export function readLinkTerm(input: MeshInputType): unknown {
   const term = code.resolveTerm(input)
   code.assertString(term)
-  return code.getScopeProperty(input.lexicalScope, term)
+  return code.getEnvironmentProperty(input.environment, term)
 }
 
 export function readLinkTree(input: MeshInputType): unknown {
@@ -215,7 +214,7 @@ export function resolvePathDependencyList(
     } else {
       array.push(
         ...resolveTermDependencyList(
-          code.extendWithNestScope(input, { nest: seg }),
+          code.withEnvironment(input, { nest: seg }),
           parent,
         ),
       )
@@ -261,7 +260,7 @@ export function resolveText(
         break
       case Link.Plugin:
         const text = code.readLinkPlugin(
-          code.extendWithNestScope(input, {
+          code.withEnvironment(input, {
             index: 0,
             nest: seg,
           }),
@@ -297,7 +296,7 @@ export function resolveTextDependencyList(
         break
       case Link.Plugin:
         const dependencies = code.resolveTreeDependencyList(
-          code.extendWithNestScope(input, {
+          code.withEnvironment(input, {
             index: 0,
             nest: seg.nest[0],
           }),
