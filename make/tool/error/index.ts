@@ -67,6 +67,13 @@ export type SiteErrorType = {
   text?: string
 }
 
+export type SiteStackTraceType = {
+  character?: number
+  file: string
+  function?: string
+  line?: number
+}
+
 export class TypescriptError extends Error {}
 
 export function assertError(
@@ -75,6 +82,63 @@ export function assertError(
   if (!code.isError(error)) {
     throw new Error('Error handler undefined')
   }
+}
+
+export function buildErrorMessage(
+  data: SiteErrorType,
+): Array<string> {
+  const text: Array<string> = []
+
+  text.push(``)
+  text.push(
+    chalk.gray(`  note <`) +
+      chalk.whiteBright(`${data.note}`) +
+      chalk.gray('>'),
+  )
+
+  if (data.hint) {
+    text.push(
+      chalk.gray(`  hint <`) +
+        chalk.whiteBright(`${data.hint}`) +
+        chalk.gray('>'),
+    )
+  }
+
+  data.term?.forEach(term => {
+    text.push(chalk.gray(`    term `) + chalk.white(`${term}`))
+  })
+
+  text.push(
+    chalk.gray(`    code `) + chalk.white(`#${data.code}`),
+  )
+
+  if (data.file) {
+    if (data.text) {
+      text.push(
+        chalk.gray(`    file <`) +
+          chalk.whiteBright(`${data.file}`) +
+          chalk.gray(`>, <`),
+      )
+      data.text.split('\n').forEach(line => {
+        text.push(`      ${line}`)
+      })
+      text.push(chalk.gray(`    >`))
+    } else {
+      text.push(
+        chalk.gray(`    file <`) +
+          chalk.whiteBright(`${data.file}`) +
+          chalk.gray(`>`),
+      )
+    }
+  } else if (data.text) {
+    text.push(chalk.gray(`    text <`))
+    data.text.split('\n').forEach(line => {
+      text.push(`      ${line}`)
+    })
+    text.push(chalk.gray('    >'))
+  }
+
+  return text
 }
 
 export function createDefaultRange(): CursorRangeType {
@@ -698,6 +762,40 @@ export function getCursorRangeForTree(
   }
 }
 
+export function getSourceMappedFile(
+  path: string,
+  line: number,
+  character: number,
+): [string, number | undefined, number | undefined] {
+  const map = SOURCE_MAP_MESH[path]
+
+  const trace = {
+    column: character,
+    filename: path,
+    line: line,
+  }
+
+  if (map) {
+    const token = map.originalPositionFor(trace)
+    if (token.source) {
+      return [
+        code.resolveNativePath(
+          token.source,
+          code.resolveDirectoryPath(
+            path.replace(/^file:\/\//, ''),
+          ),
+        ),
+        token.line == null ? undefined : token.line,
+        token.column == null ? undefined : token.column,
+      ]
+    } else {
+      return [path, line, character]
+    }
+  } else {
+    return [path, line, character]
+  }
+}
+
 export function highlightTextRangeForError(
   bound: CursorRangeType,
   textByLine: Array<string>,
@@ -749,6 +847,64 @@ export function isError(
   )
 }
 
+export function parseStackLine(text: string) {
+  const [a, b] = text.trim().split(/\s+/)
+  code.assertString(a)
+  if (!b) {
+    return parseStackLineFileOnly(a)
+  } else {
+    return {
+      ...parseStackLineFileOnly(b),
+      function: a,
+    }
+  }
+}
+
+export function parseStackLineFileOnly(
+  text: string,
+): SiteStackTraceType {
+  const parts = text.replace(/[\(\)]/g, '').split(':')
+  const character = parts.pop()
+  let characterN = character
+    ? parseInt(character, 10)
+    : undefined
+  const line = parts.pop()
+  let lineN = line ? parseInt(line, 10) : undefined
+  let file = parts.join(':')
+  if (code.isNumber(lineN) && code.isNumber(characterN)) {
+    ;[file, lineN, characterN] = getSourceMappedFile(
+      file,
+      lineN,
+      characterN,
+    )
+  }
+  return {
+    character: characterN,
+    file,
+    line: lineN,
+  }
+}
+
+export function parseTapStackTrace(
+  stack: string,
+): Array<SiteStackTraceType> {
+  return stack
+    .trim()
+    .split(/\n+/)
+    .map(line => {
+      const [a, b] = line.trim().split(/\s+/)
+      code.assertString(a)
+      if (!b) {
+        return parseStackLineFileOnly(a)
+      } else {
+        return {
+          ...parseStackLineFileOnly(b),
+          function: a,
+        }
+      }
+    })
+}
+
 export function renderDiffText(a: string, b: string): string {
   const text: Array<string> = []
   const diff = diffChars(a, b)
@@ -767,57 +923,73 @@ export function renderDiffText(a: string, b: string): string {
   return text.join('')
 }
 
-export function throwError(data: SiteErrorType): void {
-  const text: Array<string> = []
+export function renderError(stackTrace: string): Array<string> {
+  const messageLine: Array<string> = []
+  const stack: Array<SiteStackTraceType> = []
+  const parts = stackTrace.trim().split(/\n+/)
 
-  text.push(``)
-  text.push(
-    chalk.gray(`  note <`) +
-      chalk.whiteBright(`${data.note}`) +
-      chalk.gray('>'),
-  )
-
-  if (data.hint) {
-    text.push(
-      chalk.gray(`  hint <`) +
-        chalk.whiteBright(`${data.hint}`) +
-        chalk.gray('>'),
-    )
+  let intoMessage = false
+  let i = parts.length - 1
+  while (i >= 0) {
+    const line = parts[i--]
+    if (!intoMessage && line?.startsWith('    at ')) {
+      stack.push(
+        code.parseStackLine(line.slice('    at '.length)),
+      )
+    } else if (line) {
+      intoMessage = true
+      messageLine.push(line)
+    }
   }
 
-  data.term?.forEach(term => {
-    text.push(chalk.gray(`    term `) + chalk.white(`${term}`))
+  const errorText = code.buildErrorMessage({
+    code: '0031',
+    note: messageLine.reverse().join('\n'),
+    term: [ErrorTerm.SystemError],
   })
 
-  text.push(
-    chalk.gray(`    code `) + chalk.white(`#${data.code}`),
-  )
+  code.renderStackTrace(stack.reverse()).forEach(line => {
+    errorText.push(`    ${line}`)
+  })
 
-  if (data.file) {
-    if (data.text) {
+  errorText.push('')
+
+  return errorText
+}
+
+export function renderStackTrace(
+  stack: Array<SiteStackTraceType>,
+): Array<string> {
+  const g = chalk.gray
+  const w = chalk.white
+  const bw = chalk.whiteBright
+  const text: Array<string> = []
+  stack.forEach(node => {
+    let suffix = []
+    if (node.line) {
+      suffix.push(node.line)
+    }
+    if (node.character) {
+      suffix.push(node.character)
+    }
+
+    const end = suffix.length ? ':' + suffix.join(':') : ''
+    text.push(
+      `${g(`file ${g('<')}`)}${bw(`${node.file}${end}`)}${g(
+        '>',
+      )}`,
+    )
+    if (node.function) {
       text.push(
-        chalk.gray(`    file <`) +
-          chalk.whiteBright(`${data.file}`) +
-          chalk.gray(`>, <`),
-      )
-      data.text.split('\n').forEach(line => {
-        text.push(`      ${line}`)
-      })
-      text.push(chalk.gray(`    >`))
-    } else {
-      text.push(
-        chalk.gray(`    file <`) +
-          chalk.whiteBright(`${data.file}`) +
-          chalk.gray(`>`),
+        `${g(`  call ${g('<')}${w(node.function)}${g('>')}`)}`,
       )
     }
-  } else if (data.text) {
-    text.push(chalk.gray(`    text <`))
-    data.text.split('\n').forEach(line => {
-      text.push(`      ${line}`)
-    })
-    text.push(chalk.gray('    >'))
-  }
+  })
+  return text
+}
+
+export function throwError(data: SiteErrorType): void {
+  const text = code.buildErrorMessage(data)
   text.push(``)
 
   // Error.stackTraceLimit = Infinity
@@ -835,8 +1007,10 @@ export function throwError(data: SiteErrorType): void {
         .slice(1)
         .map((site: NodeJS.CallSite) => {
           let x = site.getFileName()
-          let a = site.getLineNumber()
-          let b = site.getColumnNumber()
+          let a: number | null | undefined =
+            site.getLineNumber()
+          let b: number | null | undefined =
+            site.getColumnNumber()
 
           if (
             x &&
@@ -844,30 +1018,7 @@ export function throwError(data: SiteErrorType): void {
             code.isNumber(b) &&
             code.isString(x)
           ) {
-            // x = code.resolveNativePath(x.replace(/^file:\/\//, ''))
-            const map = SOURCE_MAP_MESH[x]
-
-            const trace = {
-              column: b,
-              filename: x,
-              line: a,
-            }
-
-            if (map) {
-              const token = map.originalPositionFor(trace)
-              if (token.source) {
-                x =
-                  token.source &&
-                  code.resolveNativePath(
-                    token.source,
-                    code.resolveDirectoryPath(
-                      x.replace(/^file:\/\//, ''),
-                    ),
-                  )
-                a = token.line
-                b = token.column
-              }
-            }
+            ;[x, a, b] = getSourceMappedFile(x, a, b)
           }
           let m = site.getMethodName()?.trim()
           let f = site.getFunctionName()?.trim()
