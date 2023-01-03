@@ -1,22 +1,20 @@
 import { Link, LinkHint, Mesh, code } from '~'
 import type { MeshInputType, MeshPartialType } from '~'
 
-export function process_codeCard_hook(
-  input: MeshInputType,
-): void {
+export function process_codeCard_hook(input: MeshInputType): void {
   const hook: MeshPartialType<Mesh.Callback> = {
     children: [],
     like: Mesh.Callback,
     partial: true,
   }
 
-  const childInput = code.extendWithObjectScope(input, hook)
+  const childInput = code.withBranch(input, hook)
 
   code
     .assumeLinkType(childInput, Link.Tree)
     .nest.forEach((nest, index) => {
       code.process_codeCard_hook_nestedChildren(
-        code.extendWithNestScope(childInput, {
+        code.withEnvironment(childInput, {
           index,
           nest,
         }),
@@ -31,13 +29,12 @@ export function process_codeCard_hook_nestedChildren(
   switch (type) {
     case LinkHint.StaticTerm: {
       const index = code.assumeNestIndex(input)
-      const term = code.assumeStaticTermFromNest(input)
+      const term = code.assumeTerm(input)
       if (index === 0) {
-        const callback =
-          code.assumeInputObjectAsMeshPartialType(
-            input,
-            Mesh.Callback,
-          )
+        const callback = code.assumeBranchAsMeshPartialType(
+          input,
+          Mesh.Callback,
+        )
         callback.children.push({
           complete: true,
           dive: false,
@@ -94,16 +91,12 @@ export function process_codeCard_hook_nestedChildren(
             code.process_codeCard_note(input)
             break
           default:
-            code.throwError(
-              code.generateUnhandledTermCaseError(input),
-            )
+            code.throwError(code.generateUnhandledTermCaseError(input))
         }
       }
       break
     }
     default:
-      code.throwError(
-        code.generateUnhandledNestCaseError(input, type),
-      )
+      code.throwError(code.generateUnhandledNestCaseError(input, type))
   }
 }

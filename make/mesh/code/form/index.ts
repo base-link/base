@@ -1,37 +1,74 @@
-import { Link, Mesh, code } from '~'
-import type { MeshInputType, MeshPartialType } from '~'
+import { Link, Mesh, MeshFullType, code } from '~'
+import type { MeshInputType } from '~'
 
 export * from './base/index.js'
 export * from './case/index.js'
 export * from './wear/index.js'
 
-export function process_codeCard_form(
-  input: MeshInputType,
-): void {
-  const form: MeshPartialType<Mesh.Class> = {
-    children: [],
-    like: Mesh.Class,
-    partial: true,
-  }
+export function assumeChildren(input: MeshInputType): Array<unknown> {
+  const parent = code.assumeBranchAsGenericMeshType(input)
+  const children = code.assumeChildrenFromParent(parent)
+  return children
+}
 
-  const formInput = code.extendWithObjectScope(input, form)
+export function generateFullClass(
+  input: MeshInputType,
+): MeshFullType<Mesh.Class> {
+  const name = code.findFullStringConstantByName(input, 'name')
+  code.assertString(name)
+
+  const children = code.assumeChildren(input)
+
+  const methodList = children.filter(
+    (node): node is MeshFullType<Mesh.Function> =>
+      code.isMeshFullType(node, Mesh.Function),
+  )
+
+  const propertyList = children.filter(
+    (node): node is MeshFullType<Mesh.Input> =>
+      code.isMeshFullType(node, Mesh.Input),
+  )
+
+  const methods = code.keyBy(methodList, 'name')
+  const properties = code.keyBy(propertyList, 'name')
+
+  return {
+    callbacks: {},
+    complete: false,
+    hidden: false,
+    interfaces: {},
+    like: Mesh.Class,
+    methods,
+    name,
+    parents: [],
+    partial: false,
+    properties,
+  }
+}
+
+export function process_codeCard_form(input: MeshInputType): void {
+  const container = code.createContainerScope({}, input.scope.container)
+  const scope = code.createStepScope(container)
+  const form = code.createMeshPartial(Mesh.Class, scope)
+  code.pushIntoParentObject(input, form)
+
+  const scopeInput = code.withScope(input, scope)
+  const branchInput = code.withBranch(scopeInput, form)
 
   code
-    .assumeLinkType(formInput, Link.Tree)
+    .assumeLinkType(branchInput, Link.Tree)
     .nest.forEach((nest, index) => {
       code.process_codeCard_form_nestedChildren(
-        code.extendWithNestScope(formInput, {
+        code.withEnvironment(branchInput, {
           index,
           nest,
         }),
       )
     })
 
-  code.assertMeshPartialType(input.card, Mesh.CodeModule)
-
-  // code.assertString(formInput.name, `name on form`)
-
-  input.card.children.push(form)
+  code.replaceIfComplete(branchInput, form, () =>
+    code.generateFullClass(branchInput),
+  )
 }
 
 export function process_codeCard_form_nestedChildren(
@@ -39,14 +76,13 @@ export function process_codeCard_form_nestedChildren(
 ): void {
   const type = code.determineNestType(input)
   if (type === 'static-term') {
-    const term = code.assumeStaticTermFromNest(input)
+    const term = code.assumeTerm(input)
     const index = code.assumeNestIndex(input)
     if (index === 0) {
-      const form = code.assumeInputObjectAsMeshPartialType(
+      code.pushIntoParentObject(
         input,
-        Mesh.Class,
+        code.createStringConstant('name', term),
       )
-      // form.name = term
     } else {
       switch (term) {
         case 'link':
@@ -87,8 +123,6 @@ export function process_codeCard_form_nestedChildren(
       }
     }
   } else {
-    code.throwError(
-      code.generateUnhandledNestCaseError(input, type),
-    )
+    code.throwError(code.generateUnhandledNestCaseError(input, type))
   }
 }

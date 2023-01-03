@@ -1,4 +1,11 @@
-import { Mesh } from '~'
+import {
+  LinkNodeType,
+  Mesh,
+  SiteContainerScopeType,
+  SitePotentialScopeType,
+  SiteScopeType,
+  SiteStepScopeType,
+} from '~'
 import type { LinkTreeType } from '~'
 
 export type MeshAssertion_FullType = Mesh_FullTypeMixin & {
@@ -7,13 +14,10 @@ export type MeshAssertion_FullType = Mesh_FullTypeMixin & {
   name: string
 }
 
-export type MeshAssertion_PartialType =
-  Mesh_PartialTypeMixin & {
-    children: Array<
-      MeshTerm_Type | MeshBind_Type | MeshValue_Type
-    >
-    like: Mesh.Assertion
-  }
+export type MeshAssertion_PartialType = Mesh_PartialTypeMixin & {
+  children: Array<MeshTerm_Type | MeshBind_Type | MeshValue_Type>
+  like: Mesh.Assertion
+}
 
 export type MeshAssertion_Type =
   | MeshAssertion_PartialType
@@ -30,9 +34,7 @@ export type MeshBind_PartialType = Mesh_PartialTypeMixin & {
   like: Mesh.Bind
 }
 
-export type MeshBind_Type =
-  | MeshBind_PartialType
-  | MeshBind_FullType
+export type MeshBind_Type = MeshBind_PartialType | MeshBind_FullType
 
 export type MeshBoolean_FullType = Mesh_FullTypeMixin & {
   boolean: boolean
@@ -54,12 +56,11 @@ export type MeshBorrowVariable_FullType = Mesh_FullTypeMixin &
     link: MeshTerm_FullType
   }
 
-export type MeshBorrowVariable_PartialType =
-  Mesh_PartialTypeMixin &
-    Mesh_MutableTypeMixin & {
-      children: Array<MeshTerm_Type>
-      like: Mesh.BorrowVariable
-    }
+export type MeshBorrowVariable_PartialType = Mesh_PartialTypeMixin &
+  Mesh_MutableTypeMixin & {
+    children: Array<MeshTerm_Type>
+    like: Mesh.BorrowVariable
+  }
 
 // borrow
 export type MeshBorrowVariable_Type =
@@ -74,17 +75,12 @@ export type MeshCall_FullType = Mesh_FullTypeMixin & {
 
 export type MeshCall_PartialType = Mesh_PartialTypeMixin & {
   children: Array<
-    | MeshTerm_Type
-    | MeshValue_Type
-    | MeshBind_Type
-    | MeshConstant_Type
+    MeshTerm_Type | MeshValue_Type | MeshBind_Type | MeshConstant_Type
   >
   like: Mesh.Call
 }
 
-export type MeshCall_Type =
-  | MeshCall_PartialType
-  | MeshCall_FullType
+export type MeshCall_Type = MeshCall_PartialType | MeshCall_FullType
 
 export type MeshCallback_FullType = Mesh_FullTypeMixin & {
   flow: Array<MeshFunctionFlow_FullType>
@@ -105,12 +101,29 @@ export type MeshCallback_Type =
   | MeshCallback_PartialType
   | MeshCallback_FullType
 
-export type MeshClassInterfaceFunction_FullType =
-  Mesh_FullTypeMixin & {
-    function: Record<string, MeshFunction_FullType>
-    like: Mesh.ClassInterfaceFunction
-    name: string
-  }
+export type MeshClassInput_FullType = Mesh_FullTypeMixin & {
+  base?: MeshClassReference_Type
+  like: Mesh.ClassInput
+  name: string
+  sourceLike?: MeshClassReference_Type
+}
+
+export type MeshClassInput_PartialType = Mesh_PartialTypeMixin & {
+  children: Array<
+    MeshClassReference_Type | MeshTerm_Type | MeshConstant_Type
+  >
+  like: Mesh.ClassInput
+}
+
+export type MeshClassInput_Type =
+  | MeshClassInput_PartialType
+  | MeshClassInput_FullType
+
+export type MeshClassInterfaceFunction_FullType = Mesh_FullTypeMixin & {
+  function: Record<string, MeshFunction_FullType>
+  like: Mesh.ClassInterfaceFunction
+  name: string
+}
 
 export type MeshClassInterfaceFunction_PartialType =
   Mesh_PartialTypeMixin & {
@@ -132,7 +145,9 @@ export type MeshClassInterfaceImplementation_FullType =
 
 export type MeshClassInterfaceImplementation_PartialType =
   Mesh_PartialTypeMixin & {
-    children: Array<MeshFunction_Type | MeshInput_Type>
+    children: Array<
+      MeshFunction_Type | MeshInput_Type | MeshConstant_Type
+    >
     like: Mesh.ClassInterfaceImplementation
   }
 
@@ -148,48 +163,42 @@ export type MeshClassInterface_FullType = Mesh_FullTypeMixin & {
   property: Record<string, MeshInput_Type>
 }
 
-export type MeshClassInterface_PartialType =
-  Mesh_PartialTypeMixin & {
-    children: Array<
-      | MeshClassInterfaceFunction_Type
-      | MeshInput_Type
-      | MeshTerm_Type
-    >
-    like: Mesh.ClassInterface
-  }
+export type MeshClassInterface_PartialType = Mesh_PartialTypeMixin & {
+  children: Array<
+    MeshClassInterfaceFunction_Type | MeshInput_Type | MeshTerm_Type
+  >
+  like: Mesh.ClassInterface
+}
 
 export type MeshClassInterface_Type =
   | MeshClassInterface_PartialType
   | MeshClassInterface_FullType
 
 export type MeshClassReference_FullType = Mesh_FullTypeMixin & {
-  bind: Record<string, MeshClassReference_FullType>
-  class: MeshClass_FullType
+  bind: Array<MeshClassReference_FullType>
+  bond?: MeshClass_FullType
   like: Mesh.ClassReference
+  name: string
 }
 
-export type MeshClassReference_PartialType =
-  Mesh_PartialTypeMixin & {
-    children: Array<MeshClassReference_Type | MeshConstant_Type>
-    like: Mesh.ClassReference
-  }
+export type MeshClassReference_PartialType = Mesh_PartialTypeMixin & {
+  children: Array<MeshClassReference_Type | MeshConstant_Type>
+  like: Mesh.ClassReference
+}
 
 export type MeshClassReference_Type =
   | MeshClassReference_PartialType
   | MeshClassReference_FullType
 
 export type MeshClass_FullType = Mesh_FullTypeMixin & {
-  callback: Record<string, MeshCallback_FullType>
+  callbacks: Record<string, MeshCallback_FullType>
   hidden: boolean
-  interface: Record<
-    string,
-    MeshClassInterfaceImplementation_FullType
-  >
+  interfaces: Record<string, MeshClassInterfaceImplementation_FullType>
   like: Mesh.Class
-  method: Record<string, MeshFunction_FullType>
+  methods: Record<string, MeshFunction_FullType>
   name: string
-  parent: Array<MeshClass_FullType>
-  property: Record<string, MeshInput_FullType>
+  parents: Array<MeshClass_FullType>
+  properties: Record<string, MeshInput_FullType>
 }
 
 export type MeshClass_PartialType = Mesh_PartialTypeMixin & {
@@ -199,13 +208,12 @@ export type MeshClass_PartialType = Mesh_PartialTypeMixin & {
     | MeshFunction_Type
     | MeshClassReference_Type
     | MeshInput_Type
+    | MeshConstant_Type
   >
   like: Mesh.Class
 }
 
-export type MeshClass_Type =
-  | MeshClass_PartialType
-  | MeshClass_FullType
+export type MeshClass_Type = MeshClass_PartialType | MeshClass_FullType
 
 export type MeshCloneVariable_FullType = Mesh_FullTypeMixin &
   Mesh_MutableTypeMixin & {
@@ -213,12 +221,11 @@ export type MeshCloneVariable_FullType = Mesh_FullTypeMixin &
     link: LinkTreeType
   }
 
-export type MeshCloneVariable_PartialType =
-  Mesh_PartialTypeMixin &
-    Partial<Mesh_MutableTypeMixin> & {
-      children: Array<MeshTerm_Type>
-      like: Mesh.CloneVariable
-    }
+export type MeshCloneVariable_PartialType = Mesh_PartialTypeMixin &
+  Partial<Mesh_MutableTypeMixin> & {
+    children: Array<MeshTerm_Type>
+    like: Mesh.CloneVariable
+  }
 
 // clone
 export type MeshCloneVariable_Type =
@@ -231,11 +238,10 @@ export type MeshComponent_FullType = Mesh_FullTypeMixin & {
   name: string
 }
 
-export type MeshComponent_PartialType =
-  Mesh_PartialTypeMixin & {
-    children: Array<MeshElement_Type | MeshTerm_Type>
-    like: Mesh.Component
-  }
+export type MeshComponent_PartialType = Mesh_PartialTypeMixin & {
+  children: Array<MeshElement_Type | MeshTerm_Type>
+  like: Mesh.Component
+}
 
 export type MeshComponent_Type =
   | MeshComponent_PartialType
@@ -319,11 +325,10 @@ export type MeshFunction_Type =
   | MeshFunction_PartialType
   | MeshFunction_FullType
 
-export type MeshImportVariableRename_FullType =
-  Mesh_FullTypeMixin & {
-    like: Mesh.ImportVariableRename
-    name: string
-  }
+export type MeshImportVariableRename_FullType = Mesh_FullTypeMixin & {
+  like: Mesh.ImportVariableRename
+  name: string
+}
 
 export type MeshImportVariableRename_PartialType =
   Mesh_PartialTypeMixin & {
@@ -338,17 +343,14 @@ export type MeshImportVariableRename_Type =
 export type MeshImportVariable_FullType = Mesh_FullTypeMixin & {
   like: Mesh.ImportVariable
   name: string
-  rename: MeshImportVariableRename_FullType
-  scope: string
+  rename: string
+  scopeName: string
 }
 
-export type MeshImportVariable_PartialType =
-  Mesh_PartialTypeMixin & {
-    children: Array<
-      MeshConstant_Type | MeshImportVariableRename_Type
-    >
-    like: Mesh.ImportVariable
-  }
+export type MeshImportVariable_PartialType = Mesh_PartialTypeMixin & {
+  children: Array<MeshConstant_Type | MeshImportVariableRename_Type>
+  like: Mesh.ImportVariable
+}
 
 export type MeshImportVariable_Type =
   | MeshImportVariable_PartialType
@@ -383,10 +385,7 @@ export type MeshInject_FullType = Mesh_FullTypeMixin & {
 
 export type MeshInject_PartialType = Mesh_PartialTypeMixin & {
   children: Array<
-    | MeshBind_Type
-    | MeshValue_Type
-    | MeshTerm_Type
-    | MeshConstant_Type
+    MeshBind_Type | MeshValue_Type | MeshTerm_Type | MeshConstant_Type
   >
   like: Mesh.Inject
 }
@@ -396,9 +395,9 @@ export type MeshInject_Type =
   | MeshInject_FullType
 
 export type MeshInput_FullType = Mesh_FullTypeMixin & {
-  inputLike: MeshClassReference_Type
   like: Mesh.Input
   name: string
+  sourceLike?: MeshClassReference_Type
 }
 
 export type MeshInput_PartialType = Mesh_PartialTypeMixin & {
@@ -408,9 +407,7 @@ export type MeshInput_PartialType = Mesh_PartialTypeMixin & {
   like: Mesh.Input
 }
 
-export type MeshInput_Type =
-  | MeshInput_PartialType
-  | MeshInput_FullType
+export type MeshInput_Type = MeshInput_PartialType | MeshInput_FullType
 
 export type MeshMoveVariable_FullType = Mesh_FullTypeMixin &
   Mesh_MutableTypeMixin & {
@@ -418,22 +415,20 @@ export type MeshMoveVariable_FullType = Mesh_FullTypeMixin &
     nest: MeshTerm_FullType
   }
 
-export type MeshMoveVariable_PartialType =
-  Mesh_PartialTypeMixin &
-    Partial<Mesh_MutableTypeMixin> & {
-      children: Array<MeshTerm_Type>
-      like: Mesh.MoveVariable
-    }
+export type MeshMoveVariable_PartialType = Mesh_PartialTypeMixin &
+  Partial<Mesh_MutableTypeMixin> & {
+    children: Array<MeshTerm_Type>
+    like: Mesh.MoveVariable
+  }
 
 // move
 export type MeshMoveVariable_Type =
   | MeshMoveVariable_PartialType
   | MeshMoveVariable_PartialType
 
-export type MeshNativeClassInterface_FullType =
-  Mesh_FullTypeMixin & {
-    like: Mesh.NativeClassInterface
-  }
+export type MeshNativeClassInterface_FullType = Mesh_FullTypeMixin & {
+  like: Mesh.NativeClassInterface
+}
 
 export type MeshNativeClassInterface_PartialType =
   Mesh_PartialTypeMixin & {
@@ -478,8 +473,9 @@ export type MeshString_Type =
 
 export type MeshTemplate_FullType = Mesh_FullTypeMixin & {
   hidden: boolean
-  input: Record<string, MeshInput_PartialType>
+  inputs: Record<string, MeshInput_FullType>
   like: Mesh.Template
+  link: Array<LinkNodeType>
   name: string
 }
 
@@ -504,9 +500,7 @@ export type MeshTerm_PartialType = Mesh_PartialTypeMixin & {
   like: Mesh.Term
 }
 
-export type MeshTerm_Type =
-  | MeshTerm_PartialType
-  | MeshTerm_FullType
+export type MeshTerm_Type = MeshTerm_PartialType | MeshTerm_FullType
 
 export type MeshTest_FullType = Mesh_FullTypeMixin & {
   like: Mesh.Test
@@ -517,9 +511,7 @@ export type MeshTest_PartialType = Mesh_PartialTypeMixin & {
   like: Mesh.Test
 }
 
-export type MeshTest_Type =
-  | MeshTest_PartialType
-  | MeshTest_FullType
+export type MeshTest_Type = MeshTest_PartialType | MeshTest_FullType
 
 export type MeshText_FullType = Mesh_FullTypeMixin & {
   like: Mesh.String
@@ -528,17 +520,15 @@ export type MeshText_FullType = Mesh_FullTypeMixin & {
 
 export type MeshText_Type = MeshText_FullType
 
-export type MeshUnsignedInteger_FullType =
-  Mesh_FullTypeMixin & {
-    like: Mesh.UnsignedInteger
-    value: number
-  }
+export type MeshUnsignedInteger_FullType = Mesh_FullTypeMixin & {
+  like: Mesh.UnsignedInteger
+  value: number
+}
 
-export type MeshUnsignedInteger_PartialType =
-  Mesh_PartialTypeMixin & {
-    children: Array<number>
-    like: Mesh.UnsignedInteger
-  }
+export type MeshUnsignedInteger_PartialType = Mesh_PartialTypeMixin & {
+  children: Array<number>
+  like: Mesh.UnsignedInteger
+}
 
 export type MeshUnsignedInteger_Type =
   | MeshUnsignedInteger_PartialType
@@ -562,6 +552,7 @@ export type MeshValue_Type =
 export type Mesh_FullTypeMixin = {
   complete: boolean
   partial: false
+  scope?: SiteStepScopeType
 }
 
 export type Mesh_MutableTypeMixin = {
@@ -570,4 +561,5 @@ export type Mesh_MutableTypeMixin = {
 
 export type Mesh_PartialTypeMixin = {
   partial: true
+  scope?: SiteStepScopeType
 }

@@ -4,7 +4,7 @@ import {
   Mesh,
   MeshFullType,
   MeshFunctionFlow_FullType,
-  MeshPartialType,
+  SiteStepScopeType,
   code,
 } from '~'
 import type { MeshInputType } from '~'
@@ -13,11 +13,15 @@ export * from './back/index.js'
 export * from './base/index.js'
 export * from './free/index.js'
 
-export function createMeshPartial<T extends Mesh>(like: T) {
+export function createMeshPartial(
+  like: Mesh,
+  scope?: SiteStepScopeType,
+) {
   return {
     children: [],
-    like: like,
+    like,
     partial: true,
+    scope,
   }
 }
 
@@ -29,15 +33,9 @@ export function generateFullFunction(
 
   let name
   let hidden = false
-  let parameterMesh: Record<
-    string,
-    MeshFullType<Mesh.Input>
-  > = {}
+  let parameterMesh: Record<string, MeshFullType<Mesh.Input>> = {}
   let flow: Array<MeshFunctionFlow_FullType> = []
-  let functionMesh: Record<
-    string,
-    MeshFullType<Mesh.Function>
-  > = {}
+  let functionMesh: Record<string, MeshFullType<Mesh.Function>> = {}
 
   data.children.forEach(node => {
     if (!node.partial) {
@@ -72,21 +70,16 @@ export function generateFullFunction(
     name,
     parameter: parameterMesh,
     partial: false,
+    scope: input.scope,
   }
 }
 
 export function potentiallyReplaceWithFullNode(
   input: MeshInputType,
-  fn: (
-    input: MeshInputType,
-    data: Record<string, unknown>,
-  ) => void,
+  fn: (input: MeshInputType, data: Record<string, unknown>) => void,
 ): void {
-  const data = code.assumeInputObjectAsGenericMeshType(input)
-  const parentData = code.assumeInputObjectAsGenericMeshType(
-    input,
-    1,
-  )
+  const data = code.assumeBranchAsGenericMeshType(input)
+  const parentData = code.assumeBranchAsGenericMeshType(input, 1)
 
   if (
     'children' in parentData &&
@@ -102,20 +95,19 @@ export function potentiallyReplaceWithFullNode(
   }
 }
 
-export function process_codeCard_task(
-  input: MeshInputType,
-): void {
-  const task = code.createMeshPartial(Mesh.Function)
-
+export function process_codeCard_task(input: MeshInputType): void {
+  const container = code.createContainerScope({}, input.scope.container)
+  const scope = code.createStepScope(container)
+  const scopeInput = code.withScope(input, scope)
+  const task = code.createMeshPartial(Mesh.Function, scope)
   code.pushIntoParentObject(input, task)
-
-  const childInput = code.extendWithObjectScope(input, task)
+  const childInput = code.withBranch(scopeInput, task)
 
   code
     .assumeLinkType(childInput, Link.Tree)
     .nest.forEach((nest, index) => {
       code.process_codeCard_task_nestedChildren(
-        code.extendWithNestScope(childInput, {
+        code.withEnvironment(childInput, {
           index,
           nest,
         }),
@@ -133,14 +125,13 @@ export function process_codeCard_task_nestedChildren(
 ): void {
   const type = code.determineNestType(input)
   if (type === LinkHint.StaticTerm) {
-    const term = code.assumeStaticTermFromNest(input)
+    const term = code.assumeTerm(input)
     const index = code.assumeNestIndex(input)
     if (index === 0) {
-      const task = code.assumeInputObjectAsMeshPartialType(
+      code.pushIntoParentObject(
         input,
-        Mesh.Function,
+        code.createStringConstant('name', term),
       )
-      task.children.push(code.createTerm(term))
       return
     }
     switch (term) {
@@ -195,9 +186,7 @@ export function process_codeCard_task_nestedChildren(
   } else if (type === LinkHint.DynamicTerm) {
     // TODO
   } else {
-    code.throwError(
-      code.generateUnhandledNestCaseError(input, type),
-    )
+    code.throwError(code.generateUnhandledNestCaseError(input, type))
   }
 }
 
@@ -205,8 +194,12 @@ export function pushIntoParentObject(
   input: MeshInputType,
   pushed: Record<string, unknown>,
 ): void {
-  const data = input.objectScope.data
-  if ('children' in data && code.isArray(data.children)) {
+  const data = input.branch?.element
+  if (
+    code.isRecord(data) &&
+    'children' in data &&
+    code.isArray(data.children)
+  ) {
     data.children.push(pushed)
   }
 }

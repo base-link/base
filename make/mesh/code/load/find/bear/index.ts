@@ -8,7 +8,7 @@ export function process_codeCard_load_find_bear(
     .assumeLinkType(input, Link.Tree)
     .nest.forEach((nest, index) => {
       code.process_codeCard_load_find_bear_nestedChildren(
-        code.extendWithNestScope(input, {
+        code.withEnvironment(input, {
           index,
           nest,
         }),

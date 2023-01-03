@@ -1,22 +1,20 @@
 import { Link, Mesh, MeshPartialType, code } from '~'
 import type { MeshInputType } from '~'
 
-export function process_codeCard_suit(
-  input: MeshInputType,
-): void {
+export function process_codeCard_suit(input: MeshInputType): void {
   const suit: MeshPartialType<Mesh.ClassInterface> = {
     children: [],
     like: Mesh.ClassInterface,
     partial: true,
   }
 
-  const childInput = code.extendWithObjectScope(input, suit)
+  const childInput = code.withBranch(input, suit)
 
   code
     .assumeLinkType(childInput, Link.Tree)
     .nest.forEach((nest, index) => {
       code.process_codeCard_suit_nestedChildren(
-        code.extendWithNestScope(childInput, {
+        code.withEnvironment(childInput, {
           index,
           nest,
         }),
@@ -29,10 +27,10 @@ export function process_codeCard_suit_nestedChildren(
 ): void {
   const type = code.determineNestType(input)
   if (type === 'static-term') {
-    const term = code.assumeStaticTermFromNest(input)
+    const term = code.assumeTerm(input)
     const index = code.assumeNestIndex(input)
     if (index === 0) {
-      const suit = code.assumeInputObjectAsMeshPartialType(
+      const suit = code.assumeBranchAsMeshPartialType(
         input,
         Mesh.ClassInterface,
       )
@@ -77,13 +75,9 @@ export function process_codeCard_suit_nestedChildren(
         code.process_codeCard_like(input)
         break
       default:
-        code.throwError(
-          code.generateUnhandledTermCaseError(input),
-        )
+        code.throwError(code.generateUnhandledTermCaseError(input))
     }
   } else {
-    code.throwError(
-      code.generateUnhandledNestCaseError(input, type),
-    )
+    code.throwError(code.generateUnhandledNestCaseError(input, type))
   }
 }

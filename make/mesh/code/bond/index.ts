@@ -33,7 +33,7 @@ export function process_codeCard_bond_nestedChildren(
   const type = code.determineNestType(input)
   switch (type) {
     case LinkHint.StaticTerm:
-      const term = code.resolveStaticTermFromNest(input)
+      const term = code.resolveTerm(input)
       switch (term) {
         case 'loan':
           code.process_codeCard_bond_loan(input)

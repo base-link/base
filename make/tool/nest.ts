@@ -2,33 +2,27 @@ import {
   Link,
   LinkHint,
   LinkType,
-  Site,
+  SiteEnvironmentType,
   code,
-  termIsInterpolated,
 } from '~'
-import type { MeshInputType, SiteScopeType } from '~'
-
-export function assertScope(
-  object: unknown,
-): asserts object is SiteScopeType {
-  if (!code.isScope(object)) {
-    code.throwError(
-      code.generateObjectNotTypeError(object, [Site.Scope]),
-    )
-  }
-}
+import type { MeshInputType } from '~'
 
 export function assumeNest(
   input: MeshInputType,
-  rank = 0,
 ): LinkType<Link> {
-  const nest = code.getNestScopeProperty(input, 'nest', rank)
+  const nest = code.getEnvironmentProperty(
+    input.environment,
+    'nest',
+  )
   code.assertGenericLinkType(nest)
   return nest
 }
 
 export function assumeNestIndex(input: MeshInputType): number {
-  const index = code.getNestScopeProperty(input, 'index')
+  const index = code.getEnvironmentProperty(
+    input.environment,
+    'index',
+  )
   code.assertNumber(index)
   return index
 }
@@ -65,20 +59,6 @@ export function determineNestType(
   }
 
   return LinkHint.Empty
-}
-
-export function getNestScopeProperty(
-  input: MeshInputType,
-  property: string,
-  rank = 0,
-): unknown {
-  let scope = input.nestScope
-  while (rank > 0 && scope) {
-    scope = scope.parent
-    rank--
-  }
-  code.assertScope(scope)
-  return code.getProperty(scope.data, property)
 }
 
 export function nestIsHashtag(input: MeshInputType): boolean {

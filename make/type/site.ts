@@ -1,9 +1,24 @@
-import type { MeshInputType } from '~'
+import type { Mesh, MeshInputType, MeshType } from '~'
 
 export enum Site {
-  Dependency = 'internal-dependency',
-  DependencyPart = 'internal-dependency-part',
-  Scope = 'internal-scope',
+  ContainerScope = 'site-container-scope',
+  Dependency = 'site-dependency',
+  DependencyPart = 'site-dependency-part',
+  Scope = 'site-scope',
+  StepScope = 'site-step-scope',
+  VariableDeclaration = 'site-variable-declaration',
+}
+
+export type SiteBranchType = {
+  element: Record<string, unknown>
+  parent?: SiteBranchType
+}
+
+export type SiteContainerScopeType = {
+  declarations: Record<string, SiteVariableDeclarationType>
+  like: Site.ContainerScope
+  parent?: SiteContainerScopeType
+  steps: Array<SiteStepScopeType>
 }
 
 export type SiteDependencyPartCallbackType = (
@@ -26,18 +41,41 @@ export type SiteDependencyType = {
   path: Array<SiteDependencyPartType>
 }
 
+export type SiteEnvironmentType = {
+  bindings: Record<string, unknown>
+  parent?: SiteEnvironmentType
+}
+
 export type SiteInputCallbackType<T> = (value: T) => void
 
 export type SiteMappingType = {
-  'internal-dependency': SiteDependencyType
-  'internal-dependency-part': SiteDependencyPartType
-  'internal-scope': SiteScopeType
+  'site-container-scope': SiteContainerScopeType
+  'site-dependency': SiteDependencyType
+  'site-dependency-part': SiteDependencyPartType
+  'site-scope': SiteScopeType
+  'site-step-scope': SiteStepScopeType
+  'site-variable-declaration': SiteVariableDeclarationType
 }
 
+export type SitePotentialScopeType =
+  | SiteContainerScopeType
+  | SiteStepScopeType
+
 export type SiteScopeType = {
-  data: Record<string, unknown>
+  bindings: Record<string, unknown>
   like: Site.Scope
   parent?: SiteScopeType
 }
 
+export type SiteStepScopeType = {
+  container?: SiteContainerScopeType
+  declarations: Record<string, SiteVariableDeclarationType>
+  like: Site.StepScope
+  previous?: SiteStepScopeType
+}
+
 export type SiteType<T extends Site> = SiteMappingType[T]
+
+export type SiteVariableDeclarationType = {
+  like: string
+}

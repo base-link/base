@@ -8,27 +8,21 @@ export function assertNestChildrenLength(
   const nest = code.assumeLinkType(input, Link.Tree)
   if (nest.nest.length !== length) {
     code.throwError(
-      code.generateInvalidNestChildrenLengthError(
-        input,
-        length,
-      ),
+      code.generateInvalidNestChildrenLengthError(input, length),
     )
   }
 }
 
-export function assumeStaticTermFromNest(
-  input: MeshInputType,
-): string {
-  const term = code.resolveStaticTermFromNest(input)
+export function assumeTerm(input: MeshInputType): string {
+  const term = code.resolveTerm(input)
   code.assertString(term)
   return term
 }
 
 export function getTerm(
   input: MeshInputType,
-  rank = 0,
 ): LinkType<Link.Term> | undefined {
-  const nest = code.assumeNest(input, rank)
+  const nest = code.assumeNest(input)
 
   if (nest.like === Link.Term) {
     return nest
@@ -50,11 +44,8 @@ export function getTerm(
   return child
 }
 
-export function resolveStaticTermFromNest(
-  input: MeshInputType,
-  rank = 0,
-): string | undefined {
-  const term = code.getTerm(input, rank)
+export function resolveTerm(input: MeshInputType): string | undefined {
+  const term = code.getTerm(input)
   code.assertLinkType(term, Link.Term)
   const string: Array<string> = []
 
@@ -69,25 +60,7 @@ export function resolveStaticTermFromNest(
   return string.join('')
 }
 
-export function resolveTerm(
-  input: MeshInputType,
-): string | undefined {
-  const term = code.getTerm(input)
-  code.assertLinkType(term, Link.Term)
-  const string: Array<string> = []
-
-  term.segment.forEach(seg => {
-    if (seg.like === Link.String) {
-      string.push(seg.value)
-    }
-  })
-
-  return string.join('')
-}
-
-export function termIsInterpolated(
-  input: MeshInputType,
-): boolean {
+export function termIsInterpolated(input: MeshInputType): boolean {
   const nest = code.assumeNest(input)
   const term = code.getTerm(input)
   if (!term) {

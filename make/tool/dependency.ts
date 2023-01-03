@@ -1,6 +1,7 @@
 import {
   MeshInputType,
   SiteDependencyType,
+  SiteEnvironmentType,
   SiteScopeType,
   code,
 } from '~'
@@ -9,13 +10,16 @@ export function checkDependency(
   input: MeshInputType,
   dependency: SiteDependencyType,
 ): boolean {
-  const scope = code.findInitialScope(input, dependency)
+  const environment = code.findInitialEnvironment(
+    input,
+    dependency,
+  )
 
-  if (!scope) {
+  if (!environment) {
     return false
   }
 
-  let value: Record<string, unknown> = scope.data
+  let value: Record<string, unknown> = environment.bindings
 
   let i = 0
   while (i < dependency.path.length) {
@@ -41,22 +45,22 @@ export function checkDependency(
   return false
 }
 
-export function findInitialScope(
+export function findInitialEnvironment(
   input: MeshInputType,
   dependency: SiteDependencyType,
-): SiteScopeType | undefined {
-  let scope: SiteScopeType = input.lexicalScope
+): SiteEnvironmentType | undefined {
+  let environment: SiteEnvironmentType = input.environment
 
   const part = dependency.path[0]
   if (!part) {
     return
   }
 
-  while (scope) {
-    if (part.name in scope.data) {
-      return scope
-    } else if (scope.parent) {
-      scope = scope.parent
+  while (environment) {
+    if (part.name in environment.bindings) {
+      return environment
+    } else if (environment.parent) {
+      environment = environment.parent
     } else {
       return
     }

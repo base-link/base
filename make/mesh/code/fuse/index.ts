@@ -1,30 +1,65 @@
-import { Link, LinkHint, Mesh, MeshPartialType, code } from '~'
+import {
+  Link,
+  LinkHint,
+  LinkNodeType,
+  Mesh,
+  MeshFullType,
+  code,
+} from '~'
 import type { MeshInputType } from '~'
 
-export function process_codeCard_fuse(
-  input: MeshInputType,
-): void {
-  const fuse: MeshPartialType<Mesh.Inject> = {
-    children: [],
-    like: Mesh.Inject,
-    partial: true,
-  }
+export function attemptResolveFuse(input: MeshInputType): void {
+  const name = code.findFullStringConstantByName(input, 'name')
+  code.assertString(name)
 
-  const card = code.getProperty(input, 'card')
+  const templateMesh = code.getEnvironmentProperty(
+    input.environment,
+    'allTemplateMesh',
+  )
+
+  if (code.isRecord(templateMesh)) {
+    const template = templateMesh[name]
+    if (!template) {
+      return // not yet
+    }
+
+    const nodes = code.evaluateTemplate(input)
+  }
+}
+
+export function evaluateTemplate(
+  input: MeshInputType,
+): Array<LinkNodeType> {
+  const result: Array<LinkNodeType> = []
+
+  return result
+}
+
+export function process_codeCard_fuse(input: MeshInputType): void {
+  const fuse = code.createMeshPartial(Mesh.Inject, input.scope)
+  code.pushIntoParentObject(input, fuse)
+
+  const card = input.module
   code.assertMeshType(card, Mesh.CodeModule)
 
-  const fuseInput = code.extendWithObjectScope(input, fuse)
+  const fuseInput = code.withBranch(input, fuse)
 
-  code
-    .assumeLinkType(input, Link.Tree)
-    .nest.forEach((nest, index) => {
-      process_codeCard_fuse_nestedChildren(
-        code.extendWithNestScope(fuseInput, {
-          index,
-          nest,
-        }),
-      )
-    })
+  code.assumeLinkType(input, Link.Tree).nest.forEach((nest, index) => {
+    process_codeCard_fuse_nestedChildren(
+      code.withEnvironment(fuseInput, {
+        index,
+        nest,
+      }),
+    )
+  })
+
+  // if the terms all pass interpolation
+  if (code.childrenAreComplete(fuse)) {
+    code.attemptResolveFuse(fuseInput)
+  }
+  // code.replaceIfComplete(fuseInput, fuse, () =>
+  //   code.generateFullInject(fuseInput),
+  // )
 }
 
 export function process_codeCard_fuse_nestedChildren(
@@ -33,14 +68,11 @@ export function process_codeCard_fuse_nestedChildren(
   const type = code.determineNestType(input)
   switch (type) {
     case LinkHint.StaticTerm: {
-      const term = code.assumeStaticTermFromNest(input)
       const index = code.assumeNestIndex(input)
+      const term = code.assumeTerm(input)
       if (index === 0) {
-        const fuse = code.assumeInputObjectAsMeshPartialType(
+        code.pushIntoParentObject(
           input,
-          Mesh.Inject,
-        )
-        fuse.children.push(
           code.createStringConstant('name', term),
         )
       } else {
@@ -58,16 +90,12 @@ export function process_codeCard_fuse_nestedChildren(
             code.process_codeCard_term(input)
             break
           default:
-            code.throwError(
-              code.generateUnhandledTermCaseError(input),
-            )
+            code.throwError(code.generateUnhandledTermCaseError(input))
         }
       }
       break
     }
     default:
-      code.throwError(
-        code.generateUnhandledTermCaseError(input),
-      )
+      code.throwError(code.generateUnhandledTermCaseError(input))
   }
 }

@@ -84,9 +84,7 @@ export function assertError(
   }
 }
 
-export function buildErrorMessage(
-  data: SiteErrorType,
-): Array<string> {
+export function buildErrorMessage(data: SiteErrorType): Array<string> {
   const text: Array<string> = []
 
   text.push(``)
@@ -108,9 +106,7 @@ export function buildErrorMessage(
     text.push(chalk.gray(`    term `) + chalk.white(`${term}`))
   })
 
-  text.push(
-    chalk.gray(`    code `) + chalk.white(`#${data.code}`),
-  )
+  text.push(chalk.gray(`    code `) + chalk.white(`#${data.code}`))
 
   if (data.file) {
     if (data.text) {
@@ -170,6 +166,15 @@ export function generateCompilerTodoError(
   }
 }
 
+export function generateEnvironmentMissingPropertyError(
+  property: string,
+): SiteErrorType {
+  return {
+    code: '0019',
+    note: `Environment is missing property ${property}.`,
+  }
+}
+
 export function generateForkMissingPropertyError(
   property: string,
 ): SiteErrorType {
@@ -215,7 +220,7 @@ export function generateHighlightedErrorForLinkTree(
 ): string {
   const highlightedRange = code.getCursorRangeForTree(input)
   return code.generateHighlightedError(
-    input.card.textByLine,
+    input.module.textByLine,
     highlightedRange,
   )
 }
@@ -225,7 +230,7 @@ export function generateHighlightedErrorForText(
 ): string {
   const highlightedRange = code.getCursorRangeForText(input)
   return code.generateHighlightedError(
-    input.card.textByLine,
+    input.module.textByLine,
     highlightedRange,
   )
 }
@@ -233,6 +238,7 @@ export function generateHighlightedErrorForText(
 export function generateIncorrectlyTypedVariable(
   like: string | Array<string>,
   name?: string,
+  path?: string,
 ): SiteErrorType {
   like = Array.isArray(like) ? like : [like]
   const words =
@@ -245,6 +251,7 @@ export function generateIncorrectlyTypedVariable(
   const text = name ? ` \`${name}\`` : ''
   return {
     code: `0027`,
+    file: path,
     note: `Variable${text} is not typed as a ${words}.`,
   }
 }
@@ -276,6 +283,23 @@ export function generateInvalidDeckLink(
   }
 }
 
+export function generateInvalidNestCaseError(
+  input: MeshInputType,
+  type: LinkHint,
+): SiteErrorType {
+  let scope
+  try {
+    scope = code.resolveTerm(input, 1)
+  } catch (e) {}
+  const text = code.generateHighlightedErrorForLinkTree(input)
+  return {
+    code: `0032`,
+    file: `${input.module.path}`,
+    note: `The "${LINK_HINT_TEXT[type]}" elements are invalid in this context.`,
+    text,
+  }
+}
+
 export function generateInvalidNestChildrenLengthError(
   input: MeshInputType,
   length: number,
@@ -290,12 +314,12 @@ export function generateInvalidPatternError(
   input: MeshInputType,
   pattern: unknown,
 ): SiteErrorType {
-  const { card } = input
+  const { module } = input
   const nest = code.assumeNest(input)
   const text = code.generateHighlightedErrorForText(input)
   return {
     code: `0012`,
-    file: `${card.path}`,
+    file: `${module.path}`,
     note: `Text does not match pattern ${pattern}.`,
     text: text,
   }
@@ -306,8 +330,10 @@ export function generateInvalidWhitespaceError(
 ): SiteErrorType {
   const token = input.tokenList[input.state.index]
   code.assertTextGenericType(token)
-  const highlightedRange =
-    code.getCursorRangeForTextWhitespaceToken(token, input)
+  const highlightedRange = code.getCursorRangeForTextWhitespaceToken(
+    token,
+    input,
+  )
   const text = code.generateHighlightedError(
     input.textByLine,
     highlightedRange,
@@ -326,7 +352,7 @@ export function generateModuleUnresolvableError(
 ): SiteErrorType {
   return {
     code: '0020',
-    file: `${input.card.path}`,
+    file: `${input.module.path}`,
     note: `Module has unresolvable references`,
   }
 }
@@ -345,17 +371,7 @@ export function generateObjectNotTypeError(
   return {
     code: `0007`,
     note: `Object isn't type ${words}.`,
-    text:
-      object == null ? String(object) : prettifyJSON(object),
-  }
-}
-
-export function generateScopeMissingPropertyError(
-  property: string,
-): SiteErrorType {
-  return {
-    code: '0019',
-    note: `Scope is missing property ${property}.`,
+    text: object == null ? String(object) : prettifyJSON(object),
   }
 }
 
@@ -413,10 +429,10 @@ export function generateTermMissingError(
   type: string,
   object: string,
 ): SiteErrorType {
-  const { card } = input
+  const { module } = input
   return {
     code: `0018`,
-    file: `${card.path}`,
+    file: `${module.path}`,
     note: `Term ${type} is missing on ${object}.`,
     text: '',
   }
@@ -425,11 +441,11 @@ export function generateTermMissingError(
 export function generateUnhandledNestCaseBaseError(
   input: MeshInputType,
 ): SiteErrorType {
-  const { card } = input
+  const { module } = input
   const text = code.generateHighlightedErrorForLinkTree(input)
   return {
     code: `0005`,
-    file: `${card.path}`,
+    file: `${module.path}`,
     note: `We haven't implemented handling this type of nest yet.`,
     text,
   }
@@ -441,12 +457,12 @@ export function generateUnhandledNestCaseError(
 ): SiteErrorType {
   let scope
   try {
-    scope = code.resolveStaticTermFromNest(input, 1)
+    scope = code.resolveTerm(input, 1)
   } catch (e) {}
   const text = code.generateHighlightedErrorForLinkTree(input)
   return {
     code: `0004`,
-    file: `${input.card.path}`,
+    file: `${input.module.path}`,
     note: `We haven't implemented handling "${
       LINK_HINT_TEXT[type]
     }s" yet${scope ? ` on \`${scope}\`` : ''}.`,
@@ -459,16 +475,16 @@ export function generateUnhandledTermCaseError(
 ): SiteErrorType {
   let scope
   try {
-    scope = code.resolveStaticTermFromNest(input, 1)
+    scope = code.resolveTerm(input, 1)
   } catch (e) {}
-  const name = code.resolveStaticTermFromNest(input)
+  const name = code.resolveTerm(input)
   code.assertString(name)
   const handle = ERROR['0002']
   code.assertError(handle)
   const text = code.generateHighlightedErrorForLinkTree(input)
   return {
     code: `0002`,
-    file: `${input.card.path}`,
+    file: `${input.module.path}`,
     note: handle.note({ name, scope }),
     term: [ErrorTerm.CompilerError],
     text,
@@ -480,7 +496,7 @@ export function generateUnhandledTermInterpolationError(
 ): SiteErrorType {
   return {
     code: `0001`,
-    file: `${input.card.path}`,
+    file: `${input.module.path}`,
     note: `We haven't implemented handling term interpolation yet.`,
     text: '',
   }
@@ -489,13 +505,13 @@ export function generateUnhandledTermInterpolationError(
 export function generateUnknownTermError(
   input: MeshInputType,
 ): SiteErrorType {
-  const { card } = input
-  const name = code.resolveStaticTermFromNest(input)
+  const { module } = input
+  const name = code.resolveTerm(input)
   const text = code.generateHighlightedErrorForLinkTree(input)
-  const insideName = code.resolveStaticTermFromNest(input, 1)
+  const insideName = code.resolveTerm(input, 1)
   return {
     code: `0003`,
-    file: `${card.path}`,
+    file: `${module.path}`,
     note: `Unknown term \`${name}\`${
       insideName ? ` inside \`${insideName}\`` : ''
     }.`,
@@ -507,10 +523,10 @@ export function generateUnresolvedPathError(
   input: MeshInputType,
   path: string,
 ): SiteErrorType {
-  const { card } = input
+  const { module } = input
   return {
     code: `0013`,
-    file: card.path,
+    file: module.path,
     note: `File not found ${path}.`,
   }
 }
@@ -534,10 +550,10 @@ export function getCursorRangeForPath(
 ): CursorRangeType {
   const path = code.assumeLinkType(input, Link.Path)
   const start = getCursorRangeForTerm(
-    code.extendWithNestScope(input, { nest: path.segment[0] }),
+    code.withEnvironment(input, { nest: path.segment[0] }),
   )
   const end = getCursorRangeForTerm(
-    code.extendWithNestScope(input, {
+    code.withEnvironment(input, {
       nest: path.segment[path.segment.length - 1],
     }),
   )
@@ -563,17 +579,17 @@ export function getCursorRangeForPlugin(
   switch (child?.like) {
     case Link.Term: {
       return code.getCursorRangeForTerm(
-        code.extendWithNestScope(input, { nest }),
+        code.withEnvironment(input, { nest }),
       )
     }
     case Link.Path: {
       return code.getCursorRangeForPath(
-        code.extendWithNestScope(input, { nest }),
+        code.withEnvironment(input, { nest }),
       )
     }
     case Link.Tree: {
       return code.getCursorRangeForTree(
-        code.extendWithNestScope(input, { nest }),
+        code.withEnvironment(input, { nest }),
       )
     }
     default:
@@ -651,11 +667,11 @@ export function getCursorRangeForText(
 
   if (first.like === Link.String) {
     firstRange = code.getCursorRangeForString(
-      code.extendWithNestScope(input, { nest: first }),
+      code.withEnvironment(input, { nest: first }),
     )
   } else if (first.like === Link.Plugin) {
     firstRange = code.getCursorRangeForPlugin(
-      code.extendWithNestScope(input, { nest: first }),
+      code.withEnvironment(input, { nest: first }),
     )
   } else {
     code.throwError(code.generateInvalidCompilerStateError())
@@ -673,11 +689,11 @@ export function getCursorRangeForText(
 
   if (last.like === Link.String) {
     lastRange = code.getCursorRangeForString(
-      code.extendWithNestScope(input, { nest: last }),
+      code.withEnvironment(input, { nest: last }),
     )
   } else if (last.like === Link.Plugin) {
     lastRange = code.getCursorRangeForPlugin(
-      code.extendWithNestScope(input, { nest: last }),
+      code.withEnvironment(input, { nest: last }),
     )
   } else {
     code.throwError(code.generateInvalidCompilerStateError())
@@ -740,14 +756,12 @@ export function getCursorRangeForTree(
     case Link.Tree: {
       const term = nest.head
       if (!term) {
-        code.throwError(
-          code.generateInvalidCompilerStateError(),
-        )
+        code.throwError(code.generateInvalidCompilerStateError())
         throw new CompilerError()
       }
 
       return getCursorRangeForTerm(
-        code.extendWithNestScope(input, { nest: term }),
+        code.withEnvironment(input, { nest: term }),
       )
     }
     case Link.Path: {
@@ -781,9 +795,7 @@ export function getSourceMappedFile(
       return [
         code.resolveNativePath(
           token.source,
-          code.resolveDirectoryPath(
-            path.replace(/^file:\/\//, ''),
-          ),
+          code.resolveDirectoryPath(path.replace(/^file:\/\//, '')),
         ),
         token.line == null ? undefined : token.line,
         token.column == null ? undefined : token.column,
@@ -817,9 +829,7 @@ export function highlightTextRangeForError(
     if (highlight.start.line === i) {
       lines.push(chalk.whiteBright(`${z} | ${lineText}`))
       const indentA = new Array(z.length + 1).join(' ')
-      const indentB = new Array(
-        highlight.start.character + 1,
-      ).join(' ')
+      const indentB = new Array(highlight.start.character + 1).join(' ')
       const squiggly = new Array(
         highlight.end.character - highlight.start.character + 1,
       ).join('~')
@@ -838,12 +848,9 @@ export function highlightTextRangeForError(
   return lines.join('\n')
 }
 
-export function isError(
-  error: unknown,
-): error is SiteErrorConfigType {
+export function isError(error: unknown): error is SiteErrorConfigType {
   return (
-    code.isRecord(error) &&
-    Boolean((error as SiteErrorConfigType).code)
+    code.isRecord(error) && Boolean((error as SiteErrorConfigType).code)
   )
 }
 
@@ -865,9 +872,7 @@ export function parseStackLineFileOnly(
 ): SiteStackTraceType {
   const parts = text.replace(/[\(\)]/g, '').split(':')
   const character = parts.pop()
-  let characterN = character
-    ? parseInt(character, 10)
-    : undefined
+  let characterN = character ? parseInt(character, 10) : undefined
   const line = parts.pop()
   let lineN = line ? parseInt(line, 10) : undefined
   let file = parts.join(':')
@@ -933,9 +938,7 @@ export function renderError(stackTrace: string): Array<string> {
   while (i >= 0) {
     const line = parts[i--]
     if (!intoMessage && line?.startsWith('    at ')) {
-      stack.push(
-        code.parseStackLine(line.slice('    at '.length)),
-      )
+      stack.push(code.parseStackLine(line.slice('    at '.length)))
     } else if (line) {
       intoMessage = true
       messageLine.push(line)
@@ -975,14 +978,10 @@ export function renderStackTrace(
 
     const end = suffix.length ? ':' + suffix.join(':') : ''
     text.push(
-      `${g(`site ${g('<')}`)}${bw(`${node.file}${end}`)}${g(
-        '>',
-      )}`,
+      `${g(`site ${g('<')}`)}${bw(`${node.file}${end}`)}${g('>')}`,
     )
     if (node.function) {
-      text.push(
-        `${g(`  call ${g('<')}${w(node.function)}${g('>')}`)}`,
-      )
+      text.push(`${g(`  call ${g('<')}${w(node.function)}${g('>')}`)}`)
     }
   })
   return text
@@ -1007,10 +1006,8 @@ export function throwError(data: SiteErrorType): void {
         .slice(1)
         .map((site: NodeJS.CallSite) => {
           let x = site.getFileName()
-          let a: number | null | undefined =
-            site.getLineNumber()
-          let b: number | null | undefined =
-            site.getColumnNumber()
+          let a: number | null | undefined = site.getLineNumber()
+          let b: number | null | undefined = site.getColumnNumber()
 
           if (
             x &&
@@ -1033,9 +1030,7 @@ export function throwError(data: SiteErrorType): void {
           if (x) {
             lastLines.push(
               chalk.gray('      site <') +
-                chalk.whiteBright(
-                  [x, a, b].filter(x => x).join(':'),
-                ) +
+                chalk.whiteBright([x, a, b].filter(x => x).join(':')) +
                 chalk.gray('>'),
             )
           } else {
