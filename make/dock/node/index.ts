@@ -100,10 +100,7 @@ export function generateNodeJSCardModule(
     imports.push(
       createVariableDeclaration(
         'const',
-        createVariableDeclarator(
-          createIdentifier(`i${i + 1}`),
-          [createMemberExpression(createIdentifier('base'))],
-        ),
+        createVariableDeclarator(createIdentifier(`i${i + 1}`)),
       ),
     )
   })
