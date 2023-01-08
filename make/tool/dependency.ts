@@ -1,19 +1,15 @@
 import {
-  MeshInputType,
   SiteDependencyType,
   SiteEnvironmentType,
-  SiteScopeType,
+  SiteProcessInputType,
   code,
 } from '~'
 
 export function checkDependency(
-  input: MeshInputType,
+  input: SiteProcessInputType,
   dependency: SiteDependencyType,
 ): boolean {
-  const environment = code.findInitialEnvironment(
-    input,
-    dependency,
-  )
+  const environment = code.findInitialEnvironment(input, dependency)
 
   if (!environment) {
     return false
@@ -46,7 +42,7 @@ export function checkDependency(
 }
 
 export function findInitialEnvironment(
-  input: MeshInputType,
+  input: SiteProcessInputType,
   dependency: SiteDependencyType,
 ): SiteEnvironmentType | undefined {
   let environment: SiteEnvironmentType = input.environment

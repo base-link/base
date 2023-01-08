@@ -50,17 +50,36 @@ export function createStepScope(
   return step
 }
 
-export function getEnvironmentProperty(
-  scope: SiteEnvironmentType,
-  path: string | number | symbol,
-): unknown {
-  let source: SiteEnvironmentType = scope
+export function environmentHasProperty(
+  environment: SiteEnvironmentType,
+  name: string | number | symbol,
+): boolean {
+  let source: SiteEnvironmentType = environment
 
   while (source) {
-    if (path in source.bindings) {
+    if (name in source.bindings) {
+      return true
+    } else if (source.parent) {
+      source = source.parent
+    } else {
+      return false
+    }
+  }
+
+  return false
+}
+
+export function getEnvironmentProperty(
+  environment: SiteEnvironmentType,
+  name: string | number | symbol,
+): unknown {
+  let source: SiteEnvironmentType = environment
+
+  while (source) {
+    if (name in source.bindings) {
       return (
         source.bindings as Record<string | symbol | number, unknown>
-      )[path]
+      )[name]
     } else if (source.parent) {
       source = source.parent
     } else {

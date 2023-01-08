@@ -2,43 +2,46 @@ import {
   Link,
   LinkHint,
   Mesh,
-  MeshFullType,
-  MeshFunctionFlow_FullType,
+  MeshFunctionFlowType,
+  MeshFunctionType,
+  MeshInputType,
+  MeshType,
+  Nest,
+  NestType,
   SiteStepScopeType,
   code,
 } from '~'
-import type { MeshInputType } from '~'
+import type { SiteProcessInputType } from '~'
 
 export * from './back/index.js'
 export * from './base/index.js'
 export * from './free/index.js'
 
-export function createMeshPartial(
-  like: Mesh,
-  scope?: SiteStepScopeType,
-) {
+export function createNest<T extends Nest>(
+  like: T,
+  scope: SiteStepScopeType,
+): NestType<T> {
   return {
     children: [],
     like,
-    partial: true,
     scope,
   }
 }
 
 export function generateFullFunction(
-  input: MeshInputType,
+  input: SiteProcessInputType,
   data: Record<string, unknown>,
-): MeshFullType<Mesh.Function> {
-  code.assertMeshPartialType(data, Mesh.Function)
+): MeshFunctionType {
+  code.assertNest(data, Nest.Function)
 
   let name
   let hidden = false
-  let parameterMesh: Record<string, MeshFullType<Mesh.Input>> = {}
-  let flow: Array<MeshFunctionFlow_FullType> = []
-  let functionMesh: Record<string, MeshFullType<Mesh.Function>> = {}
+  let parameterMesh: Record<string, MeshInputType> = {}
+  let flow: Array<MeshFunctionFlowType> = []
+  let functionMesh: Record<string, MeshFunctionType> = {}
 
   data.children.forEach(node => {
-    if (!node.partial) {
+    if (code.isGenericMesh(node)) {
       switch (node.like) {
         case Mesh.Term:
           name = node.name
@@ -69,17 +72,19 @@ export function generateFullFunction(
     like: Mesh.Function,
     name,
     parameter: parameterMesh,
-    partial: false,
     scope: input.scope,
   }
 }
 
 export function potentiallyReplaceWithFullNode(
-  input: MeshInputType,
-  fn: (input: MeshInputType, data: Record<string, unknown>) => void,
+  input: SiteProcessInputType,
+  fn: (
+    input: SiteProcessInputType,
+    data: Record<string, unknown>,
+  ) => void,
 ): void {
-  const data = code.assumeBranchAsGenericMeshType(input)
-  const parentData = code.assumeBranchAsGenericMeshType(input, 1)
+  const data = code.assumeElementAsGenericNest(input)
+  const parentData = code.assumeElementAsGenericNest(input, 1)
 
   if (
     'children' in parentData &&
@@ -92,27 +97,34 @@ export function potentiallyReplaceWithFullNode(
       input,
       data,
     )
+  } else {
+    // code.throwError(
+    //   code.generateInvalidCompilerStateError(
+    //     undefined,
+    //     input.module.path,
+    //   ),
+    // )
   }
 }
 
-export function process_codeCard_task(input: MeshInputType): void {
+export function process_codeCard_task(
+  input: SiteProcessInputType,
+): void {
   const container = code.createContainerScope({}, input.scope.container)
   const scope = code.createStepScope(container)
   const scopeInput = code.withScope(input, scope)
-  const task = code.createMeshPartial(Mesh.Function, scope)
+  const task = code.createNest(Nest.Function, scope)
   code.pushIntoParentObject(input, task)
-  const childInput = code.withBranch(scopeInput, task)
+  const childInput = code.withElement(scopeInput, task)
 
-  code
-    .assumeLinkType(childInput, Link.Tree)
-    .nest.forEach((nest, index) => {
-      code.process_codeCard_task_nestedChildren(
-        code.withEnvironment(childInput, {
-          index,
-          nest,
-        }),
-      )
-    })
+  code.assumeLink(childInput, Link.Tree).nest.forEach((nest, index) => {
+    code.process_codeCard_task_nestedChildren(
+      code.withEnvironment(childInput, {
+        index,
+        nest,
+      }),
+    )
+  })
 
   code.potentiallyReplaceWithFullNode(
     childInput,
@@ -121,7 +133,7 @@ export function process_codeCard_task(input: MeshInputType): void {
 }
 
 export function process_codeCard_task_nestedChildren(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {
   const type = code.determineNestType(input)
   if (type === LinkHint.StaticTerm) {
@@ -191,10 +203,10 @@ export function process_codeCard_task_nestedChildren(
 }
 
 export function pushIntoParentObject(
-  input: MeshInputType,
-  pushed: Record<string, unknown>,
+  input: SiteProcessInputType,
+  pushed: MeshType<Mesh> | NestType<Nest>,
 ): void {
-  const data = input.branch?.element
+  const data = input.element.node
   if (
     code.isRecord(data) &&
     'children' in data &&

@@ -1,17 +1,19 @@
 import { Link, LinkHint, Mesh, code } from '~'
-import type { MeshInputType } from '~'
+import type { SiteProcessInputType } from '~'
 
-export function process_codeCard_form_wear(input: MeshInputType): void {
+export function process_codeCard_form_wear(
+  input: SiteProcessInputType,
+): void {
   const container = code.createContainerScope({}, input.scope.container)
   const scope = code.createStepScope(container)
   const scopeInput = code.withScope(input, scope)
-  const wear = code.createMeshPartial(
+  const wear = code.createNest(
     Mesh.ClassInterfaceImplementation,
     input.scope,
   )
-  const childInput = code.withBranch(scopeInput, wear)
+  const childInput = code.withElement(scopeInput, wear)
 
-  code.assumeLinkType(input, Link.Tree).nest.forEach((nest, index) => {
+  code.assumeLink(input, Link.Tree).nest.forEach((nest, index) => {
     process_codeCard_form_wear_nestedChildren(
       code.withEnvironment(childInput, {
         index,
@@ -22,7 +24,7 @@ export function process_codeCard_form_wear(input: MeshInputType): void {
 }
 
 export function process_codeCard_form_wear_nestedChildren(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {
   const type = code.determineNestType(input)
   switch (type) {
@@ -30,7 +32,7 @@ export function process_codeCard_form_wear_nestedChildren(
       const term = code.assumeTerm(input)
       const index = code.assumeNestIndex(input)
       if (index === 0) {
-        const wear = code.assumeBranchAsMeshPartialType(
+        const wear = code.assumeElementAsNest(
           input,
           Mesh.ClassInterfaceImplementation,
         )

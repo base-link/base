@@ -1,8 +1,8 @@
 import { Link, Mesh, code } from '~'
-import type { MeshInputType } from '~'
+import type { SiteProcessInputType } from '~'
 
 export function finalize_deckCard_deck_bear(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {
   const text = code.resolveText(input)
   code.assertString(text)
@@ -15,11 +15,11 @@ export function finalize_deckCard_deck_bear(
 }
 
 export function process_deckCard_deck_bear(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {
   code.assertNestChildrenLength(input, 1)
 
-  const nest = code.assumeLinkType(input, Link.Tree).nest[0]
+  const nest = code.assumeLink(input, Link.Tree).nest[0]
 
   code.processTextNest(
     code.withEnvironment(input, { nest }),

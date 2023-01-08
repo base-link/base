@@ -1,27 +1,23 @@
 import { Link, LinkHint, Site, code } from '~'
 import type {
-  MeshInputType,
   SiteDependencyPartType,
   SiteDependencyType,
+  SiteProcessInputType,
 } from '~'
 
 export function processDynamicTextNest(
-  input: MeshInputType,
-  job: (i: MeshInputType) => void,
+  input: SiteProcessInputType,
+  job: (i: SiteProcessInputType) => void,
 ): void {
-  const dependencyList = code.resolveTextDependencyList(
-    input,
-    job,
-  )
+  const dependencyList = code.resolveTextDependencyList(input, job)
 
   const card = input.module
-  code.assertCard(card)
 
   const unmetDependencyList = dependencyList.filter(
     dep => !code.checkDependency(input, dep),
   )
 
-  card.base.dependency.push(...unmetDependencyList)
+  // card.base.dependency.push(...unmetDependencyList)
 
   if (!unmetDependencyList.length) {
     job(input)
@@ -29,8 +25,8 @@ export function processDynamicTextNest(
 }
 
 export function processTextNest(
-  input: MeshInputType,
-  job: (i: MeshInputType) => void,
+  input: SiteProcessInputType,
+  job: (i: SiteProcessInputType) => void,
 ): void {
   const type = code.determineNestType(input)
   switch (type) {
@@ -42,20 +38,18 @@ export function processTextNest(
       job(input)
       break
     default:
-      code.throwError(
-        code.generateUnhandledNestCaseError(input, type),
-      )
+      code.throwError(code.generateUnhandledNestCaseError(input, type))
   }
 }
 
 export function readDependency(
-  input: MeshInputType,
+  input: SiteProcessInputType,
   dependency: SiteDependencyType,
 ): unknown {
   const scope = code.findInitialEnvironment(input, dependency)
 
   if (scope) {
-    let value: unknown = scope.data
+    let value: unknown = scope.bindings
 
     dependency.path.forEach(part => {
       if (code.isRecord(value)) {
@@ -70,12 +64,12 @@ export function readDependency(
   }
 }
 
-export function readLinkIndex(input: MeshInputType): unknown {
+export function readLinkIndex(input: SiteProcessInputType): unknown {
   const nest = code.assumeNest(input)
 
   if (nest.like === Link.Index) {
     const child = nest.nest[0]
-    code.assertGenericLinkType(child)
+    code.assertGenericLink(child)
 
     switch (child.like) {
       case Link.Tree:
@@ -102,9 +96,9 @@ export function readLinkIndex(input: MeshInputType): unknown {
   }
 }
 
-export function readLinkPath(input: MeshInputType): unknown {
+export function readLinkPath(input: SiteProcessInputType): unknown {
   const nest = code.assumeNest(input)
-  code.assertLinkType(nest, Link.Path)
+  code.assertLink(nest, Link.Path)
 
   let i = 0
 
@@ -114,10 +108,7 @@ export function readLinkPath(input: MeshInputType): unknown {
   )
 
   code.assertString(firstTerm)
-  let value = code.getEnvironmentProperty(
-    input.environment,
-    firstTerm,
-  )
+  let value = code.getEnvironmentProperty(input.environment, firstTerm)
 
   while (i < nest.segment.length) {
     const seg = nest.segment[i++]
@@ -155,12 +146,12 @@ export function readLinkPath(input: MeshInputType): unknown {
   return value
 }
 
-export function readLinkPlugin(input: MeshInputType): unknown {
+export function readLinkPlugin(input: SiteProcessInputType): unknown {
   const nest = code.assumeNest(input)
 
   if (nest.like === Link.Plugin) {
     const child = nest.nest[0]
-    code.assertGenericLinkType(child)
+    code.assertGenericLink(child)
 
     switch (child.like) {
       case Link.Tree:
@@ -187,26 +178,26 @@ export function readLinkPlugin(input: MeshInputType): unknown {
   }
 }
 
-export function readLinkTerm(input: MeshInputType): unknown {
+export function readLinkTerm(input: SiteProcessInputType): unknown {
   const term = code.resolveTerm(input)
   code.assertString(term)
   return code.getEnvironmentProperty(input.environment, term)
 }
 
-export function readLinkTree(input: MeshInputType): unknown {
+export function readLinkTree(input: SiteProcessInputType): unknown {
   const nest = code.assumeNest(input)
-  code.assertLinkType(nest, Link.Tree)
+  code.assertLink(nest, Link.Tree)
   throw new Error('TODO')
   return undefined
 }
 
 export function resolvePathDependencyList(
-  input: MeshInputType,
+  input: SiteProcessInputType,
   parent: SiteDependencyType,
 ): Array<SiteDependencyPartType> {
   const array: Array<SiteDependencyPartType> = []
 
-  const path = code.assumeLinkType(input, Link.Path)
+  const path = code.assumeLink(input, Link.Path)
 
   path.segment.forEach(seg => {
     if (seg.like === Link.Index) {
@@ -225,7 +216,7 @@ export function resolvePathDependencyList(
 }
 
 export function resolveTermDependencyList(
-  input: MeshInputType,
+  input: SiteProcessInputType,
   parent: SiteDependencyType,
 ): Array<SiteDependencyPartType> {
   const name = code.resolveTerm(input)
@@ -243,7 +234,7 @@ export function resolveTermDependencyList(
 }
 
 export function resolveText(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): string | undefined {
   const nest = code.assumeNest(input)
 
@@ -269,9 +260,7 @@ export function resolveText(
         str.push(text)
         break
       default:
-        code.throwError(
-          code.generateInvalidCompilerStateError(),
-        )
+        code.throwError(code.generateInvalidCompilerStateError())
     }
   })
 
@@ -279,8 +268,8 @@ export function resolveText(
 }
 
 export function resolveTextDependencyList(
-  input: MeshInputType,
-  job: (i: MeshInputType) => void,
+  input: SiteProcessInputType,
+  job: (i: SiteProcessInputType) => void,
 ): Array<SiteDependencyType> {
   const nest = code.assumeNest(input)
 
@@ -305,9 +294,7 @@ export function resolveTextDependencyList(
         array.push(...dependencies)
         break
       default:
-        code.throwError(
-          code.generateInvalidCompilerStateError(),
-        )
+        code.throwError(code.generateInvalidCompilerStateError())
     }
   })
 
@@ -315,8 +302,8 @@ export function resolveTextDependencyList(
 }
 
 export function resolveTreeDependencyList(
-  input: MeshInputType,
-  job: (i: MeshInputType) => void,
+  input: SiteProcessInputType,
+  job: (i: SiteProcessInputType) => void,
 ): Array<SiteDependencyType> {
   const array: Array<SiteDependencyType> = []
   const dependency: SiteDependencyType = {
@@ -354,7 +341,7 @@ export function resolveTreeDependencyList(
 }
 
 export function textIsInterpolated(
-  input: MeshInputType,
+  input: SiteProcessInputType,
   size: number = 1,
 ): boolean {
   const nest = code.assumeNest(input)

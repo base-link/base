@@ -2,29 +2,25 @@ import {
   Link,
   LinkHint,
   Mesh,
-  MeshFullType,
-  Mesh_FullTypeMixin,
-  Mesh_PartialTypeMixin,
+  MeshImportVariableRenameType,
+  MeshImportVariableType,
+  Nest,
   code,
 } from '~'
-import type { MeshInputType } from '~'
+import type { SiteProcessInputType } from '~'
 
 export * from './bear/index.js'
 export * from './save/index.js'
 
-export type MeshPartialChildrenContainerType = {
-  children: Array<Mesh_PartialTypeMixin | Mesh_FullTypeMixin>
-}
-
 export function generateFullImportVariable(
-  input: MeshInputType,
-): MeshFullType<Mesh.ImportVariable> {
-  const parent = code.assumeBranchAsGenericMeshType(input)
+  input: SiteProcessInputType,
+): MeshImportVariableType {
+  const parent = code.assumeElementAsGenericNest(input)
   const children = code.assumeChildrenFromParent(parent)
 
-  const rename = children.find<MeshFullType<Mesh.ImportVariableRename>>(
-    (node): node is MeshFullType<Mesh.ImportVariableRename> =>
-      code.isMeshFullType(node, Mesh.ImportVariableRename),
+  const rename = children.find<MeshImportVariableRenameType>(
+    (node): node is MeshImportVariableRenameType =>
+      code.isMesh(node, Mesh.ImportVariableRename),
   )
 
   const name = code.findFullStringConstantByName(input, 'name')
@@ -37,19 +33,20 @@ export function generateFullImportVariable(
     complete: true,
     like: Mesh.ImportVariable,
     name,
-    partial: false,
     rename: rename ? rename.name : name,
     scopeName,
   }
 }
 
-export function process_codeCard_load_find(input: MeshInputType): void {
-  const nest = code.assumeLinkType(input, Link.Tree)
+export function process_codeCard_load_find(
+  input: SiteProcessInputType,
+): void {
+  const nest = code.assumeLink(input, Link.Tree)
 
-  const find = code.createMeshPartial(Mesh.ImportVariable)
+  const find = code.createNest(Nest.ImportVariable, input.scope)
   code.pushIntoParentObject(input, find)
 
-  const childInput = code.withBranch(input, find)
+  const childInput = code.withElement(input, find)
 
   code.processNestedChildren(
     childInput,
@@ -63,7 +60,7 @@ export function process_codeCard_load_find(input: MeshInputType): void {
 }
 
 export function process_codeCard_load_find_nestedChildren(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {
   const type = code.determineNestType(input)
   switch (type) {
@@ -84,16 +81,16 @@ export function process_codeCard_load_find_nestedChildren(
 }
 
 export function process_codeCard_load_find_scope(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {
   const nest = code.assumeNest(input)
-  code.assertLinkType(nest, Link.Tree)
+  code.assertLink(nest, Link.Tree)
 
   const term = code.resolveTerm(input)
   code.assertString(term)
   const scope = term
   const nestedNest = nest.nest[0]
-  code.assertGenericLinkType(nestedNest)
+  code.assertGenericLink(nestedNest)
   const nestedInput = code.withEnvironment(input, {
     index: 0,
     nest: nestedNest,
@@ -111,7 +108,7 @@ export function process_codeCard_load_find_scope(
 }
 
 export function process_codeCard_load_find_staticTerm(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {
   const term = code.resolveTerm(input)
   switch (term) {

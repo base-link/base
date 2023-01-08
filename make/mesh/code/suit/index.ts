@@ -1,40 +1,39 @@
-import { Link, Mesh, MeshPartialType, code } from '~'
-import type { MeshInputType } from '~'
+import { Link, Mesh, Nest, NestClassInterfaceType, code } from '~'
+import type { SiteProcessInputType } from '~'
 
-export function process_codeCard_suit(input: MeshInputType): void {
-  const suit: MeshPartialType<Mesh.ClassInterface> = {
+export function process_codeCard_suit(
+  input: SiteProcessInputType,
+): void {
+  const suit: NestClassInterfaceType = {
     children: [],
-    like: Mesh.ClassInterface,
-    partial: true,
+    like: Nest.ClassInterface,
+    scope: input.scope,
   }
 
-  const childInput = code.withBranch(input, suit)
+  const childInput = code.withElement(input, suit)
 
-  code
-    .assumeLinkType(childInput, Link.Tree)
-    .nest.forEach((nest, index) => {
-      code.process_codeCard_suit_nestedChildren(
-        code.withEnvironment(childInput, {
-          index,
-          nest,
-        }),
-      )
-    })
+  code.assumeLink(childInput, Link.Tree).nest.forEach((nest, index) => {
+    code.process_codeCard_suit_nestedChildren(
+      code.withEnvironment(childInput, {
+        index,
+        nest,
+      }),
+    )
+  })
 }
 
 export function process_codeCard_suit_nestedChildren(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {
   const type = code.determineNestType(input)
   if (type === 'static-term') {
     const term = code.assumeTerm(input)
     const index = code.assumeNestIndex(input)
     if (index === 0) {
-      const suit = code.assumeBranchAsMeshPartialType(
+      code.pushIntoParentObject(
         input,
-        Mesh.ClassInterface,
+        code.createStringConstant('name', term),
       )
-      suit.children.push(code.createTerm(term))
       return
     }
     switch (term) {

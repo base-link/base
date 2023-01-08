@@ -303,8 +303,7 @@ const PATTERN: Record<Text, TextPatternConfigType> = {
   },
   [Text.OpenPath]: {
     after: [Text.OpenIndentation, Text.OpenNesting, Text.Comma],
-    pattern:
-      /^(?:(?:@[\w:\-\.]+\/)|(?:\.{1,2}\/)|\*{1,2}\/|(?:\/))/,
+    pattern: /^(?:(?:@[\w:\-\.]+\/)|(?:\.{1,2}\/)|\*{1,2}\/|(?:\/))/,
   },
   [Text.Path]: {
     pattern: /^[\w:\-\.\*]*(\/[\w:\-\.\*]*)*/,
@@ -329,8 +328,7 @@ const PATTERN: Record<Text, TextPatternConfigType> = {
   },
 }
 
-export type TextTokenType<T extends Text> =
-  TextTokenMappingType[T]
+export type TextTokenType<T extends Text> = TextTokenMappingType[T]
 
 export type TextType =
   | TextCloseEvaluationTokenType
@@ -356,9 +354,7 @@ export type TextType =
   | TextClosePathTokenType
   | TextPathTokenType
 
-export function tokenizeLinkText(
-  input: TextInputType,
-): TextResultType {
+export function tokenizeLinkText(input: TextInputType): TextResultType {
   const tokenList: Array<TextTokenType<Text>> = []
 
   let source: TextSplitInputType = {
@@ -445,10 +441,7 @@ export function tokenizeLinkText(
               tokenList.push(token)
             } else {
               const matchedLength = match[0].length
-              const matchedText = textLine.slice(
-                0,
-                matchedLength,
-              )
+              const matchedText = textLine.slice(0, matchedLength)
               const token: TextTokenType<Text> = {
                 like: type as Text,
                 range: {

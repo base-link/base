@@ -19,7 +19,7 @@ export function setCachedFile(
   path: string,
   content: string,
 ): void {
-  base.text_mesh[path] = content
+  base.textMap[path] = content
 }
 
 export function setEnvironmentVariable(

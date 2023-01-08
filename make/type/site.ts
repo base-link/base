@@ -1,4 +1,12 @@
-import type { Mesh, MeshInputType, MeshType } from '~'
+import type {
+  Base,
+  LinkNodeType,
+  LinkTreeType,
+  Mesh,
+  MeshType,
+  Nest,
+  NestType,
+} from '~'
 
 export enum Site {
   ContainerScope = 'site-container-scope',
@@ -9,11 +17,6 @@ export enum Site {
   VariableDeclaration = 'site-variable-declaration',
 }
 
-export type SiteBranchType = {
-  element: Record<string, unknown>
-  parent?: SiteBranchType
-}
-
 export type SiteContainerScopeType = {
   declarations: Record<string, SiteVariableDeclarationType>
   like: Site.ContainerScope
@@ -21,9 +24,7 @@ export type SiteContainerScopeType = {
   steps: Array<SiteStepScopeType>
 }
 
-export type SiteDependencyPartCallbackType = (
-  value: unknown,
-) => void
+export type SiteDependencyPartCallbackType = (value: unknown) => void
 
 export type SiteDependencyPartType = {
   callbackList: Array<SiteDependencyPartCallbackType>
@@ -35,10 +36,15 @@ export type SiteDependencyPartType = {
 }
 
 export type SiteDependencyType = {
-  callbackList: Array<SiteInputCallbackType<MeshInputType>>
-  context: MeshInputType
+  callbackList: Array<SiteInputCallbackType<SiteProcessInputType>>
+  context: SiteProcessInputType
   like: Site.Dependency
   path: Array<SiteDependencyPartType>
+}
+
+export type SiteElementType = {
+  node: MeshType<Mesh> | NestType<Nest>
+  parent?: SiteElementType
 }
 
 export type SiteEnvironmentType = {
@@ -48,22 +54,40 @@ export type SiteEnvironmentType = {
 
 export type SiteInputCallbackType<T> = (value: T) => void
 
-export type SiteMappingType = {
-  'site-container-scope': SiteContainerScopeType
-  'site-dependency': SiteDependencyType
-  'site-dependency-part': SiteDependencyPartType
-  'site-scope': SiteScopeType
-  'site-step-scope': SiteStepScopeType
-  'site-variable-declaration': SiteVariableDeclarationType
+export type SiteLinkType = {
+  element: LinkNodeType
+  index?: number
+  parent?: SiteLinkType
+}
+
+export type SiteModuleBaseType = {
+  base: Base
+  directory: string
+  link: LinkTreeType
+  path: string
+  text: string
+  textByLine: Array<string>
 }
 
 export type SitePotentialScopeType =
   | SiteContainerScopeType
   | SiteStepScopeType
 
+export type SiteProcessInputType = {
+  base: Base
+  element: SiteElementType
+  environment: SiteEnvironmentType
+  link?: SiteLinkType
+  module: SiteModuleBaseType
+  scope: SiteStepScopeType
+}
+
+export type SitePropertyObserverType = (
+  input: SiteProcessInputType,
+) => void
+
 export type SiteScopeType = {
   bindings: Record<string, unknown>
-  like: Site.Scope
   parent?: SiteScopeType
 }
 
@@ -73,8 +97,6 @@ export type SiteStepScopeType = {
   like: Site.StepScope
   previous?: SiteStepScopeType
 }
-
-export type SiteType<T extends Site> = SiteMappingType[T]
 
 export type SiteVariableDeclarationType = {
   like: string

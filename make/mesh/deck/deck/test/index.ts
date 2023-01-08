@@ -1,16 +1,13 @@
-import { Link, Mesh, code } from '~'
-import type { MeshInputType } from '~'
+import { Link, code } from '~'
+import type { SiteProcessInputType } from '~'
 
 export function finalize_deckCard_deck_test(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {
   const text = code.resolveText(input)
   code.assertString(text)
 
-  const card = input.module
-  code.assertMeshType(card, Mesh.PackageModule)
-
-  const path = code.findPath(text, card.directory)
+  const path = code.resolveModulePath(input, text)
   code.assertString(path, 'path')
 
   code.pushIntoParentObject(
@@ -20,11 +17,11 @@ export function finalize_deckCard_deck_test(
 }
 
 export function process_deckCard_deck_test(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {
   code.assertNestChildrenLength(input, 1)
 
-  const nest = code.assumeLinkType(input, Link.Tree).nest[0]
+  const nest = code.assumeLink(input, Link.Tree).nest[0]
 
   code.processTextNest(
     code.withEnvironment(input, {
