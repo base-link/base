@@ -1,18 +1,13 @@
 import _ from 'lodash'
 
-import { Link, MESH_TYPE, Mesh, code } from '~'
-import type {
-  LinkType,
-  MeshInputType,
-  MeshPartialType,
-  MeshType,
-} from '~'
+import { Link, Mesh, Nest, NestType, code } from '~'
+import type { LinkType, MeshType, SiteProcessInputType } from '~'
 
 export function assertArray<T = unknown>(
   object: unknown,
 ): asserts object is Array<T> {
   if (!code.isArray(object)) {
-    throw new Error('Object is not array')
+    code.throwError(code.generateIncorrectlyTypedVariable('array'))
   }
 }
 
@@ -20,10 +15,7 @@ export function assertBoolean(
   object: unknown,
 ): asserts object is boolean {
   if (!code.isBoolean(object)) {
-    code.throwError({
-      code: '0017',
-      note: `Object is not type 'boolean'`,
-    })
+    code.throwError(code.generateIncorrectlyTypedVariable('boolean'))
   }
 }
 
@@ -31,10 +23,7 @@ export function assertNumber(
   object: unknown,
 ): asserts object is number {
   if (!code.isNumber(object)) {
-    code.throwError({
-      code: '0016',
-      note: 'Compiler error',
-    })
+    code.throwError(code.generateIncorrectlyTypedVariable('number'))
   }
 }
 
@@ -58,9 +47,22 @@ export function assertString(
   }
 }
 
-// export function assumeBranchAsGenericMeshPartialType<
+export function assumeElementAsGenericMesh(
+  input: SiteProcessInputType,
+  rank = 0,
+): Record<string, unknown> {
+  let branch = input.element
+  while (rank > 0 && branch && branch.parent) {
+    branch = branch.parent
+    rank--
+  }
+  code.assertGenericMesh(branch?.node)
+  return branch?.node
+}
+
+// export function assumeElementAsGenericMeshPartialType<
 //   T extends Mesh,
-// >(input: MeshInputType, type: T, rank = 0): MeshPartialType<T> {
+// >(input: SiteProcessInputType, type: T, rank = 0): MeshPartialType<T> {
 //   let branch = input.branch
 //   while (rank > 0 && branch && branch.parent) {
 //     branch = branch.parent
@@ -69,59 +71,59 @@ export function assertString(
 //   code.assertGenericMeshPartialType(branch?.element, type)
 //   return branch?.element
 // }
-export function assumeBranchAsGenericMeshType(
-  input: MeshInputType,
+export function assumeElementAsGenericNest(
+  input: SiteProcessInputType,
   rank = 0,
 ): Record<string, unknown> {
-  let branch = input.branch
+  let branch = input.element
   while (rank > 0 && branch && branch.parent) {
     branch = branch.parent
     rank--
   }
-  code.assertGenericMeshType(branch?.element)
-  return branch?.element
+  code.assertGenericNest(branch?.node)
+  return branch?.node
 }
 
-export function assumeBranchAsLinkType<T extends Link>(
+export function assumeElementAsLink<T extends Link>(
   type: T,
-  input: MeshInputType,
+  input: SiteProcessInputType,
   rank = 0,
 ): LinkType<T> {
-  let branch = input.branch
+  let branch = input.element
   while (rank > 0 && branch && branch.parent) {
     branch = branch.parent
     rank--
   }
-  code.assertLinkType(branch?.element, type)
-  return branch?.element
+  code.assertLink(branch?.node, type)
+  return branch?.node
 }
 
-export function assumeBranchAsMeshPartialType<T extends Mesh>(
-  input: MeshInputType,
-  type: T | Array<T>,
-  rank = 0,
-): MeshPartialType<T> {
-  let branch = input.branch
-  while (rank > 0 && branch && branch.parent) {
-    branch = branch.parent
-    rank--
-  }
-  code.assertMeshPartialType(branch?.element, type)
-  return branch?.element
-}
-
-export function assumeBranchAsMeshType<T extends Mesh>(
-  input: MeshInputType,
+export function assumeElementAsMesh<T extends Mesh>(
+  input: SiteProcessInputType,
   type: T,
   rank = 0,
 ): MeshType<T> {
-  let branch = input.branch
+  let branch = input.element
   while (rank > 0 && branch && branch.parent) {
     branch = branch.parent
     rank--
   }
-  code.assertMeshType(branch?.element, type)
-  return branch?.element
+  code.assertMesh(branch?.node, type)
+  return branch?.node
+}
+
+export function assumeElementAsNest<T extends Nest>(
+  input: SiteProcessInputType,
+  type: T,
+  rank = 0,
+): NestType<T> {
+  let branch = input.element
+  while (rank > 0 && branch && branch.parent) {
+    branch = branch.parent
+    rank--
+  }
+  code.assertNest(branch?.node, type)
+  return branch?.node
 }
 
 export function isArray<T = unknown>(
@@ -132,27 +134,6 @@ export function isArray<T = unknown>(
 
 export function isBoolean(object: unknown): object is boolean {
   return _.isBoolean(object)
-}
-
-export function isGenericMeshPartialType(
-  object: unknown,
-): object is MeshType<Mesh> {
-  return (
-    code.isRecord(object) &&
-    'like' in object &&
-    MESH_TYPE.includes((object as MeshType<Mesh>).like) &&
-    (object as MeshType<Mesh>).partial === true
-  )
-}
-
-export function isGenericMeshType(
-  object: unknown,
-): object is MeshType<Mesh> {
-  return (
-    code.isRecord(object) &&
-    'like' in object &&
-    MESH_TYPE.includes((object as MeshType<Mesh>).like)
-  )
 }
 
 export function isNumber(object: unknown): object is number {

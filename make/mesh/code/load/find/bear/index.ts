@@ -1,23 +1,21 @@
 import { Link, code } from '~'
-import type { MeshInputType } from '~'
+import type { SiteProcessInputType } from '~'
 
 export function process_codeCard_load_find_bear(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {
-  code
-    .assumeLinkType(input, Link.Tree)
-    .nest.forEach((nest, index) => {
-      code.process_codeCard_load_find_bear_nestedChildren(
-        code.withEnvironment(input, {
-          index,
-          nest,
-        }),
-      )
-    })
+  code.assumeLink(input, Link.Tree).nest.forEach((nest, index) => {
+    code.process_codeCard_load_find_bear_nestedChildren(
+      code.withEnvironment(input, {
+        index,
+        nest,
+      }),
+    )
+  })
 }
 
 export function process_codeCard_load_find_bear_nestedChildren(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {
   const type = code.determineNestType(input)
   if (type === 'static-term') {

@@ -44,9 +44,9 @@ function makePrettyArray(obj: unknown, indent = 0) {
       const keys = Object.keys(obj)
       keys.forEach((key, i) => {
         str.push(
-          `\n${makeIndent(indent + 1)}${quotifyKey(
-            key,
-          )}${chalk.gray(':')} `,
+          `\n${makeIndent(indent + 1)}${quotifyKey(key)}${chalk.gray(
+            ':',
+          )} `,
         )
         str.push(makePrettyArray(obj[key], indent + 1).join(''))
         if (i < keys.length - 1) {
@@ -91,7 +91,5 @@ function quotifyKey(key: string): string {
 }
 
 function quotifyString(string: string): string {
-  return chalk.yellow(
-    `'${string.replace(/\'/g, _ => `\\${_}`)}'`,
-  )
+  return chalk.yellow(`'${string.replace(/\'/g, _ => `\\${_}`)}'`)
 }

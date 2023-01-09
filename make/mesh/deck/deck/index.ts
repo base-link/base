@@ -1,5 +1,5 @@
-import { Link, LinkHint, Mesh, code } from '~'
-import type { MeshInputType, MeshPartialType, MeshType } from '~'
+import { Link, LinkHint, Mesh, Nest, NestPackageType, code } from '~'
+import type { MeshType, SiteProcessInputType } from '~'
 
 export * from './bear/index.js'
 export * from './face/index.js'
@@ -19,7 +19,7 @@ export function assumeChildrenFromParent(
 }
 
 export function generate_full_deckCard_deck(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): MeshType<Mesh.Package> {
   const link = code.findFullStringConstantByName(input, 'link')
   const version = code.findFullStringConstantByName(input, 'version')
@@ -42,25 +42,25 @@ export function generate_full_deckCard_deck(
     like: Mesh.Package,
     mark: version,
     name,
-    partial: false,
     scope: input.scope,
     term: [],
     test: testFile,
   }
 }
 
-export function process_deckCard_deck(input: MeshInputType): void {
-  const nest = code.assumeLinkType(input, Link.Tree)
-  const deck: MeshPartialType<Mesh.Package> = {
+export function process_deckCard_deck(
+  input: SiteProcessInputType,
+): void {
+  const nest = code.assumeLink(input, Link.Tree)
+  const deck: NestPackageType = {
     children: [],
-    like: Mesh.Package,
-    partial: true,
+    like: Nest.Package,
     scope: input.scope,
   }
 
   code.pushIntoParentObject(input, deck)
 
-  const childInput = code.withBranch(input, deck)
+  const childInput = code.withElement(input, deck)
 
   code.processNestedChildren(
     childInput,
@@ -74,7 +74,7 @@ export function process_deckCard_deck(input: MeshInputType): void {
 }
 
 export function process_deckCard_deck_nestedChildren(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {
   const type = code.determineNestType(input)
   const index = code.assumeNestIndex(input)
@@ -106,7 +106,7 @@ export function process_deckCard_deck_nestedChildren(
 }
 
 export function process_deckCard_deck_nestedTerm(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {
   const term = code.resolveTerm(input)
   switch (term) {

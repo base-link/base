@@ -5,28 +5,22 @@ import smc from 'source-map'
 import { fileURLToPath } from 'url'
 
 import { code } from '~'
-import type { Base, MeshInputType } from '~'
+import type { Base, SiteProcessInputType } from '~'
 
-export const SOURCE_MAP_MESH: Record<
-  string,
-  smc.SourceMapConsumer
-> = {}
+export const SOURCE_MAP_MESH: Record<string, smc.SourceMapConsumer> = {}
 
 const __filename = fileURLToPath(import.meta.url)
 
 export const __dirname = dirname(__filename)
 
 export function assumePath(
-  input: MeshInputType,
+  input: SiteProcessInputType,
   inputPath: string,
 ): string {
   const card = input.module
-  code.assertCard(card)
   const path = code.findPath(inputPath, card.directory)
   if (!path) {
-    code.throwError(
-      code.generateUnresolvedPathError(input, inputPath),
-    )
+    code.throwError(code.generateUnresolvedPathError(input, inputPath))
   }
   code.assertString(path, 'path')
   return path
@@ -78,9 +72,7 @@ export function getLinkHost(link: string): string {
 }
 
 export async function loadSourceMaps(): Promise<void> {
-  const startDir = pathResolve.resolve(
-    `${__dirname}/../../host`,
-  )
+  const startDir = pathResolve.resolve(`${__dirname}/../../host`)
   const paths = await code.findFilePathsRecursively(
     `${startDir}/**/*.js`,
   )
@@ -94,7 +86,7 @@ export async function loadSourceMaps(): Promise<void> {
 }
 
 export function readTextFile(base: Base, link: string): string {
-  return base.text_mesh[link] ?? fs.readFileSync(link, 'utf-8')
+  return base.textMap[link] ?? fs.readFileSync(link, 'utf-8')
 }
 
 export function resolveDirectoryPath(path: string): string {
@@ -102,16 +94,14 @@ export function resolveDirectoryPath(path: string): string {
 }
 
 export function resolveModulePath(
-  input: MeshInputType,
+  input: SiteProcessInputType,
   text: string,
 ): string {
   const { module } = input
   const path = code.findPath(text, module.directory)
 
   if (!path) {
-    code.throwError(
-      code.generateUnresolvedPathError(input, text),
-    )
+    code.throwError(code.generateUnresolvedPathError(input, text))
   }
 
   code.assertString(path)

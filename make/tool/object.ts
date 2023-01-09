@@ -6,13 +6,17 @@ import {
   MeshFullType,
   MeshModuleBaseType,
   MeshPartialChildrenContainerType,
+  MeshType,
   Mesh_FullTypeMixin,
   Mesh_PartialTypeMixin,
-  SiteBranchType,
+  Nest,
+  NestType,
+  SiteElementType,
+  SiteMeshType,
   SiteStepScopeType,
   code,
 } from '~'
-import type { MeshInputType } from '~'
+import type { SiteProcessInputType } from '~'
 
 export type MeshParseType = {
   directory: string
@@ -22,31 +26,51 @@ export type MeshParseType = {
   textByLine: Array<string>
 }
 
-export function childrenAreComplete({
-  children,
-}: {
-  children: Array<Mesh_PartialTypeMixin | Mesh_FullTypeMixin>
-}): boolean {
-  return children.filter(x => x.partial).length === 0
+export type WithPotentiallyPartialChildrenType = {
+  children: Array<{ partial: boolean }>
 }
 
-export function createBranch(
-  element: Record<string, unknown>,
-  parent?: SiteBranchType,
-): SiteBranchType {
+export function childrenAreCompleteMesh(
+  node: Record<string, unknown>,
+): boolean {
+  return (
+    'children' in node &&
+    code.isArray(node.children) &&
+    node.children.filter(x => code.isGenericMesh(x) && x.complete)
+      .length === node.children.length
+  )
+}
+
+export function childrenAreMesh(
+  node: Record<string, unknown>,
+): boolean {
+  return (
+    'children' in node &&
+    code.isArray(node.children) &&
+    node.children.filter(x => code.isGenericNest(x)).length === 0
+  )
+}
+
+export function createElement(
+  node: MeshType<Mesh> | NestType<Nest>,
+  parent?: SiteElementType,
+): SiteElementType {
   return {
-    element,
+    node,
     parent,
   }
 }
 
 export function createInput(
+  base: Base,
   module: MeshModuleBaseType,
   scope: SiteStepScopeType,
+  element: MeshType<Mesh> | NestType<Nest>,
   bindings: Record<string, unknown>,
-): MeshInputType {
+): SiteProcessInputType {
   return {
-    branch: code.createBranch(bindings),
+    base,
+    element: code.createElement(element),
     environment: code.createEnvironment(bindings),
     module,
     scope,
@@ -102,9 +126,9 @@ export function loadLinkModule(
 }
 
 export function processNestedChildren(
-  input: MeshInputType,
+  input: SiteProcessInputType,
   nest: LinkTreeType,
-  cb: (input: MeshInputType) => void,
+  cb: (input: SiteProcessInputType) => void,
 ): void {
   nest.nest.forEach((nest, index) => {
     cb(
@@ -117,17 +141,17 @@ export function processNestedChildren(
 }
 
 export function replaceIfComplete(
-  input: MeshInputType,
+  input: SiteProcessInputType,
   child: MeshPartialChildrenContainerType,
   cb: () => void,
 ): void {
-  if (code.childrenAreComplete(child)) {
+  if (code.childrenAreMesh(child)) {
     code.potentiallyReplaceWithFullNode(input, cb)
   }
 }
 
 export function replaceSeed<T extends MeshModuleBaseType>(
-  input: MeshInputType,
+  input: SiteProcessInputType,
   replacement: T,
 ): void {
   input.module = replacement
@@ -135,9 +159,9 @@ export function replaceSeed<T extends MeshModuleBaseType>(
 }
 
 export function resolveHashtagAsNumber(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): number | undefined {
-  let hashtag = code.assumeLinkType(input, Link.Hashtag)
+  let hashtag = code.assumeLink(input, Link.Hashtag)
 
   switch (hashtag.system) {
     case 'b':
@@ -160,20 +184,20 @@ export function resolveHashtagAsNumber(
   }
 }
 
-export function withBranch(
-  input: MeshInputType,
-  element: Record<string, unknown>,
-): MeshInputType {
+export function withElement(
+  input: SiteProcessInputType,
+  element: MeshType<Mesh> | NestType<Nest>,
+): SiteProcessInputType {
   return {
     ...input,
-    branch: code.createBranch(element, input.branch),
+    element: code.createElement(element, input.element),
   }
 }
 
 export function withEnvironment(
-  input: MeshInputType,
+  input: SiteProcessInputType,
   bindings: Record<string, unknown>,
-): MeshInputType {
+): SiteProcessInputType {
   return {
     ...input,
     environment: code.createEnvironment(bindings, input.environment),
@@ -181,9 +205,9 @@ export function withEnvironment(
 }
 
 export function withScope(
-  input: MeshInputType,
+  input: SiteProcessInputType,
   scope: SiteStepScopeType,
-): MeshInputType {
+): SiteProcessInputType {
   return {
     ...input,
     scope,

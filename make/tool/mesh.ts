@@ -2,171 +2,156 @@ import {
   LINK_TYPE,
   Link,
   LinkType,
+  MESH_TYPE,
   Mesh,
-  MeshFullType,
-  MeshInputType,
-  MeshPartialType,
   MeshType,
+  NEST_TYPE,
+  Nest,
+  NestType,
+  SiteProcessInputType,
   code,
 } from '~'
 
-export function assertGenericLinkType(
+export function assertGenericLink(
   object: unknown,
   name?: string,
 ): asserts object is LinkType<Link> {
-  if (!code.isGenericLinkType(object)) {
-    code.throwError(
-      code.generateIncorrectlyTypedVariable('link', name),
-    )
+  if (!code.isGenericLink(object)) {
+    code.throwError(code.generateIncorrectlyTypedVariable('link', name))
     // code.throwError(code.generateObjectNotTypeError(like))
   }
 }
 
-export function assertGenericMeshPartialType(
-  object: unknown,
-  name?: string,
-): asserts object is MeshPartialType<Mesh> {
-  if (!code.isGenericMeshPartialType(object)) {
-    code.throwError(
-      code.generateIncorrectlyTypedVariable('mesh', name),
-    )
-  }
-}
-
-export function assertGenericMeshType(
+export function assertGenericMesh(
   object: unknown,
   name?: string,
 ): asserts object is MeshType<Mesh> {
-  if (!code.isGenericMeshType(object)) {
-    code.throwError(
-      code.generateIncorrectlyTypedVariable('mesh', name),
-    )
+  if (!code.isGenericLink(object)) {
+    code.throwError(code.generateIncorrectlyTypedVariable('mesh', name))
+    // code.throwError(code.generateObjectNotTypeError(like))
   }
 }
 
-export function assertLinkType<T extends Link>(
+export function assertGenericNest(
+  object: unknown,
+  name?: string,
+): asserts object is NestType<Nest> {
+  if (!code.isGenericNest(object)) {
+    code.throwError(code.generateIncorrectlyTypedVariable('nest', name))
+    // code.throwError(code.generateObjectNotTypeError(like))
+  }
+}
+
+export function assertLink<T extends Link>(
   object: unknown,
   like: T,
   name?: string,
 ): asserts object is LinkType<T> {
-  if (!code.isGenericLinkType(object)) {
-    code.throwError(
-      code.generateIncorrectlyTypedVariable(like, name),
-    )
+  if (!code.isLink(object, like)) {
+    code.throwError(code.generateIncorrectlyTypedVariable('link', name))
     // code.throwError(code.generateObjectNotTypeError(like))
   }
 }
 
-export function assertMeshFullType<T extends Mesh>(
-  object: unknown,
-  like: T | Array<T>,
-  name?: string,
-): asserts object is MeshFullType<T> {
-  like = code.isArray(like) ? like : [like]
-
-  for (const l of like) {
-    if (code.isMeshFullType(object, l)) {
-      return
-    }
-  }
-
-  code.throwError(
-    code.generateIncorrectlyTypedVariable(like, name),
-  )
-}
-
-export function assertMeshPartialType<T extends Mesh>(
-  object: unknown,
-  like: T | Array<T>,
-  name?: string,
-): asserts object is MeshPartialType<T> {
-  like = code.isArray(like) ? like : [like]
-
-  for (const l of like) {
-    if (code.isMeshPartialType(object, l)) {
-      return
-    }
-  }
-
-  code.throwError(
-    code.generateIncorrectlyTypedVariable(like, name),
-  )
-}
-
-export function assertMeshType<T extends Mesh>(
+export function assertMesh<T extends Mesh>(
   object: unknown,
   like: T,
   name?: string,
 ): asserts object is MeshType<T> {
-  if (!code.isMeshType(object, like)) {
-    code.throwError(
-      code.generateIncorrectlyTypedVariable(like, name),
-    )
+  if (!code.isMesh(object, like)) {
+    code.throwError(code.generateIncorrectlyTypedVariable('mesh', name))
+    // code.throwError(code.generateObjectNotTypeError(like))
   }
 }
 
-export function assumeLinkType<T extends Link>(
-  input: MeshInputType,
+export function assertNest<T extends Nest>(
+  object: unknown,
+  like: T,
+  name?: string,
+): asserts object is NestType<T> {
+  if (!code.isNest(object, like)) {
+    code.throwError(code.generateIncorrectlyTypedVariable('nest', name))
+    // code.throwError(code.generateObjectNotTypeError(like))
+  }
+}
+
+export function assumeLink<T extends Link>(
+  input: SiteProcessInputType,
   like: T,
   name?: string,
 ): LinkType<T> {
   const nest = code.assumeNest(input)
-  code.assertLinkType(nest, like, name)
+  code.assertLink(nest, like, name)
   return nest
 }
 
-export function isGenericLinkType(
+export function assumeMesh<T extends Mesh>(
+  input: SiteProcessInputType,
+  like: T,
+  name?: string,
+): MeshType<T> {
+  const nest = code.assumeNest(input)
+  code.assertMesh(nest, like, name)
+  return nest
+}
+
+export function isGenericLink(
   object: unknown,
 ): object is LinkType<Link> {
   return (
-    code.isRecord(object) &&
-    'like' in object &&
+    code.isObjectWithLike(object) &&
     LINK_TYPE.includes((object as LinkType<Link>).like)
   )
 }
 
-export function isLinkType<T extends Link>(
+export function isGenericMesh(
+  object: unknown,
+): object is MeshType<Mesh> {
+  return (
+    code.isObjectWithLike(object) &&
+    MESH_TYPE.includes((object as MeshType<Mesh>).like)
+  )
+}
+
+export function isGenericNest(
+  object: unknown,
+): object is NestType<Nest> {
+  return (
+    code.isObjectWithLike(object) &&
+    NEST_TYPE.includes((object as NestType<Nest>).like)
+  )
+}
+
+export function isLink<T extends Link>(
   object: unknown,
   like: T,
 ): object is LinkType<T> {
   return (
-    code.isRecord(object) &&
-    'like' in object &&
+    code.isObjectWithLike(object) &&
     (object as LinkType<T>).like === like
   )
 }
 
-export function isMeshFullType<T extends Mesh>(
-  object: unknown,
-  like: T,
-): object is MeshFullType<T> {
-  return (
-    code.isRecord(object) &&
-    'like' in object &&
-    (object as MeshFullType<T>).like === like &&
-    (object as MeshFullType<T>).partial === false
-  )
-}
-
-export function isMeshPartialType<T extends Mesh>(
-  object: unknown,
-  like: T,
-): object is MeshPartialType<T> {
-  return (
-    code.isRecord(object) &&
-    'like' in object &&
-    (object as MeshType<T>).like === like &&
-    (object as MeshPartialType<T>).partial === true
-  )
-}
-
-export function isMeshType<T extends Mesh>(
+export function isMesh<T extends Mesh>(
   object: unknown,
   like: T,
 ): object is MeshType<T> {
   return (
-    code.isRecord(object) &&
-    'like' in object &&
+    code.isObjectWithLike(object) &&
     (object as MeshType<T>).like === like
   )
+}
+
+export function isNest<T extends Nest>(
+  object: unknown,
+  like: T,
+): object is NestType<T> {
+  return (
+    code.isObjectWithLike(object) &&
+    (object as NestType<T>).like === like
+  )
+}
+
+export function isObjectWithLike(object: unknown): boolean {
+  return code.isRecord(object) && 'like' in object
 }

@@ -1,8 +1,10 @@
 import { Link, LinkHint, code } from '~'
-import type { MeshInputType } from '~'
+import type { SiteProcessInputType } from '~'
 
-export function process_codeCard_form_base(input: MeshInputType): void {
-  code.assumeLinkType(input, Link.Tree).nest.forEach((nest, index) => {
+export function process_codeCard_form_base(
+  input: SiteProcessInputType,
+): void {
+  code.assumeLink(input, Link.Tree).nest.forEach((nest, index) => {
     process_codeCard_form_base_nestedChildren(
       code.withEnvironment(input, {
         index,
@@ -13,7 +15,7 @@ export function process_codeCard_form_base(input: MeshInputType): void {
 }
 
 export function process_codeCard_form_base_nestedChildren(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {
   const type = code.determineNestType(input)
   switch (type) {

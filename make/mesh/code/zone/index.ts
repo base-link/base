@@ -1,10 +1,12 @@
 import { Link, code } from '~'
-import type { MeshInputType } from '~'
+import type { SiteProcessInputType } from '~'
 
 export * from './hook/index.js'
 
-export function process_codeCard_zone(input: MeshInputType): void {
-  code.assumeLinkType(input, Link.Tree).nest.forEach((nest, index) => {
+export function process_codeCard_zone(
+  input: SiteProcessInputType,
+): void {
+  code.assumeLink(input, Link.Tree).nest.forEach((nest, index) => {
     code.process_codeCard_zone_nestedChildren(
       code.withEnvironment(input, {
         index,
@@ -15,7 +17,7 @@ export function process_codeCard_zone(input: MeshInputType): void {
 }
 
 export function process_codeCard_zone_nestedChildren(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {
   const type = code.determineNestType(input)
   if (type === 'static-term') {

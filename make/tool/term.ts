@@ -1,11 +1,11 @@
 import { Link, LinkType, code } from '~'
-import type { MeshInputType } from '~'
+import type { SiteProcessInputType } from '~'
 
 export function assertNestChildrenLength(
-  input: MeshInputType,
+  input: SiteProcessInputType,
   length: number,
 ): void {
-  const nest = code.assumeLinkType(input, Link.Tree)
+  const nest = code.assumeLink(input, Link.Tree)
   if (nest.nest.length !== length) {
     code.throwError(
       code.generateInvalidNestChildrenLengthError(input, length),
@@ -13,14 +13,14 @@ export function assertNestChildrenLength(
   }
 }
 
-export function assumeTerm(input: MeshInputType): string {
+export function assumeTerm(input: SiteProcessInputType): string {
   const term = code.resolveTerm(input)
   code.assertString(term)
   return term
 }
 
 export function getTerm(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): LinkType<Link.Term> | undefined {
   const nest = code.assumeNest(input)
 
@@ -44,9 +44,11 @@ export function getTerm(
   return child
 }
 
-export function resolveTerm(input: MeshInputType): string | undefined {
+export function resolveTerm(
+  input: SiteProcessInputType,
+): string | undefined {
   const term = code.getTerm(input)
-  code.assertLinkType(term, Link.Term)
+  code.assertLink(term, Link.Term)
   const string: Array<string> = []
 
   term.segment.forEach(seg => {
@@ -60,7 +62,9 @@ export function resolveTerm(input: MeshInputType): string | undefined {
   return string.join('')
 }
 
-export function termIsInterpolated(input: MeshInputType): boolean {
+export function termIsInterpolated(
+  input: SiteProcessInputType,
+): boolean {
   const nest = code.assumeNest(input)
   const term = code.getTerm(input)
   if (!term) {
@@ -81,7 +85,7 @@ export function termIsInterpolatedImpl(
   return false
 }
 
-export function termIsNested(input: MeshInputType): boolean {
+export function termIsNested(input: SiteProcessInputType): boolean {
   const nest = code.assumeNest(input)
 
   return nest.like === Link.Path

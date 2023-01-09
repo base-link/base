@@ -1,20 +1,27 @@
-import { Link, LinkNodeType, Mesh, MeshFullType, code } from '~'
-import type { MeshInputType } from '~'
+import {
+  Link,
+  LinkNodeType,
+  Mesh,
+  MeshInputType,
+  MeshTemplateType,
+  Nest,
+  code,
+} from '~'
+import type { SiteProcessInputType } from '~'
 
 export * from './hook/index.js'
 
 export function generateFullTemplate(
-  input: MeshInputType,
-): MeshFullType<Mesh.Template> {
+  input: SiteProcessInputType,
+): MeshTemplateType {
   const children = code.assumeChildren(input)
 
-  const inputList = children.filter(
-    (node): node is MeshFullType<Mesh.Input> =>
-      code.isMeshFullType(node, Mesh.Input),
+  const inputList = children.filter((node): node is MeshInputType =>
+    code.isMesh(node, Mesh.Input),
   )
 
   const linkList = children.filter((node): node is LinkNodeType =>
-    code.isGenericLinkType(node),
+    code.isGenericLink(node),
   )
 
   const hidden =
@@ -32,26 +39,25 @@ export function generateFullTemplate(
     like: Mesh.Template,
     link: linkList,
     name,
-    partial: false,
   }
 }
 
-export function process_codeCard_tree(input: MeshInputType): void {
-  const tree = code.createMeshPartial(Mesh.Template, input.scope)
+export function process_codeCard_tree(
+  input: SiteProcessInputType,
+): void {
+  const tree = code.createNest(Nest.Template, input.scope)
   code.pushIntoParentObject(input, tree)
 
-  const treeInput = code.withBranch(input, tree)
+  const treeInput = code.withElement(input, tree)
 
-  code
-    .assumeLinkType(treeInput, Link.Tree)
-    .nest.forEach((nest, index) => {
-      code.process_codeCard_tree_nestedChildren(
-        code.withEnvironment(treeInput, {
-          index,
-          nest,
-        }),
-      )
-    })
+  code.assumeLink(treeInput, Link.Tree).nest.forEach((nest, index) => {
+    code.process_codeCard_tree_nestedChildren(
+      code.withEnvironment(treeInput, {
+        index,
+        nest,
+      }),
+    )
+  })
 
   code.replaceIfComplete(treeInput, tree, () =>
     code.generateFullTemplate(treeInput),
@@ -59,7 +65,7 @@ export function process_codeCard_tree(input: MeshInputType): void {
 }
 
 export function process_codeCard_tree_nestedChildren(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {
   const type = code.determineNestType(input)
   if (type === 'static-term') {

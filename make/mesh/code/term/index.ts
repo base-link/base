@@ -1,23 +1,21 @@
 import { Link, LinkHint, code } from '~'
-import type { MeshInputType } from '~'
+import type { SiteProcessInputType } from '~'
 
 export function process_codeCard_term(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {
-  code
-    .assumeLinkType(input, Link.Tree)
-    .nest.forEach((nest, index) => {
-      process_codeCard_term_nestedChildren(
-        code.withEnvironment(input, {
-          index,
-          nest,
-        }),
-      )
-    })
+  code.assumeLink(input, Link.Tree).nest.forEach((nest, index) => {
+    process_codeCard_term_nestedChildren(
+      code.withEnvironment(input, {
+        index,
+        nest,
+      }),
+    )
+  })
 }
 
 export function process_codeCard_term_nestedChildren(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {
   const type = code.determineNestType(input)
   switch (type) {
@@ -25,8 +23,6 @@ export function process_codeCard_term_nestedChildren(
       const term = code.resolveTerm(input)
       break
     default:
-      code.throwError(
-        code.generateUnhandledNestCaseError(input, type),
-      )
+      code.throwError(code.generateUnhandledNestCaseError(input, type))
   }
 }

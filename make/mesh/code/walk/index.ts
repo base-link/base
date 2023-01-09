@@ -1,8 +1,10 @@
 import { Link, LinkHint, code } from '~'
-import type { MeshInputType } from '~'
+import type { SiteProcessInputType } from '~'
 
-export function process_codeCard_walk(input: MeshInputType): void {
-  code.assumeLinkType(input, Link.Tree).nest.forEach((nest, index) => {
+export function process_codeCard_walk(
+  input: SiteProcessInputType,
+): void {
+  code.assumeLink(input, Link.Tree).nest.forEach((nest, index) => {
     process_codeCard_walk_nestedChildren(
       code.withEnvironment(input, {
         index,
@@ -13,7 +15,7 @@ export function process_codeCard_walk(input: MeshInputType): void {
 }
 
 export function process_codeCard_walk_nestedChildren(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {
   const type = code.determineNestType(input)
   switch (type) {
