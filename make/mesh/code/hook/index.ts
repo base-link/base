@@ -1,29 +1,26 @@
-import { Link, LinkHint, Mesh, code } from '~'
-import type { MeshInputType, MeshPartialType } from '~'
+import { Link, LinkHint, Mesh, Nest, code } from '~'
+import type { MeshPartialType, SiteProcessInputType } from '~'
 
-export function process_codeCard_hook(input: MeshInputType): void {
-  const hook: MeshPartialType<Mesh.Callback> = {
-    children: [],
-    like: Mesh.Callback,
-    partial: true,
-  }
+export function process_codeCard_hook(
+  input: SiteProcessInputType,
+): void {
+  const hook = code.createNest(Nest.Callback)
+  code.pushIntoParentObject(input, hook)
 
-  const childInput = code.withBranch(input, hook)
+  const childInput = code.withElement(input, hook)
 
-  code
-    .assumeLinkType(childInput, Link.Tree)
-    .nest.forEach((nest, index) => {
-      code.process_codeCard_hook_nestedChildren(
-        code.withEnvironment(childInput, {
-          index,
-          nest,
-        }),
-      )
-    })
+  code.assumeLink(childInput, Link.Tree).nest.forEach((nest, index) => {
+    code.process_codeCard_hook_nestedChildren(
+      code.withEnvironment(childInput, {
+        index,
+        nest,
+      }),
+    )
+  })
 }
 
 export function process_codeCard_hook_nestedChildren(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {
   const type = code.determineNestType(input)
   switch (type) {
@@ -31,18 +28,10 @@ export function process_codeCard_hook_nestedChildren(
       const index = code.assumeNestIndex(input)
       const term = code.assumeTerm(input)
       if (index === 0) {
-        const callback = code.assumeBranchAsMeshPartialType(
+        code.pushIntoParentObject(
           input,
-          Mesh.Callback,
+          code.createStringConstant('name', term),
         )
-        callback.children.push({
-          complete: true,
-          dive: false,
-          like: Mesh.Term,
-          name: term,
-          nest: [],
-          partial: false,
-        })
       } else {
         switch (term) {
           case 'task':

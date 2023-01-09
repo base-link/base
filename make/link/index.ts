@@ -47,9 +47,7 @@ export function assertTextGenericType(
   name?: string,
 ): asserts object is TextTokenType<Text> {
   if (!code.isTextGenericType(object)) {
-    code.throwError(
-      code.generateIncorrectlyTypedVariable('text', name),
-    )
+    code.throwError(code.generateIncorrectlyTypedVariable('text', name))
   }
 }
 
@@ -59,9 +57,7 @@ export function assertTextType<T extends Text>(
   name?: string,
 ): asserts object is TextTokenType<T> {
   if (!code.isTextType<T>(object, like)) {
-    code.throwError(
-      code.generateIncorrectlyTypedVariable(like, name),
-    )
+    code.throwError(code.generateIncorrectlyTypedVariable(like, name))
   }
 }
 
@@ -86,9 +82,7 @@ export function isTextType<T extends Text>(
   )
 }
 
-export function parseLinkTree(
-  input: FoldResultType,
-): LinkResultType {
+export function parseLinkTree(input: FoldResultType): LinkResultType {
   let result: LinkNodeType | undefined = undefined
 
   // console.log(code.prettifyJSON(input.directions))
@@ -255,17 +249,14 @@ export function parseLinkTree(
         break
       default:
         code.throwError(
-          code.generatedNotImplementedYetError(
-            token.like,
-            input.path,
-          ),
+          code.generatedNotImplementedYetError(token.like, input.path),
         )
     }
 
     state.index++
   }
 
-  code.assertLinkType(state.tree, Link.Tree)
+  code.assertLink(state.tree, Link.Tree)
 
   // console.log(printParserMesh(state.tree))
 
@@ -307,9 +298,7 @@ export function parse_closeTerm(input: LinkInputType): void {
   stack?.pop()
 }
 
-export function parse_closeTermPath(
-  input: LinkInputType,
-): void {
+export function parse_closeTermPath(input: LinkInputType): void {
   const { contexts } = input.state
   const context = contexts[contexts.length - 1]
   const stack = context?.stack
@@ -344,10 +333,7 @@ export function parse_decimal(input: LinkInputType): void {
     }
     default:
       code.throwError(
-        code.generatedNotImplementedYetError(
-          current?.like,
-          input.path,
-        ),
+        code.generatedNotImplementedYetError(current?.like, input.path),
       )
   }
 }
@@ -374,10 +360,7 @@ export function parse_hashtag(input: LinkInputType): void {
     }
     default:
       code.throwError(
-        code.generatedNotImplementedYetError(
-          current?.like,
-          input.path,
-        ),
+        code.generatedNotImplementedYetError(current?.like, input.path),
       )
   }
 }
@@ -421,10 +404,7 @@ export function parse_openHandle(input: LinkInputType): void {
     }
     default:
       code.throwError(
-        code.generatedNotImplementedYetError(
-          current?.like,
-          input.path,
-        ),
+        code.generatedNotImplementedYetError(current?.like, input.path),
       )
   }
 }
@@ -457,27 +437,20 @@ export function parse_openIndex(input: LinkInputType): void {
     }
     default:
       code.throwError(
-        code.generatedNotImplementedYetError(
-          current?.like,
-          input.path,
-        ),
+        code.generatedNotImplementedYetError(current?.like, input.path),
       )
   }
 }
 
 export function parse_openNest(input: LinkInputType): void {
-  const context =
-    input.state.contexts[input.state.contexts.length - 1]
+  const context = input.state.contexts[input.state.contexts.length - 1]
 
   if (!context) {
     return
   }
 
-  let tree:
-    | LinkTreeType
-    | LinkPluginType
-    | LinkIndexType
-    | undefined = context.tree
+  let tree: LinkTreeType | LinkPluginType | LinkIndexType | undefined =
+    context.tree
   for (const part of context.path) {
     if (tree && tree.like === Link.Tree) {
       const node: LinkNodeType | undefined = tree.nest[part]
@@ -593,10 +566,7 @@ export function parse_openPlugin(input: LinkInputType): void {
     }
     default:
       code.throwError(
-        code.generatedNotImplementedYetError(
-          current?.like,
-          input.path,
-        ),
+        code.generatedNotImplementedYetError(current?.like, input.path),
       )
   }
 }
@@ -659,10 +629,7 @@ export function parse_openTerm(input: LinkInputType): void {
     }
     default:
       code.throwError(
-        code.generatedNotImplementedYetError(
-          current?.like,
-          input.path,
-        ),
+        code.generatedNotImplementedYetError(current?.like, input.path),
       )
   }
 }
@@ -715,10 +682,7 @@ export function parse_openTermPath(input: LinkInputType): void {
     }
     default:
       code.throwError(
-        code.generatedNotImplementedYetError(
-          current?.like,
-          input.path,
-        ),
+        code.generatedNotImplementedYetError(current?.like, input.path),
       )
   }
 }
@@ -742,17 +706,12 @@ export function parse_openText(input: LinkInputType): void {
     }
     default:
       code.throwError(
-        code.generatedNotImplementedYetError(
-          current?.like,
-          input.path,
-        ),
+        code.generatedNotImplementedYetError(current?.like, input.path),
       )
   }
 }
 
-export function parse_signedInteger(
-  input: LinkInputType,
-): void {
+export function parse_signedInteger(input: LinkInputType): void {
   const { contexts } = input.state
   const context = contexts[contexts.length - 1]
   const stack = context?.stack ?? []
@@ -773,10 +732,7 @@ export function parse_signedInteger(
     }
     default:
       code.throwError(
-        code.generatedNotImplementedYetError(
-          current?.like,
-          input.path,
-        ),
+        code.generatedNotImplementedYetError(current?.like, input.path),
       )
   }
 }
@@ -888,9 +844,7 @@ function printMeshDetails(
       break
     }
     default:
-      code.throwError(
-        code.generatedNotImplementedYetError(undefined),
-      )
+      code.throwError(code.generatedNotImplementedYetError(undefined))
   }
 
   return text
@@ -929,17 +883,12 @@ export function parse_string(input: LinkInputType): void {
     }
     default:
       code.throwError(
-        code.generatedNotImplementedYetError(
-          current?.like,
-          input.path,
-        ),
+        code.generatedNotImplementedYetError(current?.like, input.path),
       )
   }
 }
 
-function printParserMeshDetails(
-  node: LinkNodeType,
-): Array<string> {
+function printParserMeshDetails(node: LinkNodeType): Array<string> {
   const text: Array<string> = []
 
   const title = chalk.white(node.like)
@@ -1032,9 +981,7 @@ function printParserMeshDetails(
       break
     }
     default:
-      code.throwError(
-        code.generatedNotImplementedYetError(undefined),
-      )
+      code.throwError(code.generatedNotImplementedYetError(undefined))
   }
 
   return text
@@ -1077,17 +1024,12 @@ export function parse_termFragment(input: LinkInputType): void {
     }
     default:
       code.throwError(
-        code.generatedNotImplementedYetError(
-          current?.like,
-          input.path,
-        ),
+        code.generatedNotImplementedYetError(current?.like, input.path),
       )
   }
 }
 
-export function parse_unsignedInteger(
-  input: LinkInputType,
-): void {
+export function parse_unsignedInteger(input: LinkInputType): void {
   const { contexts } = input.state
   const context = contexts[contexts.length - 1]
   const stack = context?.stack ?? []
@@ -1107,10 +1049,7 @@ export function parse_unsignedInteger(
     }
     default:
       code.throwError(
-        code.generatedNotImplementedYetError(
-          current?.like,
-          input.path,
-        ),
+        code.generatedNotImplementedYetError(current?.like, input.path),
       )
   }
 }
@@ -1152,9 +1091,7 @@ export const LINK_HINT_TEXT: Record<LinkHint, string> = {
   [LinkHint.StaticPath]: 'static path',
 }
 
-export function parseLinkText(
-  input: TextInputType,
-): LinkResultType {
+export function parseLinkText(input: TextInputType): LinkResultType {
   return parseLinkTree(
     generateLinkTextBuildingDirections(tokenizeLinkText(input)),
   )

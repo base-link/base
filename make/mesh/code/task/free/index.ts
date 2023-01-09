@@ -1,16 +1,18 @@
-import { Link, LinkHint, Mesh, MeshPartialType, code } from '~'
-import type { MeshInputType } from '~'
+import { Link, LinkHint, Mesh, Nest, NestOutputType, code } from '~'
+import type { SiteProcessInputType } from '~'
 
-export function process_codeCard_task_free(input: MeshInputType): void {
-  const output: MeshPartialType<Mesh.Output> = {
+export function process_codeCard_task_free(
+  input: SiteProcessInputType,
+): void {
+  const output: NestOutputType = {
     children: [],
-    like: Mesh.Output,
-    partial: true,
+    like: Nest.Output,
+    scope: input.scope,
   }
 
-  const childInput = code.withBranch(input, output)
+  const childInput = code.withElement(input, output)
 
-  code.assumeLinkType(input, Link.Tree).nest.forEach((nest, index) => {
+  code.assumeLink(input, Link.Tree).nest.forEach((nest, index) => {
     process_codeCard_task_free_nestedChildren(
       code.withEnvironment(childInput, {
         index,
@@ -21,7 +23,7 @@ export function process_codeCard_task_free(input: MeshInputType): void {
 }
 
 export function process_codeCard_task_free_nestedChildren(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {
   const type = code.determineNestType(input)
   switch (type) {
@@ -29,11 +31,10 @@ export function process_codeCard_task_free_nestedChildren(
       const term = code.assumeTerm(input)
       const index = code.assumeNestIndex(input)
       if (index === 0) {
-        const task = code.assumeBranchAsMeshPartialType(
+        code.pushIntoParentObject(
           input,
-          Mesh.Output,
+          code.createStringConstant('name', term),
         )
-        task.children.push(code.createStringConstant('name', term))
         return
       }
       break

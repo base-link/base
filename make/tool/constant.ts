@@ -1,4 +1,10 @@
-import { Mesh, MeshFullType, MeshInputType, MeshType, code } from '~'
+import {
+  Mesh,
+  MeshFullType,
+  MeshType,
+  SiteProcessInputType,
+  code,
+} from '~'
 
 export function createStringConstant(
   name: string,
@@ -20,7 +26,7 @@ export function createStringConstant(
 }
 
 export function findFullBooleanConstantByName(
-  input: MeshInputType,
+  input: SiteProcessInputType,
   name: string,
 ): boolean | undefined {
   const children = code.assumeChildren(input)
@@ -28,8 +34,8 @@ export function findFullBooleanConstantByName(
     if (
       code.isRecord(node) &&
       !node.partial &&
-      code.isMeshFullType(node, Mesh.Constant) &&
-      code.isMeshType(node.value, Mesh.Boolean) &&
+      code.isMesh(node, Mesh.Constant) &&
+      code.isMesh(node.value, Mesh.Boolean) &&
       node.name === name
     ) {
       return node.value.boolean
@@ -39,7 +45,7 @@ export function findFullBooleanConstantByName(
 }
 
 export function findFullStringConstantByName(
-  input: MeshInputType,
+  input: SiteProcessInputType,
   name: string,
 ): string | undefined {
   const children = code.assumeChildren(input)
@@ -47,8 +53,8 @@ export function findFullStringConstantByName(
     if (
       code.isRecord(node) &&
       !node.partial &&
-      code.isMeshFullType(node, Mesh.Constant) &&
-      code.isMeshType(node.value, Mesh.String) &&
+      code.isMesh(node, Mesh.Constant) &&
+      code.isMesh(node.value, Mesh.String) &&
       node.name === name
     ) {
       return node.value.string

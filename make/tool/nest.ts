@@ -1,34 +1,22 @@
-import {
-  Link,
-  LinkHint,
-  LinkType,
-  SiteEnvironmentType,
-  code,
-} from '~'
-import type { MeshInputType } from '~'
+import { Link, LinkHint, LinkType, SiteEnvironmentType, code } from '~'
+import type { SiteProcessInputType } from '~'
 
 export function assumeNest(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): LinkType<Link> {
-  const nest = code.getEnvironmentProperty(
-    input.environment,
-    'nest',
-  )
-  code.assertGenericLinkType(nest)
+  const nest = code.getEnvironmentProperty(input.environment, 'nest')
+  code.assertGenericLink(nest)
   return nest
 }
 
-export function assumeNestIndex(input: MeshInputType): number {
-  const index = code.getEnvironmentProperty(
-    input.environment,
-    'index',
-  )
+export function assumeNestIndex(input: SiteProcessInputType): number {
+  const index = code.getEnvironmentProperty(input.environment, 'index')
   code.assertNumber(index)
   return index
 }
 
 export function determineNestType(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): LinkHint {
   if (code.nestIsTerm(input)) {
     if (code.termIsInterpolated(input)) {
@@ -53,27 +41,25 @@ export function determineNestType(
   } else if (code.nestIsHashtag(input)) {
     return LinkHint.Code
   } else {
-    code.throwError(
-      code.generateUnhandledNestCaseBaseError(input),
-    )
+    code.throwError(code.generateUnhandledNestCaseBaseError(input))
   }
 
   return LinkHint.Empty
 }
 
-export function nestIsHashtag(input: MeshInputType): boolean {
+export function nestIsHashtag(input: SiteProcessInputType): boolean {
   const nest = code.assumeNest(input)
 
   return nest.like === Link.Hashtag
 }
 
-export function nestIsPath(input: MeshInputType): boolean {
+export function nestIsPath(input: SiteProcessInputType): boolean {
   const nest = code.assumeNest(input)
 
   return nest.like === Link.Path
 }
 
-export function nestIsTerm(input: MeshInputType): boolean {
+export function nestIsTerm(input: SiteProcessInputType): boolean {
   const nest = code.assumeNest(input)
 
   if (nest.like === Link.Term) {
@@ -96,14 +82,14 @@ export function nestIsTerm(input: MeshInputType): boolean {
   return true
 }
 
-export function nestIsText(input: MeshInputType): boolean {
+export function nestIsText(input: SiteProcessInputType): boolean {
   const nest = code.assumeNest(input)
 
   return nest.like === Link.Text
 }
 
 export function nestIsUnsignedInteger(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): boolean {
   const nest = code.assumeNest(input)
 
@@ -111,7 +97,7 @@ export function nestIsUnsignedInteger(
 }
 
 export function pathIsInterpolated(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): boolean {
   const nest = code.assumeNest(input)
 

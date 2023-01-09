@@ -1,27 +1,36 @@
-import { Base, DEFAULT_CONTAINER_SCOPE, LinkHint, Mesh, code } from '~'
-import type { MeshFullType, MeshInputType, MeshPartialType } from '~'
+import {
+  Base,
+  DEFAULT_CONTAINER_SCOPE,
+  LinkHint,
+  Mesh,
+  MeshPackageModuleType,
+  MeshPackageType,
+  Nest,
+  NestPackageModuleType,
+  code,
+} from '~'
+import type { SiteProcessInputType } from '~'
 
 export * from './deck/index.js'
 
 export function generate_deckCard(
-  input: MeshInputType,
-): MeshFullType<Mesh.PackageModule> {
-  code.assertMeshPartialType(input.module, Mesh.PackageModule)
+  input: SiteProcessInputType,
+): MeshPackageModuleType {
+  code.assertNest(input.module, Nest.PackageModule)
 
-  const deck = input.module.children.find(node =>
-    code.isMeshType(node, Mesh.Package),
+  const deck = input.module.children.find(
+    (node): node is MeshPackageType => code.isMesh(node, Mesh.Package),
   )
 
-  code.assertMeshFullType(deck, Mesh.Package)
+  code.assertRecord(deck)
 
   return {
     base: input.module.base,
-    complete: true,
+    complete: false,
     deck,
     directory: input.module.directory,
     like: Mesh.PackageModule,
     link: input.module.link,
-    partial: false,
     path: input.module.path,
     scope: input.scope,
     text: input.module.text,
@@ -42,18 +51,23 @@ export function process_deckCard(base: Base, link: string): void {
   const parse = code.loadLinkModule(base, link)
   const container = code.createContainerScope(DEFAULT_CONTAINER_SCOPE)
   const scope = code.createStepScope(container)
-  const seed: MeshPartialType<Mesh.PackageModule> = {
+  const seed: NestPackageModuleType = {
     ...parse,
     base,
     children: [],
-    like: Mesh.PackageModule,
-    partial: true,
+    like: Nest.PackageModule,
     scope,
   }
 
-  const input: MeshInputType = code.createInput(seed, scope, seed)
+  const input: SiteProcessInputType = code.createInput(
+    base,
+    seed,
+    scope,
+    seed,
+    seed,
+  )
 
-  const childInput = code.withBranch(input, seed)
+  const childInput = code.withElement(input, seed)
 
   card.bind(seed)
 
@@ -63,13 +77,13 @@ export function process_deckCard(base: Base, link: string): void {
     code.process_deckCard_nestedChildren,
   )
 
-  if (code.childrenAreComplete(seed)) {
+  if (code.childrenAreMesh(seed)) {
     code.replaceSeed(input, code.generate_deckCard(childInput))
   }
 }
 
 export function process_deckCard_nestedChildren(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {
   const type = code.determineNestType(input)
   switch (type) {
@@ -83,7 +97,7 @@ export function process_deckCard_nestedChildren(
 }
 
 export function process_deckCard_staticTerm(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {
   const term = code.resolveTerm(input)
   switch (term) {
@@ -97,7 +111,7 @@ export function process_deckCard_staticTerm(
 
 export function resolve_deckCard(base: Base, link: string): void {
   const card = base.card(link)
-  code.assertMeshFullType(card.seed, Mesh.PackageModule)
+  code.assertMesh(card.seed, Mesh.PackageModule)
 
   // TODO: deck.hint tells us the parser to use on the code.
 

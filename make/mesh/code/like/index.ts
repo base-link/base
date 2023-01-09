@@ -1,17 +1,24 @@
-import { Link, LinkHint, Mesh, MeshFullType, code } from '~'
-import type { MeshInputType } from '~'
+import {
+  Link,
+  LinkHint,
+  Mesh,
+  MeshClassReferenceType,
+  Nest,
+  code,
+} from '~'
+import type { SiteProcessInputType } from '~'
 
 export function generateFullClassReference(
-  input: MeshInputType,
-): MeshFullType<Mesh.ClassReference> {
+  input: SiteProcessInputType,
+): MeshClassReferenceType {
   const children = code.assumeChildren(input)
   const name = code.findFullStringConstantByName(input, 'name')
 
   code.assertString(name)
 
   const sourceLike = children.filter(
-    (node): node is MeshFullType<Mesh.ClassReference> =>
-      code.isMeshFullType(node, Mesh.ClassReference),
+    (node): node is MeshClassReferenceType =>
+      code.isMesh(node, Mesh.ClassReference),
   )
 
   return {
@@ -19,16 +26,17 @@ export function generateFullClassReference(
     complete: false,
     like: Mesh.ClassReference,
     name,
-    partial: false,
   }
 }
 
-export function process_codeCard_like(input: MeshInputType): void {
-  const like = code.createMeshPartial(Mesh.ClassReference, input.scope)
+export function process_codeCard_like(
+  input: SiteProcessInputType,
+): void {
+  const like = code.createNest(Nest.ClassReference, input.scope)
   code.pushIntoParentObject(input, like)
 
-  const likeInput = code.withBranch(input, like)
-  code.assumeLinkType(input, Link.Tree).nest.forEach((nest, index) => {
+  const likeInput = code.withElement(input, like)
+  code.assumeLink(input, Link.Tree).nest.forEach((nest, index) => {
     process_codeCard_like_nestedChildren(
       code.withEnvironment(likeInput, {
         index,
@@ -43,23 +51,23 @@ export function process_codeCard_like(input: MeshInputType): void {
 }
 
 export function process_codeCard_like_free(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {}
 
 export function process_codeCard_like_head(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {}
 
 export function process_codeCard_like_list(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {}
 
 export function process_codeCard_like_mesh(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {}
 
 export function process_codeCard_like_nestedChildren(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {
   const type = code.determineNestType(input)
   switch (type) {
@@ -117,9 +125,9 @@ export function process_codeCard_like_nestedChildren(
 }
 
 export function process_codeCard_like_take(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {}
 
 export function process_codeCard_like_term(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {}

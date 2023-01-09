@@ -7,8 +7,8 @@ import {
   LINK_HINT_TEXT,
   Link,
   LinkHint,
-  MeshInputType,
   SOURCE_MAP_MESH,
+  SiteProcessInputType,
   Text,
   TextSplitInputType,
   TextTokenType,
@@ -216,7 +216,7 @@ export function generateHighlightedError(
 }
 
 export function generateHighlightedErrorForLinkTree(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): string {
   const highlightedRange = code.getCursorRangeForTree(input)
   return code.generateHighlightedError(
@@ -226,7 +226,7 @@ export function generateHighlightedErrorForLinkTree(
 }
 
 export function generateHighlightedErrorForText(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): string {
   const highlightedRange = code.getCursorRangeForText(input)
   return code.generateHighlightedError(
@@ -274,7 +274,7 @@ export function generateInvalidCompilerStateError(
 }
 
 export function generateInvalidDeckLink(
-  input: MeshInputType,
+  input: SiteProcessInputType,
   link: string,
 ): SiteErrorType {
   return {
@@ -284,7 +284,7 @@ export function generateInvalidDeckLink(
 }
 
 export function generateInvalidNestCaseError(
-  input: MeshInputType,
+  input: SiteProcessInputType,
   type: LinkHint,
 ): SiteErrorType {
   let scope
@@ -301,7 +301,7 @@ export function generateInvalidNestCaseError(
 }
 
 export function generateInvalidNestChildrenLengthError(
-  input: MeshInputType,
+  input: SiteProcessInputType,
   length: number,
 ): SiteErrorType {
   return {
@@ -311,7 +311,7 @@ export function generateInvalidNestChildrenLengthError(
 }
 
 export function generateInvalidPatternError(
-  input: MeshInputType,
+  input: SiteProcessInputType,
   pattern: unknown,
 ): SiteErrorType {
   const { module } = input
@@ -348,7 +348,7 @@ export function generateInvalidWhitespaceError(
 }
 
 export function generateModuleUnresolvableError(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): SiteErrorType {
   return {
     code: '0020',
@@ -425,7 +425,7 @@ export function generateSyntaxTokenError(
 export function generateTermMissingChildError(): void {}
 
 export function generateTermMissingError(
-  input: MeshInputType,
+  input: SiteProcessInputType,
   type: string,
   object: string,
 ): SiteErrorType {
@@ -439,7 +439,7 @@ export function generateTermMissingError(
 }
 
 export function generateUnhandledNestCaseBaseError(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): SiteErrorType {
   const { module } = input
   const text = code.generateHighlightedErrorForLinkTree(input)
@@ -452,7 +452,7 @@ export function generateUnhandledNestCaseBaseError(
 }
 
 export function generateUnhandledNestCaseError(
-  input: MeshInputType,
+  input: SiteProcessInputType,
   type: LinkHint,
 ): SiteErrorType {
   let scope
@@ -471,7 +471,7 @@ export function generateUnhandledNestCaseError(
 }
 
 export function generateUnhandledTermCaseError(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): SiteErrorType {
   let scope
   try {
@@ -492,7 +492,7 @@ export function generateUnhandledTermCaseError(
 }
 
 export function generateUnhandledTermInterpolationError(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): SiteErrorType {
   return {
     code: `0001`,
@@ -503,7 +503,7 @@ export function generateUnhandledTermInterpolationError(
 }
 
 export function generateUnknownTermError(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): SiteErrorType {
   const { module } = input
   const name = code.resolveTerm(input)
@@ -520,7 +520,7 @@ export function generateUnknownTermError(
 }
 
 export function generateUnresolvedPathError(
-  input: MeshInputType,
+  input: SiteProcessInputType,
   path: string,
 ): SiteErrorType {
   const { module } = input
@@ -546,9 +546,9 @@ export function generatedNotImplementedYetError(
 }
 
 export function getCursorRangeForPath(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): CursorRangeType {
-  const path = code.assumeLinkType(input, Link.Path)
+  const path = code.assumeLink(input, Link.Path)
   const start = getCursorRangeForTerm(
     code.withEnvironment(input, { nest: path.segment[0] }),
   )
@@ -571,9 +571,9 @@ export function getCursorRangeForPath(
 }
 
 export function getCursorRangeForPlugin(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): CursorRangeType {
-  const nest = code.assumeLinkType(input, Link.Plugin)
+  const nest = code.assumeLink(input, Link.Plugin)
   const child = nest.nest[0]
 
   switch (child?.like) {
@@ -599,9 +599,9 @@ export function getCursorRangeForPlugin(
 }
 
 export function getCursorRangeForString(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): CursorRangeType {
-  const string = code.assumeLinkType(input, Link.String)
+  const string = code.assumeLink(input, Link.String)
 
   return {
     end: {
@@ -616,9 +616,9 @@ export function getCursorRangeForString(
 }
 
 export function getCursorRangeForTerm(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): CursorRangeType {
-  const term = code.assumeLinkType(input, Link.Term)
+  const term = code.assumeLink(input, Link.Term)
   const range: CursorRangeType = createDefaultRange()
 
   const start = term.segment[0]
@@ -642,9 +642,9 @@ export function getCursorRangeForTerm(
 }
 
 export function getCursorRangeForText(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): CursorRangeType {
-  const nest = code.assumeLinkType(input, Link.Text)
+  const nest = code.assumeLink(input, Link.Text)
 
   const range: CursorRangeType = {
     end: {
@@ -660,8 +660,8 @@ export function getCursorRangeForText(
   const first = nest.segment[0]
   const last = nest.segment[nest.segment.length - 1]
 
-  code.assertGenericLinkType(first)
-  code.assertGenericLinkType(last)
+  code.assertGenericLink(first)
+  code.assertGenericLink(last)
 
   let firstRange: CursorRangeType
 
@@ -748,7 +748,7 @@ export function getCursorRangeForTextWhitespaceToken(
 }
 
 export function getCursorRangeForTree(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): CursorRangeType {
   const nest = code.assumeNest(input)
 

@@ -45,20 +45,20 @@ export function generateNodeJS(base: Base): DockJSTokenType {
     like: DockJS.Program,
   }
 
-  for (const [key, val] of base.card_mesh) {
-    console.log(key)
-    // console.log(val.seed)
-    switch (val.seed.like) {
-      case Mesh.CodeModule:
-        code.generateNodeJSCardModule(program, val.seed)
-        break
-      case Mesh.PackageModule:
-        code.generateNodeJSDeckModule(program, val.seed)
-        break
-      default:
-        break
-    }
-  }
+  // for (const [key, val] of base.card_mesh) {
+  //   console.log(key)
+  //   // console.log(val.seed)
+  //   switch (val.seed.like) {
+  //     case Mesh.CodeModule:
+  //       code.generateNodeJSCardModule(program, val.seed)
+  //       break
+  //     case Mesh.PackageModule:
+  //       code.generateNodeJSDeckModule(program, val.seed)
+  //       break
+  //     default:
+  //       break
+  //   }
+  // }
 
   // console.log(
   //   prettier.format(code.printJSAST(program), {

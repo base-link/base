@@ -46,6 +46,11 @@ function handleFail(data: Result): void {
     code.renderStackTrace(stack).forEach(line => {
       text.push(`    ${line}`)
     })
+  } else if (
+    code.isRecord(data.diag) &&
+    code.isString(data.diag.error)
+  ) {
+    text.push(data.diag.error)
   }
 
   text.push('')
@@ -60,13 +65,8 @@ function getDuration(data: Result): number | undefined {
     : undefined
 }
 
-function getStackTrace(
-  data: Result,
-): Array<SiteStackTraceType> {
-  if (
-    code.isRecord(data.diag) &&
-    code.isString(data.diag.stack)
-  ) {
+function getStackTrace(data: Result): Array<SiteStackTraceType> {
+  if (code.isRecord(data.diag) && code.isString(data.diag.stack)) {
     return code.parseTapStackTrace(data.diag.stack)
   } else {
     return []

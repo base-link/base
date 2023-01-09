@@ -1,14 +1,7 @@
-import {
-  Link,
-  LinkHint,
-  LinkNodeType,
-  Mesh,
-  MeshFullType,
-  code,
-} from '~'
-import type { MeshInputType } from '~'
+import { Link, LinkHint, LinkNodeType, Mesh, Nest, code } from '~'
+import type { SiteProcessInputType } from '~'
 
-export function attemptResolveFuse(input: MeshInputType): void {
+export function attemptResolveFuse(input: SiteProcessInputType): void {
   const name = code.findFullStringConstantByName(input, 'name')
   code.assertString(name)
 
@@ -28,23 +21,22 @@ export function attemptResolveFuse(input: MeshInputType): void {
 }
 
 export function evaluateTemplate(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): Array<LinkNodeType> {
   const result: Array<LinkNodeType> = []
 
   return result
 }
 
-export function process_codeCard_fuse(input: MeshInputType): void {
-  const fuse = code.createMeshPartial(Mesh.Inject, input.scope)
+export function process_codeCard_fuse(
+  input: SiteProcessInputType,
+): void {
+  const fuse = code.createNest(Nest.Inject, input.scope)
   code.pushIntoParentObject(input, fuse)
 
-  const card = input.module
-  code.assertMeshType(card, Mesh.CodeModule)
+  const fuseInput = code.withElement(input, fuse)
 
-  const fuseInput = code.withBranch(input, fuse)
-
-  code.assumeLinkType(input, Link.Tree).nest.forEach((nest, index) => {
+  code.assumeLink(input, Link.Tree).nest.forEach((nest, index) => {
     process_codeCard_fuse_nestedChildren(
       code.withEnvironment(fuseInput, {
         index,
@@ -54,7 +46,7 @@ export function process_codeCard_fuse(input: MeshInputType): void {
   })
 
   // if the terms all pass interpolation
-  if (code.childrenAreComplete(fuse)) {
+  if (code.childrenAreMesh(fuse)) {
     code.attemptResolveFuse(fuseInput)
   }
   // code.replaceIfComplete(fuseInput, fuse, () =>
@@ -63,7 +55,7 @@ export function process_codeCard_fuse(input: MeshInputType): void {
 }
 
 export function process_codeCard_fuse_nestedChildren(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {
   const type = code.determineNestType(input)
   switch (type) {

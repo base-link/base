@@ -1,34 +1,34 @@
 import { LinkHint, code } from '~'
-import type { MeshInputType } from '~'
+import type { SiteProcessInputType } from '~'
 
 export function process_codeCard_bond(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {
   process_codeCard_bond_nestedChildren(input)
 }
 
 export function process_codeCard_bond_code(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {}
 
 export function process_codeCard_bond_comb(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {}
 
 export function process_codeCard_bond_loan(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {}
 
 export function process_codeCard_bond_mark(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {}
 
 export function process_codeCard_bond_move(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {}
 
 export function process_codeCard_bond_nestedChildren(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {
   const type = code.determineNestType(input)
   switch (type) {
@@ -63,30 +63,26 @@ export function process_codeCard_bond_nestedChildren(
           code.process_codeCard_bond_wave(input)
           break
         default:
-          code.throwError(
-            code.generateUnhandledTermCaseError(input),
-          )
+          code.throwError(code.generateUnhandledTermCaseError(input))
       }
       break
     default:
-      code.throwError(
-        code.generateUnhandledNestCaseError(input, type),
-      )
+      code.throwError(code.generateUnhandledNestCaseError(input, type))
   }
 }
 
 export function process_codeCard_bond_read(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {}
 
 export function process_codeCard_bond_term(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {}
 
 export function process_codeCard_bond_text(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {}
 
 export function process_codeCard_bond_wave(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {}

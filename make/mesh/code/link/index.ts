@@ -2,77 +2,129 @@ import {
   Link,
   LinkHint,
   Mesh,
-  MeshFullType,
-  Mesh_FullTypeMixin,
-  Mesh_PartialTypeMixin,
+  MeshClassReferenceType,
+  MeshInputType,
+  Nest,
   code,
 } from '~'
-import type { MeshInputType, MeshPartialType } from '~'
+import type { SiteProcessInputType } from '~'
 
 export * from './take/index.js'
 
-export function attemptPartialRollup(
-  input: MeshInputType,
-  node: Mesh_PartialTypeMixin | Mesh_FullTypeMixin,
-) {
-  // if (code.childrenAreComplete(node)) {
-  //   code.replaceMeshChild(
-  //     childInput,
-  //     Mesh.Import,
-  //     find,
-  //     code.generateFullImportVariable(find),
-  //   )
-  // }
+let ID = 1
+
+export type SiteBindInputType = SiteProcessInputType & {
+  focus: {
+    name: string
+  }
+  handle: (value: SiteBindInputType) => void
+  id: string
+  value?: unknown
+}
+
+export function addPropertyObserver(input: SiteBindInputType): void {
+  const name = input.focus.name
+  const handle = input.handle
+  const id = input.id
+  if (!input.base.observersByNameThenId[name]) {
+    input.base.observersByNameThenId[name] = {}
+  }
+  const observersById = input.base.observersByNameThenId[name]
+  code.assertRecord(observersById)
+
+  observersById[id] = handle
+
+  if (!input.base.observersByIdThenName[id]) {
+    input.base.observersByIdThenName[id] = {}
+  }
+  const observersByName = input.base.observersByIdThenName[id]
+  code.assertRecord(observersByName)
+  observersByName[name] = handle
+}
+
+export function bindReference(input: SiteBindInputType): void {
+  const focus = input.focus
+  const has = code.environmentHasProperty(input.environment, focus.name)
+
+  if (has) {
+    code.setReference(input)
+  } else {
+    code.addPropertyObserver({
+      ...input,
+      handle: code.setReference,
+    })
+  }
+}
+
+export function checkForInputompletion(input: SiteBindInputType): void {
+  input.focus.bond = input.value
+  if (code.childrenAreCompleteMesh(input.element.node)) {
+    console.log('notify parent')
+  }
 }
 
 export function generateFullInput(
-  input: MeshInputType,
-): MeshFullType<Mesh.Input> {
+  input: SiteProcessInputType,
+): MeshInputType {
   const name = code.findFullStringConstantByName(input, 'name')
   code.assertString(name)
   const children = code.assumeChildren(input)
   const sourceLike = children.find(
-    (node): node is MeshFullType<Mesh.ClassReference> =>
-      code.isMeshFullType(node, Mesh.ClassReference),
+    (node): node is MeshClassReferenceType =>
+      code.isMesh(node, Mesh.ClassReference),
   )
 
-  return {
+  const mesh = {
     complete: false,
     like: Mesh.Input,
     name,
-    partial: false,
     sourceLike,
   }
+
+  if (sourceLike) {
+    code.bindReference({
+      ...input,
+      focus: sourceLike,
+      handle: code.checkForInputompletion,
+      id: String(ID++),
+    })
+  }
+
+  return mesh
 }
 
-export function process_codeCard_link(input: MeshInputType): void {
-  const link = code.createMeshPartial(Mesh.Input, input.scope)
+export function pingParentOfCompletion(
+  input: SiteProcessInputType,
+): void {
+  const parent = code.assumeElementAsGenericNest(input)
+}
+
+export function process_codeCard_link(
+  input: SiteProcessInputType,
+): void {
+  const link = code.createNest(Nest.Input, input.scope)
   code.pushIntoParentObject(input, link)
 
-  const linkInput = code.withBranch(input, link)
+  const linkInput = code.withElement(input, link)
 
-  code
-    .assumeLinkType(linkInput, Link.Tree)
-    .nest.forEach((nest, index) => {
-      process_codeCard_link_nestedChildren(
-        code.withEnvironment(linkInput, {
-          index,
-          nest,
-        }),
-      )
-    })
+  code.assumeLink(linkInput, Link.Tree).nest.forEach((nest, index) => {
+    process_codeCard_link_nestedChildren(
+      code.withEnvironment(linkInput, {
+        index,
+        nest,
+      }),
+    )
+  })
 
-  code.replaceIfComplete(linkInput, link, () =>
-    code.generateFullInput(linkInput),
-  )
+  code.resolve_codeCard_link(linkInput)
 }
 
 export function process_codeCard_link_base(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {}
 
 export function process_codeCard_link_nestedChildren(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {
   const type = code.determineNestType(input)
   switch (type) {
@@ -125,4 +177,27 @@ export function process_codeCard_link_nestedChildren(
     default:
       code.throwError(code.generateUnhandledNestCaseError(input, type))
   }
+}
+
+export function resolve_codeCard_link(
+  input: SiteProcessInputType,
+): void {
+  if (code.childrenAreMesh(input.element.node)) {
+    code.potentiallyReplaceWithFullNode(input, () =>
+      code.generateFullInput(input),
+    )
+  }
+}
+
+export function setReference(input: SiteBindInputType): void {
+  const focus = input.focus
+  const value = code.getEnvironmentProperty(
+    input.environment,
+    focus.name,
+  )
+
+  input.handle({
+    ...input,
+    value,
+  })
 }

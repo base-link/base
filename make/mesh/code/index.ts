@@ -2,10 +2,13 @@ import {
   Base,
   DEFAULT_CONTAINER_SCOPE,
   Mesh,
+  MeshCodeModuleType,
   MeshFullType,
+  Nest,
+  NestCodeModuleType,
   code,
 } from '~'
-import type { MeshInputType, MeshPartialType } from '~'
+import type { MeshPartialType, SiteProcessInputType } from '~'
 
 export * from './bear/index.js'
 export * from './bind/index.js'
@@ -41,7 +44,7 @@ export * from './walk/index.js'
 export * from './zone/index.js'
 
 export function handle_codeCard(base: Base, link: string): void {
-  if (base.card_mesh.has(link)) {
+  if (link in base.cards) {
     return
   }
   code.process_codeCard(base, link)
@@ -53,16 +56,21 @@ export function process_codeCard(base: Base, link: string): void {
   const card = base.card(link)
   const container = code.createContainerScope(DEFAULT_CONTAINER_SCOPE)
   const scope = code.createStepScope(container)
-  const seed: MeshPartialType<Mesh.CodeModule> = {
+  const seed: NestCodeModuleType = {
     ...parse,
     base,
     children: [],
-    like: Mesh.CodeModule,
-    partial: true,
+    like: Nest.CodeModule,
     scope,
   }
 
-  const input: MeshInputType = code.createInput(seed, scope, seed)
+  const input: SiteProcessInputType = code.createInput(
+    base,
+    seed,
+    scope,
+    seed,
+    seed,
+  )
 
   card.bind(seed)
 
@@ -76,7 +84,7 @@ export function process_codeCard(base: Base, link: string): void {
 }
 
 export function process_codeCard_nestedChildren(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {
   const type = code.determineNestType(input)
   switch (type) {
@@ -96,7 +104,7 @@ export function process_codeCard_nestedChildren(
 }
 
 export function process_codeCard_nestedChildren_staticTerm(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {
   const term = code.resolveTerm(input)
   switch (term) {
@@ -148,11 +156,10 @@ export function process_codeCard_nestedChildren_staticTerm(
 
 export function resolve_codeCard(base: Base, link: string): void {
   const card = base.card(link)
-  code.assertMeshType(card.seed, Mesh.CodeModule)
 
-  if (card.seed.partial) {
-    if (code.childrenAreComplete(card.seed)) {
-      const seed: MeshFullType<Mesh.CodeModule> = {
+  if (code.isNest(card.seed, Nest.CodeModule)) {
+    if (code.childrenAreMesh(card.seed)) {
+      const seed: MeshCodeModuleType = {
         allClassInterfaceMesh: {},
         allClassMesh: {},
         allComponentMesh: {},
@@ -170,7 +177,6 @@ export function resolve_codeCard(base: Base, link: string): void {
         like: Mesh.CodeModule,
         link: card.seed.link,
         nativeClassInterfaceMesh: {},
-        partial: false,
         path: card.seed.path,
         publicClassInterfaceMesh: {},
         publicClassMesh: {},
@@ -188,7 +194,7 @@ export function resolve_codeCard(base: Base, link: string): void {
       card.seed.children.forEach(node => {
         switch (node.like) {
           case Mesh.Constant: {
-            code.assertMeshFullType(node, Mesh.Constant)
+            code.assertMesh(node, Mesh.Constant)
             if (!node.hidden) {
               seed.publicConstantMesh[node.name] = node
             }
@@ -196,7 +202,7 @@ export function resolve_codeCard(base: Base, link: string): void {
             break
           }
           case Mesh.ClassInterface: {
-            code.assertMeshFullType(node, Mesh.ClassInterface)
+            code.assertMesh(node, Mesh.ClassInterface)
             if (!node.hidden) {
               seed.publicClassInterfaceMesh[node.name] = node
             }
@@ -204,7 +210,7 @@ export function resolve_codeCard(base: Base, link: string): void {
             break
           }
           case Mesh.Function: {
-            code.assertMeshFullType(node, Mesh.Function)
+            code.assertMesh(node, Mesh.Function)
             if (!node.hidden) {
               seed.publicFunctionMesh[node.name] = node
             }
@@ -212,7 +218,7 @@ export function resolve_codeCard(base: Base, link: string): void {
             break
           }
           case Mesh.Class: {
-            code.assertMeshFullType(node, Mesh.Class)
+            code.assertMesh(node, Mesh.Class)
             if (!node.hidden) {
               seed.publicClassMesh[node.name] = node
             }
@@ -220,7 +226,7 @@ export function resolve_codeCard(base: Base, link: string): void {
             break
           }
           case Mesh.Template: {
-            code.assertMeshFullType(node, Mesh.Template)
+            code.assertMesh(node, Mesh.Template)
             if (!node.hidden) {
               seed.publicTemplateMesh[node.name] = node
             }
@@ -228,12 +234,12 @@ export function resolve_codeCard(base: Base, link: string): void {
             break
           }
           case Mesh.Import: {
-            code.assertMeshFullType(node, Mesh.Import)
+            code.assertMesh(node, Mesh.Import)
             seed.importTree.push(node)
             break
           }
           case Mesh.Export: {
-            code.assertMeshFullType(node, Mesh.Export)
+            code.assertMesh(node, Mesh.Export)
             seed.exportList.push(node)
             break
           }
@@ -244,9 +250,11 @@ export function resolve_codeCard(base: Base, link: string): void {
         }
       })
 
-      const input: MeshInputType = code.createInput(
+      const input: SiteProcessInputType = code.createInput(
+        base,
         card.seed,
-        card.scope,
+        card.seed.scope,
+        card.seed,
         card.seed,
       )
 
@@ -276,7 +284,32 @@ export function resolve_codeCard(base: Base, link: string): void {
     } else {
       card.seed.children.forEach(node => {
         switch (node.like) {
+          case Nest.Import:
+            break
+          case Nest.Export:
+            break
+          case Nest.Class: {
+            break
+          }
+          case Nest.Function: {
+            break
+          }
+          case Nest.Template: {
+            break
+          }
+          case Nest.Inject: {
+            break
+          }
           case Mesh.Import:
+            if (
+              node.absolutePath.match(
+                '/drumwork/deck/([^/]+)/base.link',
+              )
+            ) {
+              code.handle_deckCard(base, node.absolutePath)
+            } else {
+              code.handle_codeCard(base, node.absolutePath)
+            }
             break
           case Mesh.Export:
             break

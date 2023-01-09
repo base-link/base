@@ -1,10 +1,12 @@
-import { Link, LinkHint, Mesh, code } from '~'
-import type { MeshInputType } from '~'
+import { Link, LinkHint, Mesh, Nest, code } from '~'
+import type { SiteProcessInputType } from '~'
 
-export function process_codeCard_head(input: MeshInputType): void {
-  const head = code.createMeshPartial(Mesh.ClassInput, input.scope)
+export function process_codeCard_head(
+  input: SiteProcessInputType,
+): void {
+  const head = code.createNest(Nest.ClassInput, input.scope)
 
-  code.assumeLinkType(input, Link.Tree).nest.forEach((nest, index) => {
+  code.assumeLink(input, Link.Tree).nest.forEach((nest, index) => {
     process_codeCard_head_nestedChildren(
       code.withEnvironment(input, {
         index,
@@ -15,7 +17,7 @@ export function process_codeCard_head(input: MeshInputType): void {
 }
 
 export function process_codeCard_head_nestedChildren(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {
   const type = code.determineNestType(input)
   switch (type) {

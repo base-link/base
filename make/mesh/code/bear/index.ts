@@ -1,29 +1,26 @@
 import { Link, LinkHint, Mesh, code } from '~'
-import type { MeshInputType } from '~'
+import type { SiteProcessInputType } from '~'
 
 export function finalize_codeCard_bear_nestedChildren(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {
   const text = code.resolveText(input)
 
   code.assertString(text)
 
-  const card = input.module
-
-  code.assertMeshPartialType(card, Mesh.CodeModule)
-
   const path = code.resolveModulePath(input, text)
 
-  card.children.push({
+  code.pushIntoParentObject(input, {
     absolutePath: path,
     complete: true,
     like: Mesh.Export,
-    partial: false,
   })
 }
 
-export function process_codeCard_bear(input: MeshInputType): void {
-  const nest = code.assumeLinkType(input, Link.Tree)
+export function process_codeCard_bear(
+  input: SiteProcessInputType,
+): void {
+  const nest = code.assumeLink(input, Link.Tree)
   nest.nest.forEach((nest, index) => {
     code.process_codeCard_bear_nestedChildren(
       code.withEnvironment(input, {
@@ -35,11 +32,11 @@ export function process_codeCard_bear(input: MeshInputType): void {
 }
 
 export function process_codeCard_bear_hide(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {}
 
 export function process_codeCard_bear_nestedChildren(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {
   const type = code.determineNestType(input)
   switch (type) {

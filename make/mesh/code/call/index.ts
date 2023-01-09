@@ -1,7 +1,9 @@
 import { Link, LinkHint, Mesh, MeshPartialType, code } from '~'
-import type { MeshInputType } from '~'
+import type { SiteProcessInputType } from '~'
 
-export function process_codeCard_call(input: MeshInputType): void {
+export function process_codeCard_call(
+  input: SiteProcessInputType,
+): void {
   const call: MeshPartialType<Mesh.Call> = {
     children: [],
     lexicalScope: input.lexicalScope,
@@ -9,9 +11,9 @@ export function process_codeCard_call(input: MeshInputType): void {
     partial: true,
   }
 
-  const childInput = code.withBranch(input, call)
+  const childInput = code.withElement(input, call)
 
-  code.assumeLinkType(input, Link.Tree).nest.forEach((nest, index) => {
+  code.assumeLink(input, Link.Tree).nest.forEach((nest, index) => {
     process_codeCard_call_nestedChildren(
       code.withEnvironment(childInput, {
         index,
@@ -22,7 +24,7 @@ export function process_codeCard_call(input: MeshInputType): void {
 }
 
 export function process_codeCard_call_nestedChildren(
-  input: MeshInputType,
+  input: SiteProcessInputType,
 ): void {
   const type = code.determineNestType(input)
   switch (type) {
@@ -37,10 +39,7 @@ export function process_codeCard_call_nestedChildren(
       const term = code.assumeTerm(input)
       const index = code.assumeNestIndex(input)
       if (index === 0) {
-        const call = code.assumeBranchAsMeshPartialType(
-          input,
-          Mesh.Call,
-        )
+        const call = code.assumeElementAsNest(input, Mesh.Call)
 
         call.children.push(code.createStringConstant('name', term))
       } else {
