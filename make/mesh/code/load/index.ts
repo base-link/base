@@ -49,9 +49,14 @@ export function generateFullImport(
 
   code.assertString(absolutePath)
 
+  const bound =
+    variableList.filter(x => x.bound).length +
+      importList.filter(x => x.bound).length ===
+    0
+
   return {
     absolutePath,
-    complete: false,
+    bound,
     import: importList,
     like: Mesh.Import,
     scope: input.scope,

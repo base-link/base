@@ -12,8 +12,14 @@ export function finalize_codeCard_bear_nestedChildren(
 
   code.pushIntoParentObject(input, {
     absolutePath: path,
-    complete: true,
     like: Mesh.Export,
+  })
+
+  code.bindModule({
+    ...input,
+    handle: () => code.checkModuleForInputCompletion(input),
+    id: code.generateObservableId(),
+    moduleId: String(input.base.card(path).id),
   })
 }
 

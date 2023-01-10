@@ -17,6 +17,32 @@ export enum Site {
   VariableDeclaration = 'site-variable-declaration',
 }
 
+export type SiteBindElementBaseInputType = SiteProcessInputType & {
+  focus: {
+    bond?: unknown
+    name: string
+  }
+  id: string
+  moduleId: number
+}
+
+export type SiteBindElementHandlerInputType =
+  SiteBindElementBaseInputType & {
+    handle: (
+      value: SiteBindElementBaseInputType & { value: unknown },
+    ) => void
+  }
+
+export type SiteBindElementInputType = SiteBindElementBaseInputType & {
+  handle: () => void
+}
+
+export type SiteBindModuleInputType = SiteProcessInputType & {
+  handle: () => void
+  id: string
+  moduleId: number
+}
+
 export type SiteContainerScopeType = {
   declarations: Record<string, SiteVariableDeclarationType>
   like: Site.ContainerScope
@@ -63,6 +89,8 @@ export type SiteLinkType = {
 export type SiteModuleBaseType = {
   base: Base
   directory: string
+  id: number
+  isModule: true
   link: LinkTreeType
   path: string
   text: string
@@ -82,9 +110,7 @@ export type SiteProcessInputType = {
   scope: SiteStepScopeType
 }
 
-export type SitePropertyObserverType = (
-  input: SiteProcessInputType,
-) => void
+export type SitePropertyObserverType = () => void
 
 export type SiteScopeType = {
   bindings: Record<string, unknown>
