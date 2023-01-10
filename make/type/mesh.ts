@@ -1,4 +1,4 @@
-import {
+import type {
   LinkNodeType,
   LinkPathType,
   LinkTermType,
@@ -95,7 +95,7 @@ export type MeshAssertionType = MeshBaseType & {
 }
 
 export type MeshBaseType = {
-  complete: boolean
+  bound?: boolean
   scope?: SiteStepScopeType
 }
 
@@ -105,7 +105,7 @@ export type MeshBindType = MeshBaseType & {
   name: string
 }
 
-export type MeshBookModuleType = SiteModuleBaseType &
+export type MeshBookModuleType = MeshModuleBaseType &
   MeshBaseType & {
     abstract: string
     like: Mesh.BookModule
@@ -189,35 +189,33 @@ export type MeshCloneVariableType = MeshBaseType & {
   link: LinkTermType | LinkPathType
 }
 
-export type MeshCodeModuleType = SiteModuleBaseType &
+export type MeshCodeModuleType = MeshModuleBaseType &
   MeshBaseType & {
-    allClassInterfaceMesh: Record<string, MeshClassInterfaceType>
-    allClassMesh: Record<string, MeshClassType>
-    allComponentMesh: Record<string, MeshComponentType>
-    allConstantMesh: Record<string, MeshConstantType>
-    allFunctionMesh: Record<string, MeshFunctionType>
-    allTemplateMesh: Record<string, MeshTemplateType>
-    allTestMesh: Record<string, MeshTestType>
-    callbackMesh: Record<string, MeshCallbackType>
-    constantMesh: Record<string, MeshConstantType>
-    exportList: Array<MeshExportType>
-    importTree: Array<MeshImportType>
+    callbacks: Record<string, MeshCallbackType>
+    classInterfaces: Record<string, MeshClassInterfaceType>
+    classes: Record<string, MeshClassType>
+    components: Record<string, MeshComponentType>
+    constants: Record<string, MeshConstantType>
+    exports: Array<MeshExportType>
+    functions: Record<string, MeshFunctionType>
+    imports: Array<MeshImportType>
     like: Mesh.CodeModule
-    nativeClassInterfaceMesh: Record<
-      string,
-      MeshNativeClassInterfaceType
-    >
-    publicClassInterfaceMesh: Record<string, MeshClassInterfaceType>
-    publicClassMesh: Record<string, MeshClassType>
-    publicComponentMesh: Record<string, MeshComponentType>
-    publicConstantMesh: Record<string, MeshConstantType>
-    publicFunctionMesh: Record<string, MeshFunctionType>
-    publicNativeClassInterfaceMesh: Record<
-      string,
-      MeshNativeClassInterfaceType
-    >
-    publicTemplateMesh: Record<string, MeshTemplateType>
-    publicTestMesh: Record<string, MeshTestType>
+    nativeClassInterfaces: Record<string, MeshNativeClassInterfaceType>
+    public: {
+      classInterfaces: Record<string, MeshClassInterfaceType>
+      classes: Record<string, MeshClassType>
+      components: Record<string, MeshComponentType>
+      constants: Record<string, MeshConstantType>
+      functions: Record<string, MeshFunctionType>
+      nativeClassInterfaces: Record<
+        string,
+        MeshNativeClassInterfaceType
+      >
+      templates: Record<string, MeshTemplateType>
+      tests: Record<string, MeshTestType>
+    }
+    templates: Record<string, MeshTemplateType>
+    tests: Record<string, MeshTestType>
   }
 
 export type MeshComponentType = MeshBaseType & {
@@ -328,9 +326,11 @@ export type MeshMappingType = {
   'mesh-unsigned-integer': MeshUnsignedIntegerType
 }
 
-export type MeshModuleType =
-  | (SiteModuleBaseType & MeshCodeModuleType)
-  | MeshPackageModuleType
+export type MeshModuleBaseType = SiteModuleBaseType & {
+  public: Record<string, Record<string, unknown>>
+}
+
+export type MeshModuleType = MeshCodeModuleType | MeshPackageModuleType
 
 export type MeshMoveVariableType = MeshBaseType & {
   like: Mesh.MoveVariable
@@ -391,7 +391,7 @@ export type MeshPackageLicenseType = MeshBaseType & {
   name: string
 }
 
-export type MeshPackageModuleType = SiteModuleBaseType &
+export type MeshPackageModuleType = MeshModuleBaseType &
   MeshBaseType & {
     deck: MeshPackageType
     like: Mesh.PackageModule

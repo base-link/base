@@ -26,12 +26,14 @@ export function generate_deckCard(
 
   return {
     base: input.module.base,
-    complete: false,
     deck,
     directory: input.module.directory,
+    id: input.module.id,
+    isModule: true,
     like: Mesh.PackageModule,
     link: input.module.link,
     path: input.module.path,
+    public: {},
     scope: input.scope,
     text: input.module.text,
     textByLine: input.module.textByLine,
@@ -55,6 +57,8 @@ export function process_deckCard(base: Base, link: string): void {
     ...parse,
     base,
     children: [],
+    id: card.id,
+    isModule: true,
     like: Nest.PackageModule,
     scope,
   }

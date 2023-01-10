@@ -36,7 +36,7 @@ export function generate_full_deckCard_deck(
 
   return {
     bear: exportFile,
-    complete: false,
+    bound: false,
     face: [],
     host,
     like: Mesh.Package,
@@ -68,7 +68,7 @@ export function process_deckCard_deck(
     code.process_deckCard_deck_nestedChildren,
   )
 
-  code.replaceIfComplete(childInput, deck, () =>
+  code.replaceIfBound(childInput, deck, () =>
     code.generate_full_deckCard_deck(childInput),
   )
 }

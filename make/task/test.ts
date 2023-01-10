@@ -8,7 +8,7 @@ const p = new Parser()
 
 p.on('pass', handlePass)
 p.on('fail', handleFail)
-p.on('complete', handleComplete)
+p.on('bound', handleComplete)
 
 handleStart()
 

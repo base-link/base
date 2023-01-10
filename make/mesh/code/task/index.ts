@@ -65,7 +65,7 @@ export function generateFullFunction(
   code.assertString(name)
 
   return {
-    complete: false,
+    bound: false,
     flow,
     function: functionMesh,
     hidden,

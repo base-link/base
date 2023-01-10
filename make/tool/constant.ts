@@ -1,25 +1,37 @@
 import {
   Mesh,
-  MeshFullType,
+  MeshConstantType,
   MeshType,
+  MeshValueType,
   SiteProcessInputType,
   code,
 } from '~'
+
+export function createConstant(
+  name: string,
+  value: MeshValueType,
+): MeshType<Mesh.Constant> {
+  return {
+    bound: true,
+    hidden: false,
+    like: Mesh.Constant,
+    name,
+    value,
+  }
+}
 
 export function createStringConstant(
   name: string,
   value: string,
 ): MeshType<Mesh.Constant> {
   return {
-    complete: true,
+    bound: true,
     hidden: false,
     like: Mesh.Constant,
     name,
-    partial: false,
     value: {
-      complete: true,
+      bound: true,
       like: Mesh.String,
-      partial: false,
       string: value,
     },
   }
@@ -63,9 +75,7 @@ export function findFullStringConstantByName(
   return undefined
 }
 
-export function getBooleanConstant(
-  c: MeshFullType<Mesh.Constant>,
-): boolean {
+export function getBooleanConstant(c: MeshConstantType): boolean {
   if (c.value && 'like' in c.value && c.value.like === Mesh.Boolean) {
     return c.value.boolean
   } else {
@@ -73,9 +83,7 @@ export function getBooleanConstant(
   }
 }
 
-export function getStringConstant(
-  c: MeshFullType<Mesh.Constant>,
-): string {
+export function getStringConstant(c: MeshConstantType): string {
   if (c.value && 'like' in c.value && c.value.like === Mesh.String) {
     return c.value.string
   } else {

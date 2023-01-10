@@ -1,28 +1,5 @@
-import { Mesh, MeshValueType, code } from '~'
-import type { MeshType, SiteProcessInputType } from '~'
-
-export function assertStringPattern(
-  input: SiteProcessInputType,
-  string: string,
-  pattern: RegExp,
-): void {
-  if (!string.match(pattern)) {
-    code.throwError(code.generateInvalidPatternError(input, pattern))
-  }
-}
-
-export function createConstant(
-  name: string,
-  value: MeshValueType,
-): MeshType<Mesh.Constant> {
-  return {
-    complete: true,
-    hidden: false,
-    like: Mesh.Constant,
-    name,
-    value,
-  }
-}
+import { Mesh, code } from '~'
+import type { SiteProcessInputType } from '~'
 
 export function process_deckCard_deck_link(
   input: SiteProcessInputType,
@@ -35,7 +12,7 @@ export function process_deckCard_deck_link(
   code.pushIntoParentObject(
     input,
     code.createConstant('link', {
-      complete: true,
+      bound: true,
       like: Mesh.String,
       string: text,
     }),

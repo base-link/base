@@ -1,14 +1,9 @@
-import {
-  Base,
-  DEFAULT_CONTAINER_SCOPE,
-  Mesh,
+import { Base, DEFAULT_CONTAINER_SCOPE, Mesh, Nest, code } from '~'
+import type {
   MeshCodeModuleType,
-  MeshFullType,
-  Nest,
   NestCodeModuleType,
-  code,
+  SiteProcessInputType,
 } from '~'
-import type { MeshPartialType, SiteProcessInputType } from '~'
 
 export * from './bear/index.js'
 export * from './bind/index.js'
@@ -44,9 +39,10 @@ export * from './walk/index.js'
 export * from './zone/index.js'
 
 export function handle_codeCard(base: Base, link: string): void {
-  if (link in base.cards) {
+  if (code.hasModuleByPath(base, link)) {
     return
   }
+
   code.process_codeCard(base, link)
   code.resolve_codeCard(base, link)
 }
@@ -60,6 +56,8 @@ export function process_codeCard(base: Base, link: string): void {
     ...parse,
     base,
     children: [],
+    id: card.id,
+    isModule: true,
     like: Nest.CodeModule,
     scope,
   }
@@ -160,33 +158,35 @@ export function resolve_codeCard(base: Base, link: string): void {
   if (code.isNest(card.seed, Nest.CodeModule)) {
     if (code.childrenAreMesh(card.seed)) {
       const seed: MeshCodeModuleType = {
-        allClassInterfaceMesh: {},
-        allClassMesh: {},
-        allComponentMesh: {},
-        allConstantMesh: {},
-        allFunctionMesh: {},
-        allTemplateMesh: {},
-        allTestMesh: {},
         base: card.seed.base,
-        callbackMesh: {},
-        complete: false,
-        constantMesh: {},
+        callbacks: {},
+        classInterfaces: {},
+        classes: {},
+        components: {},
+        constants: {},
         directory: card.seed.directory,
-        exportList: [],
-        importTree: [],
+        exports: [],
+        functions: {},
+        id: card.id,
+        imports: [],
+        isModule: true,
         like: Mesh.CodeModule,
         link: card.seed.link,
-        nativeClassInterfaceMesh: {},
+        nativeClassInterfaces: {},
         path: card.seed.path,
-        publicClassInterfaceMesh: {},
-        publicClassMesh: {},
-        publicComponentMesh: {},
-        publicConstantMesh: {},
-        publicFunctionMesh: {},
-        publicNativeClassInterfaceMesh: {},
-        publicTemplateMesh: {},
-        publicTestMesh: {},
+        public: {
+          classInterfaces: {},
+          classes: {},
+          components: {},
+          constants: {},
+          functions: {},
+          nativeClassInterfaces: {},
+          templates: {},
+          tests: {},
+        },
         scope: card.seed.scope,
+        templates: {},
+        tests: {},
         text: card.seed.text,
         textByLine: card.seed.textByLine,
       }
@@ -196,51 +196,51 @@ export function resolve_codeCard(base: Base, link: string): void {
           case Mesh.Constant: {
             code.assertMesh(node, Mesh.Constant)
             if (!node.hidden) {
-              seed.publicConstantMesh[node.name] = node
+              seed.public.constants[node.name] = node
             }
-            seed.allConstantMesh[node.name] = node
+            seed.constants[node.name] = node
             break
           }
           case Mesh.ClassInterface: {
             code.assertMesh(node, Mesh.ClassInterface)
             if (!node.hidden) {
-              seed.publicClassInterfaceMesh[node.name] = node
+              seed.public.classInterfaces[node.name] = node
             }
-            seed.allClassInterfaceMesh[node.name] = node
+            seed.classInterfaces[node.name] = node
             break
           }
           case Mesh.Function: {
             code.assertMesh(node, Mesh.Function)
             if (!node.hidden) {
-              seed.publicFunctionMesh[node.name] = node
+              seed.public.functions[node.name] = node
             }
-            seed.allFunctionMesh[node.name] = node
+            seed.functions[node.name] = node
             break
           }
           case Mesh.Class: {
             code.assertMesh(node, Mesh.Class)
             if (!node.hidden) {
-              seed.publicClassMesh[node.name] = node
+              seed.public.classes[node.name] = node
             }
-            seed.allClassMesh[node.name] = node
+            seed.classes[node.name] = node
             break
           }
           case Mesh.Template: {
             code.assertMesh(node, Mesh.Template)
             if (!node.hidden) {
-              seed.publicTemplateMesh[node.name] = node
+              seed.public.templates[node.name] = node
             }
-            seed.allTemplateMesh[node.name] = node
+            seed.templates[node.name] = node
             break
           }
           case Mesh.Import: {
             code.assertMesh(node, Mesh.Import)
-            seed.importTree.push(node)
+            seed.imports.push(node)
             break
           }
           case Mesh.Export: {
             code.assertMesh(node, Mesh.Export)
-            seed.exportList.push(node)
+            seed.exports.push(node)
             break
           }
           default:
@@ -260,7 +260,7 @@ export function resolve_codeCard(base: Base, link: string): void {
 
       code.replaceSeed(input, seed)
 
-      seed.importTree.forEach(node => {
+      seed.imports.forEach(node => {
         // HACK: TODO: figure out how to get the different file types.
         if (
           node.absolutePath.match('/drumwork/deck/([^/]+)/base.link')
@@ -271,7 +271,7 @@ export function resolve_codeCard(base: Base, link: string): void {
         }
       })
 
-      seed.exportList.forEach(node => {
+      seed.exports.forEach(node => {
         // HACK: TODO: figure out how to get the different file types.
         if (
           node.absolutePath.match('/drumwork/deck/([^/]+)/base.link')

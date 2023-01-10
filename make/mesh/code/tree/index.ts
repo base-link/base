@@ -33,7 +33,7 @@ export function generateFullTemplate(
   code.assertString(name)
 
   return {
-    complete: false,
+    bound: false,
     hidden,
     inputs,
     like: Mesh.Template,
@@ -59,7 +59,7 @@ export function process_codeCard_tree(
     )
   })
 
-  code.replaceIfComplete(treeInput, tree, () =>
+  code.replaceIfBound(treeInput, tree, () =>
     code.generateFullTemplate(treeInput),
   )
 }

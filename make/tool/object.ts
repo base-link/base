@@ -1,22 +1,14 @@
-import {
-  Base,
-  Link,
+import { Base, Link, Mesh, Nest, code } from '~'
+import type {
   LinkTreeType,
-  Mesh,
-  MeshFullType,
-  MeshModuleBaseType,
-  MeshPartialChildrenContainerType,
   MeshType,
-  Mesh_FullTypeMixin,
-  Mesh_PartialTypeMixin,
-  Nest,
+  NestBaseType,
   NestType,
   SiteElementType,
-  SiteMeshType,
+  SiteModuleBaseType,
+  SiteProcessInputType,
   SiteStepScopeType,
-  code,
 } from '~'
-import type { SiteProcessInputType } from '~'
 
 export type MeshParseType = {
   directory: string
@@ -30,13 +22,13 @@ export type WithPotentiallyPartialChildrenType = {
   children: Array<{ partial: boolean }>
 }
 
-export function childrenAreCompleteMesh(
+export function childrenAreBoundMesh(
   node: Record<string, unknown>,
 ): boolean {
   return (
     'children' in node &&
     code.isArray(node.children) &&
-    node.children.filter(x => code.isGenericMesh(x) && x.complete)
+    node.children.filter(x => code.isGenericMesh(x) && x.bound)
       .length === node.children.length
   )
 }
@@ -63,7 +55,7 @@ export function createElement(
 
 export function createInput(
   base: Base,
-  module: MeshModuleBaseType,
+  module: SiteModuleBaseType,
   scope: SiteStepScopeType,
   element: MeshType<Mesh> | NestType<Nest>,
   bindings: Record<string, unknown>,
@@ -74,17 +66,6 @@ export function createInput(
     environment: code.createEnvironment(bindings),
     module,
     scope,
-  }
-}
-
-export function createTerm(name: string): MeshFullType<Mesh.Term> {
-  return {
-    complete: true,
-    dive: false,
-    like: Mesh.Term,
-    name,
-    nest: [],
-    partial: false,
   }
 }
 
@@ -110,6 +91,20 @@ export function getProperty(
   if (code.isRecord(object) && path in object) {
     return object[path]
   }
+}
+
+export function getWithObjectDefault(
+  obj: Record<string, unknown>,
+  name: string,
+): Record<string, unknown> {
+  let value = obj[name]
+
+  if (!code.isRecord(value)) {
+    value = obj[name] = {}
+  }
+
+  code.assertRecord(value)
+  return value
 }
 
 export function loadLinkModule(
@@ -140,9 +135,9 @@ export function processNestedChildren(
   })
 }
 
-export function replaceIfComplete(
+export function replaceIfBound(
   input: SiteProcessInputType,
-  child: MeshPartialChildrenContainerType,
+  child: NestBaseType,
   cb: () => void,
 ): void {
   if (code.childrenAreMesh(child)) {
@@ -150,12 +145,12 @@ export function replaceIfComplete(
   }
 }
 
-export function replaceSeed<T extends MeshModuleBaseType>(
+export function replaceSeed<T extends SiteModuleBaseType>(
   input: SiteProcessInputType,
   replacement: T,
 ): void {
   input.module = replacement
-  input.module.base.card(input.module.path).bind(replacement)
+  input.module.base.card(input.module.path)?.bind(replacement)
 }
 
 export function resolveHashtagAsNumber(

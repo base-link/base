@@ -49,7 +49,7 @@ export function process_codeCard_fuse(
   if (code.childrenAreMesh(fuse)) {
     code.attemptResolveFuse(fuseInput)
   }
-  // code.replaceIfComplete(fuseInput, fuse, () =>
+  // code.replaceIfBound(fuseInput, fuse, () =>
   //   code.generateFullInject(fuseInput),
   // )
 }

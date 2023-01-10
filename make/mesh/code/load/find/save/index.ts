@@ -27,7 +27,7 @@ export function process_codeCard_load_find_save_nestedChildren(
     code.assertString(term)
 
     code.pushIntoParentObject(input, {
-      complete: true,
+      bound: true,
       like: Mesh.ImportVariableRename,
       name: term,
     })
