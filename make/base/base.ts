@@ -1,7 +1,8 @@
 import {
   BaseCard,
-  SiteBindInputType,
+  SiteBindElementInputType,
   SitePropertyObserverType,
+  code,
 } from '~'
 import type { SiteDependencyType } from '~'
 
@@ -28,39 +29,49 @@ class Base {
 
   env: Record<string, unknown>
 
-  observersByIdThenName: Record<
+  observersByCardThenIdThenName: Record<
     string,
-    Record<string, SiteBindInputType>
+    Record<string, Record<string, SitePropertyObserverType>>
   >
 
-  observersByNameThenId: Record<
+  observersByCardThenNameThenId: Record<
     string,
-    Record<string, SitePropertyObserverType>
+    Record<string, Record<string, SitePropertyObserverType>>
   >
 
-  cards: Record<string, BaseCard>
+  cardsByPath: Record<string, BaseCard>
+
+  cardsById: Record<number, BaseCard>
 
   constructor() {
     this.textMap = {}
     this.env = {}
-    this.observersByIdThenName = {}
-    this.observersByNameThenId = {}
-    this.cards = {}
+    this.observersByCardThenIdThenName = {}
+    this.observersByCardThenNameThenId = {}
+    this.cardsByPath = {}
+    this.cardsById = {}
   }
 
   load(call: () => void) {
     call()
   }
 
-  card(hash: string) {
-    let card: BaseCard | undefined = this.cards[hash]
+  card(key: string | number) {
+    if (code.isString(key)) {
+      let card: BaseCard | undefined = this.cardsByPath[key]
 
-    if (!card) {
-      card = new BaseCard(hash)
-      this.cards[hash] = card
+      if (!card) {
+        card = new BaseCard(key)
+        this.cardsByPath[key] = card
+        this.cardsById[card.id] = card
+      }
+
+      return card
+    } else {
+      const card = this.cardsById[key]
+      assertBaseCard(card)
+      return card
     }
-
-    return card
   }
 }
 
@@ -74,4 +85,12 @@ export type BaseRequestParamsType = {
   link: string
   name: string
   site: string
+}
+
+function assertBaseCard(object: unknown): asserts object is BaseCard {
+  if (!(object instanceof BaseCard)) {
+    code.throwError(
+      code.generateObjectNotTypeError(object, ['base-card']),
+    )
+  }
 }

@@ -5,6 +5,16 @@ import type {
   SiteProcessInputType,
 } from '~'
 
+export function assertStringPattern(
+  input: SiteProcessInputType,
+  string: string,
+  pattern: RegExp,
+): void {
+  if (!string.match(pattern)) {
+    code.throwError(code.generateInvalidPatternError(input, pattern))
+  }
+}
+
 export function processDynamicTextNest(
   input: SiteProcessInputType,
   job: (i: SiteProcessInputType) => void,

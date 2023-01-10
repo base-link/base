@@ -23,7 +23,7 @@ export function generateFullClassReference(
 
   return {
     bind: sourceLike,
-    complete: false,
+    bound: false,
     like: Mesh.ClassReference,
     name,
   }
@@ -45,7 +45,7 @@ export function process_codeCard_like(
     )
   })
 
-  code.replaceIfComplete(likeInput, like, () =>
+  code.replaceIfBound(likeInput, like, () =>
     code.generateFullClassReference(likeInput),
   )
 }

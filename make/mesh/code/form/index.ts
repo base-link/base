@@ -35,8 +35,8 @@ export function generateFullClass(
   const properties = code.keyBy(propertyList, 'name')
 
   return {
+    bound: false,
     callbacks: {},
-    complete: false,
     hidden: false,
     interfaces: {},
     like: Mesh.Class,
@@ -70,7 +70,7 @@ export function process_codeCard_form(
       )
     })
 
-  code.replaceIfComplete(branchInput, form, () =>
+  code.replaceIfBound(branchInput, form, () =>
     code.generateFullClass(branchInput),
   )
 }

@@ -1,67 +1,12 @@
-import {
-  Link,
-  LinkHint,
-  Mesh,
+import { Link, LinkHint, Mesh, Nest, code } from '~'
+import type {
   MeshClassReferenceType,
   MeshInputType,
-  Nest,
-  code,
+  SiteBindElementInputType,
+  SiteProcessInputType,
 } from '~'
-import type { SiteProcessInputType } from '~'
 
 export * from './take/index.js'
-
-let ID = 1
-
-export type SiteBindInputType = SiteProcessInputType & {
-  focus: {
-    name: string
-  }
-  handle: (value: SiteBindInputType) => void
-  id: string
-  value?: unknown
-}
-
-export function addPropertyObserver(input: SiteBindInputType): void {
-  const name = input.focus.name
-  const handle = input.handle
-  const id = input.id
-  if (!input.base.observersByNameThenId[name]) {
-    input.base.observersByNameThenId[name] = {}
-  }
-  const observersById = input.base.observersByNameThenId[name]
-  code.assertRecord(observersById)
-
-  observersById[id] = handle
-
-  if (!input.base.observersByIdThenName[id]) {
-    input.base.observersByIdThenName[id] = {}
-  }
-  const observersByName = input.base.observersByIdThenName[id]
-  code.assertRecord(observersByName)
-  observersByName[name] = handle
-}
-
-export function bindReference(input: SiteBindInputType): void {
-  const focus = input.focus
-  const has = code.environmentHasProperty(input.environment, focus.name)
-
-  if (has) {
-    code.setReference(input)
-  } else {
-    code.addPropertyObserver({
-      ...input,
-      handle: code.setReference,
-    })
-  }
-}
-
-export function checkForInputompletion(input: SiteBindInputType): void {
-  input.focus.bond = input.value
-  if (code.childrenAreCompleteMesh(input.element.node)) {
-    console.log('notify parent')
-  }
-}
 
 export function generateFullInput(
   input: SiteProcessInputType,
@@ -75,7 +20,7 @@ export function generateFullInput(
   )
 
   const mesh = {
-    complete: false,
+    bound: false,
     like: Mesh.Input,
     name,
     sourceLike,
@@ -85,8 +30,9 @@ export function generateFullInput(
     code.bindReference({
       ...input,
       focus: sourceLike,
-      handle: code.checkForInputompletion,
-      id: String(ID++),
+      handle: code.checkFocusForInputCompletion,
+      id: code.generateObservableId(),
+      moduleId: String(input.module.id),
     })
   }
 
@@ -187,17 +133,4 @@ export function resolve_codeCard_link(
       code.generateFullInput(input),
     )
   }
-}
-
-export function setReference(input: SiteBindInputType): void {
-  const focus = input.focus
-  const value = code.getEnvironmentProperty(
-    input.environment,
-    focus.name,
-  )
-
-  input.handle({
-    ...input,
-    value,
-  })
 }

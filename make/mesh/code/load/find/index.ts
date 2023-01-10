@@ -30,7 +30,7 @@ export function generateFullImportVariable(
   code.assertString(scopeName)
 
   return {
-    complete: true,
+    bound: true,
     like: Mesh.ImportVariable,
     name,
     rename: rename ? rename.name : name,
@@ -54,7 +54,7 @@ export function process_codeCard_load_find(
     code.process_codeCard_load_find_nestedChildren,
   )
 
-  code.replaceIfComplete(childInput, find, () =>
+  code.replaceIfBound(childInput, find, () =>
     code.generateFullImportVariable(childInput),
   )
 }
