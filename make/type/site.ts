@@ -3,9 +3,8 @@ import type {
   LinkNodeType,
   LinkTreeType,
   Mesh,
+  MeshClassReferenceType,
   MeshType,
-  Nest,
-  NestType,
 } from '~'
 
 export enum Site {
@@ -45,9 +44,9 @@ export type SiteBindModuleInputType = SiteProcessInputType & {
 
 export type SiteContainerScopeType = {
   declarations: Record<string, SiteVariableDeclarationType>
-  like: Site.ContainerScope
   parent?: SiteContainerScopeType
   steps: Array<SiteStepScopeType>
+  type: Site.ContainerScope
 }
 
 export type SiteDependencyPartCallbackType = (value: unknown) => void
@@ -55,21 +54,21 @@ export type SiteDependencyPartCallbackType = (value: unknown) => void
 export type SiteDependencyPartType = {
   callbackList: Array<SiteDependencyPartCallbackType>
   last?: SiteDependencyPartType
-  like: Site.DependencyPart
   name: string
   next?: SiteDependencyPartType
   parent: SiteDependencyType
+  type: Site.DependencyPart
 }
 
 export type SiteDependencyType = {
   callbackList: Array<SiteInputCallbackType<SiteProcessInputType>>
   context: SiteProcessInputType
-  like: Site.Dependency
   path: Array<SiteDependencyPartType>
+  type: Site.Dependency
 }
 
 export type SiteElementType = {
-  node: MeshType<Mesh> | NestType<Nest>
+  node: MeshType<Mesh>
   parent?: SiteElementType
 }
 
@@ -120,10 +119,21 @@ export type SiteScopeType = {
 export type SiteStepScopeType = {
   container?: SiteContainerScopeType
   declarations: Record<string, SiteVariableDeclarationType>
-  like: Site.StepScope
   previous?: SiteStepScopeType
+  type: Site.StepScope
+}
+
+export type SiteVariableDeclarationOptionsType = {
+  definedType?: MeshClassReferenceType
+  isMutable?: boolean
+  isReference?: boolean
 }
 
 export type SiteVariableDeclarationType = {
-  like: string
+  definedType: MeshClassReferenceType
+  inferredType: MeshClassReferenceType
+  isMutable: boolean
+  isOwner: boolean
+  isReference: boolean
+  name: string
 }

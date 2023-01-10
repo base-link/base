@@ -130,6 +130,42 @@ moving onto the next few steps of figuring out variable references and
 doing typechecking/inference. We have also started on code generation
 which doesn't really require the intermediate typechecking steps.
 
+In the evaluation of written text to runtime interpreted code, there are
+several possibilities for how a `term`, a `path`, or `text` is compiled.
+It can be any of:
+
+- `static-term`: Term is a single term like `foo-bar` with no
+  interpolation or paths.
+- `dynamic-term`: Term is a single term like `foo-{bar}` with
+  interpolation but no paths.
+- `static-path`: Path is like `foo-bar/baz` with no interpolation.
+- `dynamic-path`: Path is like `foo-{bar}/{baz}-bim` with interpolation.
+- `static-text`: Text is like `<hello world>` with no interpolation.
+- `dynamic-text`: Text is like `<hello {foo} world>` with interpolation.
+
+Each of these cases is handled independently for the most part, in each
+respective term keyword handler.
+
+If it is static, then it is finished compiling it. If it is dynamic, it
+might still be able to statically compile it after some binding
+resolution, or it may need to be runtime interpolated. You can have
+these sorts of situations:
+
+- `{{foo}} bar`: A dynamic "head" term that is resolved at runtime, so
+  none of the child link tree is compiled until runtime. This is the
+  worst case.
+- `foo {{bar}}`: A dynamic child term, which means most of the link tree
+  can be compiled except this (possibly a name).
+- `foo bar`: Everything is static and can be statically compiled.
+
+At first, each node is progressively resolved as a `MeshGatherType`,
+which means it simply collects an array of children, possibly with
+dynamic head terms. Then if none of the head terms are dynamic, then it
+compiles it into a more specific mesh type based on what it is. This
+second-level compilation target is still incomplete however, because
+some of the nodes can still be dynamic. So then we try and resolve them,
+if they resolve, they are static. If not, they are runtime.
+
 ## Base Type System
 
 Every object in the system is a mesh, in a graph of nodes so to speak,

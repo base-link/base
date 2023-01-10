@@ -9,12 +9,12 @@ export function process_deckCard_deck_link(
 
   code.assertStringPattern(input, text, /^@[a-z0-9]+\/[a-z0-9]+$/)
 
-  code.pushIntoParentObject(
+  code.gatherIntoMeshParent(
     input,
     code.createConstant('link', {
       bound: true,
-      like: Mesh.String,
       string: text,
+      type: Mesh.String,
     }),
   )
 }

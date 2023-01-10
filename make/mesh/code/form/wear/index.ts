@@ -26,11 +26,11 @@ export function process_codeCard_form_wear(
 export function process_codeCard_form_wear_nestedChildren(
   input: SiteProcessInputType,
 ): void {
-  const type = code.determineNestType(input)
+  const type = code.getLinkHint(input)
   switch (type) {
     case LinkHint.StaticTerm: {
       const term = code.assumeTerm(input)
-      const index = code.assumeNestIndex(input)
+      const index = code.assumeLinkNestIndex(input)
       if (index === 0) {
         const wear = code.assumeElementAsNest(
           input,

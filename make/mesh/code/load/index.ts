@@ -4,8 +4,6 @@ import {
   Mesh,
   MeshImportType,
   MeshImportVariableType,
-  Nest,
-  NestImportType,
   code,
 } from '~'
 import type { SiteProcessInputType } from '~'
@@ -13,30 +11,13 @@ import type { SiteProcessInputType } from '~'
 export * from './bear/index.js'
 export * from './find/index.js'
 
-export function finalize_codeCard_load_textNest(
-  input: SiteProcessInputType,
-): void {
-  const text = code.resolveText(input)
-  code.assertString(text)
-
-  const path = code.resolveModulePath(input, text)
-
-  code.pushIntoParentObject(
-    input,
-    code.createStringConstant('absolutePath', path),
-  )
-}
-
-export function generateFullImport(
+export function createMeshImport(
   input: SiteProcessInputType,
 ): MeshImportType {
   const parent = code.assumeElementAsGenericNest(input)
   const children = code.assumeChildrenFromParent(parent)
 
-  const absolutePath = code.findFullStringConstantByName(
-    input,
-    'absolutePath',
-  )
+  const absolutePath = code.findPlaceholderByName(input, 'absolutePath')
 
   const variableList = children.filter(
     (node): node is MeshImportVariableType =>
@@ -58,10 +39,24 @@ export function generateFullImport(
     absolutePath,
     bound,
     import: importList,
-    like: Mesh.Import,
     scope: input.scope,
+    type: Mesh.Import,
     variable: variableList,
   }
+}
+
+export function finalize_codeCard_load_textNest(
+  input: SiteProcessInputType,
+): void {
+  const text = code.resolveText(input)
+  code.assertString(text)
+
+  const path = code.resolveModulePath(input, text)
+
+  code.gatherIntoMeshParent(
+    input,
+    code.createStringConstant('absolutePath', path),
+  )
 }
 
 export function process_codeCard_load(
@@ -69,11 +64,11 @@ export function process_codeCard_load(
 ): void {
   const load: NestImportType = {
     children: [],
-    like: Nest.Import,
     scope: input.scope,
+    type: Nest.Import,
   }
 
-  code.pushIntoParentObject(input, load)
+  code.gatherIntoMeshParent(input, load)
   const childInput = code.withElement(input, load)
   const nest = code.assumeLink(input, Link.Tree)
 
@@ -88,7 +83,7 @@ export function process_codeCard_load(
 
   if (code.childrenAreMesh(load)) {
     code.potentiallyReplaceWithFullNode(childInput, () =>
-      code.generateFullImport(childInput),
+      code.createMeshImport(childInput),
     )
   }
 }
@@ -96,10 +91,10 @@ export function process_codeCard_load(
 export function process_codeCard_load_nestedChildren(
   input: SiteProcessInputType,
 ) {
-  const type = code.determineNestType(input)
+  const type = code.getLinkHint(input)
   switch (type) {
     case LinkHint.StaticText: {
-      const index = code.assumeNestIndex(input)
+      const index = code.assumeLinkNestIndex(input)
       if (index !== 0) {
         code.throwError(code.generateInvalidCompilerStateError())
       } else {

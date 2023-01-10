@@ -17,7 +17,7 @@ export function process_deckCard_deck_term(
 export function process_deckCard_deck_term_nestedChildren(
   input: SiteProcessInputType,
 ): void {
-  const type = code.determineNestType(input)
+  const type = code.getLinkHint(input)
   switch (type) {
     case LinkHint.StaticText:
       break

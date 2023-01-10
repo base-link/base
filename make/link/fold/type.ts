@@ -34,48 +34,48 @@ export type FoldBaseMixinType = {
 }
 
 export type FoldCloseHandleType = FoldBaseMixinType & {
-  like: Fold.CloseHandle
+  type: Fold.CloseHandle
 }
 
 export type FoldCloseIndexType = FoldBaseMixinType & {
-  like: Fold.CloseIndex
+  type: Fold.CloseIndex
 }
 
 export type FoldCloseLineType = FoldBaseMixinType & {
-  like: Fold.CloseLine
+  type: Fold.CloseLine
 }
 
 export type FoldCloseModuleType = FoldBaseMixinType & {
-  like: Fold.CloseModule
+  type: Fold.CloseModule
 }
 
 export type FoldCloseNestType = FoldBaseMixinType & {
-  like: Fold.CloseNest
+  type: Fold.CloseNest
 }
 
 export type FoldClosePluginType = FoldBaseMixinType & {
-  like: Fold.ClosePlugin
+  type: Fold.ClosePlugin
 }
 
 export type FoldCloseTermPathType = FoldBaseMixinType & {
-  like: Fold.CloseTermPath
+  type: Fold.CloseTermPath
 }
 
 export type FoldCloseTermType = FoldBaseMixinType & {
-  like: Fold.CloseTerm
+  type: Fold.CloseTerm
 }
 
 export type FoldCloseTextType = FoldBaseMixinType & {
-  like: Fold.CloseText
+  type: Fold.CloseText
 }
 
 export type FoldCommentType = FoldBaseMixinType & {
-  like: Fold.Comment
+  type: Fold.Comment
 }
 
 export type FoldDecimalType = FoldBaseMixinType & {
-  like: Fold.Decimal
   range: FoldRangeType
+  type: Fold.Decimal
   value: number
 }
 
@@ -86,9 +86,9 @@ export type FoldEditorRangeType = {
 
 export type FoldHashtagType = FoldBaseMixinType & {
   code: string
-  like: Fold.Hashtag
   range: FoldRangeType
   system: string
+  type: Fold.Hashtag
 }
 
 export type FoldNodeType =
@@ -120,40 +120,40 @@ export type FoldNodeType =
   | FoldCloseHandleType
 
 export type FoldOpenHandleType = FoldBaseMixinType & {
-  like: Fold.OpenHandle
+  type: Fold.OpenHandle
 }
 
 export type FoldOpenIndexType = FoldBaseMixinType & {
-  like: Fold.OpenIndex
+  type: Fold.OpenIndex
 }
 
 export type FoldOpenLineType = FoldBaseMixinType & {
-  like: Fold.OpenLine
+  type: Fold.OpenLine
 }
 
 export type FoldOpenModuleType = FoldBaseMixinType & {
-  like: Fold.OpenModule
+  type: Fold.OpenModule
 }
 
 export type FoldOpenNestType = FoldBaseMixinType & {
-  like: Fold.OpenNest
+  type: Fold.OpenNest
 }
 
 export type FoldOpenPluginType = FoldBaseMixinType & {
-  like: Fold.OpenPlugin
   size: number
+  type: Fold.OpenPlugin
 }
 
 export type FoldOpenTermPathType = FoldBaseMixinType & {
-  like: Fold.OpenTermPath
+  type: Fold.OpenTermPath
 }
 
 export type FoldOpenTermType = FoldBaseMixinType & {
-  like: Fold.OpenTerm
+  type: Fold.OpenTerm
 }
 
 export type FoldOpenTextType = FoldBaseMixinType & {
-  like: Fold.OpenText
+  type: Fold.OpenText
 }
 
 export type FoldRangeType = {
@@ -167,33 +167,33 @@ export type FoldResultType = TextResultType & {
 }
 
 export type FoldSignedIntegerType = FoldBaseMixinType & {
-  like: Fold.SignedInteger
   range: FoldRangeType
+  type: Fold.SignedInteger
   value: number
 }
 
 export type FoldStringType = FoldBaseMixinType & {
-  like: Fold.String
   range: FoldRangeType
+  type: Fold.String
   value: string
 }
 
 export type FoldTermFragmentType = FoldBaseMixinType & {
   dereference: boolean
   guard: boolean
-  like: Fold.TermFragment
   query: boolean
   range: FoldRangeType
   start: boolean
+  type: Fold.TermFragment
   value: string
 }
 
 export type FoldTermSeparatorType = FoldBaseMixinType & {
-  like: Fold.TermSeparator
+  type: Fold.TermSeparator
 }
 
 export type FoldUnsignedIntegerType = FoldBaseMixinType & {
-  like: Fold.UnsignedInteger
   range: FoldRangeType
+  type: Fold.UnsignedInteger
   value: number
 }

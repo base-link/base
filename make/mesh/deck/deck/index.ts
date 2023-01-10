@@ -8,16 +8,6 @@ export * from './mint/index.js'
 export * from './term/index.js'
 export * from './test/index.js'
 
-export function assumeChildrenFromParent(
-  parent: Record<string, unknown>,
-): Array<unknown> {
-  if ('children' in parent && code.isArray(parent.children)) {
-    return parent.children
-  } else {
-    return []
-  }
-}
-
 export function generate_full_deckCard_deck(
   input: SiteProcessInputType,
 ): MeshType<Mesh.Package> {
@@ -39,12 +29,12 @@ export function generate_full_deckCard_deck(
     bound: false,
     face: [],
     host,
-    like: Mesh.Package,
     mark: version,
     name,
     scope: input.scope,
     term: [],
     test: testFile,
+    type: Mesh.Package,
   }
 }
 
@@ -54,11 +44,11 @@ export function process_deckCard_deck(
   const nest = code.assumeLink(input, Link.Tree)
   const deck: NestPackageType = {
     children: [],
-    like: Nest.Package,
     scope: input.scope,
+    type: Nest.Package,
   }
 
-  code.pushIntoParentObject(input, deck)
+  code.gatherIntoMeshParent(input, deck)
 
   const childInput = code.withElement(input, deck)
 
@@ -76,8 +66,8 @@ export function process_deckCard_deck(
 export function process_deckCard_deck_nestedChildren(
   input: SiteProcessInputType,
 ): void {
-  const type = code.determineNestType(input)
-  const index = code.assumeNestIndex(input)
+  const type = code.getLinkHint(input)
+  const index = code.assumeLinkNestIndex(input)
   switch (type) {
     case LinkHint.DynamicTerm:
     case LinkHint.DynamicText:

@@ -32,7 +32,7 @@ export function process_codeCard_fuse(
   input: SiteProcessInputType,
 ): void {
   const fuse = code.createNest(Nest.Inject, input.scope)
-  code.pushIntoParentObject(input, fuse)
+  code.gatherIntoMeshParent(input, fuse)
 
   const fuseInput = code.withElement(input, fuse)
 
@@ -57,13 +57,13 @@ export function process_codeCard_fuse(
 export function process_codeCard_fuse_nestedChildren(
   input: SiteProcessInputType,
 ): void {
-  const type = code.determineNestType(input)
+  const type = code.getLinkHint(input)
   switch (type) {
     case LinkHint.StaticTerm: {
-      const index = code.assumeNestIndex(input)
+      const index = code.assumeLinkNestIndex(input)
       const term = code.assumeTerm(input)
       if (index === 0) {
-        code.pushIntoParentObject(
+        code.gatherIntoMeshParent(
           input,
           code.createStringConstant('name', term),
         )

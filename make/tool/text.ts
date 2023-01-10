@@ -38,7 +38,7 @@ export function processTextNest(
   input: SiteProcessInputType,
   job: (i: SiteProcessInputType) => void,
 ): void {
-  const type = code.determineNestType(input)
+  const type = code.getLinkHint(input)
   switch (type) {
     case LinkHint.DynamicText: {
       code.processDynamicTextNest(input, job)
@@ -75,13 +75,13 @@ export function readDependency(
 }
 
 export function readLinkIndex(input: SiteProcessInputType): unknown {
-  const nest = code.assumeNest(input)
+  const nest = code.assumeLinkNest(input)
 
-  if (nest.like === Link.Index) {
+  if (nest.type === Link.Index) {
     const child = nest.nest[0]
     code.assertGenericLink(child)
 
-    switch (child.like) {
+    switch (child.type) {
       case Link.Tree:
         return readLinkTree(
           code.withEnvironment(input, {
@@ -107,7 +107,7 @@ export function readLinkIndex(input: SiteProcessInputType): unknown {
 }
 
 export function readLinkPath(input: SiteProcessInputType): unknown {
-  const nest = code.assumeNest(input)
+  const nest = code.assumeLinkNest(input)
   code.assertLink(nest, Link.Path)
 
   let i = 0
@@ -123,7 +123,7 @@ export function readLinkPath(input: SiteProcessInputType): unknown {
   while (i < nest.segment.length) {
     const seg = nest.segment[i++]
 
-    switch (seg?.like) {
+    switch (seg?.type) {
       case Link.Index: {
         const index = code.readLinkIndex(
           code.withEnvironment(input, { nest: seg }),
@@ -157,13 +157,13 @@ export function readLinkPath(input: SiteProcessInputType): unknown {
 }
 
 export function readLinkPlugin(input: SiteProcessInputType): unknown {
-  const nest = code.assumeNest(input)
+  const nest = code.assumeLinkNest(input)
 
-  if (nest.like === Link.Plugin) {
+  if (nest.type === Link.Plugin) {
     const child = nest.nest[0]
     code.assertGenericLink(child)
 
-    switch (child.like) {
+    switch (child.type) {
       case Link.Tree:
         return readLinkTree(
           code.withEnvironment(input, {
@@ -195,7 +195,7 @@ export function readLinkTerm(input: SiteProcessInputType): unknown {
 }
 
 export function readLinkTree(input: SiteProcessInputType): unknown {
-  const nest = code.assumeNest(input)
+  const nest = code.assumeLinkNest(input)
   code.assertLink(nest, Link.Tree)
   throw new Error('TODO')
   return undefined
@@ -210,7 +210,7 @@ export function resolvePathDependencyList(
   const path = code.assumeLink(input, Link.Path)
 
   path.segment.forEach(seg => {
-    if (seg.like === Link.Index) {
+    if (seg.type === Link.Index) {
       code.throwError(code.generateCompilerTodoError())
     } else {
       array.push(
@@ -235,9 +235,9 @@ export function resolveTermDependencyList(
 
   const dependencyPart: SiteDependencyPartType = {
     callbackList: [],
-    like: Site.DependencyPart,
     name,
     parent,
+    type: Site.DependencyPart,
   }
 
   return [dependencyPart]
@@ -246,16 +246,16 @@ export function resolveTermDependencyList(
 export function resolveText(
   input: SiteProcessInputType,
 ): string | undefined {
-  const nest = code.assumeNest(input)
+  const nest = code.assumeLinkNest(input)
 
-  if (nest.like !== Link.Text) {
+  if (nest.type !== Link.Text) {
     return
   }
 
   const str: Array<unknown> = []
 
   nest.segment.forEach(seg => {
-    switch (seg.like) {
+    switch (seg.type) {
       case Link.String:
         str.push(seg.value)
         break
@@ -281,16 +281,16 @@ export function resolveTextDependencyList(
   input: SiteProcessInputType,
   job: (i: SiteProcessInputType) => void,
 ): Array<SiteDependencyType> {
-  const nest = code.assumeNest(input)
+  const nest = code.assumeLinkNest(input)
 
-  if (nest.like !== Link.Text) {
+  if (nest.type !== Link.Text) {
     return []
   }
 
   const array: Array<SiteDependencyType> = []
 
   nest.segment.forEach(seg => {
-    switch (seg.like) {
+    switch (seg.type) {
       case Link.String:
         break
       case Link.Plugin:
@@ -319,14 +319,14 @@ export function resolveTreeDependencyList(
   const dependency: SiteDependencyType = {
     callbackList: [job],
     context: input,
-    like: Site.Dependency,
     path: [],
+    type: Site.Dependency,
   }
   array.push(dependency)
 
-  const nest = code.assumeNest(input)
+  const nest = code.assumeLinkNest(input)
 
-  switch (nest.like) {
+  switch (nest.type) {
     case Link.Term: {
       dependency.path.push(
         ...resolveTermDependencyList(input, dependency),
@@ -354,14 +354,14 @@ export function textIsInterpolated(
   input: SiteProcessInputType,
   size: number = 1,
 ): boolean {
-  const nest = code.assumeNest(input)
+  const nest = code.assumeLinkNest(input)
 
-  if (nest.like !== Link.Text) {
+  if (nest.type !== Link.Text) {
     return false
   }
 
   for (const seg of nest.segment) {
-    if (seg.like === Link.Plugin) {
+    if (seg.type === Link.Plugin) {
       return true
     }
   }

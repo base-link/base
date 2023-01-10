@@ -17,7 +17,7 @@ export function process_codeCard_note(
 export function process_codeCard_note_nestedChildren(
   input: SiteProcessInputType,
 ): void {
-  const type = code.determineNestType(input)
+  const type = code.getLinkHint(input)
   switch (type) {
     case LinkHint.StaticText:
       break

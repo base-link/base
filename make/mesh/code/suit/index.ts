@@ -6,8 +6,8 @@ export function process_codeCard_suit(
 ): void {
   const suit: NestClassInterfaceType = {
     children: [],
-    like: Nest.ClassInterface,
     scope: input.scope,
+    type: Nest.ClassInterface,
   }
 
   const childInput = code.withElement(input, suit)
@@ -25,12 +25,12 @@ export function process_codeCard_suit(
 export function process_codeCard_suit_nestedChildren(
   input: SiteProcessInputType,
 ): void {
-  const type = code.determineNestType(input)
+  const type = code.getLinkHint(input)
   if (type === 'static-term') {
     const term = code.assumeTerm(input)
-    const index = code.assumeNestIndex(input)
+    const index = code.assumeLinkNestIndex(input)
     if (index === 0) {
-      code.pushIntoParentObject(
+      code.gatherIntoMeshParent(
         input,
         code.createStringConstant('name', term),
       )
@@ -70,8 +70,8 @@ export function process_codeCard_suit_nestedChildren(
       case 'base':
         code.process_codeCard_form_base(input)
         break
-      case 'like':
-        code.process_codeCard_like(input)
+      case 'type':
+        code.process_codeCard_type(input)
         break
       default:
         code.throwError(code.generateUnhandledTermCaseError(input))

@@ -10,7 +10,7 @@ export function finalize_deckCard_deck_test(
   const path = code.resolveModulePath(input, text)
   code.assertString(path, 'path')
 
-  code.pushIntoParentObject(
+  code.gatherIntoMeshParent(
     input,
     code.createStringConstant('test', path),
   )

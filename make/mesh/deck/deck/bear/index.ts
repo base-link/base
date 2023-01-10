@@ -8,7 +8,7 @@ export function finalize_deckCard_deck_bear(
   code.assertString(text)
   const path = code.resolveModulePath(input, text)
   code.assertString(path, 'path')
-  code.pushIntoParentObject(
+  code.gatherIntoMeshParent(
     input,
     code.createStringConstant('export', path),
   )

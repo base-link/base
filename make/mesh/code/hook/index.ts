@@ -5,7 +5,7 @@ export function process_codeCard_hook(
   input: SiteProcessInputType,
 ): void {
   const hook = code.createNest(Nest.Callback)
-  code.pushIntoParentObject(input, hook)
+  code.gatherIntoMeshParent(input, hook)
 
   const childInput = code.withElement(input, hook)
 
@@ -22,13 +22,13 @@ export function process_codeCard_hook(
 export function process_codeCard_hook_nestedChildren(
   input: SiteProcessInputType,
 ): void {
-  const type = code.determineNestType(input)
+  const type = code.getLinkHint(input)
   switch (type) {
     case LinkHint.StaticTerm: {
-      const index = code.assumeNestIndex(input)
+      const index = code.assumeLinkNestIndex(input)
       const term = code.assumeTerm(input)
       if (index === 0) {
-        code.pushIntoParentObject(
+        code.gatherIntoMeshParent(
           input,
           code.createStringConstant('name', term),
         )

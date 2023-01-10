@@ -17,7 +17,7 @@ export function process_codeCard_formCase(
 export function process_codeCard_formCase_nestedChildren(
   input: SiteProcessInputType,
 ): void {
-  const type = code.determineNestType(input)
+  const type = code.getLinkHint(input)
   switch (type) {
     case LinkHint.StaticTerm:
       break

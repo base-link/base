@@ -1,6 +1,7 @@
 import { Base, Link, Mesh, Nest, code } from '~'
 import type {
   LinkTreeType,
+  MeshParseType,
   MeshType,
   NestBaseType,
   NestType,
@@ -9,18 +10,6 @@ import type {
   SiteProcessInputType,
   SiteStepScopeType,
 } from '~'
-
-export type MeshParseType = {
-  directory: string
-  link: LinkTreeType
-  path: string
-  text: string
-  textByLine: Array<string>
-}
-
-export type WithPotentiallyPartialChildrenType = {
-  children: Array<{ partial: boolean }>
-}
 
 export function childrenAreBoundMesh(
   node: Record<string, unknown>,
@@ -40,6 +29,18 @@ export function childrenAreMesh(
     'children' in node &&
     code.isArray(node.children) &&
     node.children.filter(x => code.isGenericNest(x)).length === 0
+  )
+}
+
+export function childrenAreNotDirectlyDynamic(
+  node: Record<string, unknown>,
+): boolean {
+  return (
+    'children' in node &&
+    code.isArray(node.children) &&
+    node.children.filter(
+      x => code.isGenericMesh(x) && x.type === Mesh.Term,
+    ).length === 0
   )
 }
 
@@ -67,6 +68,16 @@ export function createInput(
     module,
     scope,
   }
+}
+
+export function gatherIntoMeshParent(
+  input: SiteProcessInputType,
+  pushed: MeshType<Mesh>,
+): void {
+  const data = input.element.node
+  code.assertMesh(data, Mesh.Pointer)
+  code.assertMesh(data.value, Mesh.Gather)
+  data.value.children.push(pushed)
 }
 
 export function getNestedProperty(

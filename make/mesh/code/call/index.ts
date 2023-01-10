@@ -1,14 +1,31 @@
-import { Link, LinkHint, Mesh, MeshPartialType, code } from '~'
-import type { SiteProcessInputType } from '~'
+import { Link, LinkHint, Mesh, Nest, code } from '~'
+import type {
+  MeshCallType,
+  NestCallType,
+  SiteProcessInputType,
+} from '~'
+
+export function generate_codeCard_call(
+  input: SiteProcessInputType,
+): MeshCallType {
+  const name = code.findFullStringConstantByName(input, 'name')
+  code.assertString(name)
+
+  return {
+    bond: undefined,
+    bound: false,
+    name,
+    type: Mesh.Call,
+  }
+}
 
 export function process_codeCard_call(
   input: SiteProcessInputType,
 ): void {
-  const call: MeshPartialType<Mesh.Call> = {
+  const call: NestCallType = {
     children: [],
-    lexicalScope: input.lexicalScope,
-    like: Mesh.Call,
-    partial: true,
+    scope: input.scope,
+    type: Nest.Call,
   }
 
   const childInput = code.withElement(input, call)
@@ -26,23 +43,60 @@ export function process_codeCard_call(
 export function process_codeCard_call_nestedChildren(
   input: SiteProcessInputType,
 ): void {
-  const type = code.determineNestType(input)
+  const type = code.getLinkHint(input)
   switch (type) {
-    case LinkHint.DynamicTerm:
+    case LinkHint.DynamicTerm: {
+      const index = code.assumeLinkNestIndex(input)
+      if (index === 0) {
+        const call = code.assumeElementAsNest(input, Nest.Call)
+        const path = code.assumeLinkNest(input)
+
+        if (code.isLink(path, Link.Term)) {
+          call.children.push(
+            code.createConstant('path', code.createPath(path)),
+          )
+        }
+      } else {
+        code.throwError(
+          code.generateUnhandledNestCaseError(input, type),
+        )
+      }
       break
+    }
     case LinkHint.StaticText:
       break
     case LinkHint.StaticPath:
-      console.log('TODO call.staticPath')
-      break
-    case LinkHint.StaticTerm:
-      const term = code.assumeTerm(input)
-      const index = code.assumeNestIndex(input)
+    case LinkHint.DynamicPath: {
+      const index = code.assumeLinkNestIndex(input)
       if (index === 0) {
-        const call = code.assumeElementAsNest(input, Mesh.Call)
+        const call = code.assumeElementAsNest(input, Nest.Call)
+        const path = code.assumeLinkNest(input)
 
-        call.children.push(code.createStringConstant('name', term))
+        if (code.isLink(path, Link.Path)) {
+          call.children.push(
+            code.createConstant('path', code.createPath(path)),
+          )
+        }
       } else {
+        code.throwError(
+          code.generateUnhandledNestCaseError(input, type),
+        )
+      }
+      break
+    }
+    case LinkHint.StaticTerm: {
+      const index = code.assumeLinkNestIndex(input)
+      if (index === 0) {
+        const call = code.assumeElementAsNest(input, Nest.Call)
+        const path = code.assumeLinkNest(input)
+
+        if (code.isLink(path, Link.Term)) {
+          call.children.push(
+            code.createConstant('path', code.createPath(path)),
+          )
+        }
+      } else {
+        const term = code.assumeTerm(input)
         switch (term) {
           case 'read':
             break
@@ -56,6 +110,7 @@ export function process_codeCard_call_nestedChildren(
         }
       }
       break
+    }
     default:
       code.throwError(code.generateUnhandledNestCaseError(input, type))
   }

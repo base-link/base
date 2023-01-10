@@ -1,5 +1,5 @@
-import { Link, LinkType, code } from '~'
-import type { SiteProcessInputType } from '~'
+import { Link, code } from '~'
+import type { LinkType, SiteProcessInputType } from '~'
 
 export function assertNestChildrenLength(
   input: SiteProcessInputType,
@@ -22,13 +22,13 @@ export function assumeTerm(input: SiteProcessInputType): string {
 export function getTerm(
   input: SiteProcessInputType,
 ): LinkType<Link.Term> | undefined {
-  const nest = code.assumeNest(input)
+  const nest = code.assumeLinkNest(input)
 
-  if (nest.like === Link.Term) {
+  if (nest.type === Link.Term) {
     return nest
   }
 
-  if (nest.like !== Link.Tree) {
+  if (nest.type !== Link.Tree) {
     return
   }
 
@@ -37,7 +37,7 @@ export function getTerm(
     return
   }
 
-  if (child.like !== Link.Term) {
+  if (child.type !== Link.Term) {
     return
   }
 
@@ -52,7 +52,7 @@ export function resolveTerm(
   const string: Array<string> = []
 
   term.segment.forEach(seg => {
-    if (seg.like === Link.String) {
+    if (seg.type === Link.String) {
       string.push(seg.value)
     } else {
       string.push('RESOLVE FROM PLUGIN')
@@ -65,7 +65,7 @@ export function resolveTerm(
 export function termIsInterpolated(
   input: SiteProcessInputType,
 ): boolean {
-  const nest = code.assumeNest(input)
+  const nest = code.assumeLinkNest(input)
   const term = code.getTerm(input)
   if (!term) {
     return false
@@ -77,7 +77,7 @@ export function termIsInterpolatedImpl(
   term: LinkType<Link.Term>,
 ): boolean {
   for (const seg of term.segment) {
-    if (seg.like === Link.Plugin) {
+    if (seg.type === Link.Plugin) {
       return true
     }
   }
@@ -86,7 +86,7 @@ export function termIsInterpolatedImpl(
 }
 
 export function termIsNested(input: SiteProcessInputType): boolean {
-  const nest = code.assumeNest(input)
+  const nest = code.assumeLinkNest(input)
 
-  return nest.like === Link.Path
+  return nest.type === Link.Path
 }

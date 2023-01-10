@@ -1,7 +1,19 @@
 import _ from 'lodash'
 
-import { Link, Mesh, Nest, NestType, code } from '~'
-import type { LinkType, MeshType, SiteProcessInputType } from '~'
+import {
+  Link,
+  Mesh,
+  MeshNodeType,
+  Nest,
+  SiteElementType,
+  code,
+} from '~'
+import type {
+  LinkType,
+  MeshType,
+  NestType,
+  SiteProcessInputType,
+} from '~'
 
 export function assertArray<T = unknown>(
   object: unknown,
@@ -50,38 +62,15 @@ export function assertString(
 export function assumeElementAsGenericMesh(
   input: SiteProcessInputType,
   rank = 0,
-): Record<string, unknown> {
-  let branch = input.element
-  while (rank > 0 && branch && branch.parent) {
-    branch = branch.parent
+): MeshType<Mesh> {
+  let branch: SiteElementType | undefined = input.element
+  while (rank > 0) {
+    branch = branch?.parent
     rank--
   }
-  code.assertGenericMesh(branch?.node)
-  return branch?.node
-}
-
-// export function assumeElementAsGenericMeshPartialType<
-//   T extends Mesh,
-// >(input: SiteProcessInputType, type: T, rank = 0): MeshPartialType<T> {
-//   let branch = input.branch
-//   while (rank > 0 && branch && branch.parent) {
-//     branch = branch.parent
-//     rank--
-//   }
-//   code.assertGenericMeshPartialType(branch?.element, type)
-//   return branch?.element
-// }
-export function assumeElementAsGenericNest(
-  input: SiteProcessInputType,
-  rank = 0,
-): Record<string, unknown> {
-  let branch = input.element
-  while (rank > 0 && branch && branch.parent) {
-    branch = branch.parent
-    rank--
-  }
-  code.assertGenericNest(branch?.node)
-  return branch?.node
+  const node = branch?.node
+  code.assertGenericMesh(node)
+  return node
 }
 
 export function assumeElementAsLink<T extends Link>(

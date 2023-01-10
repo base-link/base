@@ -17,12 +17,12 @@ export function process_deckCard_deck_mint(
 export function process_deckCard_deck_mint_nestedChildren(
   input: SiteProcessInputType,
 ): void {
-  const type = code.determineNestType(input)
+  const type = code.getLinkHint(input)
   switch (type) {
     case LinkHint.StaticText:
       const text = code.resolveText(input)
       code.assertString(text)
-      code.pushIntoParentObject(
+      code.gatherIntoMeshParent(
         input,
         code.createStringConstant('version', text),
       )

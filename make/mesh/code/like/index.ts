@@ -1,52 +1,41 @@
-import {
-  Link,
-  LinkHint,
-  Mesh,
-  MeshClassReferenceType,
-  Nest,
-  code,
-} from '~'
-import type { SiteProcessInputType } from '~'
+import { Link, LinkHint, Mesh, MeshHint, Site, code } from '~'
+import type { MeshClassReferenceType, SiteProcessInputType } from '~'
 
-export function generateFullClassReference(
+export function createMeshClassReference(
   input: SiteProcessInputType,
 ): MeshClassReferenceType {
-  const children = code.assumeChildren(input)
-  const name = code.findFullStringConstantByName(input, 'name')
+  const name = code.findPlaceholderByName(input, 'name')
+  code.assertMeshTerm(name)
 
-  code.assertString(name)
-
-  const sourceLike = children.filter(
-    (node): node is MeshClassReferenceType =>
-      code.isMesh(node, Mesh.ClassReference),
-  )
+  const hint = code.getMeshHintFromChildren(input)
 
   return {
-    bind: sourceLike,
-    bound: false,
-    like: Mesh.ClassReference,
+    bind: [],
+    hint,
     name,
+    scope: input.scope,
+    type: Mesh.ClassReference,
   }
 }
 
 export function process_codeCard_like(
   input: SiteProcessInputType,
 ): void {
-  const like = code.createNest(Nest.ClassReference, input.scope)
-  code.pushIntoParentObject(input, like)
+  const type = code.createMeshGather('like', input.scope)
+  code.gatherIntoMeshParent(input, type)
 
-  const likeInput = code.withElement(input, like)
+  const childInput = code.withElement(input, type)
   code.assumeLink(input, Link.Tree).nest.forEach((nest, index) => {
     process_codeCard_like_nestedChildren(
-      code.withEnvironment(likeInput, {
+      code.withEnvironment(childInput, {
         index,
         nest,
       }),
     )
   })
 
-  code.replaceIfBound(likeInput, like, () =>
-    code.generateFullClassReference(likeInput),
+  code.potentiallyReplaceWithSemiStaticMesh(childInput, () =>
+    code.createMeshClassReference(childInput),
   )
 }
 
@@ -69,21 +58,25 @@ export function process_codeCard_like_mesh(
 export function process_codeCard_like_nestedChildren(
   input: SiteProcessInputType,
 ): void {
-  const type = code.determineNestType(input)
+  const type = code.getLinkHint(input)
   switch (type) {
-    case LinkHint.DynamicTerm:
-      break
-    case LinkHint.StaticTerm:
-      const term = code.assumeTerm(input)
-      const index = code.assumeNestIndex(input)
+    case LinkHint.DynamicTerm: {
+      const index = code.assumeLinkNestIndex(input)
       if (index === 0) {
-        code.pushIntoParentObject(
-          input,
-          code.createStringConstant('name', term),
-        )
+        code.process_first_dynamicTerm(input, 'name')
+      } else {
+        code.process_dynamicTerm(input)
+      }
+      break
+    }
+    case LinkHint.StaticTerm: {
+      const index = code.assumeLinkNestIndex(input)
+      if (index === 0) {
+        code.process_first_staticTerm(input, 'name')
         return
       }
 
+      const term = code.assumeTerm(input)
       switch (term) {
         case 'head':
           code.process_codeCard_head(input)
@@ -119,6 +112,7 @@ export function process_codeCard_like_nestedChildren(
           code.throwError(code.generateUnhandledTermCaseError(input))
       }
       break
+    }
     default:
       code.throwError(code.generateUnhandledNestCaseError(input, type))
   }
@@ -131,3 +125,46 @@ export function process_codeCard_like_take(
 export function process_codeCard_like_term(
   input: SiteProcessInputType,
 ): void {}
+
+export function process_dynamicTerm(input: SiteProcessInputType): void {
+  const nest = code.assumeLinkNest(input)
+  code.assertLink(nest, Link.Term)
+  code.gatherIntoMeshParent(
+    input,
+    code.createMeshPointer(
+      code.createMeshTerm(nest, input.scope, MeshHint.Dynamic),
+    ),
+  )
+}
+
+export function process_first_dynamicTerm(
+  input: SiteProcessInputType,
+  placeholder: string,
+): void {
+  const nest = code.assumeLinkNest(input)
+  code.assertMesh(nest, Mesh.Term)
+  code.gatherIntoMeshParent(
+    input,
+    code.createMeshPlaceholder(
+      placeholder,
+      code.createMeshTerm(nest, input.scope, MeshHint.Dynamic),
+    ),
+  )
+}
+
+export function process_first_staticTerm(
+  input: SiteProcessInputType,
+  placeholder: string,
+): void {
+  const nest = code.assumeLinkNest(input)
+  code.assertMesh(nest, Mesh.Term)
+  const name = code.resolveTerm(nest)
+  code.assertString(name)
+  code.gatherIntoMeshParent(
+    input,
+    code.createMeshPlaceholder(
+      placeholder,
+      code.createMeshString(name),
+    ),
+  )
+}

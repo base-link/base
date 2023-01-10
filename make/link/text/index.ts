@@ -103,11 +103,11 @@ export const TEXT_PATTERN_LIST = [
 ]
 
 export type TextCloseEvaluationTokenType = TextTokenBaseType & {
-  like: Text.CloseEvaluation
+  type: Text.CloseEvaluation
 }
 
 export type TextClosePathTokenType = TextTokenBaseType & {
-  like: Text.ClosePath
+  type: Text.ClosePath
 }
 
 export type TextInputType = {
@@ -121,75 +121,75 @@ export type TextLineRangeType = {
 }
 
 type TextLineTokenType = TextTokenBaseType & {
-  like: Text.Line
+  type: Text.Line
 }
 
 type TextOpenIndentationTokenType = TextTokenBaseType & {
-  like: Text.OpenIndentation
+  type: Text.OpenIndentation
 }
 
 type TextDecimalTokenType = TextTokenBaseType & {
-  like: Text.Decimal
+  type: Text.Decimal
 }
 
 type TextSignedIntegerTokenType = TextTokenBaseType & {
-  like: Text.SignedInteger
+  type: Text.SignedInteger
 }
 
 type TextUnsignedIntegerTokenType = TextTokenBaseType & {
-  like: Text.UnsignedInteger
+  type: Text.UnsignedInteger
 }
 
 type TextOpenNestingTokenType = TextTokenBaseType & {
-  like: Text.OpenNesting
+  type: Text.OpenNesting
 }
 
 type TextOpenParenthesisTokenType = TextTokenBaseType & {
-  like: Text.OpenParenthesis
+  type: Text.OpenParenthesis
 }
 
 type TextCloseParenthesisTokenType = TextTokenBaseType & {
-  like: Text.CloseParenthesis
+  type: Text.CloseParenthesis
 }
 
 type TextOpenTextTokenType = TextTokenBaseType & {
-  like: Text.OpenText
+  type: Text.OpenText
 }
 
 type TextCloseTextTokenType = TextTokenBaseType & {
-  like: Text.CloseText
+  type: Text.CloseText
 }
 
 type TextOpenInterpolationTokenType = TextTokenBaseType & {
-  like: Text.OpenInterpolation
+  type: Text.OpenInterpolation
 }
 
 type TextCloseInterpolationTokenType = TextTokenBaseType & {
-  like: Text.CloseInterpolation
+  type: Text.CloseInterpolation
 }
 
 export type TextOpenEvaluationTokenType = TextTokenBaseType & {
-  like: Text.OpenEvaluation
+  type: Text.OpenEvaluation
 }
 
 type TextCommaTokenType = TextTokenBaseType & {
-  like: Text.Comma
+  type: Text.Comma
 }
 
 type TextHashtagTokenType = TextTokenBaseType & {
-  like: Text.Hashtag
+  type: Text.Hashtag
 }
 
 type TextCommentTokenType = TextTokenBaseType & {
-  like: Text.Comment
+  type: Text.Comment
 }
 
 export type TextOpenPathTokenType = TextTokenBaseType & {
-  like: Text.OpenPath
+  type: Text.OpenPath
 }
 
 export type TextPathTokenType = TextTokenBaseType & {
-  like: Text.Path
+  type: Text.Path
 }
 
 export type TextPatternConfigType = {
@@ -218,11 +218,11 @@ export enum TextState {
 }
 
 export type TextStringTokenType = TextTokenBaseType & {
-  like: Text.String
+  type: Text.String
 }
 
 export type TextTermFragmentTokenType = TextTokenBaseType & {
-  like: Text.TermFragment
+  type: Text.TermFragment
 }
 
 export type TextTokenBaseType = {
@@ -413,7 +413,7 @@ export function tokenizeLinkText(input: TextInputType): TextResultType {
               if (!token) {
                 continue
               }
-              if (!config.after.includes(token.like)) {
+              if (!config.after.includes(token.type)) {
                 continue
               }
             }
@@ -421,7 +421,6 @@ export function tokenizeLinkText(input: TextInputType): TextResultType {
             progressed = true
             if (config.skip) {
               const token: TextTokenType<Text> = {
-                like: type as Text,
                 range: {
                   character: {
                     end: character,
@@ -437,13 +436,13 @@ export function tokenizeLinkText(input: TextInputType): TextResultType {
                   },
                 },
                 text: '',
+                type: type as Text,
               }
               tokenList.push(token)
             } else {
               const matchedLength = match[0].length
               const matchedText = textLine.slice(0, matchedLength)
               const token: TextTokenType<Text> = {
-                like: type as Text,
                 range: {
                   character: {
                     end: character + matchedLength,
@@ -459,6 +458,7 @@ export function tokenizeLinkText(input: TextInputType): TextResultType {
                   },
                 },
                 text: matchedText,
+                type: type as Text,
               }
               tokenList.push(token)
 

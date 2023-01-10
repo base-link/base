@@ -17,19 +17,19 @@ export function process_codeCard_tree_hook(
 export function process_codeCard_tree_hook_nestedChildren(
   input: SiteProcessInputType,
 ): void {
-  const type = code.determineNestType(input)
+  const type = code.getLinkHint(input)
   switch (type) {
     case LinkHint.StaticTerm:
-      const index = code.assumeNestIndex(input)
+      const index = code.assumeLinkNestIndex(input)
       if (index === 0) {
         const name = code.assumeTerm(input)
-        code.pushIntoParentObject(
+        code.gatherIntoMeshParent(
           input,
           code.createStringConstant('name', name),
         )
       } else {
-        const nest = code.assumeNest(input)
-        code.pushIntoParentObject(input, nest)
+        const nest = code.assumeLinkNest(input)
+        code.gatherIntoMeshParent(input, nest)
       }
       break
     default:

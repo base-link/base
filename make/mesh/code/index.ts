@@ -1,7 +1,14 @@
-import { Base, DEFAULT_CONTAINER_SCOPE, Mesh, Nest, code } from '~'
+import {
+  Base,
+  DEFAULT_CONTAINER_SCOPE,
+  Link,
+  LinkHint,
+  Mesh,
+  code,
+} from '~'
 import type {
   MeshCodeModuleType,
-  NestCodeModuleType,
+  MeshModuleGatherType,
   SiteProcessInputType,
 } from '~'
 
@@ -52,14 +59,14 @@ export function process_codeCard(base: Base, link: string): void {
   const card = base.card(link)
   const container = code.createContainerScope(DEFAULT_CONTAINER_SCOPE)
   const scope = code.createStepScope(container)
-  const seed: NestCodeModuleType = {
+  const seed: MeshModuleGatherType = {
     ...parse,
     base,
     children: [],
     id: card.id,
     isModule: true,
-    like: Nest.CodeModule,
     scope,
+    type: Mesh.ModuleGather,
   }
 
   const input: SiteProcessInputType = code.createInput(
@@ -84,16 +91,14 @@ export function process_codeCard(base: Base, link: string): void {
 export function process_codeCard_nestedChildren(
   input: SiteProcessInputType,
 ): void {
-  const type = code.determineNestType(input)
+  const type = code.getLinkHint(input)
   switch (type) {
-    case 'dynamic-text':
-    case 'dynamic-term':
-      code.throwError(
-        code.generateUnhandledTermInterpolationError(input),
-      )
+    case LinkHint.DynamicTerm: {
+      code.process_dynamicTerm(input)
       break
-    case 'static-term':
-      code.process_codeCard_nestedChildren_staticTerm(input)
+    }
+    case LinkHint.StaticTerm:
+      code.process_codeCard_nestedChildren_term(input)
       break
     default: {
       code.throwError(code.generateUnhandledNestCaseError(input, type))
@@ -101,7 +106,7 @@ export function process_codeCard_nestedChildren(
   }
 }
 
-export function process_codeCard_nestedChildren_staticTerm(
+export function process_codeCard_nestedChildren_term(
   input: SiteProcessInputType,
 ): void {
   const term = code.resolveTerm(input)
@@ -170,7 +175,6 @@ export function resolve_codeCard(base: Base, link: string): void {
         id: card.id,
         imports: [],
         isModule: true,
-        like: Mesh.CodeModule,
         link: card.seed.link,
         nativeClassInterfaces: {},
         path: card.seed.path,
@@ -189,10 +193,11 @@ export function resolve_codeCard(base: Base, link: string): void {
         tests: {},
         text: card.seed.text,
         textByLine: card.seed.textByLine,
+        type: Mesh.CodeModule,
       }
 
       card.seed.children.forEach(node => {
-        switch (node.like) {
+        switch (node.type) {
           case Mesh.Constant: {
             code.assertMesh(node, Mesh.Constant)
             if (!node.hidden) {
@@ -245,7 +250,7 @@ export function resolve_codeCard(base: Base, link: string): void {
           }
           default:
             code.throwError(
-              code.generatedNotImplementedYetError(node.like),
+              code.generatedNotImplementedYetError(node.type),
             )
         }
       })
@@ -283,7 +288,7 @@ export function resolve_codeCard(base: Base, link: string): void {
       })
     } else {
       card.seed.children.forEach(node => {
-        switch (node.like) {
+        switch (node.type) {
           case Nest.Import:
             break
           case Nest.Export:
@@ -327,7 +332,7 @@ export function resolve_codeCard(base: Base, link: string): void {
           }
           default:
             code.throwError(
-              code.generatedNotImplementedYetError(node.like),
+              code.generatedNotImplementedYetError(node.type),
             )
         }
       })

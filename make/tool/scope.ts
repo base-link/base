@@ -1,16 +1,19 @@
-import {
-  Site,
+import { Site, code } from '~'
+import type {
+  MeshClassReferenceType,
   SiteContainerScopeType,
-  SiteEnvironmentType,
   SiteStepScopeType,
+  SiteVariableDeclarationOptionsType,
   SiteVariableDeclarationType,
-  code,
 } from '~'
 
-export const DEFAULT_CONTAINER_SCOPE = {
-  base: { like: 'base' },
-  path: { like: 'string' },
-  text: { like: 'string' },
+export const DEFAULT_CONTAINER_SCOPE: Record<
+  string,
+  SiteVariableDeclarationOptionsType
+> = {
+  // base: { definedType: { name: code.createMeshString('base') } },
+  // path: { definedType: { name: code.createMeshString('string') } },
+  // text: { definedType: { name: code.createMeshString('string') } },
 }
 
 export function createContainerScope(
@@ -19,19 +22,9 @@ export function createContainerScope(
 ): SiteContainerScopeType {
   return {
     declarations,
-    like: Site.ContainerScope,
     parent,
     steps: [],
-  }
-}
-
-export function createEnvironment(
-  bindings: Record<string, unknown>,
-  parent?: SiteEnvironmentType,
-): SiteEnvironmentType {
-  return {
-    bindings,
-    parent,
+    type: Site.ContainerScope,
   }
 }
 
@@ -43,60 +36,45 @@ export function createStepScope(
   const step: SiteStepScopeType = {
     container,
     declarations,
-    like: Site.StepScope,
     previous,
+    type: Site.StepScope,
   }
   container.steps.push(step)
   return step
 }
 
-export function environmentHasProperty(
-  environment: SiteEnvironmentType,
-  name: string | number | symbol,
-): boolean {
-  let source: SiteEnvironmentType = environment
-
-  while (source) {
-    if (name in source.bindings) {
-      return true
-    } else if (source.parent) {
-      source = source.parent
-    } else {
-      return false
-    }
-  }
-
-  return false
-}
-
-export function getEnvironmentProperty(
-  environment: SiteEnvironmentType,
-  name: string | number | symbol,
-): unknown {
-  let source: SiteEnvironmentType = environment
-
-  while (source) {
-    if (name in source.bindings) {
-      return (
-        source.bindings as Record<string | symbol | number, unknown>
-      )[name]
-    } else if (source.parent) {
-      source = source.parent
-    } else {
-      return
-    }
-  }
-}
-
-export function setEnvironmentProperty(
-  scope: SiteEnvironmentType,
-  property: string,
-  value: unknown,
+export function declareScopeVariable(
+  scope: SiteStepScopeType,
+  variable: SiteVariableDeclarationType,
 ): void {
-  if (property in scope.bindings) {
-    scope.bindings[property] = value
-  } else if (scope.parent) {
-    code.setEnvironmentProperty(scope.parent, property, value)
+  scope.declarations[variable.name] = variable
+}
+
+export function hasScopeVariable(
+  scope: SiteStepScopeType,
+  name: string,
+): boolean {
+  if (name in scope.declarations) {
+    return true
+  } else if (scope.previous) {
+    return code.hasScopeVariable(scope.previous, name)
+  } else {
+    return false
+  }
+}
+
+export function setInferredScopeType(
+  scope: SiteStepScopeType,
+  property: string,
+  type: MeshClassReferenceType,
+): void {
+  if (property in scope.declarations) {
+    const declaration = scope.declarations[property]
+    if (code.isRecord(declaration)) {
+      declaration.inferredType = type
+    }
+  } else if (scope.previous) {
+    code.setInferredScopeType(scope.previous, property, type)
   } else {
     code.throwError(
       code.generateEnvironmentMissingPropertyError(property),

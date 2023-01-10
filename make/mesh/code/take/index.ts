@@ -18,7 +18,7 @@ export function process_codeCard_take(
 export function process_codeCard_take_nestedChildren(
   input: SiteProcessInputType,
 ): void {
-  const type = code.determineNestType(input)
+  const type = code.getLinkHint(input)
   switch (type) {
     case LinkHint.StaticTerm:
       const term = code.resolveTerm(input)
