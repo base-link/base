@@ -1,5 +1,5 @@
-import { Link, LinkHint, Mesh, Nest, NestPackageType, code } from '~'
-import type { MeshType, SiteProcessInputType } from '~'
+import { LinkHint, Mesh, code } from '~'
+import type { SiteProcessInputType } from '~'
 
 export * from './bear/index.js'
 export * from './face/index.js'
@@ -8,59 +8,25 @@ export * from './mint/index.js'
 export * from './term/index.js'
 export * from './test/index.js'
 
-export function generate_full_deckCard_deck(
-  input: SiteProcessInputType,
-): MeshType<Mesh.Package> {
-  const link = code.findFullStringConstantByName(input, 'link')
-  const version = code.findFullStringConstantByName(input, 'version')
-  const exportFile = code.findFullStringConstantByName(input, 'export')
-  const testFile = code.findFullStringConstantByName(input, 'test')
-
-  code.assertString(link)
-  code.assertString(version)
-
-  const [host, name] = code.splitPackageModuleName(link)
-
-  code.assertString(host)
-  code.assertString(name)
-
-  return {
-    bear: exportFile,
-    bound: false,
-    face: [],
-    host,
-    mark: version,
-    name,
-    scope: input.scope,
-    term: [],
-    test: testFile,
-    type: Mesh.Package,
-  }
-}
-
 export function process_deckCard_deck(
   input: SiteProcessInputType,
 ): void {
-  const nest = code.assumeLink(input, Link.Tree)
-  const deck: NestPackageType = {
-    children: [],
-    scope: input.scope,
-    type: Nest.Package,
-  }
+  const red = code.pushRed(input, code.createRedGather(input, 'deck'))
+  const blue = code.pushBlue(input, 'deck', {
+    face: [],
+    term: [],
+    type: Mesh.Package,
+  })
 
-  code.gatherIntoMeshParent(input, deck)
+  const colorInput = code.withColors(input, { blue, red })
 
-  const childInput = code.withElement(input, deck)
-
-  code.processNestedChildren(
-    childInput,
-    nest,
-    code.process_deckCard_deck_nestedChildren,
-  )
-
-  code.replaceIfBound(childInput, deck, () =>
-    code.generate_full_deckCard_deck(childInput),
-  )
+  code.assumeNest(input).forEach((nest, index) => {
+    code.addTask(input.base, () => {
+      code.process_deckCard_deck_nestedChildren(
+        code.withLink(colorInput, nest, index),
+      )
+    })
+  })
 }
 
 export function process_deckCard_deck_nestedChildren(
@@ -116,16 +82,4 @@ export function process_deckCard_deck_nestedTerm(
       code.throwError(code.generateUnknownTermError(input))
     }
   }
-}
-
-export function splitPackageModuleName(string: string): Array<string> {
-  const [host, name] = string.split('/')
-  const array: Array<string> = []
-  if (host) {
-    array.push(host.replace(/^@/, ''))
-  }
-  if (name) {
-    array.push(name)
-  }
-  return array
 }

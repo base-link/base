@@ -1,4 +1,4 @@
-import { Link, LinkHint, LinkNodeType, Mesh, Nest, code } from '~'
+import { Link, LinkHint, LinkNodeType, code } from '~'
 import type { SiteProcessInputType } from '~'
 
 export function attemptResolveFuse(input: SiteProcessInputType): void {
@@ -36,7 +36,7 @@ export function process_codeCard_fuse(
 
   const fuseInput = code.withElement(input, fuse)
 
-  code.assumeLink(input, Link.Tree).nest.forEach((nest, index) => {
+  code.assumeNest(input).forEach((nest, index) => {
     process_codeCard_fuse_nestedChildren(
       code.withLink(fuseInput, nest, index),
     )

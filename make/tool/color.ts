@@ -166,12 +166,12 @@ export function createBlueStringArray(
 }
 
 export function createBlueText(
+  input: SiteProcessInputType,
   value: LinkTextType,
-  scope: SiteStepScopeType,
 ): BlueTextType {
   return {
     color: Color.Blue,
-    scope,
+    scope: input.scope,
     type: Mesh.Text,
     value,
   }

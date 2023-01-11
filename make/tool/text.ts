@@ -1,4 +1,11 @@
-import { Link, LinkHint, code } from '~'
+import {
+  CompilerError,
+  Link,
+  LinkHint,
+  SiteDependencyObserverParentType,
+  SiteDependencyObserverType,
+  code,
+} from '~'
 import type {
   SiteDependencyPartType,
   SiteDependencyType,
@@ -21,62 +28,55 @@ export function assumeText(input: SiteProcessInputType): string {
   return text
 }
 
+export function bindText(
+  input: SiteProcessInputType,
+  callback: () => void,
+): void {
+  const dependencyTree = code.resolveTextDependencyTree(input)
+  const leafDependencyList = code.getLeafDependencyList(dependencyTree)
+}
+
+export function connectDependency(
+  parent: SiteDependencyObserverType,
+  binding: SiteDependencyObserverParentType,
+  child: SiteDependencyObserverType,
+): void {
+  child.parent = binding
+  binding.remaining++
+  parent.children.push(child)
+}
+
+export function getLeafDependencyList(
+  tree: SiteDependencyObserverType,
+  array: Array<SiteDependencyObserverType> = [],
+): Array<SiteDependencyObserverType> {
+  tree.children.forEach(child => {
+    if (typeof child === 'object') {
+      if (!child.children.length) {
+        array.push(child)
+      } else {
+        getLeafDependencyList(child, array)
+      }
+    }
+  })
+  return array
+}
+
 export function processDynamicTextNest(
   input: SiteProcessInputType,
-  job: (i: SiteProcessInputType) => void,
 ): void {
-  const dependencyList = code.resolveTextDependencyList(input, job)
+  const dependencyList = code.resolveTextDependencyTree(input)
 
   const card = input.module
 
-  const unmetDependencyList = dependencyList.filter(
+  const unmetDependencyTree = dependencyList.filter(
     dep => !code.checkDependency(input, dep),
   )
 
-  // card.base.dependency.push(...unmetDependencyList)
+  // card.base.dependency.push(...unmetDependencyTree)
 
-  if (!unmetDependencyList.length) {
+  if (!unmetDependencyTree.length) {
     job(input)
-  }
-}
-
-export function processTextNest(
-  input: SiteProcessInputType,
-  job: (i: SiteProcessInputType) => void,
-): void {
-  const type = code.getLinkHint(input)
-  switch (type) {
-    case LinkHint.DynamicText: {
-      code.processDynamicTextNest(input, job)
-      break
-    }
-    case LinkHint.StaticText:
-      job(input)
-      break
-    default:
-      code.throwError(code.generateUnhandledNestCaseError(input, type))
-  }
-}
-
-export function readDependency(
-  input: SiteProcessInputType,
-  dependency: SiteDependencyType,
-): unknown {
-  const scope = code.findInitialEnvironment(input, dependency)
-
-  if (scope) {
-    let value: unknown = scope.bindings
-
-    dependency.path.forEach(part => {
-      if (code.isRecord(value)) {
-        const childValue = value[part.name]
-        value = childValue
-      } else {
-        value = undefined
-      }
-    })
-
-    return value
   }
 }
 
@@ -89,11 +89,11 @@ export function readLinkIndex(input: SiteProcessInputType): unknown {
 
     switch (child.type) {
       case Link.Tree:
-        return readLinkTree(code.withLink(input, child))
+        return code.readLinkTree(code.withLink(input, child))
       case Link.Path:
-        return readLinkPath(code.withLink(input, child))
+        return code.readLinkPath(code.withLink(input, child))
       case Link.Term:
-        return readLinkTerm(code.withLink(input, child))
+        return code.readLinkTerm(code.withLink(input, child))
       default:
         throw new Error('Never')
     }
@@ -101,8 +101,7 @@ export function readLinkIndex(input: SiteProcessInputType): unknown {
 }
 
 export function readLinkPath(input: SiteProcessInputType): unknown {
-  const nest = input.link.element
-  code.assertLink(nest, Link.Path)
+  const nest = code.assumeLink(input, Link.Path)
 
   let i = 0
 
@@ -154,11 +153,11 @@ export function readLinkPlugin(input: SiteProcessInputType): unknown {
 
     switch (child.type) {
       case Link.Tree:
-        return readLinkTree(code.withLink(input, child))
+        return code.readLinkTree(code.withLink(input, child))
       case Link.Path:
-        return readLinkPath(code.withLink(input, child))
+        return code.readLinkPath(code.withLink(input, child))
       case Link.Term:
-        return readLinkTerm(code.withLink(input, child))
+        return code.readLinkTerm(code.withLink(input, child))
       default:
         throw new Error('Never')
     }
@@ -178,45 +177,202 @@ export function readLinkTree(input: SiteProcessInputType): unknown {
   return undefined
 }
 
-export function resolvePathDependencyList(
+export function resolveDynamicPathDependencyTree(
   input: SiteProcessInputType,
-  parent: SiteDependencyType,
-): Array<SiteDependencyPartType> {
-  const array: Array<SiteDependencyPartType> = []
-
+): SiteDependencyObserverType {
   const path = code.assumeLink(input, Link.Path)
 
-  path.segment.forEach(seg => {
+  const observer = {
+    children: [],
+    node: path,
+    path: [],
+  }
+
+  const binding = {
+    observer,
+    remaining: 0,
+  }
+
+  path.segment.forEach((seg, i) => {
     if (seg.type === Link.Index) {
       code.throwError(code.generateCompilerTodoError())
     } else {
-      array.push(
-        ...resolveTermStringDependencyList(
-          code.withLink(input, seg),
-          parent,
-        ),
+      code.connectDependency(
+        observer,
+        binding,
+        resolveTermDependencyTree(code.withLink(input, seg, i)),
       )
     }
   })
 
-  return array
+  return observer
 }
 
-export function resolveTermStringDependencyList(
+export function resolveDynamicTermDependencyTree(
   input: SiteProcessInputType,
-  parent: SiteDependencyType,
-): Array<SiteDependencyPartType> {
-  const name = code.resolveTermString(input)
+): SiteDependencyObserverType {
+  const term = code.assumeLink(input, Link.Term)
 
-  code.assertString(name)
-
-  const dependencyPart: SiteDependencyPartType = {
-    callbackList: [],
-    name,
-    parent,
+  const observer: SiteDependencyObserverType = {
+    children: [],
+    node: term,
+    path: [],
   }
 
-  return [dependencyPart]
+  const binding = {
+    observer,
+    remaining: 0,
+  }
+
+  term.segment.forEach((seg, i) => {
+    if (seg.type === Link.String) {
+      observer.children.push(seg.value)
+    } else {
+      code.connectDependency(
+        observer,
+        binding,
+        code.resolvePluginDependencyTree(code.withLink(input, seg, i)),
+      )
+    }
+  })
+
+  return observer
+}
+
+export function resolvePathDependencyTree(
+  input: SiteProcessInputType,
+): SiteDependencyObserverType {
+  const type = code.getLinkHint(input)
+
+  switch (type) {
+    case LinkHint.StaticPath: {
+      return code.resolveStaticPathDependencyTree(input)
+    }
+    case LinkHint.DynamicPath: {
+      return code.resolveDynamicPathDependencyTree(input)
+    }
+    default:
+      code.throwError(code.generateInvalidCompilerStateError())
+      throw new CompilerError()
+  }
+}
+
+export function resolvePluginDependencyTree(
+  input: SiteProcessInputType,
+): SiteDependencyObserverType {
+  const nest = input.link.element
+
+  const observer = {
+    children: [],
+    node: nest,
+    path: [],
+  }
+
+  const binding = {
+    observer,
+    remaining: 0,
+  }
+
+  switch (nest.type) {
+    case Link.Term: {
+      code.connectDependency(
+        observer,
+        binding,
+        code.resolveTermDependencyTree(input),
+      )
+      break
+    }
+    case Link.Path: {
+      code.connectDependency(
+        observer,
+        binding,
+        code.resolvePathDependencyTree(input),
+      )
+      break
+    }
+    case Link.Tree: {
+      code.throwError(code.generateCompilerTodoError())
+      break
+    }
+    default:
+      code.throwError(code.generateInvalidCompilerStateError())
+  }
+
+  return observer
+}
+
+export function resolveStaticPathDependencyTree(
+  input: SiteProcessInputType,
+): SiteDependencyObserverType {
+  const path = code.assumeLink(input, Link.Path)
+
+  const observer = {
+    children: [],
+    node: path,
+    path: [],
+  }
+
+  const binding = {
+    observer,
+    remaining: 0,
+  }
+
+  path.segment.forEach((seg, i) => {
+    if (seg.type === Link.Index) {
+      code.throwError(code.generateCompilerTodoError())
+    } else {
+      code.connectDependency(
+        observer,
+        binding,
+        resolveTermDependencyTree(code.withLink(input, seg, i)),
+      )
+    }
+  })
+
+  return observer
+}
+
+export function resolveStaticTermDependencyTree(
+  input: SiteProcessInputType,
+): SiteDependencyObserverType {
+  const term = code.assumeLink(input, Link.Term)
+  const string: Array<string> = []
+
+  const observer: SiteDependencyObserverType = {
+    children: [],
+    node: term,
+    path: [],
+  }
+
+  term.segment.forEach((seg, i) => {
+    if (seg.type === Link.String) {
+      string.push(seg.value)
+    } else {
+      code.throwError(code.generateInvalidCompilerStateError())
+    }
+  })
+
+  observer.path.push(string.join(''))
+
+  return observer
+}
+
+export function resolveTermDependencyTree(
+  input: SiteProcessInputType,
+): SiteDependencyObserverType {
+  const type = code.getLinkHint(input)
+
+  switch (type) {
+    case LinkHint.StaticTerm: {
+      return code.resolveStaticTermDependencyTree(input)
+    }
+    case LinkHint.DynamicTerm: {
+      return code.resolveDynamicTermDependencyTree(input)
+    }
+    default:
+      code.throwError(code.generateInvalidCompilerStateError())
+      throw new CompilerError()
+  }
 }
 
 export function resolveText(
@@ -237,7 +393,6 @@ export function resolveText(
         break
       case Link.Plugin:
         const text = code.readLinkPlugin(code.withLink(input, seg, 0))
-
         str.push(text)
         break
       default:
@@ -248,75 +403,44 @@ export function resolveText(
   return str.join('')
 }
 
-export function resolveTextDependencyList(
+export function resolveTextDependencyTree(
   input: SiteProcessInputType,
-  job: (i: SiteProcessInputType) => void,
-): Array<SiteDependencyType> {
-  const nest = input.link.element
+): SiteDependencyObserverType {
+  const nest = code.assumeLink(input, Link.Text)
 
-  if (nest.type !== Link.Text) {
-    return []
+  const observer: SiteDependencyObserverType = {
+    children: [],
+    node: nest,
+    path: [],
   }
 
-  const array: Array<SiteDependencyType> = []
+  const binding = {
+    observer,
+    remaining: 0,
+  }
 
   nest.segment.forEach(seg => {
     switch (seg.type) {
       case Link.String:
+        observer.children.push(seg.value)
         break
       case Link.Plugin:
         const childNest = seg.nest[0]
         code.assertGenericLink(childNest)
-        const dependencies = code.resolveTreeDependencyList(
-          code.withLink(input, childNest, 0),
-          job,
+        code.connectDependency(
+          observer,
+          binding,
+          code.resolvePluginDependencyTree(
+            code.withLink(input, childNest, 0),
+          ),
         )
-        array.push(...dependencies)
         break
       default:
         code.throwError(code.generateInvalidCompilerStateError())
     }
   })
 
-  return array
-}
-
-export function resolveTreeDependencyList(
-  input: SiteProcessInputType,
-  job: (i: SiteProcessInputType) => void,
-): Array<SiteDependencyType> {
-  const array: Array<SiteDependencyType> = []
-  const dependency: SiteDependencyType = {
-    callbackList: [job],
-    context: input,
-    path: [],
-  }
-  array.push(dependency)
-
-  const nest = input.link.element
-
-  switch (nest.type) {
-    case Link.Term: {
-      dependency.path.push(
-        ...resolveTermStringDependencyList(input, dependency),
-      )
-      break
-    }
-    case Link.Path: {
-      dependency.path.push(
-        ...resolvePathDependencyList(input, dependency),
-      )
-      break
-    }
-    case Link.Tree: {
-      code.throwError(code.generateCompilerTodoError())
-      break
-    }
-    default:
-      code.throwError(code.generateInvalidCompilerStateError())
-  }
-
-  return array
+  return observer
 }
 
 export function textIsInterpolated(

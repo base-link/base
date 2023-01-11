@@ -227,13 +227,21 @@ export type BluePackageLicenseType = BlueBaseType & {
   type: Mesh.PackageLicense
 }
 
-export type BluePackageModuleType = SiteModuleBaseType &
-  BlueBaseType & {
-    deck: BluePackageType
-    type: Mesh.PackageModule
-  }
+export type BluePackageModuleType = BlueBaseType & {
+  deck?: BluePackageType
+  type: Mesh.PackageModule
+}
 
 export type BluePackageType = BlueBaseType & {
+  bear?: BlueTextLinkType
+  face: Array<BluePackageUserType>
+  host?: BlueTextLinkType
+  mark?: BlueTextLinkType
+  name?: BlueTextLinkType
+  read?: BlueTextLinkType
+  site?: BlueTextLinkType
+  term: Array<BluePackageLicenseType>
+  test?: BlueTextLinkType
   type: Mesh.Package
 }
 
@@ -335,6 +343,7 @@ export type BlueType =
   | BlueUnsignedIntegerType
   | BlueVariableType
   | BlueCodeModuleType
+  | BluePackageModuleType
 
 export type BlueUnsignedIntegerType = BlueBaseType & {
   type: Mesh.UnsignedInteger
