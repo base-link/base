@@ -3,13 +3,12 @@ import type { SiteProcessInputType } from '~'
 
 export function filterBlue<T extends Mesh>(
   input: SiteProcessInputType,
-  name: string,
   type: T | Array<T>,
 ): Array<BlueNodeType<T>> {
   const result: Array<BlueNodeType<T>> = []
   const children = code.assumeChildren(input)
   for (const node of children) {
-    if (code.isBlue(node, type) && node.name === name) {
+    if (code.isBlue(node, type)) {
       result.push(node)
     }
   }
@@ -30,27 +29,26 @@ export function filterRed(
   return result
 }
 
-export function findBlue(
+export function findBlue<T extends Mesh>(
   input: SiteProcessInputType,
-  name: string,
-): RedGatherType | undefined {
+  type: T | Array<T>,
+): BlueNodeType<T> | undefined {
   const children = code.assumeChildren(input)
   for (const node of children) {
-    if (code.isRed(node, Mesh.Gather) && node.name === name) {
+    if (code.isBlue(node, type)) {
       return node
     }
   }
   return undefined
 }
 
-export function findRed<T extends Mesh>(
+export function findRed(
   input: SiteProcessInputType,
   name: string,
-  type: T | Array<T>,
-): BlueNodeType<T> | undefined {
+): RedGatherType | undefined {
   const children = code.assumeChildren(input)
   for (const node of children) {
-    if (code.isBlue(node, type) && node.name === name) {
+    if (code.isRed(node, Mesh.Gather) && node.name === name) {
       return node
     }
   }

@@ -1,4 +1,5 @@
 import {
+  LINK_TYPE,
   Link,
   LinkTreeType,
   LinkType,
@@ -56,4 +57,23 @@ export function createTopLink(
     element: link,
     index,
   }
+}
+
+export function isGenericLink(
+  object: unknown,
+): object is LinkType<Link> {
+  return (
+    code.isObjectWithType(object) &&
+    LINK_TYPE.includes((object as LinkType<Link>).type)
+  )
+}
+
+export function isLink<T extends Link>(
+  object: unknown,
+  type: T,
+): object is LinkType<T> {
+  return (
+    code.isObjectWithType(object) &&
+    (object as LinkType<T>).type === type
+  )
 }
