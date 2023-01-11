@@ -46,13 +46,19 @@ export function handle_codeCard(base: Base, link: string): void {
     return
   }
 
-  code.process_codeCard(base, link)
+  console.log(link)
+
+  if (link.match(/drumwork\/deck\/([\w\.]+)\/base.link/)) {
+    code.process_deckCard(base, link)
+  } else {
+    code.process_codeCard(base, link)
+  }
 }
 
 export function process_codeCard(base: Base, link: string): void {
   const parse = code.loadLinkModule(base, link)
   const card = base.card(link)
-  const container = code.createContainerScope(DEFAULT_CONTAINER_SCOPE)
+  const container = code.createTopContainerScope()
   const scope = code.createStepScope(container)
 
   const red = code.createTopRed({

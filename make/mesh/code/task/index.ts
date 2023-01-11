@@ -7,15 +7,13 @@ export * from './free/index.js'
 
 export function process_codeCard_task(
   input: SiteProcessInputType,
+  property = 'functions',
 ): void {
   const container = code.createContainerScope(input)
   const scope = code.createStepScope(container)
   const scopeInput = code.withScope(input, scope)
-  const red = code.pushRed(
-    input,
-    code.createRedGather(input, 'function'),
-  )
-  const blue = code.pushBlue(input, 'functions', {
+  const red = code.pushRed(input, code.createRedGather(input, property))
+  const blue = code.pushBlue(input, property, {
     functions: [],
     inputs: [],
     steps: [],

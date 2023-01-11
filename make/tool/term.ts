@@ -56,7 +56,7 @@ export function process_first_staticTerm(
   const string = code.createBlueString(name)
 
   code.pushRed(input, code.createRedValue(input, property, string))
-  code.pushBlue(input, property, string)
+  code.attachBlue(input, property, string)
 }
 
 export function resolveTermString(

@@ -754,7 +754,8 @@ export function getCursorRangeForTextWhitespaceToken(
 export function getCursorRangeForTree(
   input: SiteProcessInputType,
 ): CursorRangeType {
-  const nest = code.assumeLink(input)
+  console.log(input)
+  const nest = input.link.element
 
   switch (nest.type) {
     case Link.Tree: {
@@ -764,7 +765,7 @@ export function getCursorRangeForTree(
         throw new CompilerError()
       }
 
-      return getCursorRangeForTerm(code.withLink(input, { nest: term }))
+      return getCursorRangeForTerm(code.withLink(input, term))
     }
     case Link.Path: {
       return getCursorRangeForPath(input)

@@ -4,9 +4,10 @@ import type { SiteProcessInputType } from '~'
 export function process_codeCard_form_wear(
   input: SiteProcessInputType,
 ): void {
-  const container = code.createContainerScope({}, input.scope.container)
+  const container = code.createContainerScope(input)
   const scope = code.createStepScope(container)
   const scopeInput = code.withScope(input, scope)
+  return
   const wear = code.createNest(
     Mesh.ClassInterfaceImplementation,
     input.scope,

@@ -4,9 +4,13 @@ import { code } from '~'
 
 export function assertArray<T = unknown>(
   object: unknown,
+  name?: string,
+  path?: string,
 ): asserts object is Array<T> {
   if (!code.isArray(object)) {
-    code.throwError(code.generateIncorrectlyTypedVariable('array'))
+    code.throwError(
+      code.generateIncorrectlyTypedVariable('array', name, path),
+    )
   }
 }
 

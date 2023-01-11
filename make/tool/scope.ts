@@ -41,7 +41,7 @@ export function createStepScope(
 }
 
 export function createTopContainerScope(
-  declarations: Record<string, SiteVariableDeclarationType>,
+  declarations: Record<string, SiteVariableDeclarationType> = {},
 ): SiteContainerScopeType {
   return {
     declarations,

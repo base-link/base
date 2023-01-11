@@ -1,88 +1,25 @@
-import {
-  Link,
-  LinkHint,
-  Mesh,
-  MeshImportType,
-  MeshImportVariableType,
-  code,
-} from '~'
+import { Link, LinkHint, Mesh, code } from '~'
 import type { SiteProcessInputType } from '~'
 
 export * from './bear/index.js'
 export * from './find/index.js'
 
-export function createMeshImport(
-  input: SiteProcessInputType,
-): MeshImportType {
-  const parent = code.assumeElementAsGenericNest(input)
-  const children = code.assumeChildrenFromParent(parent)
-
-  const absolutePath = code.findPlaceholderByName(input, 'absolutePath')
-
-  const variableList = children.filter(
-    (node): node is MeshImportVariableType =>
-      code.isMesh(node, Mesh.ImportVariable),
-  )
-
-  const importList = children.filter((node): node is MeshImportType =>
-    code.isMesh(node, Mesh.Import),
-  )
-
-  code.assertString(absolutePath)
-
-  const bound =
-    variableList.filter(x => x.bound).length +
-      importList.filter(x => x.bound).length ===
-    0
-
-  return {
-    absolutePath,
-    bound,
-    import: importList,
-    scope: input.scope,
-    type: Mesh.Import,
-    variable: variableList,
-  }
-}
-
-export function finalize_codeCard_load_textNest(
-  input: SiteProcessInputType,
-): void {
-  const text = code.resolveText(input)
-  code.assertString(text)
-
-  const path = code.resolveModulePath(input, text)
-
-  code.gatherIntoMeshParent(
-    input,
-    code.createStringConstant('absolutePath', path),
-  )
-}
-
 export function process_codeCard_load(
   input: SiteProcessInputType,
 ): void {
-  const load: NestImportType = {
-    children: [],
-    scope: input.scope,
-    type: Nest.Import,
-  }
+  const red = code.pushRed(input, code.createRedGather(input, 'import'))
+  const blue = code.pushBlue(input, 'imports', {
+    imports: [],
+    type: Mesh.Import,
+    variables: [],
+  })
+  const colorInput = code.withColors(input, { blue, red })
 
-  code.gatherIntoMeshParent(input, load)
-  const childInput = code.withElement(input, load)
-  const nest = code.assumeLink(input, Link.Tree)
-
-  nest.nest.forEach((nest, index) => {
+  code.assumeNest(colorInput).forEach((nest, index) => {
     process_codeCard_load_nestedChildren(
-      code.withLink(childInput, nest, index),
+      code.withLink(colorInput, nest, index),
     )
   })
-
-  if (code.childrenAreMesh(load)) {
-    code.potentiallyReplaceWithFullNode(childInput, () =>
-      code.createMeshImport(childInput),
-    )
-  }
 }
 
 export function process_codeCard_load_nestedChildren(
@@ -95,7 +32,20 @@ export function process_codeCard_load_nestedChildren(
       if (index !== 0) {
         code.throwError(code.generateInvalidCompilerStateError())
       } else {
-        code.finalize_codeCard_load_textNest(input)
+        const string = code.assumeText(input)
+        const path = code.resolveModulePath(input, string)
+        const bluePath = code.createBlueString(path)
+
+        code.pushRed(
+          input,
+          code.createRedValue(input, 'absolutePath', bluePath),
+        )
+
+        code.attachBlue(input, 'absolutePath', bluePath)
+
+        code.addTask(input.base, () => {
+          code.handle_codeCard(input.base, path)
+        })
       }
       break
     }

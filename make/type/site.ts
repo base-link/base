@@ -1,5 +1,5 @@
+import { Base } from '~'
 import type {
-  Base,
   BlueType,
   GreenClassReferenceType,
   LinkNodeType,
@@ -8,30 +8,9 @@ import type {
   YellowType,
 } from '~'
 
-export type SiteBindElementBaseInputType = SiteProcessInputType & {
-  focus: {
-    bond?: unknown
-    name: string
-  }
-  id: string
-  moduleId: number
-}
-
-export type SiteBindElementHandlerInputType =
-  SiteBindElementBaseInputType & {
-    handle: (
-      value: SiteBindElementBaseInputType & { value: unknown },
-    ) => void
-  }
-
-export type SiteBindElementInputType = SiteBindElementBaseInputType & {
+export type SiteBindingCountdownType = {
+  dependencies: Array<string>
   handle: () => void
-}
-
-export type SiteBindModuleInputType = SiteProcessInputType & {
-  handle: () => void
-  id: string
-  moduleId: number
 }
 
 export type SiteBlueType = SiteColorType<BlueType>
@@ -61,20 +40,16 @@ export type SiteCreateInputType = {
   scope: SiteStepScopeType
 }
 
-export type SiteDependencyPartCallbackType = (value: unknown) => void
-
-export type SiteDependencyPartType = {
-  callbackList: Array<SiteDependencyPartCallbackType>
-  last?: SiteDependencyPartType
-  name: string
-  next?: SiteDependencyPartType
-  parent: SiteDependencyType
+export type SiteDependencyObserverParentType = {
+  observer: SiteDependencyObserverType
+  remaining: number
 }
 
-export type SiteDependencyType = {
-  callbackList: Array<SiteInputCallbackType<SiteProcessInputType>>
-  context: SiteProcessInputType
-  path: Array<SiteDependencyPartType>
+export type SiteDependencyObserverType = {
+  children: Array<SiteDependencyObserverType | string>
+  node: LinkNodeType
+  parent?: SiteDependencyObserverParentType
+  path: Array<string>
 }
 
 export type SiteEnvironmentType = {
@@ -82,8 +57,6 @@ export type SiteEnvironmentType = {
   isEnv: true
   parent?: SiteEnvironmentType
 }
-
-export type SiteInputCallbackType<T> = (value: T) => void
 
 export type SiteLinkType = {
   element: LinkNodeType
@@ -101,6 +74,11 @@ export type SiteModuleBaseType = {
   path: string
   text: string
   textByLine: Array<string>
+}
+
+export type SiteModuleBindingInputType = SiteProcessInputType & {
+  handleId: string
+  moduleId: number
 }
 
 export type SiteModuleType = SiteModuleBaseType & {

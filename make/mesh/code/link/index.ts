@@ -1,54 +1,14 @@
-import { Link, LinkHint, Mesh, code } from '~'
+import { LinkHint, Mesh, code } from '~'
 import type { SiteProcessInputType } from '~'
 
 export * from './take/index.js'
 
-export function createMeshInput(
-  input: SiteProcessInputType,
-): MeshInputType {
-  const name = code.findPlaceholderByName(input, 'name')
-  code.assertMeshTerm(name)
-
-  const definedType = code.findPlaceholderByName(input, 'defined-type')
-  code.assertMeshOrUndefined(definedType, Mesh.ClassReference)
-
-  const mesh: MeshInputType = {
-    definedType,
-    name,
-    type: Mesh.Input,
-  }
-
-  if (definedType) {
-    const id = code.generateObservableId()
-    code.bindReference({
-      ...input,
-      focus: definedType,
-      handle: () =>
-        code.checkFocusForInputCompletion({
-          ...input,
-          focus: definedType,
-          id,
-          moduleId: input.module.id,
-        }),
-      id,
-      moduleId: input.module.id,
-    })
-  }
-
-  return mesh
-}
-
-export function pingParentOfCompletion(
-  input: SiteProcessInputType,
-): void {
-  const parent = code.assumeElementAsGenericNest(input)
-}
-
 export function process_codeCard_link(
   input: SiteProcessInputType,
+  property = 'inputs',
 ): void {
-  const red = code.pushRed(input, code.createRedGather(input, 'input'))
-  const blue = code.pushBlue(input, 'inputs', {
+  const red = code.pushRed(input, code.createRedGather(input, property))
+  const blue = code.pushBlue(input, property, {
     type: Mesh.Input,
   })
 
@@ -56,7 +16,7 @@ export function process_codeCard_link(
 
   code.assumeNest(colorInput).forEach((nest, index) => {
     code.addTask(input.base, () => {
-      process_codeCard_link_nestedChildren(
+      code.process_codeCard_link_nestedChildren(
         code.withLink(colorInput, nest, index),
       )
     })
