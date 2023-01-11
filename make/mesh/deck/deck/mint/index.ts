@@ -17,12 +17,13 @@ export function process_deckCard_deck_mint_nestedChildren(
   const type = code.getLinkHint(input)
   switch (type) {
     case LinkHint.StaticText:
-      const text = code.resolveText(input)
-      code.assertString(text)
-      code.gatherIntoMeshParent(
+      const string = code.assumeText(input)
+      const blueString = code.createBlueString(string)
+      code.pushRed(
         input,
-        code.createStringConstant('version', text),
+        code.createRedValue(input, 'version', blueString),
       )
+      code.attachBlue(input, 'mark', blueString)
       break
     default:
       code.throwError(code.generateUnhandledNestCaseError(input, type))

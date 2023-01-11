@@ -1,4 +1,4 @@
-import { Link, LinkHint, Mesh, code } from '~'
+import { Link, LinkHint, code } from '~'
 import type { SiteProcessInputType } from '~'
 
 export function process_deckCard_deck_bear(
@@ -30,6 +30,10 @@ export function process_deckCard_deck_bear_nestedChildren(
           code.createRedValue(input, 'bear', blueString),
         )
         code.attachBlue(input, 'bear', blueString)
+
+        code.addTask(input.base, () => {
+          code.handle_codeCard(input.base, path)
+        })
         break
       }
       case LinkHint.DynamicText: {

@@ -12,32 +12,6 @@ import type { SiteProcessInputType } from '~'
 
 export * from './deck/index.js'
 
-export function generate_deckCard(
-  input: SiteProcessInputType,
-): MeshPackageModuleType {
-  code.assertNest(input.module, Nest.PackageModule)
-
-  const deck = input.module.children.find(
-    (node): node is MeshPackageType => code.isMesh(node, Mesh.Package),
-  )
-
-  code.assertRecord(deck)
-
-  return {
-    base: input.module.base,
-    deck,
-    directory: input.module.directory,
-    id: input.module.id,
-    link: input.module.link,
-    path: input.module.path,
-    public: {},
-    scope: input.scope,
-    text: input.module.text,
-    textByLine: input.module.textByLine,
-    type: Mesh.PackageModule,
-  }
-}
-
 export function handle_deckCard(base: Base, link: string): void {
   code.process_deckCard(base, link)
 }
@@ -48,7 +22,7 @@ export function handle_deckCard(base: Base, link: string): void {
 export function process_deckCard(base: Base, link: string): void {
   const parse = code.loadLinkModule(base, link)
   const card = base.card(link)
-  const container = code.createContainerScope(DEFAULT_CONTAINER_SCOPE)
+  const container = code.createTopContainerScope()
   const scope = code.createStepScope(container)
 
   const red = code.createTopRed({

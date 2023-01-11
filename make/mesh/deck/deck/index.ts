@@ -12,7 +12,7 @@ export function process_deckCard_deck(
   input: SiteProcessInputType,
 ): void {
   const red = code.pushRed(input, code.createRedGather(input, 'deck'))
-  const blue = code.pushBlue(input, 'deck', {
+  const blue = code.attachBlue(input, 'deck', {
     face: [],
     term: [],
     type: Mesh.Package,

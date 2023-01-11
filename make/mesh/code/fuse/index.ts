@@ -1,4 +1,4 @@
-import { Link, LinkHint, LinkNodeType, code } from '~'
+import { LinkHint, LinkNodeType, Mesh, code } from '~'
 import type { SiteProcessInputType } from '~'
 
 export function attemptResolveFuse(input: SiteProcessInputType): void {
@@ -31,24 +31,21 @@ export function evaluateTemplate(
 export function process_codeCard_fuse(
   input: SiteProcessInputType,
 ): void {
-  const fuse = code.createNest(Nest.Inject, input.scope)
-  code.gatherIntoMeshParent(input, fuse)
-
-  const fuseInput = code.withElement(input, fuse)
-
-  code.assumeNest(input).forEach((nest, index) => {
-    process_codeCard_fuse_nestedChildren(
-      code.withLink(fuseInput, nest, index),
-    )
+  const red = code.pushRed(input, code.createRedGather(input, 'fuse'))
+  const blue = code.createBlue(input, {
+    bind: [],
+    type: Mesh.Inject,
   })
 
-  // if the terms all pass interpolation
-  if (code.childrenAreMesh(fuse)) {
-    code.attemptResolveFuse(fuseInput)
-  }
-  // code.replaceIfBound(fuseInput, fuse, () =>
-  //   code.generateFullInject(fuseInput),
-  // )
+  const colorInput = code.withColors(input, { blue, red })
+
+  code.assumeNest(input).forEach((nest, index) => {
+    code.addTask(input.base, () => {
+      process_codeCard_fuse_nestedChildren(
+        code.withLink(colorInput, nest, index),
+      )
+    })
+  })
 }
 
 export function process_codeCard_fuse_nestedChildren(
@@ -60,10 +57,12 @@ export function process_codeCard_fuse_nestedChildren(
       const index = code.assumeLinkIndex(input)
       const term = code.assumeTermString(input)
       if (index === 0) {
-        code.gatherIntoMeshParent(
+        const blueString = code.createBlueString(term)
+        code.pushRed(
           input,
-          code.createStringConstant('name', term),
+          code.createRedValue(input, 'name', blueString),
         )
+        code.attachBlue(input, 'name', blueString)
       } else {
         switch (term) {
           case 'bind':

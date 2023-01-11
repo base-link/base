@@ -139,6 +139,19 @@ export function attachBlue(
   return child
 }
 
+export function createBlue(
+  input: SiteProcessInputType,
+  node: DistributiveOmit<BlueType, 'color'>,
+): SiteBlueType {
+  return {
+    node: {
+      ...node,
+      color: Color.Blue,
+    },
+    parent: input.blue,
+  }
+}
+
 export function createBlueBoolean(value: boolean): BlueBooleanType {
   return {
     color: Color.Blue,

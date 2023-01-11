@@ -1,16 +1,16 @@
-import {
-  CompilerError,
-  Link,
-  LinkHint,
+import { CompilerError, Link, LinkHint, code } from '~'
+import type {
   SiteDependencyObserverParentType,
   SiteDependencyObserverType,
-  code,
-} from '~'
-import type {
-  SiteDependencyPartType,
-  SiteDependencyType,
   SiteProcessInputType,
 } from '~'
+
+export function addDependencyTreeObserver(
+  input: SiteProcessInputType,
+  list: Array<SiteDependencyObserverType>,
+): void {
+  // list.forEach()
+}
 
 export function assertStringPattern(
   input: SiteProcessInputType,
@@ -34,6 +34,51 @@ export function bindText(
 ): void {
   const dependencyTree = code.resolveTextDependencyTree(input)
   const leafDependencyList = code.getLeafDependencyList(dependencyTree)
+  const canResolveDependencyTreeNow = canResolveDependencyTree(
+    input,
+    leafDependencyList,
+  )
+
+  if (canResolveDependencyTreeNow) {
+    code.addTask(input.base, callback)
+  } else {
+    code.addDependencyTreeObserver(input, leafDependencyList)
+  }
+}
+
+export function canResolveDependencyTree(
+  input: SiteProcessInputType,
+  list: Array<SiteDependencyObserverType>,
+): boolean {
+  if (list.length === 0) {
+    return true
+  }
+
+  const stack = list.concat()
+
+  while (stack.length) {
+    const observer = stack.shift()
+    code.assertRecord(observer)
+
+    // we made it back to the base
+    if (!observer.parent) {
+      return true
+    }
+
+    const name = observer.path[0]
+    code.assertString(name)
+
+    if (code.hasEnvironmentVariable(input.environment, name)) {
+      if (observer.parent) {
+        observer.parent.remaining--
+        if (observer.parent.remaining === 0) {
+          stack
+        }
+      }
+    }
+  }
+
+  return false
 }
 
 export function connectDependency(

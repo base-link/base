@@ -149,7 +149,11 @@ export type BlueHideExportVariableType = BlueBaseType & {
 }
 
 export type BlueImportType = BlueBaseType & {
+  absolutePath?: BlueTextLinkType
+  // exports: Array<BlueImportExportType>
+  imports: Array<BlueImportType>
   type: Mesh.Import
+  variables: Array<BlueImportVariableType>
 }
 
 export type BlueImportVariableRenameType = BlueBaseType & {
@@ -157,10 +161,15 @@ export type BlueImportVariableRenameType = BlueBaseType & {
 }
 
 export type BlueImportVariableType = BlueBaseType & {
+  name?: BlueTermLinkType
+  rename?: BlueImportVariableRenameType
+  scopeName?: BlueTermLinkType
   type: Mesh.ImportVariable
 }
 
 export type BlueInjectType = BlueBaseType & {
+  bind: Array<BlueBindType>
+  name?: BlueTermLinkType
   type: Mesh.Inject
 }
 
