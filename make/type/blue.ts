@@ -1,6 +1,7 @@
 import {
   Color,
   LinkPathType,
+  LinkTermType,
   LinkTextType,
   Mesh,
   MeshBaseType,
@@ -34,7 +35,12 @@ export type BlueBooleanType = BlueBaseType & {
 }
 
 export type BlueCallType = BlueBaseType & {
+  bind: Array<BlueBindType>
+  bond?: BlueFunctionType
+  path?: BluePathLinkType
+  risk?: BlueBooleanLinkType
   type: Mesh.Call
+  wait?: BlueBooleanLinkType
 }
 
 export type BlueCallbackType = BlueBaseType & {
@@ -259,6 +265,7 @@ export type BlueTermLinkType = BlueTermType | BlueStringType
 
 export type BlueTermType = BlueBaseType & {
   type: Mesh.Term
+  value: LinkTermType
 }
 
 export type BlueTestType = BlueBaseType & {

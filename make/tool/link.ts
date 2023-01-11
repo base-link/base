@@ -1,6 +1,7 @@
 import {
   LINK_TYPE,
   Link,
+  LinkNodeType,
   LinkTreeType,
   LinkType,
   SiteLinkType,
@@ -39,7 +40,7 @@ export function assumeLink<T extends Link>(
 
 export function createLink(
   input: SiteProcessInputType,
-  link: LinkTreeType,
+  link: LinkNodeType,
   index?: number,
 ): SiteLinkType {
   return {
@@ -76,4 +77,15 @@ export function isLink<T extends Link>(
     code.isObjectWithType(object) &&
     (object as LinkType<T>).type === type
   )
+}
+
+export function withLink(
+  input: SiteProcessInputType,
+  element: LinkNodeType,
+  index?: number,
+): SiteProcessInputType {
+  return {
+    ...input,
+    link: code.createLink(input, element, index),
+  }
 }

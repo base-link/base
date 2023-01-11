@@ -6,10 +6,7 @@ export function process_codeCard_stem(
 ): void {
   code.assumeLink(input, Link.Tree).nest.forEach((nest, index) => {
     process_codeCard_stem_nestedChildren(
-      code.withEnvironment(input, {
-        index,
-        nest,
-      }),
+      code.withLink(input, nest, index),
     )
   })
 }

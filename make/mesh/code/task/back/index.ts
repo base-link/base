@@ -6,10 +6,7 @@ export function process_codeCard_task_back(
 ): void {
   code.assumeLink(input, Link.Tree).nest.forEach((nest, index) => {
     process_codeCard_task_back_nestedChildren(
-      code.withEnvironment(input, {
-        index,
-        nest,
-      }),
+      code.withLink(input, nest, index),
     )
   })
 }

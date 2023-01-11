@@ -6,10 +6,7 @@ export function process_deckCard_deck_mint(
 ): void {
   code.assumeLink(input, Link.Tree).nest.forEach((nest, index) => {
     process_deckCard_deck_mint_nestedChildren(
-      code.withEnvironment(input, {
-        index,
-        nest,
-      }),
+      code.withLink(input, nest, index),
     )
   })
 }

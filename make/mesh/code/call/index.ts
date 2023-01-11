@@ -1,42 +1,22 @@
-import { Link, LinkHint, Mesh, Nest, code } from '~'
-import type {
-  MeshCallType,
-  NestCallType,
-  SiteProcessInputType,
-} from '~'
-
-export function generate_codeCard_call(
-  input: SiteProcessInputType,
-): MeshCallType {
-  const name = code.findFullStringConstantByName(input, 'name')
-  code.assertString(name)
-
-  return {
-    bond: undefined,
-    bound: false,
-    name,
-    type: Mesh.Call,
-  }
-}
+import { Link, LinkHint, Mesh, code } from '~'
+import type { SiteProcessInputType } from '~'
 
 export function process_codeCard_call(
   input: SiteProcessInputType,
 ): void {
-  const call: NestCallType = {
-    children: [],
-    scope: input.scope,
-    type: Nest.Call,
-  }
+  const red = code.pushRed(input, code.createRedGather(input, 'step'))
+  const blue = code.pushBlue(input, 'steps', {
+    bind: [],
+    type: Mesh.Call,
+  })
+  const colorInput = code.withColors(input, { blue, red })
 
-  const childInput = code.withElement(input, call)
-
-  code.assumeLink(input, Link.Tree).nest.forEach((nest, index) => {
-    process_codeCard_call_nestedChildren(
-      code.withEnvironment(childInput, {
-        index,
-        nest,
-      }),
-    )
+  code.assumeNest(input).forEach((nest, index) => {
+    code.addTask(input.base, () => {
+      process_codeCard_call_nestedChildren(
+        code.withLink(colorInput, nest, index),
+      )
+    })
   })
 }
 
@@ -48,14 +28,11 @@ export function process_codeCard_call_nestedChildren(
     case LinkHint.DynamicTerm: {
       const index = code.assumeLinkIndex(input)
       if (index === 0) {
-        const call = code.assumeElementAsNest(input, Nest.Call)
-        const path = code.assumeLink(input)
-
-        if (code.isLink(path, Link.Term)) {
-          call.children.push(
-            code.createConstant('path', code.createPath(path)),
-          )
-        }
+        const term = code.createBlueTerm(
+          code.assumeLink(input, Link.Term),
+        )
+        code.pushRed(input, code.createRedGather(input, 'path', [term]))
+        code.attachBlue(input, 'path', term)
       } else {
         code.throwError(
           code.generateUnhandledNestCaseError(input, type),
@@ -69,14 +46,11 @@ export function process_codeCard_call_nestedChildren(
     case LinkHint.DynamicPath: {
       const index = code.assumeLinkIndex(input)
       if (index === 0) {
-        const call = code.assumeElementAsNest(input, Nest.Call)
-        const path = code.assumeLink(input)
-
-        if (code.isLink(path, Link.Path)) {
-          call.children.push(
-            code.createConstant('path', code.createPath(path)),
-          )
-        }
+        const path = code.createBluePath(
+          code.assumeLink(input, Link.Path),
+        )
+        code.pushRed(input, code.createRedGather(input, 'path', [path]))
+        code.attachBlue(input, 'path', path)
       } else {
         code.throwError(
           code.generateUnhandledNestCaseError(input, type),
@@ -87,16 +61,13 @@ export function process_codeCard_call_nestedChildren(
     case LinkHint.StaticTerm: {
       const index = code.assumeLinkIndex(input)
       if (index === 0) {
-        const call = code.assumeElementAsNest(input, Nest.Call)
-        const path = code.assumeLink(input)
-
-        if (code.isLink(path, Link.Term)) {
-          call.children.push(
-            code.createConstant('path', code.createPath(path)),
-          )
-        }
+        const term = code.createBlueTerm(
+          code.assumeLink(input, Link.Term),
+        )
+        code.pushRed(input, code.createRedGather(input, 'path', [term]))
+        code.attachBlue(input, 'path', term)
       } else {
-        const term = code.assumeTerm(input)
+        const term = code.assumeTermString(input)
         switch (term) {
           case 'read':
             break

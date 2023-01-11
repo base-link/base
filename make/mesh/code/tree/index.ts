@@ -49,10 +49,7 @@ export function process_codeCard_tree(
 
   code.assumeLink(treeInput, Link.Tree).nest.forEach((nest, index) => {
     code.process_codeCard_tree_nestedChildren(
-      code.withEnvironment(treeInput, {
-        index,
-        nest,
-      }),
+      code.withLink(treeInput, nest, index),
     )
   })
 
@@ -66,7 +63,7 @@ export function process_codeCard_tree_nestedChildren(
 ): void {
   const type = code.getLinkHint(input)
   if (type === 'static-term') {
-    const name = code.assumeTerm(input)
+    const name = code.assumeTermString(input)
     const index = code.assumeLinkIndex(input)
     if (index === 0) {
       code.gatherIntoMeshParent(

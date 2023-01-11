@@ -7,6 +7,12 @@ export function assumeTermString(input: SiteProcessInputType): string {
   return term
 }
 
+export function assumeTermString(input: SiteProcessInputType): string {
+  const term = code.resolveTermString(input)
+  code.assertString(term)
+  return term
+}
+
 export function getTerm(
   input: SiteProcessInputType,
 ): LinkType<Link.Term> | undefined {
@@ -34,7 +40,7 @@ export function getTerm(
 
 export function process_dynamicTerm(input: SiteProcessInputType): void {
   const nest = input.link.element
-  code.createRed(input, code.createRedGather(input, undefined, [nest]))
+  code.pushRed(input, code.createRedGather(input, undefined, [nest]))
 }
 
 export function process_first_dynamicTerm(
@@ -42,7 +48,7 @@ export function process_first_dynamicTerm(
   placeholder: string,
 ): void {
   const nest = input.link.element
-  code.createRed(
+  code.pushRed(
     input,
     code.createRedGather(input, placeholder, [nest]),
   )
@@ -54,7 +60,7 @@ export function process_first_staticTerm(
 ): void {
   const name = code.resolveTermString(input)
   code.assertString(name)
-  code.createRed(
+  code.pushRed(
     input,
     code.createRedGather(input, placeholder, [
       code.createBlueString(name),

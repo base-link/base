@@ -1,9 +1,5 @@
-import { Link, LinkHint, Mesh, Nest, code } from '~'
-import type {
-  MeshImportVariableRenameType,
-  MeshImportVariableType,
-  SiteProcessInputType,
-} from '~'
+import { Link, LinkHint, Mesh, code } from '~'
+import type { SiteProcessInputType } from '~'
 
 export * from './bear/index.js'
 export * from './save/index.js'
@@ -93,25 +89,27 @@ export function process_codeCard_load_find_staticTerm(
 }
 
 export function process_find_scope(input: SiteProcessInputType): void {
-  const nest = code.assumeLink(input)
-  code.assertLink(nest, Link.Tree)
-
-  const scope = code.resolveTermString(input)
-  code.assertString(scope)
+  const nest = code.assumeLink(input, Link.Tree)
+  const scope = code.assumeTermString(input)
   const nestedNest = nest.nest[0]
   code.assertGenericLink(nestedNest)
-  const nestedInput = code.withEnvironment(input, {
+
+  const nestedInput = code.withLink(input, {
     index: 0,
     nest: nestedNest,
   })
-  const name = code.resolveTermString(nestedInput)
-  code.assertString(name)
-  code.gatherIntoMeshParent(
+
+  const name = code.assumeTermString(nestedInput)
+  const scopeString = code.createBlueString(scope)
+  const nameString = code.createBlueString(name)
+
+  code.pushRed(
     input,
-    code.createMeshPlaceholder('scope', code.createMeshString(scope)),
+    code.createRedGather(input, 'scope', [scopeString]),
   )
-  code.gatherIntoMeshParent(
-    input,
-    code.createMeshPlaceholder('name', code.createMeshString(name)),
-  )
+
+  code.pushRed(input, code.createRedGather(input, 'name', [nameString]))
+
+  code.attachBlue(input, 'scopeName', scopeString)
+  code.attachBlue(input, 'name', nameString)
 }

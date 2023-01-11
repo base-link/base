@@ -10,10 +10,7 @@ export function process_codeCard_load_find_save(
 
   nest.nest.forEach((nest, index) => {
     code.process_codeCard_load_find_save_nestedChildren(
-      code.withEnvironment(input, {
-        index,
-        nest,
-      }),
+      code.withLink(input, nest, index),
     )
   })
 }

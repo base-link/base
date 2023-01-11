@@ -1,4 +1,4 @@
-import { Color, Mesh, code } from '~'
+import { BlueTermType, Color, LinkTermType, Mesh, code } from '~'
 import type {
   BlueConstantType,
   BluePathType,
@@ -24,6 +24,14 @@ export function createBluePath(value: LinkPathType): BluePathType {
   return {
     color: Color.Blue,
     type: Mesh.Path,
+    value,
+  }
+}
+
+export function createBlueTerm(value: LinkTermType): BlueTermType {
+  return {
+    color: Color.Blue,
+    type: Mesh.Term,
     value,
   }
 }

@@ -6,7 +6,7 @@ export * from './hide/index.js'
 export function process_codeCard_bear(
   input: SiteProcessInputType,
 ): void {
-  const red = code.createRed(input, code.createRedGather(input, 'bear'))
+  const red = code.pushRed(input, code.createRedGather(input, 'bear'))
   const blue = code.pushBlue(input, 'exports', {
     hides: [],
     type: Mesh.Export,
@@ -17,19 +17,9 @@ export function process_codeCard_bear(
   nest.forEach((nest, index) => {
     code.addTask(input.base, () => {
       code.process_codeCard_bear_nestedChildren(
-        code.withEnvironment(colorInput, {
-          index,
-          nest,
-        }),
+        code.withLink(colorInput, nest, index),
       )
     })
-  })
-
-  code.addTask(() => {
-    // potentiallyReplaceWithSemiStaticMesh
-    code.tryUpgradingToYellow(redInput, () =>
-      code.upgrade_yellow_codeCard_bear(childInput),
-    )
   })
 }
 
@@ -65,27 +55,25 @@ export function process_codeCard_bear_nestedChildren(
 export function process_codeCard_bear_nestedChildren_dynamicText(
   input: SiteProcessInputType,
 ): void {
-  const nest = code.assumeLink(input)
-  code.assertLink(nest, Link.Text)
-  const red = code.createRed(
+  const nest = code.assumeLink(input, Link.Text)
+
+  code.pushRed(
     input,
     code.createRedGather(input, 'absolute-path', [nest]),
   )
 
-  code.addTask(() => {
-    code.bindText()
-  })
+  // code.addTask(() => {
+  //   code.bindText()
+  // })
 }
 
 export function process_codeCard_bear_nestedChildren_text(
   input: SiteProcessInputType,
 ): void {
-  const text = code.resolveText(input)
-  code.assertString(text)
-
+  const text = code.assumeText(input)
   const path = code.resolveModulePath(input, text)
 
-  code.createRed(
+  code.pushRed(
     input,
     code.createRedGather(input, 'absolute-path', [
       code.createBlueString(path),
@@ -96,23 +84,4 @@ export function process_codeCard_bear_nestedChildren_text(
     type: Mesh.String,
     value: path,
   })
-}
-
-export function upgrade_yellow_codeCard_bear(
-  input: SiteProcessInputType,
-): YellowExportType {
-  const absolutePath = code.findRedPlaceholder(input, 'absolute-path')
-  code.assertMeshText(absolutePath)
-
-  const hides = code.filterPlaceholders(input, 'hide')
-  code.assertMeshArray(hides, Mesh.HideExportVariable)
-
-  const yellow: YellowExportType = {
-    absolutePath,
-    color: Color.Yellow,
-    hides,
-    type: Mesh.Export,
-  }
-
-  return yellow
 }

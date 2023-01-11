@@ -60,10 +60,7 @@ export function process_codeCard_link(
 
   code.assumeLink(childInput, Link.Tree).nest.forEach((nest, index) => {
     process_codeCard_link_nestedChildren(
-      code.withEnvironment(childInput, {
-        index,
-        nest,
-      }),
+      code.withLink(childInput, nest, index),
     )
   })
 
@@ -92,7 +89,7 @@ export function process_codeCard_link_nestedChildren(
         return
       }
 
-      const term = code.assumeTerm(input)
+      const term = code.assumeTermString(input)
       switch (term) {
         case 'like':
           code.process_codeCard_like(input)

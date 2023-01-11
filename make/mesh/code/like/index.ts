@@ -35,7 +35,7 @@ export function createMeshClassReference(
 export function process_codeCard_like(
   input: SiteProcessInputType,
 ): void {
-  const red = code.createRed(
+  const red = code.pushRed(
     input,
     code.createRedGather(input, 'definedType'),
   )
@@ -57,10 +57,7 @@ export function process_codeCard_like(
   code.assumeLink(input, Link.Tree).nest.forEach((nest, index) => {
     code.addTask(input.base, () => {
       process_codeCard_like_nestedChildren(
-        code.withEnvironment(childInput, {
-          index,
-          nest,
-        }),
+        code.withLink(childInput, nest, index),
       )
     })
   })
@@ -109,7 +106,7 @@ export function process_codeCard_like_nestedChildren(
         return
       }
 
-      const term = code.assumeTerm(input)
+      const term = code.assumeTermString(input)
       switch (term) {
         case 'head':
           code.process_codeCard_head(input)

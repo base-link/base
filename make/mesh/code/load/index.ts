@@ -74,10 +74,7 @@ export function process_codeCard_load(
 
   nest.nest.forEach((nest, index) => {
     process_codeCard_load_nestedChildren(
-      code.withEnvironment(childInput, {
-        index,
-        nest,
-      }),
+      code.withLink(childInput, nest, index),
     )
   })
 

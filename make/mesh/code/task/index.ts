@@ -78,10 +78,7 @@ export function process_codeCard_task(
 
   code.assumeLink(childInput, Link.Tree).nest.forEach((nest, index) => {
     code.process_codeCard_task_nestedChildren(
-      code.withEnvironment(childInput, {
-        index,
-        nest,
-      }),
+      code.withLink(childInput, nest, index),
     )
   })
 
@@ -112,7 +109,7 @@ export function process_codeCard_task_nestedChildren(
         code.process_first_staticTerm(input, 'name')
         return
       }
-      const term = code.assumeTerm(input)
+      const term = code.assumeTermString(input)
       switch (term) {
         case 'take':
           code.process_codeCard_link(input)

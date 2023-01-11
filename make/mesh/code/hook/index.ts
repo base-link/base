@@ -11,10 +11,7 @@ export function process_codeCard_hook(
 
   code.assumeLink(childInput, Link.Tree).nest.forEach((nest, index) => {
     code.process_codeCard_hook_nestedChildren(
-      code.withEnvironment(childInput, {
-        index,
-        nest,
-      }),
+      code.withLink(childInput, nest, index),
     )
   })
 }
@@ -26,7 +23,7 @@ export function process_codeCard_hook_nestedChildren(
   switch (type) {
     case LinkHint.StaticTerm: {
       const index = code.assumeLinkIndex(input)
-      const term = code.assumeTerm(input)
+      const term = code.assumeTermString(input)
       if (index === 0) {
         code.gatherIntoMeshParent(
           input,

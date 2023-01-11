@@ -174,25 +174,6 @@ export function createBlueText(
   }
 }
 
-export function createRed(
-  input: SiteProcessInputType,
-  node: DistributiveOmit<RedType, 'color'>,
-): SiteRedType {
-  const child: SiteRedType = {
-    node: {
-      ...node,
-      color: Color.Red,
-    },
-    parent: input.red,
-  }
-
-  if (child.parent) {
-    child.parent.node.children.push(child.node)
-  }
-
-  return child
-}
-
 export function createRedGather(
   input: SiteProcessInputType,
   name: string | undefined,
@@ -273,6 +254,25 @@ export function pushBlue(
     const array = (node as Record<string, unknown>)[property]
     code.assertArray(array)
     array.push(child.node)
+  }
+
+  return child
+}
+
+export function pushRed(
+  input: SiteProcessInputType,
+  node: DistributiveOmit<RedType, 'color'>,
+): SiteRedType {
+  const child: SiteRedType = {
+    node: {
+      ...node,
+      color: Color.Red,
+    },
+    parent: input.red,
+  }
+
+  if (child.parent) {
+    child.parent.node.children.push(child.node)
   }
 
   return child

@@ -38,10 +38,7 @@ export function process_codeCard_fuse(
 
   code.assumeLink(input, Link.Tree).nest.forEach((nest, index) => {
     process_codeCard_fuse_nestedChildren(
-      code.withEnvironment(fuseInput, {
-        index,
-        nest,
-      }),
+      code.withLink(fuseInput, nest, index),
     )
   })
 
@@ -61,7 +58,7 @@ export function process_codeCard_fuse_nestedChildren(
   switch (type) {
     case LinkHint.StaticTerm: {
       const index = code.assumeLinkIndex(input)
-      const term = code.assumeTerm(input)
+      const term = code.assumeTermString(input)
       if (index === 0) {
         code.gatherIntoMeshParent(
           input,

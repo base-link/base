@@ -14,10 +14,7 @@ export function process_codeCard_suit(
 
   code.assumeLink(childInput, Link.Tree).nest.forEach((nest, index) => {
     code.process_codeCard_suit_nestedChildren(
-      code.withEnvironment(childInput, {
-        index,
-        nest,
-      }),
+      code.withLink(childInput, nest, index),
     )
   })
 }
@@ -27,7 +24,7 @@ export function process_codeCard_suit_nestedChildren(
 ): void {
   const type = code.getLinkHint(input)
   if (type === 'static-term') {
-    const term = code.assumeTerm(input)
+    const term = code.assumeTermString(input)
     const index = code.assumeLinkIndex(input)
     if (index === 0) {
       code.gatherIntoMeshParent(

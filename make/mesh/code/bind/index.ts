@@ -1,4 +1,4 @@
-import { Link, LinkHint, LinkNodeType, LinkTreeType, code } from '~'
+import { Link, LinkHint, LinkNodeType, code } from '~'
 import type { SiteProcessInputType } from '~'
 
 export function assumeNest(
@@ -13,10 +13,7 @@ export function process_codeCard_bind(
   const nest = code.assumeNest(input)
   nest.forEach((nest, index) => {
     process_codeCard_bind_nestedChildren(
-      code.withEnvironment(input, {
-        index,
-        nest,
-      }),
+      code.withLink(input, nest, index),
     )
   })
 }

@@ -560,10 +560,10 @@ export function getCursorRangeForPath(
 ): CursorRangeType {
   const path = code.assumeLink(input, Link.Path)
   const start = getCursorRangeForTerm(
-    code.withEnvironment(input, { nest: path.segment[0] }),
+    code.withLink(input, { nest: path.segment[0] }),
   )
   const end = getCursorRangeForTerm(
-    code.withEnvironment(input, {
+    code.withLink(input, {
       nest: path.segment[path.segment.length - 1],
     }),
   )
@@ -588,19 +588,13 @@ export function getCursorRangeForPlugin(
 
   switch (child?.type) {
     case Link.Term: {
-      return code.getCursorRangeForTerm(
-        code.withEnvironment(input, { nest }),
-      )
+      return code.getCursorRangeForTerm(code.withLink(input, { nest }))
     }
     case Link.Path: {
-      return code.getCursorRangeForPath(
-        code.withEnvironment(input, { nest }),
-      )
+      return code.getCursorRangeForPath(code.withLink(input, { nest }))
     }
     case Link.Tree: {
-      return code.getCursorRangeForTree(
-        code.withEnvironment(input, { nest }),
-      )
+      return code.getCursorRangeForTree(code.withLink(input, { nest }))
     }
     default:
       code.throwError(code.generateInvalidCompilerStateError())
@@ -677,11 +671,11 @@ export function getCursorRangeForText(
 
   if (first.type === Link.String) {
     firstRange = code.getCursorRangeForString(
-      code.withEnvironment(input, { nest: first }),
+      code.withLink(input, { nest: first }),
     )
   } else if (first.type === Link.Plugin) {
     firstRange = code.getCursorRangeForPlugin(
-      code.withEnvironment(input, { nest: first }),
+      code.withLink(input, { nest: first }),
     )
   } else {
     code.throwError(code.generateInvalidCompilerStateError())
@@ -699,11 +693,11 @@ export function getCursorRangeForText(
 
   if (last.type === Link.String) {
     lastRange = code.getCursorRangeForString(
-      code.withEnvironment(input, { nest: last }),
+      code.withLink(input, { nest: last }),
     )
   } else if (last.type === Link.Plugin) {
     lastRange = code.getCursorRangeForPlugin(
-      code.withEnvironment(input, { nest: last }),
+      code.withLink(input, { nest: last }),
     )
   } else {
     code.throwError(code.generateInvalidCompilerStateError())
@@ -770,9 +764,7 @@ export function getCursorRangeForTree(
         throw new CompilerError()
       }
 
-      return getCursorRangeForTerm(
-        code.withEnvironment(input, { nest: term }),
-      )
+      return getCursorRangeForTerm(code.withLink(input, { nest: term }))
     }
     case Link.Path: {
       return getCursorRangeForPath(input)

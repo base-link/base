@@ -79,10 +79,7 @@ export function process_codeCard_form(
     .assumeLink(branchInput, Link.Tree)
     .nest.forEach((nest, index) => {
       code.process_codeCard_form_nestedChildren(
-        code.withEnvironment(branchInput, {
-          index,
-          nest,
-        }),
+        code.withLink(branchInput, nest, index),
       )
     })
 
@@ -100,7 +97,7 @@ export function process_codeCard_form_nestedChildren(
     if (index === 0) {
       code.process_first_staticTerm(input, 'name')
     } else {
-      const term = code.assumeTerm(input)
+      const term = code.assumeTermString(input)
       switch (term) {
         case 'link':
           code.process_codeCard_link(input)

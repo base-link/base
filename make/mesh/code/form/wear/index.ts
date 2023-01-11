@@ -15,10 +15,7 @@ export function process_codeCard_form_wear(
 
   code.assumeLink(input, Link.Tree).nest.forEach((nest, index) => {
     process_codeCard_form_wear_nestedChildren(
-      code.withEnvironment(childInput, {
-        index,
-        nest,
-      }),
+      code.withLink(childInput, nest, index),
     )
   })
 }
@@ -29,7 +26,7 @@ export function process_codeCard_form_wear_nestedChildren(
   const type = code.getLinkHint(input)
   switch (type) {
     case LinkHint.StaticTerm: {
-      const term = code.assumeTerm(input)
+      const term = code.assumeTermString(input)
       const index = code.assumeLinkIndex(input)
       if (index === 0) {
         const wear = code.assumeElementAsNest(

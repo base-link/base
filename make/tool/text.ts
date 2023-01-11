@@ -15,6 +15,12 @@ export function assertStringPattern(
   }
 }
 
+export function assumeText(input: SiteProcessInputType): string {
+  const text = code.resolveText(input)
+  code.assertString(text)
+  return text
+}
+
 export function processDynamicTextNest(
   input: SiteProcessInputType,
   job: (i: SiteProcessInputType) => void,
@@ -84,19 +90,19 @@ export function readLinkIndex(input: SiteProcessInputType): unknown {
     switch (child.type) {
       case Link.Tree:
         return readLinkTree(
-          code.withEnvironment(input, {
+          code.withLink(input, {
             nest: child,
           }),
         )
       case Link.Path:
         return readLinkPath(
-          code.withEnvironment(input, {
+          code.withLink(input, {
             nest: child,
           }),
         )
       case Link.Term:
         return readLinkTerm(
-          code.withEnvironment(input, {
+          code.withLink(input, {
             nest: child,
           }),
         )
@@ -114,7 +120,7 @@ export function readLinkPath(input: SiteProcessInputType): unknown {
 
   const first = nest.segment[i++]
   const firstTerm = code.resolveTermString(
-    code.withEnvironment(input, { nest: first }),
+    code.withLink(input, { nest: first }),
   )
 
   code.assertString(firstTerm)
@@ -126,7 +132,7 @@ export function readLinkPath(input: SiteProcessInputType): unknown {
     switch (seg?.type) {
       case Link.Index: {
         const index = code.readLinkIndex(
-          code.withEnvironment(input, { nest: seg }),
+          code.withLink(input, { nest: seg }),
         )
 
         if (code.isRecord(value) && code.isString(index)) {
@@ -138,7 +144,7 @@ export function readLinkPath(input: SiteProcessInputType): unknown {
       }
       case Link.Term: {
         const term = code.resolveTermString(
-          code.withEnvironment(input, { nest: seg }),
+          code.withLink(input, { nest: seg }),
         )
 
         if (code.isRecord(value) && code.isString(term)) {
@@ -166,19 +172,19 @@ export function readLinkPlugin(input: SiteProcessInputType): unknown {
     switch (child.type) {
       case Link.Tree:
         return readLinkTree(
-          code.withEnvironment(input, {
+          code.withLink(input, {
             nest: child,
           }),
         )
       case Link.Path:
         return readLinkPath(
-          code.withEnvironment(input, {
+          code.withLink(input, {
             nest: child,
           }),
         )
       case Link.Term:
         return readLinkTerm(
-          code.withEnvironment(input, {
+          code.withLink(input, {
             nest: child,
           }),
         )
@@ -215,7 +221,7 @@ export function resolvePathDependencyList(
     } else {
       array.push(
         ...resolveTermStringDependencyList(
-          code.withEnvironment(input, { nest: seg }),
+          code.withLink(input, { nest: seg }),
           parent,
         ),
       )
@@ -260,7 +266,7 @@ export function resolveText(
         break
       case Link.Plugin:
         const text = code.readLinkPlugin(
-          code.withEnvironment(input, {
+          code.withLink(input, {
             index: 0,
             nest: seg,
           }),
@@ -294,7 +300,7 @@ export function resolveTextDependencyList(
         break
       case Link.Plugin:
         const dependencies = code.resolveTreeDependencyList(
-          code.withEnvironment(input, {
+          code.withLink(input, {
             index: 0,
             nest: seg.nest[0],
           }),

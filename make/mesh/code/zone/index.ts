@@ -8,10 +8,7 @@ export function process_codeCard_zone(
 ): void {
   code.assumeLink(input, Link.Tree).nest.forEach((nest, index) => {
     code.process_codeCard_zone_nestedChildren(
-      code.withEnvironment(input, {
-        index,
-        nest,
-      }),
+      code.withLink(input, nest, index),
     )
   })
 }
