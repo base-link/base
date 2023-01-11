@@ -282,7 +282,7 @@ export function pushBlue(
   if (child.parent) {
     const node = child.parent.node
     const array = (node as Record<string, unknown>)[property]
-    code.assertArray(array)
+    code.assertArray(array, property, input.module.path)
     array.push(child.node)
   }
 

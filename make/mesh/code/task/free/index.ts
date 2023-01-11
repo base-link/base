@@ -1,21 +1,24 @@
-import { Link, LinkHint, Mesh, NestOutputType, code } from '~'
+import { LinkHint, Mesh, code } from '~'
 import type { SiteProcessInputType } from '~'
 
 export function process_codeCard_task_free(
   input: SiteProcessInputType,
 ): void {
-  const output: NestOutputType = {
-    children: [],
-    scope: input.scope,
-    type: Nest.Output,
-  }
+  const red = code.pushRed(
+    input,
+    code.createRedGather(input, 'definedOutputType'),
+  )
+  const blue = code.attachBlue(input, 'definedOutputType', {
+    type: Mesh.Output,
+  })
+  const colorInput = code.withColors(input, { blue, red })
 
-  const childInput = code.withElement(input, output)
-
-  code.assumeLink(input, Link.Tree).nest.forEach((nest, index) => {
-    process_codeCard_task_free_nestedChildren(
-      code.withLink(childInput, nest, index),
-    )
+  code.assumeNest(colorInput).forEach((nest, index) => {
+    code.addTask(colorInput.base, () => {
+      code.process_codeCard_task_free_nestedChildren(
+        code.withLink(colorInput, nest, index),
+      )
+    })
   })
 }
 
@@ -28,10 +31,12 @@ export function process_codeCard_task_free_nestedChildren(
       const term = code.assumeTermString(input)
       const index = code.assumeLinkIndex(input)
       if (index === 0) {
-        code.gatherIntoMeshParent(
+        const blueString = code.createBlueString(term)
+        code.pushRed(
           input,
-          code.createStringConstant('name', term),
+          code.createRedValue(input, 'name', blueString),
         )
+        code.attachBlue(input, 'name', blueString)
         return
       }
       break

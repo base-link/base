@@ -5,9 +5,10 @@ export * from './take/index.js'
 
 export function process_codeCard_link(
   input: SiteProcessInputType,
+  property = 'inputs',
 ): void {
-  const red = code.pushRed(input, code.createRedGather(input, 'input'))
-  const blue = code.pushBlue(input, 'inputs', {
+  const red = code.pushRed(input, code.createRedGather(input, property))
+  const blue = code.pushBlue(input, property, {
     type: Mesh.Input,
   })
 
@@ -15,7 +16,7 @@ export function process_codeCard_link(
 
   code.assumeNest(colorInput).forEach((nest, index) => {
     code.addTask(input.base, () => {
-      process_codeCard_link_nestedChildren(
+      code.process_codeCard_link_nestedChildren(
         code.withLink(colorInput, nest, index),
       )
     })

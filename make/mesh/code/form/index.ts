@@ -18,8 +18,13 @@ export function process_codeCard_form(
   const scope = code.createStepScope(container)
   const red = code.pushRed(input, code.createRedGather(input, 'class'))
   const blue = code.pushBlue(input, 'classes', {
-    inputs: [],
-    type: Mesh.Template,
+    callbacks: [],
+    interfaces: [],
+    methods: [],
+    parents: [],
+    properties: [],
+    type: Mesh.Class,
+    typeInputs: [],
   })
 
   const scopeInput = code.withScope(input, scope)
@@ -46,10 +51,10 @@ export function process_codeCard_form_nestedChildren(
       const term = code.assumeTermString(input)
       switch (term) {
         case 'link':
-          code.process_codeCard_link(input)
+          code.process_codeCard_link(input, 'properties')
           break
         case 'task':
-          code.process_codeCard_task(input)
+          code.process_codeCard_task(input, 'methods')
           break
         case 'head':
           code.process_codeCard_head(input)

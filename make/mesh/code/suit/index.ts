@@ -1,21 +1,27 @@
-import { Link, NestClassInterfaceType, code } from '~'
+import { Link, Mesh, code } from '~'
 import type { SiteProcessInputType } from '~'
 
 export function process_codeCard_suit(
   input: SiteProcessInputType,
 ): void {
-  const suit: NestClassInterfaceType = {
-    children: [],
-    scope: input.scope,
-    type: Nest.ClassInterface,
-  }
+  const red = code.pushRed(
+    input,
+    code.createRedGather(input, 'classInterface'),
+  )
+  const blue = code.pushBlue(input, 'classInterfaces', {
+    methods: [],
+    properties: [],
+    type: Mesh.ClassInterface,
+    typeInputs: [],
+  })
+  const colorInput = code.withColors(input, { blue, red })
 
-  const childInput = code.withElement(input, suit)
-
-  code.assumeLink(childInput, Link.Tree).nest.forEach((nest, index) => {
-    code.process_codeCard_suit_nestedChildren(
-      code.withLink(childInput, nest, index),
-    )
+  code.assumeNest(colorInput).forEach((nest, index) => {
+    code.addTask(colorInput.base, () => {
+      code.process_codeCard_suit_nestedChildren(
+        code.withLink(colorInput, nest, index),
+      )
+    })
   })
 }
 
@@ -27,18 +33,20 @@ export function process_codeCard_suit_nestedChildren(
     const term = code.assumeTermString(input)
     const index = code.assumeLinkIndex(input)
     if (index === 0) {
-      code.gatherIntoMeshParent(
+      const blueString = code.createBlueString(term)
+      code.pushRed(
         input,
-        code.createStringConstant('name', term),
+        code.createRedValue(input, 'name', blueString),
       )
+      code.attachBlue(input, 'name', blueString)
       return
     }
     switch (term) {
       case 'link':
-        code.process_codeCard_link(input)
+        code.process_codeCard_link(input, 'properties')
         break
       case 'task':
-        code.process_codeCard_task(input)
+        code.process_codeCard_task(input, 'methods')
         break
       case 'case':
         // code.process_codeCard_formTask(input)

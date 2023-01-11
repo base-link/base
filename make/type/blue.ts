@@ -64,7 +64,12 @@ export type BlueClassInterfaceImplementationType = BlueBaseType & {
 }
 
 export type BlueClassInterfaceType = BlueBaseType & {
+  hidden?: BlueBooleanLinkType
+  methods: Array<BlueFunctionType>
+  name?: BlueTermLinkType
+  properties: Array<BlueInputType>
   type: Mesh.ClassInterface
+  typeInputs: Array<BlueClassInputType>
 }
 
 export type BlueClassReferenceType = BlueBaseType & {
@@ -75,7 +80,15 @@ export type BlueClassReferenceType = BlueBaseType & {
 }
 
 export type BlueClassType = BlueBaseType & {
+  callbacks: Array<BlueCallbackType>
+  hidden?: BlueBooleanLinkType
+  interfaces: Array<BlueClassInterfaceImplementationType>
+  methods: Array<BlueFunctionType>
+  name?: BlueTermLinkType
+  parents: Array<BlueClassType>
+  properties: Array<BlueInputType>
   type: Mesh.Class
+  typeInputs: Array<BlueClassInputType>
 }
 
 export type BlueCodeModuleType = BlueBaseType & {
