@@ -25,7 +25,7 @@ export function process_codeCard_hook_nestedChildren(
   const type = code.getLinkHint(input)
   switch (type) {
     case LinkHint.StaticTerm: {
-      const index = code.assumeLinkNestIndex(input)
+      const index = code.assumeLinkIndex(input)
       const term = code.assumeTerm(input)
       if (index === 0) {
         code.gatherIntoMeshParent(

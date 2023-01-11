@@ -1,6 +1,5 @@
-import { Site, code } from '~'
+import { BlueClassReferenceType, SiteProcessInputType, code } from '~'
 import type {
-  MeshClassReferenceType,
   SiteContainerScopeType,
   SiteStepScopeType,
   SiteVariableDeclarationOptionsType,
@@ -24,7 +23,6 @@ export function createContainerScope(
     declarations,
     parent,
     steps: [],
-    type: Site.ContainerScope,
   }
 }
 
@@ -37,7 +35,6 @@ export function createStepScope(
     container,
     declarations,
     previous,
-    type: Site.StepScope,
   }
   container.steps.push(step)
   return step
@@ -66,7 +63,7 @@ export function hasScopeVariable(
 export function setInferredScopeType(
   scope: SiteStepScopeType,
   property: string,
-  type: MeshClassReferenceType,
+  type: BlueClassReferenceType,
 ): void {
   if (property in scope.declarations) {
     const declaration = scope.declarations[property]
@@ -79,5 +76,15 @@ export function setInferredScopeType(
     code.throwError(
       code.generateEnvironmentMissingPropertyError(property),
     )
+  }
+}
+
+export function withScope(
+  input: SiteProcessInputType,
+  scope: SiteStepScopeType,
+): SiteProcessInputType {
+  return {
+    ...input,
+    scope,
   }
 }

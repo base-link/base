@@ -1,12 +1,4 @@
-import {
-  BlackType,
-  Color,
-  LinkNodeType,
-  LinkTermType,
-  Mesh,
-  MeshBaseType,
-  SiteModuleBaseType,
-} from '~'
+import { BlackType, Color, LinkNodeType, Mesh, MeshBaseType } from '~'
 
 export type RedBaseType = MeshBaseType & {
   color: Color.Red
@@ -18,10 +10,4 @@ export type RedGatherType = RedBaseType & {
   type: Mesh.Gather
 }
 
-export type RedModuleGatherType = SiteModuleBaseType &
-  RedBaseType & {
-    children: Array<BlackType>
-    type: Mesh.ModuleGather
-  }
-
-export type RedType = RedGatherType | RedModuleGatherType
+export type RedType = RedGatherType

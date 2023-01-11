@@ -257,7 +257,7 @@ export function process_codeCard_nestedChildren(
 export function process_codeCard_nestedChildren_term(
   input: SiteProcessInputType,
 ): void {
-  const term = code.resolveTerm(input)
+  const term = code.resolveTermString(input)
   switch (term) {
     case 'bear': {
       code.process_codeCard_bear(input)

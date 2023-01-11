@@ -1,23 +1,8 @@
 import { Link, LinkHint, code } from '~'
-import type {
-  LinkTermType,
-  LinkType,
-  SiteProcessInputType,
-  SiteStepScopeType,
-} from '~'
+import type { SiteProcessInputType } from '~'
 
-export function assumeLinkNest(
-  input: SiteProcessInputType,
-): LinkType<Link> {
-  const nest = code.getEnvironmentProperty(input.environment, 'nest')
-  code.assertGenericLink(nest)
-  return nest
-}
-
-export function assumeLinkNestIndex(
-  input: SiteProcessInputType,
-): number {
-  const index = code.getEnvironmentProperty(input.environment, 'index')
+export function assumeLinkIndex(input: SiteProcessInputType): number {
+  const index = input.link.index
   code.assertNumber(index)
   return index
 }
@@ -53,19 +38,19 @@ export function getLinkHint(input: SiteProcessInputType): LinkHint {
 }
 
 export function nestIsHashtag(input: SiteProcessInputType): boolean {
-  const nest = code.assumeLinkNest(input)
+  const nest = input.link.element
 
   return nest.type === Link.Hashtag
 }
 
 export function nestIsPath(input: SiteProcessInputType): boolean {
-  const nest = code.assumeLinkNest(input)
+  const nest = input.link.element
 
   return nest.type === Link.Path
 }
 
 export function nestIsTerm(input: SiteProcessInputType): boolean {
-  const nest = code.assumeLinkNest(input)
+  const nest = input.link.element
 
   if (nest.type === Link.Term) {
     return true
@@ -88,7 +73,7 @@ export function nestIsTerm(input: SiteProcessInputType): boolean {
 }
 
 export function nestIsText(input: SiteProcessInputType): boolean {
-  const nest = code.assumeLinkNest(input)
+  const nest = input.link.element
 
   return nest.type === Link.Text
 }
@@ -96,7 +81,7 @@ export function nestIsText(input: SiteProcessInputType): boolean {
 export function nestIsUnsignedInteger(
   input: SiteProcessInputType,
 ): boolean {
-  const nest = code.assumeLinkNest(input)
+  const nest = input.link.element
 
   return nest.type === Link.UnsignedInteger
 }
@@ -104,7 +89,7 @@ export function nestIsUnsignedInteger(
 export function pathIsInterpolated(
   input: SiteProcessInputType,
 ): boolean {
-  const nest = code.assumeLinkNest(input)
+  const nest = input.link.element
 
   if (nest.type !== Link.Path) {
     return false

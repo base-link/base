@@ -101,7 +101,7 @@ export function process_deckCard_nestedChildren(
 export function process_deckCard_staticTerm(
   input: SiteProcessInputType,
 ): void {
-  const term = code.resolveTerm(input)
+  const term = code.resolveTermString(input)
   switch (term) {
     case 'deck':
       code.process_deckCard_deck(input)

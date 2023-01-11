@@ -1,5 +1,5 @@
 import { Color, Link, LinkHint, Mesh, YellowExportType, code } from '~'
-import type { MeshExportType, SiteProcessInputType } from '~'
+import type { SiteProcessInputType } from '~'
 
 export * from './hide/index.js'
 
@@ -12,9 +12,9 @@ export function process_codeCard_bear(
     type: Mesh.Export,
   })
   const colorInput = code.withColors(input, { blue, red })
-  const nest = code.assumeLink(colorInput, Link.Tree)
+  const nest = code.assumeNest(colorInput)
 
-  nest.nest.forEach((nest, index) => {
+  nest.forEach((nest, index) => {
     code.addTask(input.base, () => {
       code.process_codeCard_bear_nestedChildren(
         code.withEnvironment(colorInput, {
@@ -47,7 +47,7 @@ export function process_codeCard_bear_nestedChildren(
       break
     }
     case LinkHint.StaticTerm: {
-      const term = code.resolveTerm(input)
+      const term = code.resolveTermString(input)
       switch (term) {
         case 'hide':
           code.process_codeCard_bear_hide(input)
@@ -65,7 +65,7 @@ export function process_codeCard_bear_nestedChildren(
 export function process_codeCard_bear_nestedChildren_dynamicText(
   input: SiteProcessInputType,
 ): void {
-  const nest = code.assumeLinkNest(input)
+  const nest = code.assumeLink(input)
   code.assertLink(nest, Link.Text)
   const red = code.createRed(
     input,

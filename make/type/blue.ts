@@ -1,4 +1,11 @@
-import { Color, Mesh, MeshBaseType, SiteModuleBaseType } from '~'
+import {
+  Color,
+  LinkPathType,
+  LinkTextType,
+  Mesh,
+  MeshBaseType,
+  SiteModuleBaseType,
+} from '~'
 
 export type BlueAssertionType = BlueBaseType & {
   type: Mesh.Assertion
@@ -87,7 +94,10 @@ export type BlueComponentType = BlueBaseType & {
 }
 
 export type BlueConstantType = BlueBaseType & {
+  hidden: BlueBooleanLinkType
+  name: BlueTermLinkType
   type: Mesh.Constant
+  value: BlueValueType | Array<BlueConstantType>
 }
 
 export type BlueDecimalType = BlueBaseType & {
@@ -138,9 +148,55 @@ export type BlueInputType = BlueBaseType & {
   type: Mesh.Input
 }
 
+export type BlueMappingType = {
+  'mesh-assertion': BlueAssertionType
+  'mesh-bind': BlueBindType
+  'mesh-boolean': BlueBooleanType
+  'mesh-call': BlueCallType
+  'mesh-callback': BlueCallbackType
+  'mesh-class': BlueClassType
+  'mesh-class-input': BlueClassInputType
+  'mesh-class-interface': BlueClassInterfaceType
+  'mesh-class-interface-implementation': BlueClassInterfaceImplementationType
+  'mesh-class-reference': BlueClassReferenceType
+  'mesh-code-module': BlueCodeModuleType
+  'mesh-component': BlueComponentType
+  'mesh-constant': BlueConstantType
+  'mesh-decimal': BlueDecimalType
+  'mesh-element': BlueElementType
+  'mesh-export': BlueExportType
+  'mesh-function': BlueFunctionType
+  'mesh-gather': BlueGatherType
+  'mesh-hide-export-variable': BlueHideExportVariableType
+  'mesh-import': BlueImportType
+  'mesh-import-variable': BlueImportVariableType
+  'mesh-import-variable-rename': BlueImportVariableRenameType
+  'mesh-inject': BlueInjectType
+  'mesh-input': BlueInputType
+  'mesh-native-class-interface': BlueNativeClassInterfaceType
+  'mesh-output': BlueOutputType
+  'mesh-package': BluePackageType
+  'mesh-package-license': BluePackageLicenseType
+  'mesh-package-module': BluePackageModuleType
+  'mesh-package-user': BluePackageUserType
+  'mesh-path': BluePathType
+  'mesh-placeholder': BluePlaceholderType
+  'mesh-signed-integer': BlueSignedIntegerType
+  'mesh-string': BlueStringType
+  'mesh-string-array': BlueStringArrayType
+  'mesh-template': BlueTemplateType
+  'mesh-term': BlueTermType
+  'mesh-test': BlueTestType
+  'mesh-text': BlueTextType
+  'mesh-unsigned-integer': BlueUnsignedIntegerType
+  'mesh-variable': BlueVariableType
+}
+
 export type BlueNativeClassInterfaceType = BlueBaseType & {
   type: Mesh.NativeClassInterface
 }
+
+export type BlueNodeType<T extends Mesh> = BlueMappingType[T]
 
 export type BlueOutputType = BlueBaseType & {
   type: Mesh.Output
@@ -172,6 +228,7 @@ export type BluePathLinkType =
 
 export type BluePathType = BlueBaseType & {
   type: Mesh.Path
+  value: LinkPathType
 }
 
 export type BluePlaceholderType = BlueBaseType & {
@@ -186,6 +243,7 @@ export type BlueStepType = BlueCallType | BlueAssertionType
 
 export type BlueStringArrayType = BlueBaseType & {
   type: Mesh.StringArray
+  value: Array<string>
 }
 
 export type BlueStringType = BlueBaseType & {
@@ -211,6 +269,7 @@ export type BlueTextLinkType = BlueTextType | BlueStringType
 
 export type BlueTextType = BlueBaseType & {
   type: Mesh.Text
+  value: LinkTextType
 }
 
 export type BlueType =
@@ -267,5 +326,11 @@ export type BlueValueType =
   | BlueBooleanType
 
 export type BlueVariableType = BlueBaseType & {
+  isDereference: BlueBooleanLinkType
+  isMutable: BlueBooleanLinkType
+  isOwner: BlueBooleanType
+  isReference: BlueBooleanLinkType
+  lifetime?: string
+  path: BluePathLinkType
   type: Mesh.Variable
 }

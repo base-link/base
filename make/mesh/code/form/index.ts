@@ -96,7 +96,7 @@ export function process_codeCard_form_nestedChildren(
 ): void {
   const type = code.getLinkHint(input)
   if (type === 'static-term') {
-    const index = code.assumeLinkNestIndex(input)
+    const index = code.assumeLinkIndex(input)
     if (index === 0) {
       code.process_first_staticTerm(input, 'name')
     } else {

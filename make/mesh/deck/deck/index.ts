@@ -67,7 +67,7 @@ export function process_deckCard_deck_nestedChildren(
   input: SiteProcessInputType,
 ): void {
   const type = code.getLinkHint(input)
-  const index = code.assumeLinkNestIndex(input)
+  const index = code.assumeLinkIndex(input)
   switch (type) {
     case LinkHint.DynamicTerm:
     case LinkHint.DynamicText:
@@ -98,7 +98,7 @@ export function process_deckCard_deck_nestedChildren(
 export function process_deckCard_deck_nestedTerm(
   input: SiteProcessInputType,
 ): void {
-  const term = code.resolveTerm(input)
+  const term = code.resolveTermString(input)
   switch (term) {
     case 'bear': {
       code.process_deckCard_deck_bear(input)

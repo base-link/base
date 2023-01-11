@@ -57,14 +57,6 @@ export type YellowBindType = YellowBaseType & {
   type: Mesh.Bind
 }
 
-export type YellowBookModuleType = SiteModuleBaseType &
-  YellowBaseType & {
-    abstract: string
-    tags: Array<string>
-    title: string
-    type: Mesh.BookModule
-  }
-
 export type YellowBooleanLinkType =
   | YellowBooleanType
   | YellowPathType

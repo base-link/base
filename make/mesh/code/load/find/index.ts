@@ -61,7 +61,7 @@ export function process_codeCard_load_find_nestedChildren(
   const type = code.getLinkHint(input)
   switch (type) {
     case LinkHint.StaticTerm: {
-      const index = code.assumeLinkNestIndex(input)
+      const index = code.assumeLinkIndex(input)
 
       if (index > 0) {
         code.process_codeCard_load_find_staticTerm(input)
@@ -79,7 +79,7 @@ export function process_codeCard_load_find_nestedChildren(
 export function process_codeCard_load_find_staticTerm(
   input: SiteProcessInputType,
 ): void {
-  const term = code.resolveTerm(input)
+  const term = code.resolveTermString(input)
   switch (term) {
     case 'save':
       code.process_codeCard_load_find_save(input)
@@ -93,10 +93,10 @@ export function process_codeCard_load_find_staticTerm(
 }
 
 export function process_find_scope(input: SiteProcessInputType): void {
-  const nest = code.assumeLinkNest(input)
+  const nest = code.assumeLink(input)
   code.assertLink(nest, Link.Tree)
 
-  const scope = code.resolveTerm(input)
+  const scope = code.resolveTermString(input)
   code.assertString(scope)
   const nestedNest = nest.nest[0]
   code.assertGenericLink(nestedNest)
@@ -104,7 +104,7 @@ export function process_find_scope(input: SiteProcessInputType): void {
     index: 0,
     nest: nestedNest,
   })
-  const name = code.resolveTerm(nestedInput)
+  const name = code.resolveTermString(nestedInput)
   code.assertString(name)
   code.gatherIntoMeshParent(
     input,

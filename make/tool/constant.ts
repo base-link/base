@@ -1,48 +1,29 @@
-import {
-  BlackType,
-  Color,
-  LinkNodeType,
-  Mesh,
-  RedPlaceholderType,
-  SiteProcessInputType,
-  SiteStepScopeType,
-  code,
+import { Color, Mesh, code } from '~'
+import type {
+  BlueConstantType,
+  BluePathType,
+  BlueTermLinkType,
+  BlueValueType,
+  LinkPathType,
 } from '~'
-import type { LinkPathType, LinkTermType } from '~'
 
-export function createConstant(
-  name: MeshTermLinkType,
-  value: MeshValueType,
-): MeshType<Mesh.Constant> {
+export function createBlueConstant(
+  name: BlueTermLinkType,
+  value: BlueValueType | Array<BlueConstantType>,
+): BlueConstantType {
   return {
-    bound: true,
-    hidden: code.createMeshBoolean(false),
+    color: Color.Blue,
+    hidden: code.createBlueBoolean(false),
     name,
     type: Mesh.Constant,
     value,
   }
 }
 
-export function createMeshPath(
-  value: LinkPathType,
-): MeshType<Mesh.Path> {
+export function createBluePath(value: LinkPathType): BluePathType {
   return {
-    bound: false,
+    color: Color.Blue,
     type: Mesh.Path,
-    value,
-  }
-}
-
-export function createRedPlaceholder(
-  input: SiteProcessInputType,
-  value: LinkNodeType | BlackType,
-  name?: string,
-): RedPlaceholderType {
-  return {
-    color: Color.Red,
-    name,
-    scope: input.scope,
-    type: Mesh.Placeholder,
     value,
   }
 }

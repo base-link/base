@@ -1,4 +1,4 @@
-import { Link, LinkHint, Site, code } from '~'
+import { Link, LinkHint, code } from '~'
 import type {
   SiteDependencyPartType,
   SiteDependencyType,
@@ -75,7 +75,7 @@ export function readDependency(
 }
 
 export function readLinkIndex(input: SiteProcessInputType): unknown {
-  const nest = code.assumeLinkNest(input)
+  const nest = input.link.element
 
   if (nest.type === Link.Index) {
     const child = nest.nest[0]
@@ -107,13 +107,13 @@ export function readLinkIndex(input: SiteProcessInputType): unknown {
 }
 
 export function readLinkPath(input: SiteProcessInputType): unknown {
-  const nest = code.assumeLinkNest(input)
+  const nest = input.link.element
   code.assertLink(nest, Link.Path)
 
   let i = 0
 
   const first = nest.segment[i++]
-  const firstTerm = code.resolveTerm(
+  const firstTerm = code.resolveTermString(
     code.withEnvironment(input, { nest: first }),
   )
 
@@ -137,7 +137,7 @@ export function readLinkPath(input: SiteProcessInputType): unknown {
         break
       }
       case Link.Term: {
-        const term = code.resolveTerm(
+        const term = code.resolveTermString(
           code.withEnvironment(input, { nest: seg }),
         )
 
@@ -157,7 +157,7 @@ export function readLinkPath(input: SiteProcessInputType): unknown {
 }
 
 export function readLinkPlugin(input: SiteProcessInputType): unknown {
-  const nest = code.assumeLinkNest(input)
+  const nest = input.link.element
 
   if (nest.type === Link.Plugin) {
     const child = nest.nest[0]
@@ -189,13 +189,13 @@ export function readLinkPlugin(input: SiteProcessInputType): unknown {
 }
 
 export function readLinkTerm(input: SiteProcessInputType): unknown {
-  const term = code.resolveTerm(input)
+  const term = code.resolveTermString(input)
   code.assertString(term)
   return code.getEnvironmentProperty(input.environment, term)
 }
 
 export function readLinkTree(input: SiteProcessInputType): unknown {
-  const nest = code.assumeLinkNest(input)
+  const nest = input.link.element
   code.assertLink(nest, Link.Tree)
   throw new Error('TODO')
   return undefined
@@ -214,7 +214,7 @@ export function resolvePathDependencyList(
       code.throwError(code.generateCompilerTodoError())
     } else {
       array.push(
-        ...resolveTermDependencyList(
+        ...resolveTermStringDependencyList(
           code.withEnvironment(input, { nest: seg }),
           parent,
         ),
@@ -225,11 +225,11 @@ export function resolvePathDependencyList(
   return array
 }
 
-export function resolveTermDependencyList(
+export function resolveTermStringDependencyList(
   input: SiteProcessInputType,
   parent: SiteDependencyType,
 ): Array<SiteDependencyPartType> {
-  const name = code.resolveTerm(input)
+  const name = code.resolveTermString(input)
 
   code.assertString(name)
 
@@ -237,7 +237,6 @@ export function resolveTermDependencyList(
     callbackList: [],
     name,
     parent,
-    type: Site.DependencyPart,
   }
 
   return [dependencyPart]
@@ -246,7 +245,7 @@ export function resolveTermDependencyList(
 export function resolveText(
   input: SiteProcessInputType,
 ): string | undefined {
-  const nest = code.assumeLinkNest(input)
+  const nest = input.link.element
 
   if (nest.type !== Link.Text) {
     return
@@ -281,7 +280,7 @@ export function resolveTextDependencyList(
   input: SiteProcessInputType,
   job: (i: SiteProcessInputType) => void,
 ): Array<SiteDependencyType> {
-  const nest = code.assumeLinkNest(input)
+  const nest = input.link.element
 
   if (nest.type !== Link.Text) {
     return []
@@ -320,16 +319,15 @@ export function resolveTreeDependencyList(
     callbackList: [job],
     context: input,
     path: [],
-    type: Site.Dependency,
   }
   array.push(dependency)
 
-  const nest = code.assumeLinkNest(input)
+  const nest = input.link.element
 
   switch (nest.type) {
     case Link.Term: {
       dependency.path.push(
-        ...resolveTermDependencyList(input, dependency),
+        ...resolveTermStringDependencyList(input, dependency),
       )
       break
     }
@@ -354,7 +352,7 @@ export function textIsInterpolated(
   input: SiteProcessInputType,
   size: number = 1,
 ): boolean {
-  const nest = code.assumeLinkNest(input)
+  const nest = input.link.element
 
   if (nest.type !== Link.Text) {
     return false

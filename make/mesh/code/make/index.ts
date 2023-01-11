@@ -20,7 +20,7 @@ export function process_codeCard_make_nestedChildren(
   const type = code.getLinkHint(input)
   switch (type) {
     case LinkHint.StaticTerm:
-      const term = code.resolveTerm(input)
+      const term = code.resolveTermString(input)
       switch (term) {
         case 'bind':
           code.process_codeCard_bind(input)

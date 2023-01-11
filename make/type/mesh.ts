@@ -3,7 +3,6 @@ import { SiteStepScopeType } from './site'
 export enum Mesh {
   Assertion = 'mesh-assertion',
   Bind = 'mesh-bind',
-  BookModule = 'mesh-book-module',
   Boolean = 'mesh-boolean',
   Call = 'mesh-call',
   Callback = 'mesh-callback',
@@ -26,7 +25,6 @@ export enum Mesh {
   ImportVariableRename = 'mesh-import-variable-rename',
   Inject = 'mesh-inject',
   Input = 'mesh-input',
-  ModuleGather = 'mesh-module-gather',
   NativeClassInterface = 'mesh-native-class-interface',
   Output = 'mesh-output',
   Package = 'mesh-package',
@@ -35,7 +33,6 @@ export enum Mesh {
   PackageUser = 'mesh-package-user',
   Path = 'mesh-path',
   Placeholder = 'mesh-placeholder',
-  Pointer = 'mesh-pointer',
   SignedInteger = 'mesh-signed-integer',
   String = 'mesh-string',
   StringArray = 'mesh-string-array',
@@ -71,7 +68,6 @@ export const MESH_BOOLEAN_LINK_TYPE = [
 export const MESH_TYPE = [
   Mesh.Assertion,
   Mesh.Bind,
-  Mesh.BookModule,
   Mesh.Boolean,
   Mesh.Variable,
   Mesh.Call,
@@ -109,10 +105,8 @@ export const MESH_TYPE = [
   Mesh.Term,
   Mesh.Path,
   Mesh.Gather,
-  Mesh.ModuleGather,
   Mesh.HideExportVariable,
   Mesh.Text,
-  Mesh.Pointer,
 ]
 
 export type MeshBaseType = {

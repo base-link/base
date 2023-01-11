@@ -29,7 +29,7 @@ export function process_codeCard_task_free_nestedChildren(
   switch (type) {
     case LinkHint.StaticTerm: {
       const term = code.assumeTerm(input)
-      const index = code.assumeLinkNestIndex(input)
+      const index = code.assumeLinkIndex(input)
       if (index === 0) {
         code.gatherIntoMeshParent(
           input,

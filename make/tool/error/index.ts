@@ -299,7 +299,7 @@ export function generateInvalidNestCaseError(
 ): SiteErrorType {
   let scope
   try {
-    scope = code.resolveTerm(input, 1)
+    scope = code.resolveTermString(input, 1)
   } catch (e) {}
   const text = code.generateHighlightedErrorForLinkTree(input)
   return {
@@ -325,7 +325,7 @@ export function generateInvalidPatternError(
   pattern: unknown,
 ): SiteErrorType {
   const { module } = input
-  const nest = code.assumeLinkNest(input)
+  const nest = code.assumeLink(input)
   const text = code.generateHighlightedErrorForText(input)
   return {
     code: `0012`,
@@ -467,7 +467,7 @@ export function generateUnhandledNestCaseError(
 ): SiteErrorType {
   let scope
   try {
-    scope = code.resolveTerm(input, 1)
+    scope = code.resolveTermString(input, 1)
   } catch (e) {}
   const text = code.generateHighlightedErrorForLinkTree(input)
   return {
@@ -485,9 +485,9 @@ export function generateUnhandledTermCaseError(
 ): SiteErrorType {
   let scope
   try {
-    scope = code.resolveTerm(input, 1)
+    scope = code.resolveTermString(input, 1)
   } catch (e) {}
-  const name = code.resolveTerm(input)
+  const name = code.resolveTermString(input)
   code.assertString(name)
   const handle = ERROR['0002']
   code.assertError(handle)
@@ -516,9 +516,9 @@ export function generateUnknownTermError(
   input: SiteProcessInputType,
 ): SiteErrorType {
   const { module } = input
-  const name = code.resolveTerm(input)
+  const name = code.resolveTermString(input)
   const text = code.generateHighlightedErrorForLinkTree(input)
-  const insideName = code.resolveTerm(input, 1)
+  const insideName = code.resolveTermString(input, 1)
   return {
     code: `0003`,
     file: `${module.path}`,
@@ -760,7 +760,7 @@ export function getCursorRangeForTextWhitespaceToken(
 export function getCursorRangeForTree(
   input: SiteProcessInputType,
 ): CursorRangeType {
-  const nest = code.assumeLinkNest(input)
+  const nest = code.assumeLink(input)
 
   switch (nest.type) {
     case Link.Tree: {

@@ -23,7 +23,7 @@ export function process_codeCard_load_find_save_nestedChildren(
 ): void {
   const type = code.getLinkHint(input)
   if (type === LinkHint.StaticTerm) {
-    const term = code.resolveTerm(input)
+    const term = code.resolveTermString(input)
     code.assertString(term)
 
     code.gatherIntoMeshParent(input, {

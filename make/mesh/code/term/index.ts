@@ -20,7 +20,7 @@ export function process_codeCard_term_nestedChildren(
   const type = code.getLinkHint(input)
   switch (type) {
     case LinkHint.StaticTerm:
-      const term = code.resolveTerm(input)
+      const term = code.resolveTermString(input)
       break
     default:
       code.throwError(code.generateUnhandledNestCaseError(input, type))

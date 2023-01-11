@@ -1,31 +1,56 @@
-import { Mesh, code } from '~'
-import type { MeshType, SiteProcessInputType } from '~'
+import { BlueNodeType, Mesh, RedGatherType, code } from '~'
+import type { SiteProcessInputType } from '~'
 
-export function filterPlaceholders(
+export function filterBlue<T extends Mesh>(
   input: SiteProcessInputType,
   name: string,
-): Array<MeshType<Mesh>> {
-  const result: Array<MeshType<Mesh>> = []
+  type: T | Array<T>,
+): Array<BlueNodeType<T>> {
+  const result: Array<BlueNodeType<T>> = []
   const children = code.assumeChildren(input)
   for (const node of children) {
-    if (
-      code.isMesh(node, Mesh.Pointer) &&
-      code.isMesh(node.value, Mesh.Placeholder) &&
-      node.value.name === name
-    ) {
+    if (code.isBlue(node, type) && node.name === name) {
       result.push(node)
     }
   }
   return result
 }
 
-export function findRedPlaceholder(
+export function filterRed(
   input: SiteProcessInputType,
   name: string,
-): MeshType<Mesh> | undefined {
+): Array<RedGatherType> {
+  const result: Array<RedGatherType> = []
   const children = code.assumeChildren(input)
   for (const node of children) {
-    if (code.isMesh(node, Mesh.Placeholder) && node.name === name) {
+    if (code.isRed(node, Mesh.Gather) && node.name === name) {
+      result.push(node)
+    }
+  }
+  return result
+}
+
+export function findBlue(
+  input: SiteProcessInputType,
+  name: string,
+): RedGatherType | undefined {
+  const children = code.assumeChildren(input)
+  for (const node of children) {
+    if (code.isRed(node, Mesh.Gather) && node.name === name) {
+      return node
+    }
+  }
+  return undefined
+}
+
+export function findRed<T extends Mesh>(
+  input: SiteProcessInputType,
+  name: string,
+  type: T | Array<T>,
+): BlueNodeType<T> | undefined {
+  const children = code.assumeChildren(input)
+  for (const node of children) {
+    if (code.isBlue(node, type) && node.name === name) {
       return node
     }
   }

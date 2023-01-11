@@ -1,5 +1,15 @@
-import { code } from '~'
+import { SiteProcessInputType, code } from '~'
 import type { SiteEnvironmentType } from '~'
+
+export function assertEnvironment(
+  object: unknown,
+): asserts object is SiteEnvironmentType {
+  if (!code.isEnvironment(object)) {
+    code.throwError(
+      code.generateObjectNotTypeError(object, ['environment']),
+    )
+  }
+}
 
 export function createEnvironment(
   bindings: Record<string, unknown>,
@@ -50,6 +60,12 @@ export function getEnvironmentProperty(
   }
 }
 
+export function isEnvironment(
+  object: unknown,
+): object is SiteEnvironmentType {
+  return (object as SiteEnvironmentType).isEnv === true
+}
+
 export function setEnvironmentProperty(
   scope: SiteEnvironmentType,
   property: string,
@@ -63,5 +79,15 @@ export function setEnvironmentProperty(
     code.throwError(
       code.generateEnvironmentMissingPropertyError(property),
     )
+  }
+}
+
+export function withEnvironment(
+  input: SiteProcessInputType,
+  bindings: Record<string, unknown>,
+): SiteProcessInputType {
+  return {
+    ...input,
+    environment: code.createEnvironment(bindings, input.environment),
   }
 }

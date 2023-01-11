@@ -46,10 +46,10 @@ export function process_codeCard_call_nestedChildren(
   const type = code.getLinkHint(input)
   switch (type) {
     case LinkHint.DynamicTerm: {
-      const index = code.assumeLinkNestIndex(input)
+      const index = code.assumeLinkIndex(input)
       if (index === 0) {
         const call = code.assumeElementAsNest(input, Nest.Call)
-        const path = code.assumeLinkNest(input)
+        const path = code.assumeLink(input)
 
         if (code.isLink(path, Link.Term)) {
           call.children.push(
@@ -67,10 +67,10 @@ export function process_codeCard_call_nestedChildren(
       break
     case LinkHint.StaticPath:
     case LinkHint.DynamicPath: {
-      const index = code.assumeLinkNestIndex(input)
+      const index = code.assumeLinkIndex(input)
       if (index === 0) {
         const call = code.assumeElementAsNest(input, Nest.Call)
-        const path = code.assumeLinkNest(input)
+        const path = code.assumeLink(input)
 
         if (code.isLink(path, Link.Path)) {
           call.children.push(
@@ -85,10 +85,10 @@ export function process_codeCard_call_nestedChildren(
       break
     }
     case LinkHint.StaticTerm: {
-      const index = code.assumeLinkNestIndex(input)
+      const index = code.assumeLinkIndex(input)
       if (index === 0) {
         const call = code.assumeElementAsNest(input, Nest.Call)
-        const path = code.assumeLinkNest(input)
+        const path = code.assumeLink(input)
 
         if (code.isLink(path, Link.Term)) {
           call.children.push(

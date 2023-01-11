@@ -21,7 +21,7 @@ export function process_codeCard_zone_nestedChildren(
 ): void {
   const type = code.getLinkHint(input)
   if (type === 'static-term') {
-    const term = code.resolveTerm(input)
+    const term = code.resolveTermString(input)
     switch (term) {
       case 'take':
         code.process_codeCard_link(input)

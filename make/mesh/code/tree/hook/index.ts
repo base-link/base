@@ -20,7 +20,7 @@ export function process_codeCard_tree_hook_nestedChildren(
   const type = code.getLinkHint(input)
   switch (type) {
     case LinkHint.StaticTerm:
-      const index = code.assumeLinkNestIndex(input)
+      const index = code.assumeLinkIndex(input)
       if (index === 0) {
         const name = code.assumeTerm(input)
         code.gatherIntoMeshParent(
@@ -28,7 +28,7 @@ export function process_codeCard_tree_hook_nestedChildren(
           code.createStringConstant('name', name),
         )
       } else {
-        const nest = code.assumeLinkNest(input)
+        const nest = code.assumeLink(input)
         code.gatherIntoMeshParent(input, nest)
       }
       break

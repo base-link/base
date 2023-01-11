@@ -96,7 +96,7 @@ export function process_codeCard_task_nestedChildren(
   const type = code.getLinkHint(input)
   switch (type) {
     case LinkHint.DynamicTerm: {
-      const index = code.assumeLinkNestIndex(input)
+      const index = code.assumeLinkIndex(input)
       if (index === 0) {
         code.process_dynamicTerm(input)
       } else {
@@ -107,7 +107,7 @@ export function process_codeCard_task_nestedChildren(
       break
     }
     case LinkHint.StaticTerm: {
-      const index = code.assumeLinkNestIndex(input)
+      const index = code.assumeLinkIndex(input)
       if (index === 0) {
         code.process_first_staticTerm(input, 'name')
         return

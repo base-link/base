@@ -1,20 +1,10 @@
 import {
   Base,
   BaseCard,
-  SiteEnvironmentType,
   SiteModuleBaseType,
+  SiteParseType,
   code,
 } from '~'
-
-export function assertEnvironment(
-  object: unknown,
-): asserts object is SiteEnvironmentType {
-  if (!code.isEnvironment(object)) {
-    code.throwError(
-      code.generateObjectNotTypeError(object, ['environment']),
-    )
-  }
-}
 
 export function assertModule(
   object: unknown,
@@ -36,14 +26,21 @@ export function hasModuleInitialized(module: BaseCard): boolean {
   return Object.keys(module.seed).length > 0
 }
 
-export function isEnvironment(
-  object: unknown,
-): object is SiteEnvironmentType {
-  return (object as SiteEnvironmentType).isEnv === true
-}
-
 export function isModule(
   object: unknown,
 ): object is SiteModuleBaseType {
   return (object as SiteModuleBaseType).isModule === true
+}
+
+export function loadLinkModule(
+  base: Base,
+  path: string,
+): SiteParseType {
+  const text = code.readTextFile(base, path)
+  const data = code.parseLinkText({ path, text })
+  const directory = code.getLinkHost(path)
+  return {
+    directory,
+    ...data,
+  }
 }

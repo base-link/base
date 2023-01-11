@@ -41,10 +41,24 @@ export type SiteColorType<T> = {
   parent?: SiteColorType<T>
 }
 
+export type SiteColorsType = {
+  blue?: SiteBlueType
+  red?: SiteRedType
+  yellow?: SiteYellowType
+}
+
 export type SiteContainerScopeType = {
   declarations: Record<string, SiteVariableDeclarationType>
   parent?: SiteContainerScopeType
   steps: Array<SiteStepScopeType>
+}
+
+export type SiteCreateInputType = {
+  base: Base
+  bindings: Record<string, unknown>
+  module: SiteModuleBaseType
+  red: SiteRedType
+  scope: SiteStepScopeType
 }
 
 export type SiteDependencyPartCallbackType = (value: unknown) => void
@@ -95,6 +109,14 @@ export type SiteModuleType = SiteModuleBaseType & {
   module: SiteModuleType
   red: SiteRedType
   scope: SiteStepScopeType
+}
+
+export type SiteParseType = {
+  directory: string
+  linkTree: LinkTreeType
+  path: string
+  text: string
+  textByLine: Array<string>
 }
 
 export type SitePotentialScopeType =

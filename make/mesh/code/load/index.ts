@@ -94,7 +94,7 @@ export function process_codeCard_load_nestedChildren(
   const type = code.getLinkHint(input)
   switch (type) {
     case LinkHint.StaticText: {
-      const index = code.assumeLinkNestIndex(input)
+      const index = code.assumeLinkIndex(input)
       if (index !== 0) {
         code.throwError(code.generateInvalidCompilerStateError())
       } else {
@@ -104,7 +104,7 @@ export function process_codeCard_load_nestedChildren(
     }
 
     case LinkHint.StaticTerm: {
-      const term = code.resolveTerm(input)
+      const term = code.resolveTermString(input)
       switch (term) {
         case 'find':
         case 'take':

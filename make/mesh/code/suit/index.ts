@@ -28,7 +28,7 @@ export function process_codeCard_suit_nestedChildren(
   const type = code.getLinkHint(input)
   if (type === 'static-term') {
     const term = code.assumeTerm(input)
-    const index = code.assumeLinkNestIndex(input)
+    const index = code.assumeLinkIndex(input)
     if (index === 0) {
       code.gatherIntoMeshParent(
         input,

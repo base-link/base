@@ -30,7 +30,7 @@ export function process_codeCard_form_wear_nestedChildren(
   switch (type) {
     case LinkHint.StaticTerm: {
       const term = code.assumeTerm(input)
-      const index = code.assumeLinkNestIndex(input)
+      const index = code.assumeLinkIndex(input)
       if (index === 0) {
         const wear = code.assumeElementAsNest(
           input,
