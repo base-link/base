@@ -8,7 +8,7 @@ export function finalize_deckCard_deck_bear(
   code.assertString(text)
   const path = code.resolveModulePath(input, text)
   code.assertString(path, 'path')
-  code.pushIntoParentObject(
+  code.gatherIntoMeshParent(
     input,
     code.createStringConstant('export', path),
   )
@@ -22,7 +22,7 @@ export function process_deckCard_deck_bear(
   const nest = code.assumeLink(input, Link.Tree).nest[0]
 
   code.processTextNest(
-    code.withEnvironment(input, { nest }),
+    code.withLink(input, { nest }),
     code.finalize_deckCard_deck_bear,
   )
 }

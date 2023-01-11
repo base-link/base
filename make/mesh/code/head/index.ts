@@ -5,13 +5,11 @@ export function process_codeCard_head(
   input: SiteProcessInputType,
 ): void {
   const head = code.createNest(Nest.ClassInput, input.scope)
+  code.gatherIntoMeshParent(input, head)
 
   code.assumeLink(input, Link.Tree).nest.forEach((nest, index) => {
     process_codeCard_head_nestedChildren(
-      code.withEnvironment(input, {
-        index,
-        nest,
-      }),
+      code.withLink(input, nest, index),
     )
   })
 }
@@ -19,13 +17,13 @@ export function process_codeCard_head(
 export function process_codeCard_head_nestedChildren(
   input: SiteProcessInputType,
 ): void {
-  const type = code.determineNestType(input)
+  const type = code.getLinkHint(input)
   switch (type) {
     case LinkHint.StaticTerm:
-      const term = code.assumeTerm(input)
-      const index = code.assumeNestIndex(input)
+      const term = code.assumeTermString(input)
+      const index = code.assumeLinkIndex(input)
       if (index === 0) {
-        code.pushIntoParentObject(
+        code.gatherIntoMeshParent(
           input,
           code.createStringConstant('name', term),
         )
@@ -33,11 +31,11 @@ export function process_codeCard_head_nestedChildren(
       }
 
       switch (term) {
-        case 'like':
-          code.process_codeCard_like(input)
+        case 'type':
+          code.process_codeCard_type(input)
           break
         case 'base':
-          code.process_codeCard_like(input)
+          code.process_codeCard_type(input)
           break
         default:
           code.throwError(code.generateUnhandledTermCaseError(input))

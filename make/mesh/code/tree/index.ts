@@ -1,13 +1,10 @@
-import {
-  Link,
+import { Link, Mesh, Nest, code } from '~'
+import type {
   LinkNodeType,
-  Mesh,
   MeshInputType,
   MeshTemplateType,
-  Nest,
-  code,
+  SiteProcessInputType,
 } from '~'
-import type { SiteProcessInputType } from '~'
 
 export * from './hook/index.js'
 
@@ -36,9 +33,9 @@ export function generateFullTemplate(
     bound: false,
     hidden,
     inputs,
-    like: Mesh.Template,
     link: linkList,
     name,
+    type: Mesh.Template,
   }
 }
 
@@ -46,16 +43,13 @@ export function process_codeCard_tree(
   input: SiteProcessInputType,
 ): void {
   const tree = code.createNest(Nest.Template, input.scope)
-  code.pushIntoParentObject(input, tree)
+  code.gatherIntoMeshParent(input, tree)
 
   const treeInput = code.withElement(input, tree)
 
   code.assumeLink(treeInput, Link.Tree).nest.forEach((nest, index) => {
     code.process_codeCard_tree_nestedChildren(
-      code.withEnvironment(treeInput, {
-        index,
-        nest,
-      }),
+      code.withLink(treeInput, nest, index),
     )
   })
 
@@ -67,12 +61,12 @@ export function process_codeCard_tree(
 export function process_codeCard_tree_nestedChildren(
   input: SiteProcessInputType,
 ): void {
-  const type = code.determineNestType(input)
+  const type = code.getLinkHint(input)
   if (type === 'static-term') {
-    const name = code.assumeTerm(input)
-    const index = code.assumeNestIndex(input)
+    const name = code.assumeTermString(input)
+    const index = code.assumeLinkIndex(input)
     if (index === 0) {
-      code.pushIntoParentObject(
+      code.gatherIntoMeshParent(
         input,
         code.createStringConstant('name', name),
       )

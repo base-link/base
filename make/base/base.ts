@@ -1,10 +1,5 @@
-import {
-  BaseCard,
-  SiteBindElementInputType,
-  SitePropertyObserverType,
-  code,
-} from '~'
-import type { SiteDependencyType } from '~'
+import { BaseCard, code } from '~'
+import type { SitePropertyObserverType } from '~'
 
 export { Base }
 
@@ -17,14 +12,16 @@ export type BaseCallbackType = {
 
 export type BaseEncounterParamsType = {
   hash: string
-  like: string
   load: string
   name: string
+  type: string
 }
 
 export type BaseFreeType = () => void
 
 class Base {
+  tasks: Array<() => void>
+
   textMap: Record<string, string>
 
   env: Record<string, unknown>
@@ -44,6 +41,7 @@ class Base {
   cardsById: Record<number, BaseCard>
 
   constructor() {
+    this.tasks = []
     this.textMap = {}
     this.env = {}
     this.observersByCardThenIdThenName = {}
@@ -81,10 +79,10 @@ export type BaseRequestParamsType = {
   fork: string
   hash: string
   hook: (site: string, fork: unknown) => void
-  like: string
   link: string
   name: string
   site: string
+  type: string
 }
 
 function assertBaseCard(object: unknown): asserts object is BaseCard {

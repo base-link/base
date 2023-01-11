@@ -30,10 +30,10 @@ export function process_codeCard_bond_move(
 export function process_codeCard_bond_nestedChildren(
   input: SiteProcessInputType,
 ): void {
-  const type = code.determineNestType(input)
+  const type = code.getLinkHint(input)
   switch (type) {
     case LinkHint.StaticTerm:
-      const term = code.resolveTerm(input)
+      const term = code.resolveTermString(input)
       switch (term) {
         case 'loan':
           code.process_codeCard_bond_loan(input)

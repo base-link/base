@@ -83,79 +83,71 @@ export enum DockJS {
 export type DockJSArrayExpressionTokenType =
   DockJSExpressionTokenType & {
     elements: Array<
-      | DockJSExpressionTokenType
-      | DockJSSpreadElementTokenType
-      | null
+      DockJSExpressionTokenType | DockJSSpreadElementTokenType | null
     >
-    like: DockJS.ArrayExpression
+    type: DockJS.ArrayExpression
   }
 
-export type DockJSArrayPatternTokenType =
-  DockJSPatternTokenType & {
-    elements: Array<DockJSPatternTokenType | null>
-    like: DockJS.ArrayPattern
-  }
+export type DockJSArrayPatternTokenType = DockJSPatternTokenType & {
+  elements: Array<DockJSPatternTokenType | null>
+  type: DockJS.ArrayPattern
+}
 
 export type DockJSArrowFunctionExpressionTokenType =
   DockJSFunctionTokenType &
     DockJSExpressionTokenType & {
-      body:
-        | DockJSFunctionBodyTokenType
-        | DockJSExpressionTokenType
+      body: DockJSFunctionBodyTokenType | DockJSExpressionTokenType
       expression: boolean
-      like: DockJS.ArrowFunctionExpression
+      type: DockJS.ArrowFunctionExpression
     }
 
 export type DockJSAssignmentExpressionTokenType =
   DockJSExpressionTokenType & {
     left: DockJSPatternTokenType | DockJSExpressionTokenType
-    like: DockJS.AssignmentExpression
     operator: string
     right: DockJSExpressionTokenType
+    type: DockJS.AssignmentExpression
   }
 
 export type DockJSAssignmentPatternTokenType =
   DockJSPatternTokenType & {
     left: DockJSPatternTokenType
-    like: DockJS.AssignmentPattern
     right: DockJSExpressionTokenType
+    type: DockJS.AssignmentPattern
   }
 
 export type DockJSAssignmentPropertyTokenType = {
-  like: DockJS.AssignmentProperty
+  type: DockJS.AssignmentProperty
 }
 
 export type DockJSAwaitExpressionTokenType =
   DockJSExpressionTokenType & {
     argument: DockJSExpressionTokenType
-    like: DockJS.AwaitExpression
+    type: DockJS.AwaitExpression
   }
 
-export type DockJSBigIntLiteralTokenType =
-  DockJSLiteralTokenType & {
-    bigint: string
-    like: DockJS.BigIntLiteral
-  }
+export type DockJSBigIntLiteralTokenType = DockJSLiteralTokenType & {
+  bigint: string
+  type: DockJS.BigIntLiteral
+}
 
 export type DockJSBinaryExpressionTokenType =
   DockJSExpressionTokenType & {
     left: DockJSExpressionTokenType
-    like: DockJS.BinaryExpression
     operator: string
     right: DockJSExpressionTokenType
+    type: DockJS.BinaryExpression
   }
 
-export type DockJSBlockStatementTokenType =
-  DockJSStatementTokenType & {
-    body: Array<DockJSStatementTokenType>
-    like: DockJS.BlockStatement
-  }
+export type DockJSBlockStatementTokenType = DockJSStatementTokenType & {
+  body: Array<DockJSStatementTokenType>
+  type: DockJS.BlockStatement
+}
 
-export type DockJSBreakStatementTokenType =
-  DockJSStatementTokenType & {
-    label?: DockJSIdentifierTokenType
-    like: DockJS.BreakStatement
-  }
+export type DockJSBreakStatementTokenType = DockJSStatementTokenType & {
+  label?: DockJSIdentifierTokenType
+  type: DockJS.BreakStatement
+}
 
 export type DockJSCallExpressionTokenType =
   DockJSExpressionTokenType & {
@@ -163,87 +155,83 @@ export type DockJSCallExpressionTokenType =
       DockJSExpressionTokenType | DockJSSpreadElementTokenType
     >
     callee: DockJSExpressionTokenType | DockJSSuperTokenType
-    like: DockJS.CallExpression
+    type: DockJS.CallExpression
   }
 
 export type DockJSCatchClauseTokenType = DockJSNodeTokenType & {
   body: DockJSBlockStatementTokenType
-  like: DockJS.CatchClause
   param?: DockJSPatternTokenType
+  type: DockJS.CatchClause
 }
 
 export type DockJSClassBodyTokenType = DockJSNodeTokenType & {
   body: Array<DockJSMethodDefinitionTokenType>
-  like: DockJS.ClassBody
+  type: DockJS.ClassBody
 }
 
-export type DockJSClassDeclarationTokenType =
-  DockJSClassTokenType &
-    DockJSDeclarationTokenType & {
-      id: DockJSIdentifierTokenType
-      like: DockJS.ClassDeclaration
-    }
+export type DockJSClassDeclarationTokenType = DockJSClassTokenType &
+  DockJSDeclarationTokenType & {
+    id: DockJSIdentifierTokenType
+    type: DockJS.ClassDeclaration
+  }
 
-export type DockJSClassExpressionTokenType =
-  DockJSClassTokenType &
-    DockJSExpressionTokenType & {
-      like: DockJS.ClassExpression
-    }
+export type DockJSClassExpressionTokenType = DockJSClassTokenType &
+  DockJSExpressionTokenType & {
+    type: DockJS.ClassExpression
+  }
 
 export type DockJSClassTokenType = DockJSNodeTokenType & {
   body: DockJSClassBodyTokenType
   id?: DockJSIdentifierTokenType
-  like: DockJS.Class
   superClass?: DockJSExpressionTokenType
+  type: DockJS.Class
 }
 
 export type DockJSConditionalExpressionTokenType =
   DockJSExpressionTokenType & {
     alternate: DockJSExpressionTokenType
     consequent: DockJSExpressionTokenType
-    like: DockJS.ConditionalExpression
     test: DockJSExpressionTokenType
+    type: DockJS.ConditionalExpression
   }
 
 export type DockJSContinueStatementTokenType =
   DockJSStatementTokenType & {
     label?: DockJSIdentifierTokenType
-    like: DockJS.ContinueStatement
+    type: DockJS.ContinueStatement
   }
 
 export type DockJSDebuggerStatementTokenType =
   DockJSStatementTokenType & {
-    like: DockJS.DebuggerStatement
+    type: DockJS.DebuggerStatement
   }
 
-export type DockJSDeclarationTokenType =
-  DockJSStatementTokenType & {
-    like: DockJS.Declaration
-  }
+export type DockJSDeclarationTokenType = DockJSStatementTokenType & {
+  type: DockJS.Declaration
+}
 
 export type DockJSDirectiveTokenType = DockJSNodeTokenType & {
   directive: string
   expression: DockJSLiteralTokenType
-  like: DockJS.Directive
+  type: DockJS.Directive
 }
 
 export type DockJSDoWhileStatementTokenType =
   DockJSStatementTokenType & {
     body: DockJSStatementTokenType
-    like: DockJS.DoWhileStatement
     test: DockJSExpressionTokenType
+    type: DockJS.DoWhileStatement
   }
 
-export type DockJSEmptyStatementTokenType =
-  DockJSStatementTokenType & {
-    like: DockJS.EmptyStatement
-  }
+export type DockJSEmptyStatementTokenType = DockJSStatementTokenType & {
+  type: DockJS.EmptyStatement
+}
 
 export type DockJSExportAllDeclarationTokenType =
   DockJSModuleDeclarationTokenType & {
     exported?: DockJSIdentifierTokenType
-    like: DockJS.ExportAllDeclaration
     source: DockJSLiteralTokenType
+    type: DockJS.ExportAllDeclaration
   }
 
 export type DockJSExportDefaultDeclarationTokenType =
@@ -252,320 +240,297 @@ export type DockJSExportDefaultDeclarationTokenType =
       | DockJSFunctionDeclarationTokenType
       | DockJSClassDeclarationTokenType
       | DockJSExpressionTokenType
-    like: DockJS.ExportDefaultDeclaration
+    type: DockJS.ExportDefaultDeclaration
   }
 
 export type DockJSExportNamedDeclarationTokenType =
   DockJSNodeTokenType & {
     declaration?: DockJSDeclarationTokenType
-    like: DockJS.ExportNamedDeclaration
     source?: DockJSLiteralTokenType
     specifiers: Array<DockJSExportSpecifierTokenType>
+    type: DockJS.ExportNamedDeclaration
   }
 
 export type DockJSExportSpecifierTokenType = {
   exported: DockJSIdentifierTokenType
-  like: DockJS.ExportSpecifier
+  type: DockJS.ExportSpecifier
 }
 
 export type DockJSExpressionStatementTokenType =
   DockJSStatementTokenType & {
     expression: DockJSExpressionTokenType
-    like: DockJS.ExpressionStatement
+    type: DockJS.ExpressionStatement
   }
 
 export type DockJSExpressionTokenType = DockJSNodeTokenType & {
-  like: DockJS.Expression
+  type: DockJS.Expression
 }
 
-export type DockJSForInStatementTokenType =
-  DockJSStatementTokenType & {
-    body: DockJSStatementTokenType
-    left:
-      | DockJSVariableDeclarationTokenType
-      | DockJSPatternTokenType
-    like: DockJS.ForInStatement
-    right: DockJSExpressionTokenType
-  }
+export type DockJSForInStatementTokenType = DockJSStatementTokenType & {
+  body: DockJSStatementTokenType
+  left: DockJSVariableDeclarationTokenType | DockJSPatternTokenType
+  right: DockJSExpressionTokenType
+  type: DockJS.ForInStatement
+}
 
-export type DockJSForOfStatementTokenType =
-  DockJSStatementTokenType & {
-    await: boolean
-    like: DockJS.ForOfStatement
-  }
+export type DockJSForOfStatementTokenType = DockJSStatementTokenType & {
+  await: boolean
+  type: DockJS.ForOfStatement
+}
 
-export type DockJSForStatementTokenType =
-  DockJSStatementTokenType & {
-    body: DockJSStatementTokenType
-    init?:
-      | DockJSVariableDeclarationTokenType
-      | DockJSExpressionTokenType
-    like: DockJS.ForStatement
-    test?: DockJSExpressionTokenType
-    update?: DockJSExpressionTokenType
-  }
+export type DockJSForStatementTokenType = DockJSStatementTokenType & {
+  body: DockJSStatementTokenType
+  init?: DockJSVariableDeclarationTokenType | DockJSExpressionTokenType
+  test?: DockJSExpressionTokenType
+  type: DockJS.ForStatement
+  update?: DockJSExpressionTokenType
+}
 
 export type DockJSFunctionBodyTokenType =
   DockJSBlockStatementTokenType & {
-    body: Array<
-      DockJSDirectiveTokenType | DockJSStatementTokenType
-    >
-    like: DockJS.FunctionBody
+    body: Array<DockJSDirectiveTokenType | DockJSStatementTokenType>
+    type: DockJS.FunctionBody
   }
 
 export type DockJSFunctionDeclarationTokenType =
   DockJSFunctionTokenType &
     DockJSDeclarationTokenType & {
       id: DockJSIdentifierTokenType
-      like: DockJS.FunctionDeclaration
+      type: DockJS.FunctionDeclaration
     }
 
 export type DockJSFunctionExpressionTokenType =
   DockJSFunctionTokenType &
     DockJSExpressionTokenType & {
-      like: DockJS.FunctionExpression
+      type: DockJS.FunctionExpression
     }
 
 export type DockJSFunctionTokenType = DockJSNodeTokenType & {
   async: boolean
   body: DockJSFunctionBodyTokenType
   generator: boolean
-  like: DockJS.Function
   params: Array<DockJSPatternTokenType>
+  type: DockJS.Function
 }
 
-export type DockJSIdentifierTokenType =
-  DockJSExpressionTokenType &
-    DockJSPatternTokenType & {
-      like: DockJS.Identifier
-      name: string
-    }
-
-export type DockJSIfStatementTokenType =
-  DockJSStatementTokenType & {
-    alternate?: DockJSStatementTokenType
-    consequent: DockJSStatementTokenType
-    like: DockJS.IfStatement
-    test: DockJSExpressionTokenType
+export type DockJSIdentifierTokenType = DockJSExpressionTokenType &
+  DockJSPatternTokenType & {
+    name: string
+    type: DockJS.Identifier
   }
+
+export type DockJSIfStatementTokenType = DockJSStatementTokenType & {
+  alternate?: DockJSStatementTokenType
+  consequent: DockJSStatementTokenType
+  test: DockJSExpressionTokenType
+  type: DockJS.IfStatement
+}
 
 export type DockJSImportDeclarationTokenType =
   DockJSModuleDeclarationTokenType & {
-    like: DockJS.ImportDeclaration
     source: DockJSLiteralTokenType
     specifiers: Array<
       | DockJSImportSpecifierTokenType
       | DockJSImportDefaultSpecifierTokenType
       | DockJSImportNamespaceSpecifierTokenType
     >
+    type: DockJS.ImportDeclaration
   }
 
 export type DockJSImportDefaultSpecifierTokenType =
   DockJSModuleSpecifierTokenType & {
-    like: DockJS.ImportDefaultSpecifier
+    type: DockJS.ImportDefaultSpecifier
   }
 
 export type DockJSImportExpressionTokenType =
   DockJSExpressionTokenType & {
-    like: DockJS.ImportExpression
     source: DockJSExpressionTokenType
+    type: DockJS.ImportExpression
   }
 
 export type DockJSImportNamespaceSpecifierTokenType =
   DockJSModuleSpecifierTokenType & {
-    like: DockJS.ImportNamespaceSpecifier
+    type: DockJS.ImportNamespaceSpecifier
   }
 
 export type DockJSImportSpecifierTokenType =
   DockJSModuleSpecifierTokenType & {
     imported: DockJSIdentifierTokenType
-    like: DockJS.ImportSpecifier
+    type: DockJS.ImportSpecifier
   }
 
 export type DockJSLabeledStatementTokenType =
   DockJSStatementTokenType & {
     body: DockJSStatementTokenType
     label: DockJSIdentifierTokenType
-    like: DockJS.LabeledStatement
+    type: DockJS.LabeledStatement
   }
 
-export type DockJSLiteralTokenType =
-  DockJSExpressionTokenType & {
-    like: DockJS.Literal
-    value?: string | boolean | number | RegExp
-  }
+export type DockJSLiteralTokenType = DockJSExpressionTokenType & {
+  type: DockJS.Literal
+  value?: string | boolean | number | RegExp
+}
 
 export type DockJSLogicalExpressionTokenType =
   DockJSExpressionTokenType & {
     left: DockJSExpressionTokenType
-    like: DockJS.LogicalExpression
     operator: string
     right: DockJSExpressionTokenType
+    type: DockJS.LogicalExpression
   }
 
 export type DockJSMemberExpressionTokenType =
   DockJSExpressionTokenType & {
     computed: boolean
-    like: DockJS.MemberExpression
     object: DockJSExpressionTokenType | DockJSSuperTokenType
     property: DockJSExpressionTokenType
+    type: DockJS.MemberExpression
   }
 
-export type DockJSMetaPropertyTokenType =
-  DockJSExpressionTokenType & {
-    like: DockJS.MetaProperty
-    meta: DockJSIdentifierTokenType
-    property: DockJSIdentifierTokenType
-  }
+export type DockJSMetaPropertyTokenType = DockJSExpressionTokenType & {
+  meta: DockJSIdentifierTokenType
+  property: DockJSIdentifierTokenType
+  type: DockJS.MetaProperty
+}
 
-export type DockJSMethodDefinitionTokenType =
-  DockJSNodeTokenType & {
-    computed: boolean
-    key: DockJSExpressionTokenType
-    kind: string
-    like: DockJS.MethodDefinition
-    static: boolean
-    value: DockJSFunctionExpressionTokenType
-  }
+export type DockJSMethodDefinitionTokenType = DockJSNodeTokenType & {
+  computed: boolean
+  key: DockJSExpressionTokenType
+  kind: string
+  static: boolean
+  type: DockJS.MethodDefinition
+  value: DockJSFunctionExpressionTokenType
+}
 
-export type DockJSModuleDeclarationTokenType =
-  DockJSNodeTokenType & {
-    like: DockJS.ModuleDeclaration
-  }
+export type DockJSModuleDeclarationTokenType = DockJSNodeTokenType & {
+  type: DockJS.ModuleDeclaration
+}
 
-export type DockJSModuleSpecifierTokenType =
-  DockJSNodeTokenType & {
-    like: DockJS.ModuleSpecifier
-    local: DockJSIdentifierTokenType
-  }
+export type DockJSModuleSpecifierTokenType = DockJSNodeTokenType & {
+  local: DockJSIdentifierTokenType
+  type: DockJS.ModuleSpecifier
+}
 
-export type DockJSNewExpressionTokenType =
-  DockJSExpressionTokenType & {
-    arguments: Array<
-      DockJSExpressionTokenType | DockJSSpreadElementTokenType
-    >
-    callee: DockJSExpressionTokenType
-    like: DockJS.NewExpression
-  }
+export type DockJSNewExpressionTokenType = DockJSExpressionTokenType & {
+  arguments: Array<
+    DockJSExpressionTokenType | DockJSSpreadElementTokenType
+  >
+  callee: DockJSExpressionTokenType
+  type: DockJS.NewExpression
+}
 
 export type DockJSNodeTokenType = {
-  like: DockJS.Node
+  type: DockJS.Node
 }
 
 export type DockJSObjectExpressionTokenType =
   DockJSExpressionTokenType & {
-    like: DockJS.ObjectExpression
     properties: Array<
       DockJSPropertyTokenType | DockJSSpreadElementTokenType
     >
+    type: DockJS.ObjectExpression
   }
 
-export type DockJSObjectPatternTokenType =
-  DockJSPatternTokenType & {
-    like: DockJS.ObjectPattern
-    properties: Array<
-      | DockJSAssignmentPropertyTokenType
-      | DockJSRestElementTokenType
-    >
-  }
+export type DockJSObjectPatternTokenType = DockJSPatternTokenType & {
+  properties: Array<
+    DockJSAssignmentPropertyTokenType | DockJSRestElementTokenType
+  >
+  type: DockJS.ObjectPattern
+}
 
 export type DockJSPatternTokenType = DockJSNodeTokenType & {
-  like: DockJS.Pattern
+  type: DockJS.Pattern
 }
 
 export type DockJSProgramTokenType = DockJSNodeTokenType & {
   body: Array<
     DockJSModuleDeclarationTokenType | DockJSStatementTokenType
   >
-  like: DockJS.Program
+  type: DockJS.Program
 }
 
 export type DockJSPropertyTokenType = DockJSNodeTokenType & {
   computed: boolean
   key: DockJSExpressionTokenType
   kind: string
-  like: DockJS.Property
   method: boolean
   shorthand: boolean
+  type: DockJS.Property
   value: DockJSExpressionTokenType
 }
 
-export type DockJSRestElementTokenType =
-  DockJSPatternTokenType & {
-    argument: DockJSPatternTokenType
-    like: DockJS.RestElement
-  }
+export type DockJSRestElementTokenType = DockJSPatternTokenType & {
+  argument: DockJSPatternTokenType
+  type: DockJS.RestElement
+}
 
 export type DockJSReturnStatementTokenType =
   DockJSStatementTokenType & {
     argument?: DockJSExpressionTokenType
-    like: DockJS.ReturnStatement
+    type: DockJS.ReturnStatement
   }
 
 export type DockJSSequenceExpressionTokenType =
   DockJSExpressionTokenType & {
     expressions: Array<DockJSExpressionTokenType>
-    like: DockJS.SequenceExpression
+    type: DockJS.SequenceExpression
   }
 
-export type DockJSSpreadElementTokenType =
-  DockJSNodeTokenType & {
-    argument: DockJSExpressionTokenType
-    like: DockJS.SpreadElement
-  }
+export type DockJSSpreadElementTokenType = DockJSNodeTokenType & {
+  argument: DockJSExpressionTokenType
+  type: DockJS.SpreadElement
+}
 
 export type DockJSStatementTokenType = DockJSNodeTokenType & {
-  like: DockJS.Statement
+  type: DockJS.Statement
 }
 
 export type DockJSSuperTokenType = DockJSNodeTokenType & {
-  like: DockJS.Super
+  type: DockJS.Super
 }
 
 export type DockJSSwitchCaseTokenType = DockJSNodeTokenType & {
   consequent: Array<DockJSStatementTokenType>
-  like: DockJS.SwitchCase
   test?: DockJSExpressionTokenType
+  type: DockJS.SwitchCase
 }
 
 export type DockJSSwitchStatementTokenType =
   DockJSStatementTokenType & {
     cases: Array<DockJSSwitchCaseTokenType>
     discriminant: DockJSExpressionTokenType
-    like: DockJS.SwitchStatement
+    type: DockJS.SwitchStatement
   }
 
 export type DockJSTaggedTemplateExpressionTokenType =
   DockJSExpressionTokenType & {
-    like: DockJS.TaggedTemplateExpression
     quasi: DockJSTemplateLiteralTokenType
     tag: DockJSExpressionTokenType
+    type: DockJS.TaggedTemplateExpression
   }
 
-export type DockJSTemplateElementTokenType =
-  DockJSNodeTokenType & {
-    like: DockJS.TemplateElement
-    tail: boolean
-    value: object
-  }
+export type DockJSTemplateElementTokenType = DockJSNodeTokenType & {
+  tail: boolean
+  type: DockJS.TemplateElement
+  value: object
+}
 
 export type DockJSTemplateLiteralTokenType =
   DockJSExpressionTokenType & {
     expressions: Array<DockJSExpressionTokenType>
-    like: DockJS.TemplateLiteral
     quasis: Array<DockJSTemplateElementTokenType>
+    type: DockJS.TemplateLiteral
   }
 
 export type DockJSThisExpressionTokenType =
   DockJSExpressionTokenType & {
-    like: DockJS.ThisExpression
+    type: DockJS.ThisExpression
   }
 
-export type DockJSThrowStatementTokenType =
-  DockJSStatementTokenType & {
-    argument: DockJSExpressionTokenType
-    like: DockJS.ThrowStatement
-  }
+export type DockJSThrowStatementTokenType = DockJSStatementTokenType & {
+  argument: DockJSExpressionTokenType
+  type: DockJS.ThrowStatement
+}
 
 export type DockJSTokenType =
   | DockJSNodeTokenType
@@ -649,61 +614,57 @@ export type DockJSTokenType =
   | DockJSAwaitExpressionTokenType
   | DockJSImportExpressionTokenType
 
-export type DockJSTryStatementTokenType =
-  DockJSStatementTokenType & {
-    block: DockJSBlockStatementTokenType
-    finalizer?: DockJSBlockStatementTokenType
-    handler?: DockJSCatchClauseTokenType
-    like: DockJS.TryStatement
-  }
+export type DockJSTryStatementTokenType = DockJSStatementTokenType & {
+  block: DockJSBlockStatementTokenType
+  finalizer?: DockJSBlockStatementTokenType
+  handler?: DockJSCatchClauseTokenType
+  type: DockJS.TryStatement
+}
 
 export type DockJSUnaryExpressionTokenType =
   DockJSExpressionTokenType & {
     argument: DockJSExpressionTokenType
-    like: DockJS.UnaryExpression
     operator: string
     prefix: boolean
+    type: DockJS.UnaryExpression
   }
 
 export type DockJSUpdateExpressionTokenType =
   DockJSExpressionTokenType & {
     argument: DockJSExpressionTokenType
-    like: DockJS.UpdateExpression
     operator: string
     prefix: boolean
+    type: DockJS.UpdateExpression
   }
 
 export type DockJSVariableDeclarationTokenType =
   DockJSDeclarationTokenType & {
     declarations: Array<DockJSVariableDeclaratorTokenType>
     kind: string
-    like: DockJS.VariableDeclaration
+    type: DockJS.VariableDeclaration
   }
 
-export type DockJSVariableDeclaratorTokenType =
-  DockJSNodeTokenType & {
-    id: DockJSPatternTokenType
-    init?: DockJSExpressionTokenType
-    like: DockJS.VariableDeclarator
-  }
+export type DockJSVariableDeclaratorTokenType = DockJSNodeTokenType & {
+  id: DockJSPatternTokenType
+  init?: DockJSExpressionTokenType
+  type: DockJS.VariableDeclarator
+}
 
-export type DockJSWhileStatementTokenType =
-  DockJSStatementTokenType & {
-    body: DockJSStatementTokenType
-    like: DockJS.WhileStatement
-    test: DockJSExpressionTokenType
-  }
+export type DockJSWhileStatementTokenType = DockJSStatementTokenType & {
+  body: DockJSStatementTokenType
+  test: DockJSExpressionTokenType
+  type: DockJS.WhileStatement
+}
 
-export type DockJSWithStatementTokenType =
-  DockJSStatementTokenType & {
-    body: DockJSStatementTokenType
-    like: DockJS.WithStatement
-    object: DockJSExpressionTokenType
-  }
+export type DockJSWithStatementTokenType = DockJSStatementTokenType & {
+  body: DockJSStatementTokenType
+  object: DockJSExpressionTokenType
+  type: DockJS.WithStatement
+}
 
 export type DockJSYieldExpressionTokenType =
   DockJSExpressionTokenType & {
     argument?: DockJSExpressionTokenType
     delegate: boolean
-    like: DockJS.YieldExpression
+    type: DockJS.YieldExpression
   }

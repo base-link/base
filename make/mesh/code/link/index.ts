@@ -1,38 +1,37 @@
-import { Link, LinkHint, Mesh, Nest, code } from '~'
-import type {
-  MeshClassReferenceType,
-  MeshInputType,
-  SiteBindElementInputType,
-  SiteProcessInputType,
-} from '~'
+import { Link, LinkHint, Mesh, code } from '~'
+import type { SiteProcessInputType } from '~'
 
 export * from './take/index.js'
 
-export function generateFullInput(
+export function createMeshInput(
   input: SiteProcessInputType,
 ): MeshInputType {
-  const name = code.findFullStringConstantByName(input, 'name')
-  code.assertString(name)
-  const children = code.assumeChildren(input)
-  const sourceLike = children.find(
-    (node): node is MeshClassReferenceType =>
-      code.isMesh(node, Mesh.ClassReference),
-  )
+  const name = code.findPlaceholderByName(input, 'name')
+  code.assertMeshTerm(name)
 
-  const mesh = {
-    bound: false,
-    like: Mesh.Input,
+  const definedType = code.findPlaceholderByName(input, 'defined-type')
+  code.assertMeshOrUndefined(definedType, Mesh.ClassReference)
+
+  const mesh: MeshInputType = {
+    definedType,
     name,
-    sourceLike,
+    type: Mesh.Input,
   }
 
-  if (sourceLike) {
+  if (definedType) {
+    const id = code.generateObservableId()
     code.bindReference({
       ...input,
-      focus: sourceLike,
-      handle: code.checkFocusForInputCompletion,
-      id: code.generateObservableId(),
-      moduleId: String(input.module.id),
+      focus: definedType,
+      handle: () =>
+        code.checkFocusForInputCompletion({
+          ...input,
+          focus: definedType,
+          id,
+          moduleId: input.module.id,
+        }),
+      id,
+      moduleId: input.module.id,
     })
   }
 
@@ -48,21 +47,20 @@ export function pingParentOfCompletion(
 export function process_codeCard_link(
   input: SiteProcessInputType,
 ): void {
-  const link = code.createNest(Nest.Input, input.scope)
-  code.pushIntoParentObject(input, link)
-
-  const linkInput = code.withElement(input, link)
-
-  code.assumeLink(linkInput, Link.Tree).nest.forEach((nest, index) => {
-    process_codeCard_link_nestedChildren(
-      code.withEnvironment(linkInput, {
-        index,
-        nest,
-      }),
-    )
+  const red = code.pushRed(input, code.createRedGather(input, 'input'))
+  const blue = code.pushBlue(input, 'inputs', {
+    type: Mesh.Input,
   })
 
-  code.resolve_codeCard_link(linkInput)
+  const colorInput = code.withColors(input, { blue, red })
+
+  code.assumeNest(colorInput).forEach((nest, index) => {
+    code.addTask(input.base, () => {
+      process_codeCard_link_nestedChildren(
+        code.withLink(colorInput, nest, index),
+      )
+    })
+  })
 }
 
 export function process_codeCard_link_base(
@@ -72,19 +70,20 @@ export function process_codeCard_link_base(
 export function process_codeCard_link_nestedChildren(
   input: SiteProcessInputType,
 ): void {
-  const type = code.determineNestType(input)
+  const type = code.getLinkHint(input)
   switch (type) {
-    case LinkHint.StaticTerm:
-      const term = code.assumeTerm(input)
-      const index = code.assumeNestIndex(input)
+    case LinkHint.StaticTerm: {
+      const index = code.assumeLinkIndex(input)
       if (index === 0) {
-        code.pushIntoParentObject(
-          input,
-          code.createStringConstant('name', term),
-        )
+        const string = code.assumeTermString(input)
+        const term = code.createBlueString(string)
+
+        code.pushRed(input, code.createRedValue(input, 'name', term))
+        code.attachBlue(input, 'name', term)
         return
       }
 
+      const term = code.assumeTermString(input)
       switch (term) {
         case 'like':
           code.process_codeCard_like(input)
@@ -120,17 +119,8 @@ export function process_codeCard_link_nestedChildren(
           code.throwError(code.generateUnhandledTermCaseError(input))
       }
       break
+    }
     default:
       code.throwError(code.generateUnhandledNestCaseError(input, type))
-  }
-}
-
-export function resolve_codeCard_link(
-  input: SiteProcessInputType,
-): void {
-  if (code.childrenAreMesh(input.element.node)) {
-    code.potentiallyReplaceWithFullNode(input, () =>
-      code.generateFullInput(input),
-    )
   }
 }

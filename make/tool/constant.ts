@@ -1,92 +1,37 @@
-import {
-  Mesh,
-  MeshConstantType,
-  MeshType,
-  MeshValueType,
-  SiteProcessInputType,
-  code,
+import { BlueTermType, Color, LinkTermType, Mesh, code } from '~'
+import type {
+  BlueConstantType,
+  BluePathType,
+  BlueTermLinkType,
+  BlueValueType,
+  LinkPathType,
 } from '~'
 
-export function createConstant(
-  name: string,
-  value: MeshValueType,
-): MeshType<Mesh.Constant> {
+export function createBlueConstant(
+  name: BlueTermLinkType,
+  value: BlueValueType | Array<BlueConstantType>,
+): BlueConstantType {
   return {
-    bound: true,
-    hidden: false,
-    like: Mesh.Constant,
+    color: Color.Blue,
+    hidden: code.createBlueBoolean(false),
     name,
+    type: Mesh.Constant,
     value,
   }
 }
 
-export function createStringConstant(
-  name: string,
-  value: string,
-): MeshType<Mesh.Constant> {
+export function createBluePath(value: LinkPathType): BluePathType {
   return {
-    bound: true,
-    hidden: false,
-    like: Mesh.Constant,
-    name,
-    value: {
-      bound: true,
-      like: Mesh.String,
-      string: value,
-    },
+    color: Color.Blue,
+    type: Mesh.Path,
+    value,
   }
 }
 
-export function findFullBooleanConstantByName(
-  input: SiteProcessInputType,
-  name: string,
-): boolean | undefined {
-  const children = code.assumeChildren(input)
-  for (const node of children) {
-    if (
-      code.isRecord(node) &&
-      !node.partial &&
-      code.isMesh(node, Mesh.Constant) &&
-      code.isMesh(node.value, Mesh.Boolean) &&
-      node.name === name
-    ) {
-      return node.value.boolean
-    }
-  }
-  return undefined
-}
-
-export function findFullStringConstantByName(
-  input: SiteProcessInputType,
-  name: string,
-): string | undefined {
-  const children = code.assumeChildren(input)
-  for (const node of children) {
-    if (
-      code.isRecord(node) &&
-      !node.partial &&
-      code.isMesh(node, Mesh.Constant) &&
-      code.isMesh(node.value, Mesh.String) &&
-      node.name === name
-    ) {
-      return node.value.string
-    }
-  }
-  return undefined
-}
-
-export function getBooleanConstant(c: MeshConstantType): boolean {
-  if (c.value && 'like' in c.value && c.value.like === Mesh.Boolean) {
-    return c.value.boolean
-  } else {
-    throw Error('Oops')
-  }
-}
-
-export function getStringConstant(c: MeshConstantType): string {
-  if (c.value && 'like' in c.value && c.value.like === Mesh.String) {
-    return c.value.string
-  } else {
-    throw Error('Oops')
+export function createBlueTerm(value: LinkTermType): BlueTermType {
+  return {
+    color: Color.Blue,
+    type: Mesh.Term,
+    value,
   }
 }

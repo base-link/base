@@ -3,17 +3,19 @@ import { diffChars } from 'diff'
 
 import {
   ERROR,
-  FoldStateInputType,
   LINK_HINT_TEXT,
   Link,
   LinkHint,
   SOURCE_MAP_MESH,
-  SiteProcessInputType,
   Text,
-  TextSplitInputType,
-  TextTokenType,
   code,
   prettifyJSON,
+} from '~'
+import type {
+  FoldStateInputType,
+  SiteProcessInputType,
+  TextSplitInputType,
+  TextTokenType,
 } from '~'
 
 export * from './content.js'
@@ -150,6 +152,14 @@ export function createDefaultRange(): CursorRangeType {
   }
 }
 
+export function generateChangeVariableTypeError(
+  input: SiteProcessInputType,
+): SiteErrorType {
+  return {
+    note: `Attempt to change a variable's type.`,
+  }
+}
+
 export function generateCompilerTodoError(
   hint?: string,
 ): SiteErrorType {
@@ -236,18 +246,18 @@ export function generateHighlightedErrorForText(
 }
 
 export function generateIncorrectlyTypedVariable(
-  like: string | Array<string>,
+  type: string | Array<string>,
   name?: string,
   path?: string,
 ): SiteErrorType {
-  like = Array.isArray(like) ? like : [like]
+  type = Array.isArray(type) ? type : [type]
   const words =
-    like.length > 1
-      ? like
+    type.length > 1
+      ? type
           .slice(-1)
           .map(x => `\`${x}\``)
-          .join(', ') + ` or \`${like[like.length - 1]}\``
-      : `\`${like[0]}\``
+          .join(', ') + ` or \`${type[type.length - 1]}\``
+      : `\`${type[0]}\``
   const text = name ? ` \`${name}\`` : ''
   return {
     code: `0027`,
@@ -289,7 +299,7 @@ export function generateInvalidNestCaseError(
 ): SiteErrorType {
   let scope
   try {
-    scope = code.resolveTerm(input, 1)
+    scope = code.resolveTermString(input, 1)
   } catch (e) {}
   const text = code.generateHighlightedErrorForLinkTree(input)
   return {
@@ -315,7 +325,7 @@ export function generateInvalidPatternError(
   pattern: unknown,
 ): SiteErrorType {
   const { module } = input
-  const nest = code.assumeNest(input)
+  const nest = code.assumeLink(input)
   const text = code.generateHighlightedErrorForText(input)
   return {
     code: `0012`,
@@ -359,15 +369,15 @@ export function generateModuleUnresolvableError(
 
 export function generateObjectNotTypeError(
   object: unknown,
-  like: Array<string>,
+  type: Array<string>,
 ): SiteErrorType {
   const words =
-    like.length > 1
-      ? like
+    type.length > 1
+      ? type
           .slice(-1)
           .map(x => `\`${x}\``)
-          .join(', ') + ` or \`${like[-1]}\``
-      : `\`${like[0]}\``
+          .join(', ') + ` or \`${type[-1]}\``
+      : `\`${type[0]}\``
   return {
     code: `0007`,
     note: `Object isn't type ${words}.`,
@@ -457,7 +467,7 @@ export function generateUnhandledNestCaseError(
 ): SiteErrorType {
   let scope
   try {
-    scope = code.resolveTerm(input, 1)
+    scope = code.resolveTermString(input, 1)
   } catch (e) {}
   const text = code.generateHighlightedErrorForLinkTree(input)
   return {
@@ -475,9 +485,9 @@ export function generateUnhandledTermCaseError(
 ): SiteErrorType {
   let scope
   try {
-    scope = code.resolveTerm(input, 1)
+    scope = code.resolveTermString(input, 1)
   } catch (e) {}
-  const name = code.resolveTerm(input)
+  const name = code.resolveTermString(input)
   code.assertString(name)
   const handle = ERROR['0002']
   code.assertError(handle)
@@ -506,9 +516,9 @@ export function generateUnknownTermError(
   input: SiteProcessInputType,
 ): SiteErrorType {
   const { module } = input
-  const name = code.resolveTerm(input)
+  const name = code.resolveTermString(input)
   const text = code.generateHighlightedErrorForLinkTree(input)
-  const insideName = code.resolveTerm(input, 1)
+  const insideName = code.resolveTermString(input, 1)
   return {
     code: `0003`,
     file: `${module.path}`,
@@ -550,10 +560,10 @@ export function getCursorRangeForPath(
 ): CursorRangeType {
   const path = code.assumeLink(input, Link.Path)
   const start = getCursorRangeForTerm(
-    code.withEnvironment(input, { nest: path.segment[0] }),
+    code.withLink(input, { nest: path.segment[0] }),
   )
   const end = getCursorRangeForTerm(
-    code.withEnvironment(input, {
+    code.withLink(input, {
       nest: path.segment[path.segment.length - 1],
     }),
   )
@@ -576,21 +586,15 @@ export function getCursorRangeForPlugin(
   const nest = code.assumeLink(input, Link.Plugin)
   const child = nest.nest[0]
 
-  switch (child?.like) {
+  switch (child?.type) {
     case Link.Term: {
-      return code.getCursorRangeForTerm(
-        code.withEnvironment(input, { nest }),
-      )
+      return code.getCursorRangeForTerm(code.withLink(input, { nest }))
     }
     case Link.Path: {
-      return code.getCursorRangeForPath(
-        code.withEnvironment(input, { nest }),
-      )
+      return code.getCursorRangeForPath(code.withLink(input, { nest }))
     }
     case Link.Tree: {
-      return code.getCursorRangeForTree(
-        code.withEnvironment(input, { nest }),
-      )
+      return code.getCursorRangeForTree(code.withLink(input, { nest }))
     }
     default:
       code.throwError(code.generateInvalidCompilerStateError())
@@ -624,11 +628,11 @@ export function getCursorRangeForTerm(
   const start = term.segment[0]
   const end = term.segment[term.segment.length - 1]
 
-  if (!start || start.like !== Link.String) {
+  if (!start || start.type !== Link.String) {
     return range
   }
 
-  if (!end || end.like !== Link.String) {
+  if (!end || end.type !== Link.String) {
     return range
   }
 
@@ -665,13 +669,13 @@ export function getCursorRangeForText(
 
   let firstRange: CursorRangeType
 
-  if (first.like === Link.String) {
+  if (first.type === Link.String) {
     firstRange = code.getCursorRangeForString(
-      code.withEnvironment(input, { nest: first }),
+      code.withLink(input, { nest: first }),
     )
-  } else if (first.like === Link.Plugin) {
+  } else if (first.type === Link.Plugin) {
     firstRange = code.getCursorRangeForPlugin(
-      code.withEnvironment(input, { nest: first }),
+      code.withLink(input, { nest: first }),
     )
   } else {
     code.throwError(code.generateInvalidCompilerStateError())
@@ -687,13 +691,13 @@ export function getCursorRangeForText(
 
   let lastRange: CursorRangeType
 
-  if (last.like === Link.String) {
+  if (last.type === Link.String) {
     lastRange = code.getCursorRangeForString(
-      code.withEnvironment(input, { nest: last }),
+      code.withLink(input, { nest: last }),
     )
-  } else if (last.like === Link.Plugin) {
+  } else if (last.type === Link.Plugin) {
     lastRange = code.getCursorRangeForPlugin(
-      code.withEnvironment(input, { nest: last }),
+      code.withLink(input, { nest: last }),
     )
   } else {
     code.throwError(code.generateInvalidCompilerStateError())
@@ -718,7 +722,7 @@ export function getCursorRangeForTextWhitespaceToken(
   loop: while (i < input.tokenList.length) {
     let t = input.tokenList[i]
     code.assertTextGenericType(t)
-    switch (t.like) {
+    switch (t.type) {
       case Text.OpenIndentation:
       case Text.OpenNesting:
         tokens.push(t)
@@ -750,9 +754,9 @@ export function getCursorRangeForTextWhitespaceToken(
 export function getCursorRangeForTree(
   input: SiteProcessInputType,
 ): CursorRangeType {
-  const nest = code.assumeNest(input)
+  const nest = code.assumeLink(input)
 
-  switch (nest.like) {
+  switch (nest.type) {
     case Link.Tree: {
       const term = nest.head
       if (!term) {
@@ -760,9 +764,7 @@ export function getCursorRangeForTree(
         throw new CompilerError()
       }
 
-      return getCursorRangeForTerm(
-        code.withEnvironment(input, { nest: term }),
-      )
+      return getCursorRangeForTerm(code.withLink(input, { nest: term }))
     }
     case Link.Path: {
       return getCursorRangeForPath(input)

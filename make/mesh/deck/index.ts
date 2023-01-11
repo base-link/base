@@ -29,14 +29,13 @@ export function generate_deckCard(
     deck,
     directory: input.module.directory,
     id: input.module.id,
-    isModule: true,
-    like: Mesh.PackageModule,
     link: input.module.link,
     path: input.module.path,
     public: {},
     scope: input.scope,
     text: input.module.text,
     textByLine: input.module.textByLine,
+    type: Mesh.PackageModule,
   }
 }
 
@@ -58,9 +57,8 @@ export function process_deckCard(base: Base, link: string): void {
     base,
     children: [],
     id: card.id,
-    isModule: true,
-    like: Nest.PackageModule,
     scope,
+    type: Nest.PackageModule,
   }
 
   const input: SiteProcessInputType = code.createInput(
@@ -89,7 +87,7 @@ export function process_deckCard(base: Base, link: string): void {
 export function process_deckCard_nestedChildren(
   input: SiteProcessInputType,
 ): void {
-  const type = code.determineNestType(input)
+  const type = code.getLinkHint(input)
   switch (type) {
     case LinkHint.StaticTerm: {
       code.process_deckCard_staticTerm(input)
@@ -103,7 +101,7 @@ export function process_deckCard_nestedChildren(
 export function process_deckCard_staticTerm(
   input: SiteProcessInputType,
 ): void {
-  const term = code.resolveTerm(input)
+  const term = code.resolveTermString(input)
   switch (term) {
     case 'deck':
       code.process_deckCard_deck(input)

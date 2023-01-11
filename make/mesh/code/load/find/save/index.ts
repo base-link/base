@@ -1,4 +1,4 @@
-import { Link, Mesh, Nest, code } from '~'
+import { Link, LinkHint, Mesh, code } from '~'
 import type { SiteProcessInputType } from '~'
 
 export function process_codeCard_load_find_save(
@@ -10,10 +10,7 @@ export function process_codeCard_load_find_save(
 
   nest.nest.forEach((nest, index) => {
     code.process_codeCard_load_find_save_nestedChildren(
-      code.withEnvironment(input, {
-        index,
-        nest,
-      }),
+      code.withLink(input, nest, index),
     )
   })
 }
@@ -21,15 +18,15 @@ export function process_codeCard_load_find_save(
 export function process_codeCard_load_find_save_nestedChildren(
   input: SiteProcessInputType,
 ): void {
-  const type = code.determineNestType(input)
-  if (type === 'static-term') {
-    const term = code.resolveTerm(input)
+  const type = code.getLinkHint(input)
+  if (type === LinkHint.StaticTerm) {
+    const term = code.resolveTermString(input)
     code.assertString(term)
 
-    code.pushIntoParentObject(input, {
+    code.gatherIntoMeshParent(input, {
       bound: true,
-      like: Mesh.ImportVariableRename,
       name: term,
+      type: Mesh.ImportVariableRename,
     })
   } else {
     code.throwError(code.generateUnhandledTermCaseError(input))

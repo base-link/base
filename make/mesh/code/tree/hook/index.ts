@@ -6,10 +6,7 @@ export function process_codeCard_tree_hook(
 ): void {
   code.assumeLink(input, Link.Tree).nest.forEach((nest, index) => {
     process_codeCard_tree_hook_nestedChildren(
-      code.withEnvironment(input, {
-        index,
-        nest,
-      }),
+      code.withLink(input, nest, index),
     )
   })
 }
@@ -17,19 +14,19 @@ export function process_codeCard_tree_hook(
 export function process_codeCard_tree_hook_nestedChildren(
   input: SiteProcessInputType,
 ): void {
-  const type = code.determineNestType(input)
+  const type = code.getLinkHint(input)
   switch (type) {
     case LinkHint.StaticTerm:
-      const index = code.assumeNestIndex(input)
+      const index = code.assumeLinkIndex(input)
       if (index === 0) {
-        const name = code.assumeTerm(input)
-        code.pushIntoParentObject(
+        const name = code.assumeTermString(input)
+        code.gatherIntoMeshParent(
           input,
           code.createStringConstant('name', name),
         )
       } else {
-        const nest = code.assumeNest(input)
-        code.pushIntoParentObject(input, nest)
+        const nest = code.assumeLink(input)
+        code.gatherIntoMeshParent(input, nest)
       }
       break
     default:

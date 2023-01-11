@@ -1,15 +1,15 @@
 let ID = 1
 
 class BaseCard {
-  hash: string
+  link: string
 
   seed: Object
 
   id: number
 
-  constructor(hash: string) {
+  constructor(link: string) {
     this.id = ID++
-    this.hash = hash
+    this.link = link
     this.seed = {}
   }
 

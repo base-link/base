@@ -39,27 +39,27 @@ export const LINK_TYPE = [
 ]
 
 export type LinkBooleanType = {
-  like: Link.Boolean
+  type: Link.Boolean
   value: boolean
 }
 
 export type LinkDecimalType = {
-  like: Link.Decimal
   range: FoldRangeType
+  type: Link.Decimal
   value: number
 }
 
 export type LinkHashtagType = {
   code: string
-  like: Link.Hashtag
   range: FoldRangeType
   system: string
+  type: Link.Hashtag
 }
 
 export type LinkIndexType = {
-  like: Link.Index
   nest: Array<LinkTreeType | LinkTermType | LinkPathType>
   parent: LinkPathType
+  type: Link.Index
 }
 
 export type LinkInputStateType = {
@@ -107,51 +107,50 @@ export type LinkNodeType =
   | LinkBooleanType
 
 export type LinkPathType = {
-  like: Link.Path
   parent: LinkTreeType | LinkPluginType | LinkIndexType
   segment: Array<LinkTermType | LinkIndexType>
+  type: Link.Path
 }
 
 export type LinkPluginType = {
-  like: Link.Plugin
   nest: Array<LinkTreeType | LinkTermType | LinkPathType>
   parent: LinkTermType | LinkTextType
   size: number
+  type: Link.Plugin
 }
 
 export type LinkResultType = TextSplitInputType & {
-  link: LinkTreeType
+  linkTree: LinkTreeType
 }
 
 export type LinkSignedIntegerType = {
-  like: Link.SignedInteger
   range: FoldRangeType
+  type: Link.SignedInteger
   value: number
 }
 
 export type LinkStringType = {
-  like: Link.String
   range: FoldRangeType
+  type: Link.String
   value: string
 }
 
 export type LinkTermType = {
   dereference: boolean
   guard: boolean
-  like: Link.Term
   parent: LinkPathType | LinkTreeType | LinkPluginType
   query: boolean
   segment: Array<LinkStringType | LinkPluginType>
+  type: Link.Term
 }
 
 export type LinkTextType = {
-  like: Link.Text
   segment: Array<LinkStringType | LinkPluginType>
+  type: Link.Text
 }
 
 export type LinkTreeType = {
   head?: LinkTermType
-  like: Link.Tree
   nest: Array<
     | LinkTextType
     | LinkPathType
@@ -165,12 +164,13 @@ export type LinkTreeType = {
     | LinkTermType
   >
   parent?: LinkTreeType | LinkPluginType | LinkIndexType
+  type: Link.Tree
 }
 
 export type LinkType<T extends Link> = LinkMappingType[T]
 
 export type LinkUnsignedIntegerType = {
-  like: Link.UnsignedInteger
+  type: Link.UnsignedInteger
   value: number
 }
 

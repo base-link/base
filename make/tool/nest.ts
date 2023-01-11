@@ -1,23 +1,13 @@
-import { Link, LinkHint, LinkType, SiteEnvironmentType, code } from '~'
+import { Link, LinkHint, code } from '~'
 import type { SiteProcessInputType } from '~'
 
-export function assumeNest(
-  input: SiteProcessInputType,
-): LinkType<Link> {
-  const nest = code.getEnvironmentProperty(input.environment, 'nest')
-  code.assertGenericLink(nest)
-  return nest
-}
-
-export function assumeNestIndex(input: SiteProcessInputType): number {
-  const index = code.getEnvironmentProperty(input.environment, 'index')
+export function assumeLinkIndex(input: SiteProcessInputType): number {
+  const index = input.link.index
   code.assertNumber(index)
   return index
 }
 
-export function determineNestType(
-  input: SiteProcessInputType,
-): LinkHint {
+export function getLinkHint(input: SiteProcessInputType): LinkHint {
   if (code.nestIsTerm(input)) {
     if (code.termIsInterpolated(input)) {
       return LinkHint.DynamicTerm
@@ -48,25 +38,25 @@ export function determineNestType(
 }
 
 export function nestIsHashtag(input: SiteProcessInputType): boolean {
-  const nest = code.assumeNest(input)
+  const nest = input.link.element
 
-  return nest.like === Link.Hashtag
+  return nest.type === Link.Hashtag
 }
 
 export function nestIsPath(input: SiteProcessInputType): boolean {
-  const nest = code.assumeNest(input)
+  const nest = input.link.element
 
-  return nest.like === Link.Path
+  return nest.type === Link.Path
 }
 
 export function nestIsTerm(input: SiteProcessInputType): boolean {
-  const nest = code.assumeNest(input)
+  const nest = input.link.element
 
-  if (nest.like === Link.Term) {
+  if (nest.type === Link.Term) {
     return true
   }
 
-  if (nest.like !== Link.Tree) {
+  if (nest.type !== Link.Tree) {
     return false
   }
 
@@ -75,7 +65,7 @@ export function nestIsTerm(input: SiteProcessInputType): boolean {
     return false
   }
 
-  if (child.like !== Link.Term) {
+  if (child.type !== Link.Term) {
     return false
   }
 
@@ -83,30 +73,30 @@ export function nestIsTerm(input: SiteProcessInputType): boolean {
 }
 
 export function nestIsText(input: SiteProcessInputType): boolean {
-  const nest = code.assumeNest(input)
+  const nest = input.link.element
 
-  return nest.like === Link.Text
+  return nest.type === Link.Text
 }
 
 export function nestIsUnsignedInteger(
   input: SiteProcessInputType,
 ): boolean {
-  const nest = code.assumeNest(input)
+  const nest = input.link.element
 
-  return nest.like === Link.UnsignedInteger
+  return nest.type === Link.UnsignedInteger
 }
 
 export function pathIsInterpolated(
   input: SiteProcessInputType,
 ): boolean {
-  const nest = code.assumeNest(input)
+  const nest = input.link.element
 
-  if (nest.like !== Link.Path) {
+  if (nest.type !== Link.Path) {
     return false
   }
 
   for (const seg of nest.segment) {
-    if (seg.like === Link.Index) {
+    if (seg.type === Link.Index) {
       return true
     }
     if (code.termIsInterpolatedImpl(seg)) {

@@ -1,15 +1,19 @@
-import { Link, LinkHint, code } from '~'
+import { Link, LinkHint, LinkNodeType, code } from '~'
 import type { SiteProcessInputType } from '~'
+
+export function assumeNest(
+  input: SiteProcessInputType,
+): Array<LinkNodeType> {
+  return code.assumeLink(input, Link.Tree).nest
+}
 
 export function process_codeCard_bind(
   input: SiteProcessInputType,
 ): void {
-  code.assumeLink(input, Link.Tree).nest.forEach((nest, index) => {
+  const nest = code.assumeNest(input)
+  nest.forEach((nest, index) => {
     process_codeCard_bind_nestedChildren(
-      code.withEnvironment(input, {
-        index,
-        nest,
-      }),
+      code.withLink(input, nest, index),
     )
   })
 }
@@ -17,10 +21,10 @@ export function process_codeCard_bind(
 export function process_codeCard_bind_nestedChildren(
   input: SiteProcessInputType,
 ): void {
-  const type = code.determineNestType(input)
+  const type = code.getLinkHint(input)
   switch (type) {
     case LinkHint.StaticTerm:
-      const term = code.resolveTerm(input)
+      const term = code.resolveTermString(input)
       break
     default:
       code.throwError(code.generateUnhandledTermCaseError(input))

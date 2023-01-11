@@ -42,13 +42,13 @@ export function exportNodeJS(base: Base): void {
 export function generateNodeJS(base: Base): DockJSTokenType {
   const program: DockJSProgramTokenType = {
     body: [],
-    like: DockJS.Program,
+    type: DockJS.Program,
   }
 
   // for (const [key, val] of base.card_mesh) {
   //   console.log(key)
   //   // console.log(val.seed)
-  //   switch (val.seed.like) {
+  //   switch (val.seed.type) {
   //     case Mesh.CodeModule:
   //       code.generateNodeJSCardModule(program, val.seed)
   //       break

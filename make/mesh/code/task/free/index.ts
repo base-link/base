@@ -6,18 +6,15 @@ export function process_codeCard_task_free(
 ): void {
   const output: NestOutputType = {
     children: [],
-    like: Nest.Output,
     scope: input.scope,
+    type: Nest.Output,
   }
 
   const childInput = code.withElement(input, output)
 
   code.assumeLink(input, Link.Tree).nest.forEach((nest, index) => {
     process_codeCard_task_free_nestedChildren(
-      code.withEnvironment(childInput, {
-        index,
-        nest,
-      }),
+      code.withLink(childInput, nest, index),
     )
   })
 }
@@ -25,13 +22,13 @@ export function process_codeCard_task_free(
 export function process_codeCard_task_free_nestedChildren(
   input: SiteProcessInputType,
 ): void {
-  const type = code.determineNestType(input)
+  const type = code.getLinkHint(input)
   switch (type) {
     case LinkHint.StaticTerm: {
-      const term = code.assumeTerm(input)
-      const index = code.assumeNestIndex(input)
+      const term = code.assumeTermString(input)
+      const index = code.assumeLinkIndex(input)
       if (index === 0) {
-        code.pushIntoParentObject(
+        code.gatherIntoMeshParent(
           input,
           code.createStringConstant('name', term),
         )
