@@ -1,9 +1,15 @@
-import { Base, BaseCard, Mesh, MeshModuleBaseType, code } from '~'
+import {
+  Base,
+  BaseCard,
+  SiteModuleBaseType,
+  SiteParseType,
+  code,
+} from '~'
 
-export function assertMeshModule(
+export function assertModule(
   object: unknown,
-): asserts object is MeshModuleBaseType {
-  if (!code.isMeshModule(object)) {
+): asserts object is SiteModuleBaseType {
+  if (!code.isModule(object)) {
     code.throwError(code.generateObjectNotTypeError(object, ['module']))
   }
 }
@@ -20,8 +26,21 @@ export function hasModuleInitialized(module: BaseCard): boolean {
   return Object.keys(module.seed).length > 0
 }
 
-export function isMeshModule(
+export function isModule(
   object: unknown,
-): object is MeshModuleBaseType {
-  return (object as MeshModuleBaseType).isModule === true
+): object is SiteModuleBaseType {
+  return (object as SiteModuleBaseType).isModule === true
+}
+
+export function loadLinkModule(
+  base: Base,
+  path: string,
+): SiteParseType {
+  const text = code.readTextFile(base, path)
+  const data = code.parseLinkText({ path, text })
+  const directory = code.getLinkHost(path)
+  return {
+    directory,
+    ...data,
+  }
 }

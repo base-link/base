@@ -1,50 +1,65 @@
-import { Link, Mesh, MeshFullType, Nest, code } from '~'
+import {
+  Link,
+  MESH_BOOLEAN_LINK_TYPE,
+  MESH_TERM_LINK_TYPE,
+  Mesh,
+  code,
+} from '~'
 import type { SiteProcessInputType } from '~'
 
 export * from './base/index.js'
 export * from './case/index.js'
 export * from './wear/index.js'
 
-export function assumeChildren(
+export function createMeshClass(
   input: SiteProcessInputType,
-): Array<unknown> {
-  const parent = code.assumeElementAsGenericNest(input)
-  const children = code.assumeChildrenFromParent(parent)
-  return children
-}
+): MeshClassType {
+  const name = code.assumeZippedMesh(input, 'name', MESH_TERM_LINK_TYPE)
+  code.assertMeshTermPointer(name)
 
-export function generateFullClass(
-  input: SiteProcessInputType,
-): MeshFullType<Mesh.Class> {
-  const name = code.findFullStringConstantByName(input, 'name')
-  code.assertString(name)
+  const hidden =
+    code.assumeZippedMeshOrUndefined(
+      input,
+      'hidden',
+      MESH_BOOLEAN_LINK_TYPE,
+    ) ?? code.createMeshPointer(code.createMeshBoolean(false))
+  code.assertMeshBooleanPointer(hidden)
 
-  const children = code.assumeChildren(input)
-
-  const methodList = children.filter(
-    (node): node is MeshFullType<Mesh.Function> =>
-      code.isMesh(node, Mesh.Function),
+  const methods = code.assumeZippedMeshArray(
+    input,
+    'function',
+    Mesh.Function,
   )
 
-  const propertyList = children.filter(
-    (node): node is MeshFullType<Mesh.Input> =>
-      code.isMesh(node, Mesh.Input),
+  const callbacks = code.assumeZippedMeshArray(
+    input,
+    'callback',
+    Mesh.Callback,
   )
 
-  const methods = code.keyBy(methodList, 'name')
-  const properties = code.keyBy(propertyList, 'name')
+  const interfaces = code.assumeZippedMeshArray(
+    input,
+    'interface',
+    Mesh.ClassInterfaceImplementation,
+  )
+
+  const properties = code.assumeZippedMeshArray(
+    input,
+    'input',
+    Mesh.Input,
+  )
+  const hint = code.getMeshHintFromChildren(input)
 
   return {
-    bound: false,
-    callbacks: {},
-    hidden: false,
-    interfaces: {},
-    like: Mesh.Class,
+    callbacks,
+    hidden,
+    hint,
+    interfaces,
     methods,
     name,
     parents: [],
-    partial: false,
     properties,
+    type: Mesh.Class,
   }
 }
 
@@ -53,8 +68,8 @@ export function process_codeCard_form(
 ): void {
   const container = code.createContainerScope({}, input.scope.container)
   const scope = code.createStepScope(container)
-  const form = code.createNest(Nest.Class, scope)
-  code.pushIntoParentObject(input, form)
+  const form = code.createMeshGather('class', scope)
+  code.gatherIntoMeshParent(input, form)
 
   const scopeInput = code.withScope(input, scope)
   const branchInput = code.withElement(scopeInput, form)
@@ -63,31 +78,25 @@ export function process_codeCard_form(
     .assumeLink(branchInput, Link.Tree)
     .nest.forEach((nest, index) => {
       code.process_codeCard_form_nestedChildren(
-        code.withEnvironment(branchInput, {
-          index,
-          nest,
-        }),
+        code.withLink(branchInput, nest, index),
       )
     })
 
   code.replaceIfBound(branchInput, form, () =>
-    code.generateFullClass(branchInput),
+    code.createMeshClass(branchInput),
   )
 }
 
 export function process_codeCard_form_nestedChildren(
   input: SiteProcessInputType,
 ): void {
-  const type = code.determineNestType(input)
+  const type = code.getLinkHint(input)
   if (type === 'static-term') {
-    const term = code.assumeTerm(input)
-    const index = code.assumeNestIndex(input)
+    const index = code.assumeLinkIndex(input)
     if (index === 0) {
-      code.pushIntoParentObject(
-        input,
-        code.createStringConstant('name', term),
-      )
+      code.process_first_staticTerm(input, 'name')
     } else {
+      const term = code.assumeTermString(input)
       switch (term) {
         case 'link':
           code.process_codeCard_link(input)

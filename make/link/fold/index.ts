@@ -18,17 +18,15 @@ export type FoldNestType = {
   parent?: FoldNestType
 }
 
-export type FoldStateHandleType = (
-  input: FoldStateInputType,
-) => void
+export type FoldStateHandleType = (input: FoldStateInputType) => void
 
 export type FoldStateInputType = TextResultType & {
   state: FoldStateType
 }
 
 export type FoldStateType = {
-  base: <T extends Fold>(like: T) => { id: number; like: T }
-  count: (like: Fold) => number
+  base: <T extends Fold>(type: T) => { id: number; type: T }
+  count: (type: Fold) => number
   index: number
   result: Array<FoldNodeType>
   stack: Array<Fold>
@@ -42,20 +40,20 @@ export function generateLinkTextBuildingDirections(
   const stack: Array<Fold> = [Fold.OpenModule]
   const counter: Record<string, number> = {}
 
-  function count(like: Fold): number {
-    counter[like] = counter[like] || 1
-    return counter[like]++
+  function count(type: Fold): number {
+    counter[type] = counter[type] || 1
+    return counter[type]++
   }
 
-  function base<T extends Fold>(like: T) {
+  function base<T extends Fold>(type: T) {
     return {
-      id: count(like),
-      like,
+      id: count(type),
+      type,
     }
   }
 
   // console.log(
-  //   input.tokenList.map(x => `${x.like} => ${x.text}`),
+  //   input.tokenList.map(x => `${x.type} => ${x.text}`),
   // )
 
   const state: FoldStateType = {
@@ -79,7 +77,7 @@ export function generateLinkTextBuildingDirections(
   while (state.index < input.tokenList.length) {
     const token = input.tokenList[state.index]
     if (token) {
-      switch (token.like) {
+      switch (token.type) {
         case Text.TermFragment: {
           fromLine = false
           result.push(...handleTermFragment(stateInput))
@@ -113,9 +111,7 @@ export function generateLinkTextBuildingDirections(
         }
         case Text.OpenInterpolation:
           fromLine = false
-          result.push(
-            ...handleTermFragment(stateInput, 0, true),
-          )
+          result.push(...handleTermFragment(stateInput, 0, true))
           break
         case Text.CloseEvaluation:
         case Text.CloseInterpolation:
@@ -128,7 +124,7 @@ export function generateLinkTextBuildingDirections(
         case Text.Comma: {
           code.throwError(
             code.generateInvalidCompilerStateError(
-              `Unhandled text type ${token.like}.`,
+              `Unhandled text type ${token.type}.`,
               input.path,
             ),
           )
@@ -196,9 +192,7 @@ export function generateLinkTextBuildingDirections(
 
   // result.push(base(Fold.CloseModule))
 
-  function handlePath(
-    input: FoldStateInputType,
-  ): Array<FoldNodeType> {
+  function handlePath(input: FoldStateInputType): Array<FoldNodeType> {
     const array: Array<FoldNodeType> = []
     array.push(base(Fold.OpenText))
 
@@ -206,7 +200,7 @@ export function generateLinkTextBuildingDirections(
 
     loop: while (state.index < input.tokenList.length) {
       const token = input.tokenList[state.index++]
-      check: switch (token?.like) {
+      check: switch (token?.type) {
         case Text.String:
         case Text.Path: {
           array.push({
@@ -261,9 +255,7 @@ export function generateLinkTextBuildingDirections(
     return array
   }
 
-  function handleText(
-    input: FoldStateInputType,
-  ): Array<FoldNodeType> {
+  function handleText(input: FoldStateInputType): Array<FoldNodeType> {
     const array: Array<FoldNodeType> = []
     array.push(base(Fold.OpenText))
 
@@ -271,7 +263,7 @@ export function generateLinkTextBuildingDirections(
 
     loop: while (state.index < input.tokenList.length) {
       const token = input.tokenList[state.index++]
-      check: switch (token?.like) {
+      check: switch (token?.type) {
         case Text.String: {
           array.push({
             ...token,
@@ -324,7 +316,7 @@ export function generateLinkTextBuildingDirections(
   ): Array<FoldNodeType> {
     loop: while (state.index < input.tokenList.length) {
       const token = input.tokenList[state.index++]
-      check: switch (token?.like) {
+      check: switch (token?.type) {
         case Text.TermFragment: {
           state.index--
           array.push(...handleTermFragment(input))
@@ -397,7 +389,7 @@ export function generateLinkTextBuildingDirections(
     let bracketStack = 0
     loop: while (state.index < input.tokenList.length) {
       const token = input.tokenList[state.index++]
-      check: switch (token?.like) {
+      check: switch (token?.type) {
         case Text.OpenParenthesis: {
           bracketStack++
           array.push(base(Fold.OpenNest))
@@ -446,7 +438,7 @@ export function generateLinkTextBuildingDirections(
     let hasIndex = false
     loop: while (state.index < input.tokenList.length) {
       const token = input.tokenList[state.index++]
-      check: switch (token?.like) {
+      check: switch (token?.type) {
         case Text.OpenParenthesis: {
           state.index--
           tail.push(...handleParenthesis(input))
@@ -544,7 +536,7 @@ export function generateLinkTextBuildingDirections(
       }
     }
 
-    if (array[array.length - 1]?.like === Fold.TermSeparator) {
+    if (array[array.length - 1]?.type === Fold.TermSeparator) {
       array.pop()
     }
 
@@ -559,7 +551,7 @@ export function generateLinkTextBuildingDirections(
       result.push(base(Fold.OpenTerm))
 
       array.forEach(x => {
-        if (x.like === Fold.OpenIndex) {
+        if (x.type === Fold.OpenIndex) {
           result.push(base(Fold.CloseTerm))
         }
         result.push(x)
@@ -608,11 +600,7 @@ export function generateLinkTextBuildingDirections(
       const name = fragment.replace(/[\*\~\?]/g, '')
       const upto = parts.slice(0, i).join('').length
       const character = {
-        end:
-          token.range.character.start +
-          upto +
-          fragment.length +
-          i,
+        end: token.range.character.start + upto + fragment.length + i,
         start: token.range.character.start + upto + i,
       }
       const line = {
@@ -620,8 +608,7 @@ export function generateLinkTextBuildingDirections(
         start: token.range.line.start,
       }
       const offset = {
-        end:
-          token.range.offset.start + upto + fragment.length + i,
+        end: token.range.offset.start + upto + fragment.length + i,
         start: token.range.offset.start,
       }
       return {
@@ -637,14 +624,14 @@ export function generateLinkTextBuildingDirections(
         start: i > 0,
         value: name,
         ...base(Fold.TermFragment),
-        like: Fold.TermFragment,
+        type: Fold.TermFragment,
       }
     })
   }
 
   // console.log(logDirectionList(result))
 
-  // console.log(result.map(x => `${x.like} => ${x.value}`))
+  // console.log(result.map(x => `${x.type} => ${x.value}`))
 
   return {
     ...input,
@@ -665,12 +652,12 @@ function logDirectionList(
     let color = chalk.gray
     let diff = 0
     let type = 'neutral'
-    if (direction.like.match('open')) {
+    if (direction.type.match('open')) {
       indent++
       yay++
       color = chalk.green
       type = 'open'
-    } else if (direction.like.match('close')) {
+    } else if (direction.type.match('close')) {
       diff = -1
       nay++
       color = chalk.yellow
@@ -678,10 +665,7 @@ function logDirectionList(
     }
 
     const indentText = new Array(
-      Math.max(
-        0,
-        type.match(/open|close/) ? indent : indent + 1,
-      ),
+      Math.max(0, type.match(/open|close/) ? indent : indent + 1),
     ).join('  ')
     const value = chalk.whiteBright(
       'value' in direction
@@ -694,9 +678,7 @@ function logDirectionList(
       '', // type === 'close' ? nay : type === 'open' ? yay : '',
     )
     tree.push(
-      `  ${indentText}${color(
-        direction.like,
-      )} ${value} ${symbol}`,
+      `  ${indentText}${color(direction.type)} ${value} ${symbol}`,
     )
     indent += diff
   })

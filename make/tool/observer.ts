@@ -1,5 +1,6 @@
 import { Base, code } from '~'
 import type {
+  SiteBindElementBaseInputType,
   SiteBindElementHandlerInputType,
   SiteBindElementInputType,
   SiteBindModuleInputType,
@@ -70,7 +71,7 @@ export function bindReference(input: SiteBindElementInputType): void {
 }
 
 export function checkFocusForInputCompletion(
-  input: SiteBindElementInputType & { value: unknown },
+  input: SiteBindElementBaseInputType & { value: unknown },
 ): void {
   input.focus.bond = input.value
   if (code.childrenAreBoundMesh(input.element.node)) {

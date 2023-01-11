@@ -1,20 +1,8 @@
-import { Link, LinkType, code } from '~'
-import type { SiteProcessInputType } from '~'
+import { Link, code } from '~'
+import type { LinkType, SiteProcessInputType } from '~'
 
-export function assertNestChildrenLength(
-  input: SiteProcessInputType,
-  length: number,
-): void {
-  const nest = code.assumeLink(input, Link.Tree)
-  if (nest.nest.length !== length) {
-    code.throwError(
-      code.generateInvalidNestChildrenLengthError(input, length),
-    )
-  }
-}
-
-export function assumeTerm(input: SiteProcessInputType): string {
-  const term = code.resolveTerm(input)
+export function assumeTermString(input: SiteProcessInputType): string {
+  const term = code.resolveTermString(input)
   code.assertString(term)
   return term
 }
@@ -22,13 +10,13 @@ export function assumeTerm(input: SiteProcessInputType): string {
 export function getTerm(
   input: SiteProcessInputType,
 ): LinkType<Link.Term> | undefined {
-  const nest = code.assumeNest(input)
+  const nest = input.link.element
 
-  if (nest.like === Link.Term) {
+  if (nest.type === Link.Term) {
     return nest
   }
 
-  if (nest.like !== Link.Tree) {
+  if (nest.type !== Link.Tree) {
     return
   }
 
@@ -37,14 +25,41 @@ export function getTerm(
     return
   }
 
-  if (child.like !== Link.Term) {
+  if (child.type !== Link.Term) {
     return
   }
 
   return child
 }
 
-export function resolveTerm(
+export function process_dynamicTerm(input: SiteProcessInputType): void {
+  const nest = input.link.element
+  code.pushRed(input, code.createRedValue(input, undefined, nest))
+}
+
+export function process_first_dynamicTerm(
+  input: SiteProcessInputType,
+  property: string,
+): void {
+  const nest = input.link.element
+
+  code.assertLink(nest, Link.Term)
+  code.pushRed(input, code.createRedValue(input, property, nest))
+  code.attachBlue(input, property, code.createBlueTerm(nest))
+}
+
+export function process_first_staticTerm(
+  input: SiteProcessInputType,
+  property: string,
+): void {
+  const name = code.assumeTermString(input)
+  const string = code.createBlueString(name)
+
+  code.pushRed(input, code.createRedValue(input, property, string))
+  code.pushBlue(input, property, string)
+}
+
+export function resolveTermString(
   input: SiteProcessInputType,
 ): string | undefined {
   const term = code.getTerm(input)
@@ -52,7 +67,7 @@ export function resolveTerm(
   const string: Array<string> = []
 
   term.segment.forEach(seg => {
-    if (seg.like === Link.String) {
+    if (seg.type === Link.String) {
       string.push(seg.value)
     } else {
       string.push('RESOLVE FROM PLUGIN')
@@ -65,7 +80,7 @@ export function resolveTerm(
 export function termIsInterpolated(
   input: SiteProcessInputType,
 ): boolean {
-  const nest = code.assumeNest(input)
+  const nest = input.link.element
   const term = code.getTerm(input)
   if (!term) {
     return false
@@ -77,7 +92,7 @@ export function termIsInterpolatedImpl(
   term: LinkType<Link.Term>,
 ): boolean {
   for (const seg of term.segment) {
-    if (seg.like === Link.Plugin) {
+    if (seg.type === Link.Plugin) {
       return true
     }
   }
@@ -86,7 +101,7 @@ export function termIsInterpolatedImpl(
 }
 
 export function termIsNested(input: SiteProcessInputType): boolean {
-  const nest = code.assumeNest(input)
+  const nest = input.link.element
 
-  return nest.like === Link.Path
+  return nest.type === Link.Path
 }

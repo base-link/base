@@ -1,12 +1,4 @@
-import {
-  Link,
-  LinkHint,
-  Mesh,
-  MeshImportVariableRenameType,
-  MeshImportVariableType,
-  Nest,
-  code,
-} from '~'
+import { Link, LinkHint, Mesh, code } from '~'
 import type { SiteProcessInputType } from '~'
 
 export * from './bear/index.js'
@@ -31,10 +23,10 @@ export function generateFullImportVariable(
 
   return {
     bound: true,
-    like: Mesh.ImportVariable,
     name,
     rename: rename ? rename.name : name,
     scopeName,
+    type: Mesh.ImportVariable,
   }
 }
 
@@ -44,7 +36,7 @@ export function process_codeCard_load_find(
   const nest = code.assumeLink(input, Link.Tree)
 
   const find = code.createNest(Nest.ImportVariable, input.scope)
-  code.pushIntoParentObject(input, find)
+  code.gatherIntoMeshParent(input, find)
 
   const childInput = code.withElement(input, find)
 
@@ -62,15 +54,15 @@ export function process_codeCard_load_find(
 export function process_codeCard_load_find_nestedChildren(
   input: SiteProcessInputType,
 ): void {
-  const type = code.determineNestType(input)
+  const type = code.getLinkHint(input)
   switch (type) {
     case LinkHint.StaticTerm: {
-      const index = code.assumeNestIndex(input)
+      const index = code.assumeLinkIndex(input)
 
       if (index > 0) {
         code.process_codeCard_load_find_staticTerm(input)
       } else {
-        code.process_codeCard_load_find_scope(input)
+        code.process_find_scope(input)
       }
       break
     }
@@ -80,37 +72,10 @@ export function process_codeCard_load_find_nestedChildren(
   }
 }
 
-export function process_codeCard_load_find_scope(
-  input: SiteProcessInputType,
-): void {
-  const nest = code.assumeNest(input)
-  code.assertLink(nest, Link.Tree)
-
-  const term = code.resolveTerm(input)
-  code.assertString(term)
-  const scope = term
-  const nestedNest = nest.nest[0]
-  code.assertGenericLink(nestedNest)
-  const nestedInput = code.withEnvironment(input, {
-    index: 0,
-    nest: nestedNest,
-  })
-  const name = code.resolveTerm(nestedInput)
-  code.assertString(name)
-  code.pushIntoParentObject(
-    input,
-    code.createStringConstant('scope', scope),
-  )
-  code.pushIntoParentObject(
-    input,
-    code.createStringConstant('name', name),
-  )
-}
-
 export function process_codeCard_load_find_staticTerm(
   input: SiteProcessInputType,
 ): void {
-  const term = code.resolveTerm(input)
+  const term = code.resolveTermString(input)
   switch (term) {
     case 'save':
       code.process_codeCard_load_find_save(input)
@@ -121,4 +86,30 @@ export function process_codeCard_load_find_staticTerm(
     default:
       code.throwError(code.generateUnknownTermError(input))
   }
+}
+
+export function process_find_scope(input: SiteProcessInputType): void {
+  const nest = code.assumeLink(input, Link.Tree)
+  const scope = code.assumeTermString(input)
+  const nestedNest = nest.nest[0]
+  code.assertGenericLink(nestedNest)
+
+  const nestedInput = code.withLink(input, {
+    index: 0,
+    nest: nestedNest,
+  })
+
+  const name = code.assumeTermString(nestedInput)
+  const scopeString = code.createBlueString(scope)
+  const nameString = code.createBlueString(name)
+
+  code.pushRed(
+    input,
+    code.createRedGather(input, 'scope', [scopeString]),
+  )
+
+  code.pushRed(input, code.createRedGather(input, 'name', [nameString]))
+
+  code.attachBlue(input, 'scopeName', scopeString)
+  code.attachBlue(input, 'name', nameString)
 }

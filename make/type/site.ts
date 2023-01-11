@@ -1,21 +1,12 @@
 import type {
   Base,
+  BlueType,
+  GreenClassReferenceType,
   LinkNodeType,
   LinkTreeType,
-  Mesh,
-  MeshType,
-  Nest,
-  NestType,
+  RedType,
+  YellowType,
 } from '~'
-
-export enum Site {
-  ContainerScope = 'site-container-scope',
-  Dependency = 'site-dependency',
-  DependencyPart = 'site-dependency-part',
-  Scope = 'site-scope',
-  StepScope = 'site-step-scope',
-  VariableDeclaration = 'site-variable-declaration',
-}
 
 export type SiteBindElementBaseInputType = SiteProcessInputType & {
   focus: {
@@ -43,11 +34,31 @@ export type SiteBindModuleInputType = SiteProcessInputType & {
   moduleId: number
 }
 
+export type SiteBlueType = SiteColorType<BlueType>
+
+export type SiteColorType<T> = {
+  node: T
+  parent?: SiteColorType<T>
+}
+
+export type SiteColorsType = {
+  blue?: SiteBlueType
+  red?: SiteRedType
+  yellow?: SiteYellowType
+}
+
 export type SiteContainerScopeType = {
   declarations: Record<string, SiteVariableDeclarationType>
-  like: Site.ContainerScope
   parent?: SiteContainerScopeType
   steps: Array<SiteStepScopeType>
+}
+
+export type SiteCreateInputType = {
+  base: Base
+  bindings: Record<string, unknown>
+  module: SiteModuleBaseType
+  red: SiteRedType
+  scope: SiteStepScopeType
 }
 
 export type SiteDependencyPartCallbackType = (value: unknown) => void
@@ -55,7 +66,6 @@ export type SiteDependencyPartCallbackType = (value: unknown) => void
 export type SiteDependencyPartType = {
   callbackList: Array<SiteDependencyPartCallbackType>
   last?: SiteDependencyPartType
-  like: Site.DependencyPart
   name: string
   next?: SiteDependencyPartType
   parent: SiteDependencyType
@@ -64,17 +74,12 @@ export type SiteDependencyPartType = {
 export type SiteDependencyType = {
   callbackList: Array<SiteInputCallbackType<SiteProcessInputType>>
   context: SiteProcessInputType
-  like: Site.Dependency
   path: Array<SiteDependencyPartType>
-}
-
-export type SiteElementType = {
-  node: MeshType<Mesh> | NestType<Nest>
-  parent?: SiteElementType
 }
 
 export type SiteEnvironmentType = {
   bindings: Record<string, unknown>
+  isEnv: true
   parent?: SiteEnvironmentType
 }
 
@@ -91,7 +96,24 @@ export type SiteModuleBaseType = {
   directory: string
   id: number
   isModule: true
-  link: LinkTreeType
+  link: SiteLinkType
+  linkTree: LinkTreeType
+  path: string
+  text: string
+  textByLine: Array<string>
+}
+
+export type SiteModuleType = SiteModuleBaseType & {
+  blue: SiteBlueType
+  environment: SiteEnvironmentType
+  module: SiteModuleType
+  red: SiteRedType
+  scope: SiteStepScopeType
+}
+
+export type SiteParseType = {
+  directory: string
+  linkTree: LinkTreeType
   path: string
   text: string
   textByLine: Array<string>
@@ -103,14 +125,18 @@ export type SitePotentialScopeType =
 
 export type SiteProcessInputType = {
   base: Base
-  element: SiteElementType
+  blue?: SiteBlueType
   environment: SiteEnvironmentType
-  link?: SiteLinkType
+  link: SiteLinkType
   module: SiteModuleBaseType
+  red: SiteRedType
   scope: SiteStepScopeType
+  yellow?: SiteYellowType
 }
 
 export type SitePropertyObserverType = () => void
+
+export type SiteRedType = SiteColorType<RedType>
 
 export type SiteScopeType = {
   bindings: Record<string, unknown>
@@ -120,10 +146,22 @@ export type SiteScopeType = {
 export type SiteStepScopeType = {
   container?: SiteContainerScopeType
   declarations: Record<string, SiteVariableDeclarationType>
-  like: Site.StepScope
   previous?: SiteStepScopeType
 }
 
-export type SiteVariableDeclarationType = {
-  like: string
+export type SiteVariableDeclarationOptionsType = {
+  definedType?: GreenClassReferenceType
+  isMutable?: boolean
+  isReference?: boolean
 }
+
+export type SiteVariableDeclarationType = {
+  definedType: GreenClassReferenceType
+  inferredType: GreenClassReferenceType
+  isMutable: boolean
+  isOwner: boolean
+  isReference: boolean
+  name: string
+}
+
+export type SiteYellowType = SiteColorType<YellowType>

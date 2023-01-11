@@ -1,53 +1,27 @@
-import {
-  Link,
-  LinkHint,
-  Mesh,
-  MeshClassReferenceType,
-  Nest,
-  code,
-} from '~'
+import { Link, LinkHint, Mesh, code } from '~'
 import type { SiteProcessInputType } from '~'
-
-export function generateFullClassReference(
-  input: SiteProcessInputType,
-): MeshClassReferenceType {
-  const children = code.assumeChildren(input)
-  const name = code.findFullStringConstantByName(input, 'name')
-
-  code.assertString(name)
-
-  const sourceLike = children.filter(
-    (node): node is MeshClassReferenceType =>
-      code.isMesh(node, Mesh.ClassReference),
-  )
-
-  return {
-    bind: sourceLike,
-    bound: false,
-    like: Mesh.ClassReference,
-    name,
-  }
-}
 
 export function process_codeCard_like(
   input: SiteProcessInputType,
 ): void {
-  const like = code.createNest(Nest.ClassReference, input.scope)
-  code.pushIntoParentObject(input, like)
-
-  const likeInput = code.withElement(input, like)
-  code.assumeLink(input, Link.Tree).nest.forEach((nest, index) => {
-    process_codeCard_like_nestedChildren(
-      code.withEnvironment(likeInput, {
-        index,
-        nest,
-      }),
-    )
+  const red = code.pushRed(
+    input,
+    code.createRedGather(input, 'definedType'),
+  )
+  const blue = code.attachBlue(input, 'definedType', {
+    bind: [],
+    type: Mesh.ClassReference,
   })
 
-  code.replaceIfBound(likeInput, like, () =>
-    code.generateFullClassReference(likeInput),
-  )
+  const childInput = code.withColors(input, { blue, red })
+
+  code.assumeNest(input).forEach((nest, index) => {
+    code.addTask(input.base, () => {
+      process_codeCard_like_nestedChildren(
+        code.withLink(childInput, nest, index),
+      )
+    })
+  })
 }
 
 export function process_codeCard_like_free(
@@ -55,6 +29,10 @@ export function process_codeCard_like_free(
 ): void {}
 
 export function process_codeCard_like_head(
+  input: SiteProcessInputType,
+): void {}
+
+export function process_codeCard_like_like(
   input: SiteProcessInputType,
 ): void {}
 
@@ -69,27 +47,31 @@ export function process_codeCard_like_mesh(
 export function process_codeCard_like_nestedChildren(
   input: SiteProcessInputType,
 ): void {
-  const type = code.determineNestType(input)
+  const type = code.getLinkHint(input)
   switch (type) {
-    case LinkHint.DynamicTerm:
-      break
-    case LinkHint.StaticTerm:
-      const term = code.assumeTerm(input)
-      const index = code.assumeNestIndex(input)
+    case LinkHint.DynamicTerm: {
+      const index = code.assumeLinkIndex(input)
       if (index === 0) {
-        code.pushIntoParentObject(
-          input,
-          code.createStringConstant('name', term),
-        )
+        code.process_first_dynamicTerm(input, 'name')
+      } else {
+        code.process_dynamicTerm(input)
+      }
+      break
+    }
+    case LinkHint.StaticTerm: {
+      const index = code.assumeLinkIndex(input)
+      if (index === 0) {
+        code.process_first_staticTerm(input, 'name')
         return
       }
 
+      const term = code.assumeTermString(input)
       switch (term) {
         case 'head':
           code.process_codeCard_head(input)
           break
         case 'like':
-          code.process_codeCard_like(input)
+          code.process_codeCard_like_like(input)
           break
         case 'list':
           code.process_codeCard_like_list(input)
@@ -119,6 +101,7 @@ export function process_codeCard_like_nestedChildren(
           code.throwError(code.generateUnhandledTermCaseError(input))
       }
       break
+    }
     default:
       code.throwError(code.generateUnhandledNestCaseError(input, type))
   }
