@@ -1,5 +1,6 @@
 import {
   Color,
+  LinkNodeType,
   LinkPathType,
   LinkTermType,
   LinkTextType,
@@ -44,6 +45,10 @@ export type BlueCallType = BlueBaseType & {
 }
 
 export type BlueCallbackType = BlueBaseType & {
+  functions: Array<BlueFunctionType>
+  inputs: Array<BlueInputType>
+  name?: BlueTermLinkType
+  steps: Array<BlueStepType>
   type: Mesh.Callback
 }
 
@@ -290,6 +295,10 @@ export type BlueStringType = BlueBaseType & {
 }
 
 export type BlueTemplateType = BlueBaseType & {
+  hidden?: BlueBooleanLinkType
+  inputs: Array<BlueInputType>
+  name?: BlueTermLinkType
+  tree?: Array<LinkNodeType>
   type: Mesh.Template
 }
 

@@ -1,48 +1,7 @@
-import { Link, LinkHint, Mesh, code } from '~'
+import { LinkHint, Mesh, code } from '~'
 import type { SiteProcessInputType } from '~'
 
 export * from './take/index.js'
-
-export function createMeshInput(
-  input: SiteProcessInputType,
-): MeshInputType {
-  const name = code.findPlaceholderByName(input, 'name')
-  code.assertMeshTerm(name)
-
-  const definedType = code.findPlaceholderByName(input, 'defined-type')
-  code.assertMeshOrUndefined(definedType, Mesh.ClassReference)
-
-  const mesh: MeshInputType = {
-    definedType,
-    name,
-    type: Mesh.Input,
-  }
-
-  if (definedType) {
-    const id = code.generateObservableId()
-    code.bindReference({
-      ...input,
-      focus: definedType,
-      handle: () =>
-        code.checkFocusForInputCompletion({
-          ...input,
-          focus: definedType,
-          id,
-          moduleId: input.module.id,
-        }),
-      id,
-      moduleId: input.module.id,
-    })
-  }
-
-  return mesh
-}
-
-export function pingParentOfCompletion(
-  input: SiteProcessInputType,
-): void {
-  const parent = code.assumeElementAsGenericNest(input)
-}
 
 export function process_codeCard_link(
   input: SiteProcessInputType,

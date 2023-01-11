@@ -67,8 +67,8 @@ export function process_codeCard_suit_nestedChildren(
       case 'base':
         code.process_codeCard_form_base(input)
         break
-      case 'type':
-        code.process_codeCard_type(input)
+      case 'like':
+        code.process_codeCard_like(input)
         break
       default:
         code.throwError(code.generateUnhandledTermCaseError(input))

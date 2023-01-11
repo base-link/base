@@ -11,80 +11,27 @@ export * from './base/index.js'
 export * from './case/index.js'
 export * from './wear/index.js'
 
-export function createMeshClass(
-  input: SiteProcessInputType,
-): MeshClassType {
-  const name = code.assumeZippedMesh(input, 'name', MESH_TERM_LINK_TYPE)
-  code.assertMeshTermPointer(name)
-
-  const hidden =
-    code.assumeZippedMeshOrUndefined(
-      input,
-      'hidden',
-      MESH_BOOLEAN_LINK_TYPE,
-    ) ?? code.createMeshPointer(code.createMeshBoolean(false))
-  code.assertMeshBooleanPointer(hidden)
-
-  const methods = code.assumeZippedMeshArray(
-    input,
-    'function',
-    Mesh.Function,
-  )
-
-  const callbacks = code.assumeZippedMeshArray(
-    input,
-    'callback',
-    Mesh.Callback,
-  )
-
-  const interfaces = code.assumeZippedMeshArray(
-    input,
-    'interface',
-    Mesh.ClassInterfaceImplementation,
-  )
-
-  const properties = code.assumeZippedMeshArray(
-    input,
-    'input',
-    Mesh.Input,
-  )
-  const hint = code.getMeshHintFromChildren(input)
-
-  return {
-    callbacks,
-    hidden,
-    hint,
-    interfaces,
-    methods,
-    name,
-    parents: [],
-    properties,
-    type: Mesh.Class,
-  }
-}
-
 export function process_codeCard_form(
   input: SiteProcessInputType,
 ): void {
-  const container = code.createContainerScope({}, input.scope.container)
+  const container = code.createContainerScope(input)
   const scope = code.createStepScope(container)
-  const form = code.createMeshGather('class', scope)
-  code.gatherIntoMeshParent(input, form)
+  const red = code.pushRed(input, code.createRedGather(input, 'class'))
+  const blue = code.pushBlue(input, 'classes', {
+    inputs: [],
+    type: Mesh.Template,
+  })
 
   const scopeInput = code.withScope(input, scope)
-  const branchInput = code.withElement(scopeInput, form)
+  const colorInput = code.withColors(scopeInput, { blue, red })
 
-  code
-    .assumeLink(branchInput, Link.Tree)
-    .nest.forEach((nest, index) => {
+  code.assumeNest(colorInput).forEach((nest, index) => {
+    code.addTask(colorInput.base, () => {
       code.process_codeCard_form_nestedChildren(
-        code.withLink(branchInput, nest, index),
+        code.withLink(colorInput, nest, index),
       )
     })
-
-  code.replaceIfBound(branchInput, form, () =>
-    code.createMeshClass(branchInput),
-  )
+  })
 }
 
 export function process_codeCard_form_nestedChildren(

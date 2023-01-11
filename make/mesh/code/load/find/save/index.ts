@@ -4,14 +4,14 @@ import type { SiteProcessInputType } from '~'
 export function process_codeCard_load_find_save(
   input: SiteProcessInputType,
 ): void {
-  code.assertNestChildrenLength(input, 1)
-
   const nest = code.assumeLink(input, Link.Tree)
 
   nest.nest.forEach((nest, index) => {
-    code.process_codeCard_load_find_save_nestedChildren(
-      code.withLink(input, nest, index),
-    )
+    code.addTask(input.base, () => {
+      code.process_codeCard_load_find_save_nestedChildren(
+        code.withLink(input, nest, index),
+      )
+    })
   })
 }
 
@@ -20,14 +20,9 @@ export function process_codeCard_load_find_save_nestedChildren(
 ): void {
   const type = code.getLinkHint(input)
   if (type === LinkHint.StaticTerm) {
-    const term = code.resolveTermString(input)
-    code.assertString(term)
+    const term = code.assumeTermString(input)
 
-    code.gatherIntoMeshParent(input, {
-      bound: true,
-      name: term,
-      type: Mesh.ImportVariableRename,
-    })
+    code.process_find_scope(input)
   } else {
     code.throwError(code.generateUnhandledTermCaseError(input))
   }

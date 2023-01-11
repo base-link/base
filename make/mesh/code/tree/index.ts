@@ -1,56 +1,29 @@
 import { Link, Mesh, code } from '~'
-import type { LinkNodeType, SiteProcessInputType } from '~'
+import type { SiteProcessInputType } from '~'
 
 export * from './hook/index.js'
-
-export function generateFullTemplate(
-  input: SiteProcessInputType,
-): MeshTemplateType {
-  const children = code.assumeChildren(input)
-
-  const inputList = children.filter((node): node is MeshInputType =>
-    code.isMesh(node, Mesh.Input),
-  )
-
-  const linkList = children.filter((node): node is LinkNodeType =>
-    code.isGenericLink(node),
-  )
-
-  const hidden =
-    code.findFullBooleanConstantByName(input, 'hidden') ?? false
-  const name = code.findFullStringConstantByName(input, 'name')
-
-  const inputs = code.keyBy(inputList, 'name')
-
-  code.assertString(name)
-
-  return {
-    bound: false,
-    hidden,
-    inputs,
-    link: linkList,
-    name,
-    type: Mesh.Template,
-  }
-}
 
 export function process_codeCard_tree(
   input: SiteProcessInputType,
 ): void {
-  const tree = code.createNest(Nest.Template, input.scope)
-  code.gatherIntoMeshParent(input, tree)
-
-  const treeInput = code.withElement(input, tree)
-
-  code.assumeLink(treeInput, Link.Tree).nest.forEach((nest, index) => {
-    code.process_codeCard_tree_nestedChildren(
-      code.withLink(treeInput, nest, index),
-    )
+  const red = code.pushRed(
+    input,
+    code.createRedGather(input, 'template'),
+  )
+  const blue = code.pushBlue(input, 'templates', {
+    inputs: [],
+    type: Mesh.Template,
   })
 
-  code.replaceIfBound(treeInput, tree, () =>
-    code.generateFullTemplate(treeInput),
-  )
+  const colorInput = code.withColors(input, { blue, red })
+
+  code.assumeNest(colorInput).forEach((nest, index) => {
+    code.addTask(input.base, () => {
+      code.process_codeCard_tree_nestedChildren(
+        code.withLink(colorInput, nest, index),
+      )
+    })
+  })
 }
 
 export function process_codeCard_tree_nestedChildren(
@@ -61,10 +34,12 @@ export function process_codeCard_tree_nestedChildren(
     const name = code.assumeTermString(input)
     const index = code.assumeLinkIndex(input)
     if (index === 0) {
-      code.gatherIntoMeshParent(
+      const blueString = code.createBlueString(name)
+      code.pushRed(
         input,
-        code.createStringConstant('name', name),
+        code.createRedValue(input, 'name', blueString),
       )
+      code.attachBlue(input, 'name', blueString)
     } else {
       switch (name) {
         case 'take':

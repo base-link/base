@@ -62,9 +62,15 @@ export function process_codeCard_bear_nestedChildren_dynamicText(
     code.createRedGather(input, 'absolute-path', [nest]),
   )
 
-  // code.addTask(() => {
-  //   code.bindText()
-  // })
+  const text = code.assumeText(input)
+  const path = code.resolveModulePath(input, text)
+  const string = code.createBlueString(path)
+
+  code.attachBlue(input, 'absolutePath', string)
+
+  code.addTask(input.base, () => {
+    code.handle_codeCard(input.base, path)
+  })
 }
 
 export function process_codeCard_bear_nestedChildren_text(
@@ -80,4 +86,8 @@ export function process_codeCard_bear_nestedChildren_text(
   )
 
   code.attachBlue(input, 'absolutePath', string)
+
+  code.addTask(input.base, () => {
+    code.handle_codeCard(input.base, path)
+  })
 }
