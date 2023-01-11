@@ -1,5 +1,6 @@
 import {
   Color,
+  LinkNodeType,
   LinkPathType,
   LinkTermType,
   LinkTextType,
@@ -44,6 +45,10 @@ export type BlueCallType = BlueBaseType & {
 }
 
 export type BlueCallbackType = BlueBaseType & {
+  functions: Array<BlueFunctionType>
+  inputs: Array<BlueInputType>
+  name?: BlueTermLinkType
+  steps: Array<BlueStepType>
   type: Mesh.Callback
 }
 
@@ -59,7 +64,12 @@ export type BlueClassInterfaceImplementationType = BlueBaseType & {
 }
 
 export type BlueClassInterfaceType = BlueBaseType & {
+  hidden?: BlueBooleanLinkType
+  methods: Array<BlueFunctionType>
+  name?: BlueTermLinkType
+  properties: Array<BlueInputType>
   type: Mesh.ClassInterface
+  typeInputs: Array<BlueClassInputType>
 }
 
 export type BlueClassReferenceType = BlueBaseType & {
@@ -70,7 +80,15 @@ export type BlueClassReferenceType = BlueBaseType & {
 }
 
 export type BlueClassType = BlueBaseType & {
+  callbacks: Array<BlueCallbackType>
+  hidden?: BlueBooleanLinkType
+  interfaces: Array<BlueClassInterfaceImplementationType>
+  methods: Array<BlueFunctionType>
+  name?: BlueTermLinkType
+  parents: Array<BlueClassType>
+  properties: Array<BlueInputType>
   type: Mesh.Class
+  typeInputs: Array<BlueClassInputType>
 }
 
 export type BlueCodeModuleType = BlueBaseType & {
@@ -149,7 +167,11 @@ export type BlueHideExportVariableType = BlueBaseType & {
 }
 
 export type BlueImportType = BlueBaseType & {
+  absolutePath?: BlueTextLinkType
+  // exports: Array<BlueImportExportType>
+  imports: Array<BlueImportType>
   type: Mesh.Import
+  variables: Array<BlueImportVariableType>
 }
 
 export type BlueImportVariableRenameType = BlueBaseType & {
@@ -157,10 +179,15 @@ export type BlueImportVariableRenameType = BlueBaseType & {
 }
 
 export type BlueImportVariableType = BlueBaseType & {
+  name?: BlueTermLinkType
+  rename?: BlueImportVariableRenameType
+  scopeName?: BlueTermLinkType
   type: Mesh.ImportVariable
 }
 
 export type BlueInjectType = BlueBaseType & {
+  bind: Array<BlueBindType>
+  name?: BlueTermLinkType
   type: Mesh.Inject
 }
 
@@ -227,13 +254,21 @@ export type BluePackageLicenseType = BlueBaseType & {
   type: Mesh.PackageLicense
 }
 
-export type BluePackageModuleType = SiteModuleBaseType &
-  BlueBaseType & {
-    deck: BluePackageType
-    type: Mesh.PackageModule
-  }
+export type BluePackageModuleType = BlueBaseType & {
+  deck?: BluePackageType
+  type: Mesh.PackageModule
+}
 
 export type BluePackageType = BlueBaseType & {
+  bear?: BlueTextLinkType
+  face: Array<BluePackageUserType>
+  host?: BlueTextLinkType
+  mark?: BlueTextLinkType
+  name?: BlueTextLinkType
+  read?: BlueTextLinkType
+  site?: BlueTextLinkType
+  term: Array<BluePackageLicenseType>
+  test?: BlueTextLinkType
   type: Mesh.Package
 }
 
@@ -273,6 +308,10 @@ export type BlueStringType = BlueBaseType & {
 }
 
 export type BlueTemplateType = BlueBaseType & {
+  hidden?: BlueBooleanLinkType
+  inputs: Array<BlueInputType>
+  name?: BlueTermLinkType
+  tree?: Array<LinkNodeType>
   type: Mesh.Template
 }
 
@@ -335,6 +374,7 @@ export type BlueType =
   | BlueUnsignedIntegerType
   | BlueVariableType
   | BlueCodeModuleType
+  | BluePackageModuleType
 
 export type BlueUnsignedIntegerType = BlueBaseType & {
   type: Mesh.UnsignedInteger

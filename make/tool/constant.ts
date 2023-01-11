@@ -1,4 +1,12 @@
-import { BlueTermType, Color, LinkTermType, Mesh, code } from '~'
+import {
+  BlueTermType,
+  BlueTextType,
+  Color,
+  LinkTermType,
+  LinkTextType,
+  Mesh,
+  code,
+} from '~'
 import type {
   BlueConstantType,
   BluePathType,

@@ -139,6 +139,19 @@ export function attachBlue(
   return child
 }
 
+export function createBlue(
+  input: SiteProcessInputType,
+  node: DistributiveOmit<BlueType, 'color'>,
+): SiteBlueType {
+  return {
+    node: {
+      ...node,
+      color: Color.Blue,
+    },
+    parent: input.blue,
+  }
+}
+
 export function createBlueBoolean(value: boolean): BlueBooleanType {
   return {
     color: Color.Blue,
@@ -166,12 +179,12 @@ export function createBlueStringArray(
 }
 
 export function createBlueText(
+  input: SiteProcessInputType,
   value: LinkTextType,
-  scope: SiteStepScopeType,
 ): BlueTextType {
   return {
     color: Color.Blue,
-    scope,
+    scope: input.scope,
     type: Mesh.Text,
     value,
   }
@@ -269,7 +282,7 @@ export function pushBlue(
   if (child.parent) {
     const node = child.parent.node
     const array = (node as Record<string, unknown>)[property]
-    code.assertArray(array)
+    code.assertArray(array, property, input.module.path)
     array.push(child.node)
   }
 

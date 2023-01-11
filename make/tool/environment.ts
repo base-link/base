@@ -22,25 +22,6 @@ export function createEnvironment(
   }
 }
 
-export function environmentHasProperty(
-  environment: SiteEnvironmentType,
-  name: string | number | symbol,
-): boolean {
-  let source: SiteEnvironmentType = environment
-
-  while (source) {
-    if (name in source.bindings) {
-      return true
-    } else if (source.parent) {
-      source = source.parent
-    } else {
-      return false
-    }
-  }
-
-  return false
-}
-
 export function getEnvironmentProperty(
   environment: SiteEnvironmentType,
   name: string | number | symbol,
@@ -58,6 +39,25 @@ export function getEnvironmentProperty(
       return
     }
   }
+}
+
+export function hasEnvironmentVariable(
+  environment: SiteEnvironmentType,
+  name: string | number | symbol,
+): boolean {
+  let source: SiteEnvironmentType = environment
+
+  while (source) {
+    if (name in source.bindings) {
+      return true
+    } else if (source.parent) {
+      source = source.parent
+    } else {
+      return false
+    }
+  }
+
+  return false
 }
 
 export function isEnvironment(

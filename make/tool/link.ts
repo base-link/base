@@ -28,6 +28,14 @@ export function assertLink<T extends Link>(
   }
 }
 
+export function assumeGenericLink(
+  object: unknown,
+  name?: string,
+): LinkType<Link> {
+  code.assertGenericLink(object, name)
+  return object
+}
+
 export function assumeLink<T extends Link>(
   input: SiteProcessInputType,
   type: T,

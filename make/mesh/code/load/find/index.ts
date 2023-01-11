@@ -4,51 +4,22 @@ import type { SiteProcessInputType } from '~'
 export * from './bear/index.js'
 export * from './save/index.js'
 
-export function generateFullImportVariable(
-  input: SiteProcessInputType,
-): MeshImportVariableType {
-  const parent = code.assumeElementAsGenericNest(input)
-  const children = code.assumeChildrenFromParent(parent)
-
-  const rename = children.find<MeshImportVariableRenameType>(
-    (node): node is MeshImportVariableRenameType =>
-      code.isMesh(node, Mesh.ImportVariableRename),
-  )
-
-  const name = code.findFullStringConstantByName(input, 'name')
-  const scopeName = code.findFullStringConstantByName(input, 'scope')
-
-  code.assertString(name)
-  code.assertString(scopeName)
-
-  return {
-    bound: true,
-    name,
-    rename: rename ? rename.name : name,
-    scopeName,
-    type: Mesh.ImportVariable,
-  }
-}
-
 export function process_codeCard_load_find(
   input: SiteProcessInputType,
 ): void {
-  const nest = code.assumeLink(input, Link.Tree)
+  const red = code.pushRed(input, code.createRedGather(input, 'find'))
+  const blue = code.pushBlue(input, 'variables', {
+    type: Mesh.ImportVariable,
+  })
+  const colorInput = code.withColors(input, { blue, red })
 
-  const find = code.createNest(Nest.ImportVariable, input.scope)
-  code.gatherIntoMeshParent(input, find)
-
-  const childInput = code.withElement(input, find)
-
-  code.processNestedChildren(
-    childInput,
-    nest,
-    code.process_codeCard_load_find_nestedChildren,
-  )
-
-  code.replaceIfBound(childInput, find, () =>
-    code.generateFullImportVariable(childInput),
-  )
+  code.assumeNest(colorInput).forEach((nest, index) => {
+    code.addTask(input.base, () => {
+      code.process_codeCard_load_find_nestedChildren(
+        code.withLink(colorInput, nest, index),
+      )
+    })
+  })
 }
 
 export function process_codeCard_load_find_nestedChildren(
@@ -94,10 +65,7 @@ export function process_find_scope(input: SiteProcessInputType): void {
   const nestedNest = nest.nest[0]
   code.assertGenericLink(nestedNest)
 
-  const nestedInput = code.withLink(input, {
-    index: 0,
-    nest: nestedNest,
-  })
+  const nestedInput = code.withLink(input, nestedNest, 0)
 
   const name = code.assumeTermString(nestedInput)
   const scopeString = code.createBlueString(scope)

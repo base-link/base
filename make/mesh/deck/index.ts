@@ -1,86 +1,69 @@
 import {
   Base,
+  Color,
   DEFAULT_CONTAINER_SCOPE,
+  Link,
   LinkHint,
   Mesh,
-  MeshPackageModuleType,
-  MeshPackageType,
-  Nest,
-  NestPackageModuleType,
+  SiteModuleType,
   code,
 } from '~'
 import type { SiteProcessInputType } from '~'
 
 export * from './deck/index.js'
 
-export function generate_deckCard(
-  input: SiteProcessInputType,
-): MeshPackageModuleType {
-  code.assertNest(input.module, Nest.PackageModule)
-
-  const deck = input.module.children.find(
-    (node): node is MeshPackageType => code.isMesh(node, Mesh.Package),
-  )
-
-  code.assertRecord(deck)
-
-  return {
-    base: input.module.base,
-    deck,
-    directory: input.module.directory,
-    id: input.module.id,
-    link: input.module.link,
-    path: input.module.path,
-    public: {},
-    scope: input.scope,
-    text: input.module.text,
-    textByLine: input.module.textByLine,
-    type: Mesh.PackageModule,
-  }
-}
-
 export function handle_deckCard(base: Base, link: string): void {
   code.process_deckCard(base, link)
-  code.resolve_deckCard(base, link)
 }
 
 /**
  * Entrypoint function.
  */
 export function process_deckCard(base: Base, link: string): void {
-  const card = base.card(link)
   const parse = code.loadLinkModule(base, link)
-  const container = code.createContainerScope(DEFAULT_CONTAINER_SCOPE)
+  const card = base.card(link)
+  const container = code.createTopContainerScope()
   const scope = code.createStepScope(container)
-  const seed: NestPackageModuleType = {
+
+  const red = code.createTopRed({
+    children: [],
+    scope,
+    type: Mesh.Gather,
+  })
+
+  const blue = code.createTopBlue({
+    type: Mesh.PackageModule,
+  })
+
+  const baseModule: Partial<SiteModuleType> = {
     ...parse,
     base,
-    children: [],
+    blue,
     id: card.id,
+    isModule: true,
+    link: code.createTopLink(parse.linkTree),
+    red,
     scope,
-    type: Nest.PackageModule,
   }
 
-  const input: SiteProcessInputType = code.createInput(
-    base,
-    seed,
-    scope,
-    seed,
-    seed,
-  )
+  baseModule.module = baseModule as SiteModuleType
+  baseModule.environment = code.createEnvironment(baseModule)
 
-  const childInput = code.withElement(input, seed)
+  const module = baseModule as SiteModuleType
 
-  card.bind(seed)
+  code.assertString(module.text)
+  code.assertLink(module.linkTree, Link.Tree)
 
-  code.processNestedChildren(
-    childInput,
-    seed.link,
-    code.process_deckCard_nestedChildren,
-  )
+  card.bind(module)
 
-  if (code.childrenAreMesh(seed)) {
-    code.replaceSeed(input, code.generate_deckCard(childInput))
+  if (module.text.trim()) {
+    module.linkTree.nest.forEach((nest, index) => {
+      code.addTask(base, () => {
+        code.process_deckCard_nestedChildren(
+          code.withLink(module, nest, index),
+        )
+      })
+    })
   }
 }
 
@@ -108,22 +91,5 @@ export function process_deckCard_staticTerm(
       break
     default:
       code.throwError(code.generateUnhandledTermCaseError(input))
-  }
-}
-
-export function resolve_deckCard(base: Base, link: string): void {
-  const card = base.card(link)
-  code.assertMesh(card.seed, Mesh.PackageModule)
-
-  // TODO: deck.hint tells us the parser to use on the code.
-
-  const { deck } = card.seed
-
-  if (deck.bear) {
-    code.handle_codeCard(base, deck.bear)
-  }
-
-  if (deck.test) {
-    code.handle_codeCard(base, deck.test)
   }
 }
