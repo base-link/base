@@ -1,36 +1,5 @@
-import { Link, LinkHint, Mesh, RedGatherType, code } from '~'
-import type { MeshClassReferenceType, SiteProcessInputType } from '~'
-
-export function attachRedGather(
-  input: SiteProcessInputType,
-  property: string,
-): RedGatherType {
-  const value = code.createRedGather(input, property)
-  code.insertIntoRed(input, value)
-  return value
-}
-
-export function attachYellowValue(
-  input: SiteProcessInputType,
-  property: string,
-): void {}
-
-export function createMeshClassReference(
-  input: SiteProcessInputType,
-): MeshClassReferenceType {
-  const name = code.findPlaceholderByName(input, 'name')
-  code.assertMeshTerm(name)
-
-  const hint = code.getMeshHintFromChildren(input)
-
-  return {
-    bind: [],
-    hint,
-    name,
-    scope: input.scope,
-    type: Mesh.ClassReference,
-  }
-}
+import { Link, LinkHint, Mesh, code } from '~'
+import type { SiteProcessInputType } from '~'
 
 export function process_codeCard_like(
   input: SiteProcessInputType,
@@ -39,33 +8,19 @@ export function process_codeCard_like(
     input,
     code.createRedGather(input, 'definedType'),
   )
-  const yellow = code.createYellow(input, {
-    bind: [],
-    type: Mesh.ClassReference,
-  })
-  const blue = code.createBlue(input, {
+  const blue = code.attachBlue(input, 'definedType', {
     bind: [],
     type: Mesh.ClassReference,
   })
 
-  const childInput = code.withColors(input, {
-    blue,
-    red,
-    yellow,
-  })
+  const childInput = code.withColors(input, { blue, red })
 
-  code.assumeLink(input, Link.Tree).nest.forEach((nest, index) => {
+  code.assumeNest(input).forEach((nest, index) => {
     code.addTask(input.base, () => {
       process_codeCard_like_nestedChildren(
         code.withLink(childInput, nest, index),
       )
     })
-  })
-
-  code.addTask(input.base, () => {
-    code.potentiallyReplaceWithSemiStaticMesh(childInput, () =>
-      code.createMeshClassReference(childInput),
-    )
   })
 }
 
@@ -74,6 +29,10 @@ export function process_codeCard_like_free(
 ): void {}
 
 export function process_codeCard_like_head(
+  input: SiteProcessInputType,
+): void {}
+
+export function process_codeCard_like_like(
   input: SiteProcessInputType,
 ): void {}
 
@@ -112,7 +71,7 @@ export function process_codeCard_like_nestedChildren(
           code.process_codeCard_head(input)
           break
         case 'like':
-          code.process_codeCard_like(input)
+          code.process_codeCard_like_like(input)
           break
         case 'list':
           code.process_codeCard_like_list(input)

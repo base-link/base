@@ -72,16 +72,12 @@ export function process_codeCard_bear_nestedChildren_text(
 ): void {
   const text = code.assumeText(input)
   const path = code.resolveModulePath(input, text)
+  const string = code.createBlueString(path)
 
   code.pushRed(
     input,
-    code.createRedGather(input, 'absolute-path', [
-      code.createBlueString(path),
-    ]),
+    code.createRedGather(input, 'absolute-path', [string]),
   )
 
-  code.attachBlue(input, 'absolutePath', {
-    type: Mesh.String,
-    value: path,
-  })
+  code.attachBlue(input, 'absolutePath', string)
 }

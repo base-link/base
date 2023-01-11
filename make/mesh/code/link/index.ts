@@ -1,9 +1,5 @@
-import { Link, LinkHint, Mesh, Nest, code } from '~'
-import type {
-  MeshClassReferenceType,
-  MeshInputType,
-  SiteProcessInputType,
-} from '~'
+import { Link, LinkHint, Mesh, code } from '~'
+import type { SiteProcessInputType } from '~'
 
 export * from './take/index.js'
 
@@ -51,22 +47,20 @@ export function pingParentOfCompletion(
 export function process_codeCard_link(
   input: SiteProcessInputType,
 ): void {
-  const link = code.createMeshPointer(
-    code.createMeshGather('input', input.scope),
-  )
-  code.gatherIntoMeshParent(input, link)
-
-  const childInput = code.withElement(input, link)
-
-  code.assumeLink(childInput, Link.Tree).nest.forEach((nest, index) => {
-    process_codeCard_link_nestedChildren(
-      code.withLink(childInput, nest, index),
-    )
+  const red = code.pushRed(input, code.createRedGather(input, 'input'))
+  const blue = code.pushBlue(input, 'inputs', {
+    type: Mesh.Input,
   })
 
-  code.potentiallyReplaceWithSemiStaticMesh(childInput, () =>
-    code.createMeshInput(childInput),
-  )
+  const colorInput = code.withColors(input, { blue, red })
+
+  code.assumeNest(colorInput).forEach((nest, index) => {
+    code.addTask(input.base, () => {
+      process_codeCard_link_nestedChildren(
+        code.withLink(colorInput, nest, index),
+      )
+    })
+  })
 }
 
 export function process_codeCard_link_base(
@@ -81,11 +75,11 @@ export function process_codeCard_link_nestedChildren(
     case LinkHint.StaticTerm: {
       const index = code.assumeLinkIndex(input)
       if (index === 0) {
-        const name = code.assumeLink(input)
-        code.gatherIntoMeshParent(
-          input,
-          code.createMeshPlaceholder('name', code.createMeshTerm(name)),
-        )
+        const string = code.assumeTermString(input)
+        const term = code.createBlueString(string)
+
+        code.pushRed(input, code.createRedValue(input, 'name', term))
+        code.attachBlue(input, 'name', term)
         return
       }
 

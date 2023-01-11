@@ -41,6 +41,7 @@ export enum Mesh {
   Test = 'mesh-test',
   Text = 'mesh-text',
   UnsignedInteger = 'mesh-unsigned-integer',
+  Value = 'mesh-value',
   Variable = 'mesh-variable',
 }
 

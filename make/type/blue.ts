@@ -48,6 +48,9 @@ export type BlueCallbackType = BlueBaseType & {
 }
 
 export type BlueClassInputType = BlueBaseType & {
+  definedType?: BlueClassReferenceType
+  inferredType?: BlueClassReferenceType
+  name?: BlueTermLinkType
   type: Mesh.ClassInput
 }
 
@@ -71,27 +74,27 @@ export type BlueClassType = BlueBaseType & {
 }
 
 export type BlueCodeModuleType = BlueBaseType & {
-  callbacks: Record<string, BlueCallbackType>
-  classInterfaces: Record<string, BlueClassInterfaceType>
-  classes: Record<string, BlueClassType>
-  components: Record<string, BlueComponentType>
-  constants: Record<string, BlueConstantType>
+  callbacks: Array<BlueCallbackType>
+  classInterfaces: Array<BlueClassInterfaceType>
+  classes: Array<BlueClassType>
+  components: Array<BlueComponentType>
+  constants: Array<BlueConstantType>
   exports: Array<BlueExportType>
-  functions: Record<string, BlueFunctionType>
+  functions: Array<BlueFunctionType>
   imports: Array<BlueImportType>
-  nativeClassInterfaces: Record<string, BlueNativeClassInterfaceType>
+  nativeClassInterfaces: Array<BlueNativeClassInterfaceType>
   public: {
-    classInterfaces: Record<string, BlueClassInterfaceType>
-    classes: Record<string, BlueClassType>
-    components: Record<string, BlueComponentType>
-    constants: Record<string, BlueConstantType>
-    functions: Record<string, BlueFunctionType>
-    nativeClassInterfaces: Record<string, BlueNativeClassInterfaceType>
-    templates: Record<string, BlueTemplateType>
-    tests: Record<string, BlueTestType>
+    classInterfaces: Array<BlueClassInterfaceType>
+    classes: Array<BlueClassType>
+    components: Array<BlueComponentType>
+    constants: Array<BlueConstantType>
+    functions: Array<BlueFunctionType>
+    nativeClassInterfaces: Array<BlueNativeClassInterfaceType>
+    templates: Array<BlueTemplateType>
+    tests: Array<BlueTestType>
   }
-  templates: Record<string, BlueTemplateType>
-  tests: Record<string, BlueTestType>
+  templates: Array<BlueTemplateType>
+  tests: Array<BlueTestType>
   type: Mesh.CodeModule
 }
 
@@ -121,7 +124,18 @@ export type BlueExportType = BlueBaseType & {
 }
 
 export type BlueFunctionType = BlueBaseType & {
+  baseType?: BlueFunctionType
+  definedOutputType?: BlueClassReferenceType
+  functions: Array<BlueFunctionType>
+  hidden?: BlueBooleanLinkType
+  inferredOutputType?: BlueClassReferenceType
+  inputs: Array<BlueInputType>
+  name?: BlueTermLinkType
+  risk?: BlueBooleanLinkType
+  steps: Array<BlueStepType>
   type: Mesh.Function
+  typeInputs: Array<BlueClassInputType>
+  wait?: BlueBooleanLinkType
 }
 
 export type BlueGatherType = BlueBaseType & {
@@ -195,6 +209,7 @@ export type BlueMappingType = {
   'mesh-test': BlueTestType
   'mesh-text': BlueTextType
   'mesh-unsigned-integer': BlueUnsignedIntegerType
+  'mesh-value': BlueValueType
   'mesh-variable': BlueVariableType
 }
 

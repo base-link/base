@@ -1,90 +1,36 @@
-import { Link, LinkHint, Mesh, code } from '~'
-import type { MeshFunctionType, SiteProcessInputType } from '~'
+import { LinkHint, Mesh, code } from '~'
+import type { SiteProcessInputType } from '~'
 
 export * from './back/index.js'
 export * from './base/index.js'
 export * from './free/index.js'
 
-export function createMeshFunction(
-  input: SiteProcessInputType,
-): MeshFunctionType {
-  const name = code.findPlaceholderByName(input, 'name')
-  code.assertMeshTerm(name)
-
-  const base = code.findPlaceholderByName(input, 'base')
-  code.assertMeshOrUndefined(base, Mesh.Function)
-
-  const definedOutputType = code.findPlaceholderByName(
-    input,
-    'output-type',
-  )
-  code.assertMeshOrUndefined(definedOutputType, Mesh.ClassReference)
-
-  const hidden =
-    code.findPlaceholderByName(input, 'hidden') ??
-    code.createMeshBoolean(false)
-  code.assertMeshBoolean(hidden)
-
-  const wait =
-    code.findPlaceholderByName(input, 'wait') ??
-    code.createMeshBoolean(false)
-  code.assertMeshBoolean(wait)
-
-  const risk =
-    code.findPlaceholderByName(input, 'risk') ??
-    code.createMeshBoolean(false)
-  code.assertMeshBoolean(risk)
-
-  const inputs = code.filterPlaceholdersByName(input, 'input')
-  code.assertMeshArray(inputs, Mesh.Input)
-
-  const typeInputs = code.filterPlaceholdersByName(input, 'type-input')
-  code.assertMeshArray(typeInputs, Mesh.ClassInput)
-
-  const steps = code.filterPlaceholdersByName(input, 'step')
-  code.assertMeshStepArray(steps)
-
-  const functions = code.filterPlaceholdersByName(input, 'function')
-  code.assertMeshArray(functions, Mesh.Function)
-
-  const hint = code.getMeshHintFromChildren(input)
-
-  return {
-    base,
-    definedOutputType,
-    functions,
-    hidden,
-    hint,
-    inputs,
-    name,
-    risk,
-    scope: input.scope,
-    steps,
-    type: Mesh.Function,
-    typeInputs,
-    wait,
-  }
-}
-
 export function process_codeCard_task(
   input: SiteProcessInputType,
 ): void {
-  const container = code.createContainerScope({}, input.scope.container)
+  const container = code.createContainerScope(input)
   const scope = code.createStepScope(container)
   const scopeInput = code.withScope(input, scope)
-  const task = code.createMeshGather('function', scope)
-  code.gatherIntoMeshParent(input, task)
-  const childInput = code.withElement(scopeInput, task)
-
-  code.assumeLink(childInput, Link.Tree).nest.forEach((nest, index) => {
-    code.process_codeCard_task_nestedChildren(
-      code.withLink(childInput, nest, index),
-    )
-  })
-
-  code.potentiallyReplaceWithSemiStaticMesh(childInput, () =>
-    code.createMeshFunction(childInput),
+  const red = code.pushRed(
+    input,
+    code.createRedGather(input, 'function'),
   )
+  const blue = code.pushBlue(input, 'functions', {
+    functions: [],
+    inputs: [],
+    steps: [],
+    type: Mesh.Function,
+    typeInputs: [],
+  })
+  const colorInput = code.withColors(scopeInput, { blue, red })
+
+  code.assumeNest(colorInput).forEach((nest, index) => {
+    code.addTask(input.base, () => {
+      code.process_codeCard_task_nestedChildren(
+        code.withLink(colorInput, nest, index),
+      )
+    })
+  })
 }
 
 export function process_codeCard_task_nestedChildren(

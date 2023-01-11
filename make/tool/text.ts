@@ -89,23 +89,11 @@ export function readLinkIndex(input: SiteProcessInputType): unknown {
 
     switch (child.type) {
       case Link.Tree:
-        return readLinkTree(
-          code.withLink(input, {
-            nest: child,
-          }),
-        )
+        return readLinkTree(code.withLink(input, child))
       case Link.Path:
-        return readLinkPath(
-          code.withLink(input, {
-            nest: child,
-          }),
-        )
+        return readLinkPath(code.withLink(input, child))
       case Link.Term:
-        return readLinkTerm(
-          code.withLink(input, {
-            nest: child,
-          }),
-        )
+        return readLinkTerm(code.withLink(input, child))
       default:
         throw new Error('Never')
     }
@@ -119,9 +107,8 @@ export function readLinkPath(input: SiteProcessInputType): unknown {
   let i = 0
 
   const first = nest.segment[i++]
-  const firstTerm = code.resolveTermString(
-    code.withLink(input, { nest: first }),
-  )
+  code.assertGenericLink(first)
+  const firstTerm = code.resolveTermString(code.withLink(input, first))
 
   code.assertString(firstTerm)
   let value = code.getEnvironmentProperty(input.environment, firstTerm)
@@ -131,9 +118,7 @@ export function readLinkPath(input: SiteProcessInputType): unknown {
 
     switch (seg?.type) {
       case Link.Index: {
-        const index = code.readLinkIndex(
-          code.withLink(input, { nest: seg }),
-        )
+        const index = code.readLinkIndex(code.withLink(input, seg))
 
         if (code.isRecord(value) && code.isString(index)) {
           value = code.getProperty(value, index)
@@ -143,9 +128,7 @@ export function readLinkPath(input: SiteProcessInputType): unknown {
         break
       }
       case Link.Term: {
-        const term = code.resolveTermString(
-          code.withLink(input, { nest: seg }),
-        )
+        const term = code.resolveTermString(code.withLink(input, seg))
 
         if (code.isRecord(value) && code.isString(term)) {
           value = code.getProperty(value, term)
@@ -171,23 +154,11 @@ export function readLinkPlugin(input: SiteProcessInputType): unknown {
 
     switch (child.type) {
       case Link.Tree:
-        return readLinkTree(
-          code.withLink(input, {
-            nest: child,
-          }),
-        )
+        return readLinkTree(code.withLink(input, child))
       case Link.Path:
-        return readLinkPath(
-          code.withLink(input, {
-            nest: child,
-          }),
-        )
+        return readLinkPath(code.withLink(input, child))
       case Link.Term:
-        return readLinkTerm(
-          code.withLink(input, {
-            nest: child,
-          }),
-        )
+        return readLinkTerm(code.withLink(input, child))
       default:
         throw new Error('Never')
     }
@@ -221,7 +192,7 @@ export function resolvePathDependencyList(
     } else {
       array.push(
         ...resolveTermStringDependencyList(
-          code.withLink(input, { nest: seg }),
+          code.withLink(input, seg),
           parent,
         ),
       )
@@ -265,12 +236,7 @@ export function resolveText(
         str.push(seg.value)
         break
       case Link.Plugin:
-        const text = code.readLinkPlugin(
-          code.withLink(input, {
-            index: 0,
-            nest: seg,
-          }),
-        )
+        const text = code.readLinkPlugin(code.withLink(input, seg, 0))
 
         str.push(text)
         break
@@ -299,11 +265,10 @@ export function resolveTextDependencyList(
       case Link.String:
         break
       case Link.Plugin:
+        const childNest = seg.nest[0]
+        code.assertGenericLink(childNest)
         const dependencies = code.resolveTreeDependencyList(
-          code.withLink(input, {
-            index: 0,
-            nest: seg.nest[0],
-          }),
+          code.withLink(input, childNest, 0),
           job,
         )
         array.push(...dependencies)

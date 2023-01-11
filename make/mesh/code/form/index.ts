@@ -3,7 +3,6 @@ import {
   MESH_BOOLEAN_LINK_TYPE,
   MESH_TERM_LINK_TYPE,
   Mesh,
-  MeshClassType,
   code,
 } from '~'
 import type { SiteProcessInputType } from '~'

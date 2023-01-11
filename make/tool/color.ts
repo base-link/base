@@ -14,8 +14,11 @@ import {
   LinkTextType,
   MESH_TERM_LINK_TYPE,
   Mesh,
+  Red,
   RedGatherType,
+  RedNodeType,
   RedType,
+  RedValueType,
   SiteBlueType,
   SiteColorsType,
   SiteProcessInputType,
@@ -102,14 +105,14 @@ export function assertBlueText(
   code.assertBlue(object, [Mesh.String, Mesh.Text])
 }
 
-export function assertRed<T extends RedType, M extends Mesh>(
+export function assertRed<T extends Red>(
   object: unknown,
-  type: M,
+  type: T,
   property?: string,
-): asserts object is T {
+): asserts object is RedNodeType<T> {
   if (!code.isRed(object, type)) {
     code.throwError(
-      code.generateIncorrectlyTypedVariable('mesh', property),
+      code.generateIncorrectlyTypedVariable('red', property),
     )
     // code.throwError(code.generateObjectNotTypeError(type))
   }
@@ -188,6 +191,20 @@ export function createRedGather(
   }
 }
 
+export function createRedValue(
+  input: SiteProcessInputType,
+  name: string | undefined,
+  value: BlackType | LinkNodeType,
+): RedValueType {
+  return {
+    color: Color.Red,
+    name,
+    scope: input.scope,
+    type: Mesh.Value,
+    value,
+  }
+}
+
 export function createTopBlue(
   node: DistributiveOmit<BlueType, 'color'>,
 ): SiteBlueType {
@@ -219,14 +236,14 @@ export function isBlue<T extends Mesh>(
     code.isRecord(object) &&
     'type' in object &&
     code.isString(object.type) &&
-    array.includes((object as BlueNodeType<T>).type)
+    array.includes(object.type)
   )
 }
 
-export function isRed<T extends RedType>(
+export function isRed<T extends Red>(
   object: unknown,
-  type: string | Array<string>,
-): object is T {
+  type: T | Array<T>,
+): object is RedNodeType<T> {
   const array: Array<string> = Array.isArray(type) ? type : [type]
   return (
     code.isRecord(object) &&
@@ -272,7 +289,9 @@ export function pushRed(
   }
 
   if (child.parent) {
-    child.parent.node.children.push(child.node)
+    const node = child.parent.node
+    code.assertRed(node, Mesh.Gather)
+    node.children.push(child.node)
   }
 
   return child

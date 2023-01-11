@@ -16,12 +16,12 @@ export const DEFAULT_CONTAINER_SCOPE: Record<
 }
 
 export function createContainerScope(
-  declarations: Record<string, SiteVariableDeclarationType>,
-  parent?: SiteContainerScopeType,
+  input: SiteProcessInputType,
+  declarations: Record<string, SiteVariableDeclarationType> = {},
 ): SiteContainerScopeType {
   return {
     declarations,
-    parent,
+    parent: input.scope.container,
     steps: [],
   }
 }
@@ -38,6 +38,15 @@ export function createStepScope(
   }
   container.steps.push(step)
   return step
+}
+
+export function createTopContainerScope(
+  declarations: Record<string, SiteVariableDeclarationType>,
+): SiteContainerScopeType {
+  return {
+    declarations,
+    steps: [],
+  }
 }
 
 export function declareScopeVariable(
