@@ -1,5 +1,19 @@
-import { Link, LinkHint, Mesh, MeshHint, Site, code } from '~'
+import { Link, LinkHint, Mesh, RedGatherType, code } from '~'
 import type { MeshClassReferenceType, SiteProcessInputType } from '~'
+
+export function attachRedGather(
+  input: SiteProcessInputType,
+  property: string,
+): RedGatherType {
+  const value = code.createRedGather(input, property)
+  code.insertIntoRed(input, value)
+  return value
+}
+
+export function attachYellowValue(
+  input: SiteProcessInputType,
+  property: string,
+): void {}
 
 export function createMeshClassReference(
   input: SiteProcessInputType,
@@ -21,22 +35,41 @@ export function createMeshClassReference(
 export function process_codeCard_like(
   input: SiteProcessInputType,
 ): void {
-  const type = code.createMeshGather('like', input.scope)
-  code.gatherIntoMeshParent(input, type)
-
-  const childInput = code.withElement(input, type)
-  code.assumeLink(input, Link.Tree).nest.forEach((nest, index) => {
-    process_codeCard_like_nestedChildren(
-      code.withEnvironment(childInput, {
-        index,
-        nest,
-      }),
-    )
+  const red = code.createRed(
+    input,
+    code.createRedGather(input, 'definedType'),
+  )
+  const yellow = code.createYellow(input, {
+    bind: [],
+    type: Mesh.ClassReference,
+  })
+  const blue = code.createBlue(input, {
+    bind: [],
+    type: Mesh.ClassReference,
   })
 
-  code.potentiallyReplaceWithSemiStaticMesh(childInput, () =>
-    code.createMeshClassReference(childInput),
-  )
+  const childInput = code.withColors(input, {
+    blue,
+    red,
+    yellow,
+  })
+
+  code.assumeLink(input, Link.Tree).nest.forEach((nest, index) => {
+    code.addTask(input.base, () => {
+      process_codeCard_like_nestedChildren(
+        code.withEnvironment(childInput, {
+          index,
+          nest,
+        }),
+      )
+    })
+  })
+
+  code.addTask(input.base, () => {
+    code.potentiallyReplaceWithSemiStaticMesh(childInput, () =>
+      code.createMeshClassReference(childInput),
+    )
+  })
 }
 
 export function process_codeCard_like_free(
@@ -125,46 +158,3 @@ export function process_codeCard_like_take(
 export function process_codeCard_like_term(
   input: SiteProcessInputType,
 ): void {}
-
-export function process_dynamicTerm(input: SiteProcessInputType): void {
-  const nest = code.assumeLinkNest(input)
-  code.assertLink(nest, Link.Term)
-  code.gatherIntoMeshParent(
-    input,
-    code.createMeshPointer(
-      code.createMeshTerm(nest, input.scope, MeshHint.Dynamic),
-    ),
-  )
-}
-
-export function process_first_dynamicTerm(
-  input: SiteProcessInputType,
-  placeholder: string,
-): void {
-  const nest = code.assumeLinkNest(input)
-  code.assertMesh(nest, Mesh.Term)
-  code.gatherIntoMeshParent(
-    input,
-    code.createMeshPlaceholder(
-      placeholder,
-      code.createMeshTerm(nest, input.scope, MeshHint.Dynamic),
-    ),
-  )
-}
-
-export function process_first_staticTerm(
-  input: SiteProcessInputType,
-  placeholder: string,
-): void {
-  const nest = code.assumeLinkNest(input)
-  code.assertMesh(nest, Mesh.Term)
-  const name = code.resolveTerm(nest)
-  code.assertString(name)
-  code.gatherIntoMeshParent(
-    input,
-    code.createMeshPlaceholder(
-      placeholder,
-      code.createMeshString(name),
-    ),
-  )
-}

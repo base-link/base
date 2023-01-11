@@ -1,15 +1,69 @@
-import { Base, Link, Mesh, Nest, code } from '~'
+import {
+  Base,
+  Color,
+  DistributiveOmit,
+  Link,
+  LinkNodeType,
+  Mesh,
+  SiteLinkType,
+  assertRed,
+  code,
+} from '~'
 import type {
+  BlueType,
   LinkTreeType,
-  MeshParseType,
-  MeshType,
-  NestBaseType,
-  NestType,
-  SiteElementType,
+  RedType,
+  SiteBlueType,
   SiteModuleBaseType,
   SiteProcessInputType,
+  SiteRedType,
   SiteStepScopeType,
+  SiteYellowType,
+  YellowType,
 } from '~'
+
+export type MeshParseType = {
+  directory: string
+  linkTree: LinkTreeType
+  path: string
+  text: string
+  textByLine: Array<string>
+}
+
+export type SiteColorsType = {
+  blue?: SiteBlueType
+  red?: SiteRedType
+  yellow?: SiteYellowType
+}
+
+export type SiteCreateInputType = {
+  base: Base
+  bindings: Record<string, unknown>
+  module: SiteModuleBaseType
+  red: SiteRedType
+  scope: SiteStepScopeType
+}
+
+export function attachBlue(
+  input: SiteProcessInputType,
+  property: string,
+  node: DistributiveOmit<BlueType, 'color'>,
+): SiteBlueType {
+  const child: SiteBlueType = {
+    node: {
+      ...node,
+      color: Color.Blue,
+    },
+    parent: input.blue,
+  }
+
+  if (child.parent) {
+    const node = child.parent.node
+    ;(node as Record<string, unknown>)[property] = child.node
+  }
+
+  return child
+}
 
 export function childrenAreBoundMesh(
   node: Record<string, unknown>,
@@ -54,19 +108,90 @@ export function createElement(
   }
 }
 
-export function createInput(
-  base: Base,
-  module: SiteModuleBaseType,
-  scope: SiteStepScopeType,
-  element: MeshType<Mesh> | NestType<Nest>,
-  bindings: Record<string, unknown>,
-): SiteProcessInputType {
+export function createLink(
+  input: SiteProcessInputType,
+  link: LinkTreeType,
+  index?: number,
+): SiteLinkType {
   return {
-    base,
-    element: code.createElement(element),
-    environment: code.createEnvironment(bindings),
-    module,
-    scope,
+    element: link,
+    index,
+    parent: input.link,
+  }
+}
+
+export function createRed(
+  input: SiteProcessInputType,
+  node: DistributiveOmit<RedType, 'color'>,
+): SiteRedType {
+  const child: SiteRedType = {
+    node: {
+      ...node,
+      color: Color.Red,
+    },
+    parent: input.red,
+  }
+
+  if (child.parent) {
+    child.parent.node.children.push(child.node)
+  }
+
+  return child
+}
+
+export function createTopBlue(
+  node: DistributiveOmit<BlueType, 'color'>,
+): SiteBlueType {
+  return {
+    node: {
+      ...node,
+      color: Color.Blue,
+    },
+  }
+}
+
+export function createTopLink(
+  link: LinkTreeType,
+  index?: number,
+): SiteLinkType {
+  return {
+    element: link,
+    index,
+  }
+}
+
+export function createTopRed(
+  node: DistributiveOmit<RedType, 'color'>,
+): SiteRedType {
+  return {
+    node: {
+      ...node,
+      color: Color.Red,
+    },
+  }
+}
+
+export function createTopYellow(
+  node: DistributiveOmit<YellowType, 'color'>,
+): SiteYellowType {
+  return {
+    node: {
+      ...node,
+      color: Color.Yellow,
+    },
+  }
+}
+
+export function createYellow(
+  input: SiteProcessInputType,
+  node: DistributiveOmit<YellowType, 'color'>,
+): SiteYellowType {
+  return {
+    node: {
+      ...node,
+      color: Color.Yellow,
+    },
+    parent: input.yellow,
   }
 }
 
@@ -118,6 +243,15 @@ export function getWithObjectDefault(
   return value
 }
 
+export function insertIntoRed(
+  input: SiteProcessInputType,
+  value: RedType,
+): void {
+  const red = input.red.node
+  code.assertRed(red, Mesh.Gather)
+  red.children.push(value)
+}
+
 export function loadLinkModule(
   base: Base,
   path: string,
@@ -130,6 +264,8 @@ export function loadLinkModule(
     ...data,
   }
 }
+
+export const mergeObjects = _.merge
 
 export function processNestedChildren(
   input: SiteProcessInputType,
@@ -144,6 +280,29 @@ export function processNestedChildren(
       }),
     )
   })
+}
+
+export function pushBlue(
+  input: SiteProcessInputType,
+  property: string,
+  node: DistributiveOmit<BlueType, 'color'>,
+): SiteBlueType {
+  const child: SiteBlueType = {
+    node: {
+      ...node,
+      color: Color.Blue,
+    },
+    parent: input.blue,
+  }
+
+  if (child.parent) {
+    const node = child.parent.node
+    const array = (node as Record<string, unknown>)[property]
+    code.assertArray(array)
+    array.push(child.node)
+  }
+
+  return child
 }
 
 export function replaceIfBound(
@@ -190,14 +349,21 @@ export function resolveHashtagAsNumber(
   }
 }
 
-export function withElement(
+export function withColors(
   input: SiteProcessInputType,
-  element: MeshType<Mesh> | NestType<Nest>,
+  { red, yellow, blue }: SiteColorsType,
 ): SiteProcessInputType {
-  return {
-    ...input,
-    element: code.createElement(element, input.element),
+  const newInput = { ...input }
+  if (red) {
+    newInput.red = red
   }
+  if (yellow) {
+    newInput.yellow = yellow
+  }
+  if (blue) {
+    newInput.blue = blue
+  }
+  return newInput
 }
 
 export function withEnvironment(

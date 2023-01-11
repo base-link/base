@@ -1,11 +1,14 @@
-import { Mesh, MeshHint, SiteStepScopeType, code } from '~'
-import type {
-  LinkPathType,
-  LinkTermType,
-  MeshTermLinkType,
-  MeshType,
-  MeshValueType,
+import {
+  BlackType,
+  Color,
+  LinkNodeType,
+  Mesh,
+  RedPlaceholderType,
+  SiteProcessInputType,
+  SiteStepScopeType,
+  code,
 } from '~'
+import type { LinkPathType, LinkTermType } from '~'
 
 export function createConstant(
   name: MeshTermLinkType,
@@ -30,15 +33,16 @@ export function createMeshPath(
   }
 }
 
-export function createMeshTerm<T extends MeshHint>(
-  value: LinkTermType,
-  scope: SiteStepScopeType,
-  hint: T,
-): MeshType<Mesh.Term> {
+export function createRedPlaceholder(
+  input: SiteProcessInputType,
+  value: LinkNodeType | BlackType,
+  name?: string,
+): RedPlaceholderType {
   return {
-    hint,
-    scope,
-    type: Mesh.Term,
+    color: Color.Red,
+    name,
+    scope: input.scope,
+    type: Mesh.Placeholder,
     value,
   }
 }

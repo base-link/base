@@ -7,6 +7,7 @@ export function createEnvironment(
 ): SiteEnvironmentType {
   return {
     bindings,
+    isEnv: true,
     parent,
   }
 }

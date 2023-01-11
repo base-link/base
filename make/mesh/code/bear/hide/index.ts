@@ -1,12 +1,12 @@
 import { Mesh, code } from '~'
 import type {
-  MeshHideExportVariableType,
+  BlueHideExportVariableType,
   SiteProcessInputType,
 } from '~'
 
 export function create_codeCard_find(
   input: SiteProcessInputType,
-): MeshHideExportVariableType {
+): BlueHideExportVariableType {
   const scopeName = code.findPlaceholderByName(input, 'scope')
   code.assertMeshTerm(scopeName)
   const name = code.findPlaceholderByName(input, 'name')
@@ -26,12 +26,14 @@ export function create_codeCard_find(
 export function process_codeCard_bear_hide(
   input: SiteProcessInputType,
 ): void {
-  const hide = code.createMeshGather('hide', input.scope)
-  code.gatherIntoMeshParent(input, hide)
-  const childInput = code.withElement(input, hide)
-  code.process_find_scope(input)
+  const red = code.createRed(input, code.createRedGather(input, 'hide'))
+  const blue = code.pushBlue(input, 'hides', {
+    type: Mesh.HideExportVariable,
+  })
+  const colorInput = code.withColors(input, { blue, red })
+  code.process_find_scope(colorInput)
 
-  code.potentiallyReplaceWithSemiStaticMesh(childInput, () =>
-    code.create_codeCard_find(childInput),
+  code.potentiallyReplaceWithSemiStaticMesh(colorInput, () =>
+    code.create_codeCard_find(colorInput),
   )
 }

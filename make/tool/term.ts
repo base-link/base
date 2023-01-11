@@ -44,6 +44,43 @@ export function getTerm(
   return child
 }
 
+export function process_dynamicTerm(input: SiteProcessInputType): void {
+  const nest = code.assumeLinkNest(input)
+  code.assertLink(nest, Link.Term)
+  code.insertIntoRed(
+    input,
+    code.createRedPlaceholder(nest, input.scope),
+  )
+}
+
+export function process_first_dynamicTerm(
+  input: SiteProcessInputType,
+  placeholder: string,
+): void {
+  const nest = code.assumeLinkNest(input)
+  code.assertLink(nest, Link.Term)
+  code.gatherIntoMeshParent(
+    input,
+    code.createRedPlaceholder(nest, input.scope, placeholder),
+  )
+}
+
+export function process_first_staticTerm(
+  input: SiteProcessInputType,
+  placeholder: string,
+): void {
+  const name = code.resolveTerm(input)
+  code.assertString(name)
+  code.gatherIntoMeshParent(
+    input,
+    code.createRedPlaceholder(
+      code.createMeshString(name),
+      input.scope,
+      placeholder,
+    ),
+  )
+}
+
 export function resolveTerm(
   input: SiteProcessInputType,
 ): string | undefined {

@@ -1,6 +1,7 @@
 import _ from 'lodash'
 
 import {
+  Base,
   Link,
   Mesh,
   MeshNodeType,
@@ -119,6 +120,10 @@ export function isArray<T = unknown>(
   object: unknown,
 ): object is Array<T> {
   return _.isArray(object)
+}
+
+export function isBase(object: unknown): object is Base {
+  return _.isObject(object)
 }
 
 export function isBoolean(object: unknown): object is boolean {

@@ -1,6 +1,11 @@
 import {
+  BlackType,
+  Color,
+  Distributive,
+  DistributiveOmit,
   LINK_TYPE,
   Link,
+  LinkNodeType,
   LinkTextType,
   LinkType,
   MESH_TERM_LINK_TYPE,
@@ -13,9 +18,12 @@ import {
   MeshTermLinkPointerType,
   MeshTextType,
   MeshType,
+  RedGatherType,
+  RedType,
   SiteProcessInputType,
   SiteStepScopeType,
   code,
+  createInput,
 } from '~'
 
 export function assertGenericLink(
@@ -165,6 +173,19 @@ export function assertMeshText(
   code.assertMesh(object, [Mesh.String, Mesh.Text])
 }
 
+export function assertRed<T extends RedType, M extends Mesh>(
+  object: unknown,
+  type: M,
+  property?: string,
+): asserts object is T {
+  if (!code.isRed(object, type)) {
+    code.throwError(
+      code.generateIncorrectlyTypedVariable('mesh', property),
+    )
+    // code.throwError(code.generateObjectNotTypeError(type))
+  }
+}
+
 export function assumeChildren(
   input: SiteProcessInputType,
 ): Array<unknown> {
@@ -242,18 +263,6 @@ export function assumeZippedMeshOrUndefined<T extends Mesh>(
   return value
 }
 
-export function createMeshGather(
-  name: string,
-  scope: SiteStepScopeType,
-): MeshGatherType {
-  return {
-    children: [],
-    name,
-    scope,
-    type: Mesh.Gather,
-  }
-}
-
 export function createMeshPointer(
   value: MeshType<Mesh>,
 ): MeshPointerType {
@@ -271,6 +280,20 @@ export function createMeshText(
     scope,
     type: Mesh.Text,
     value,
+  }
+}
+
+export function createRedGather(
+  input: SiteProcessInputType,
+  name: string,
+  children: Array<Distributive<BlackType | LinkNodeType>> = [],
+): RedGatherType {
+  return {
+    children,
+    color: Color.Red,
+    name,
+    scope: input.scope,
+    type: Mesh.Gather,
   }
 }
 
@@ -327,6 +350,19 @@ export function isMesh<T extends Mesh>(
 
 export function isObjectWithType(object: unknown): boolean {
   return code.isRecord(object) && 'type' in object
+}
+
+export function isRed<T extends RedType>(
+  object: unknown,
+  type: string | Array<string>,
+): object is T {
+  const array: Array<string> = Array.isArray(type) ? type : [type]
+  return (
+    code.isRecord(object) &&
+    'type' in object &&
+    code.isString(object.type) &&
+    array.includes(object.type)
+  )
 }
 
 export function potentiallyReplaceWithSemiStaticMesh(

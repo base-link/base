@@ -120,7 +120,7 @@ export type LinkPluginType = {
 }
 
 export type LinkResultType = TextSplitInputType & {
-  link: LinkTreeType
+  linkTree: LinkTreeType
 }
 
 export type LinkSignedIntegerType = {

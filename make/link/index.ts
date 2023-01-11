@@ -262,7 +262,7 @@ export function parseLinkTree(input: FoldResultType): LinkResultType {
 
   return {
     ...input,
-    link: state.tree,
+    linkTree: state.tree,
   }
 }
 

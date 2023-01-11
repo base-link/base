@@ -1,9 +1,12 @@
 import {
   Base,
+  BlueCodeModuleType,
+  Color,
   DEFAULT_CONTAINER_SCOPE,
   Link,
   LinkHint,
   Mesh,
+  SiteModuleType,
   code,
 } from '~'
 import type {
@@ -59,32 +62,177 @@ export function process_codeCard(base: Base, link: string): void {
   const card = base.card(link)
   const container = code.createContainerScope(DEFAULT_CONTAINER_SCOPE)
   const scope = code.createStepScope(container)
-  const seed: MeshModuleGatherType = {
+
+  const red = code.createRed(input, {
+    children: [],
+    scope,
+    type: Mesh.Gather,
+  })
+
+  const blue = code.createBlue({
     ...parse,
     base,
-    children: [],
+    callbacks: {},
+    classInterfaces: {},
+    classes: {},
+    color: Color.Blue,
+    components: {},
+    constants: {},
+    exports: [],
+    functions: {},
     id: card.id,
-    isModule: true,
+    imports: [],
+    nativeClassInterfaces: {},
+    public: {
+      classInterfaces: {},
+      classes: {},
+      components: {},
+      constants: {},
+      functions: {},
+      nativeClassInterfaces: {},
+      templates: {},
+      tests: {},
+    },
     scope,
-    type: Mesh.ModuleGather,
+    templates: {},
+    tests: {},
+    type: Mesh.CodeModule,
+  })
+
+  const yellow = code.createYellow({
+    ...parse,
+    base,
+    callbacks: [],
+    classInterfaces: [],
+    classes: [],
+    color: Color.Yellow,
+    components: [],
+    constants: [],
+    exports: [],
+    functions: [],
+    id: card.id,
+    imports: [],
+    nativeClassInterfaces: [],
+    public: {
+      classInterfaces: [],
+      classes: [],
+      components: [],
+      constants: [],
+      functions: [],
+      nativeClassInterfaces: [],
+      templates: [],
+      tests: [],
+    },
+    scope,
+    templates: [],
+    tests: [],
+    type: Mesh.CodeModule,
+  })
+
+  const module = {
+    ...parse,
+    base,
+    blue,
+    id: card.id,
+    red,
+    yellow,
   }
 
-  const input: SiteProcessInputType = code.createInput(
+  const input: SiteProcessInputType = code.createInput({
     base,
-    seed,
+    bindings: module,
+    blue,
+    module,
+    red,
     scope,
-    seed,
-    seed,
-  )
+    yellow,
+  })
 
-  card.bind(seed)
+  card.bind(module)
 
-  if (seed.text.trim()) {
-    code.processNestedChildren(
-      input,
-      seed.link,
-      code.process_codeCard_nestedChildren,
-    )
+  if (module.text.trim()) {
+    module.link.nest.forEach((nest, index) => {
+      code.addTask(base, () => {
+        code.process_codeCard_nestedChildren(
+          code.withEnvironment(input, {
+            index,
+            nest,
+          }),
+        )
+      })
+    })
+  }
+}
+
+export function process_codeCard(base: Base, link: string): void {
+  const parse = code.loadLinkModule(base, link)
+  const card = base.card(link)
+  const container = code.createContainerScope(DEFAULT_CONTAINER_SCOPE)
+  const scope = code.createStepScope(container)
+
+  const red = code.createTopRed({
+    children: [],
+    scope,
+    type: Mesh.Gather,
+  })
+
+  const blue = code.createTopBlue({
+    callbacks: {},
+    classInterfaces: {},
+    classes: {},
+    components: {},
+    constants: {},
+    exports: [],
+    functions: {},
+    imports: [],
+    nativeClassInterfaces: {},
+    public: {
+      classInterfaces: {},
+      classes: {},
+      components: {},
+      constants: {},
+      functions: {},
+      nativeClassInterfaces: {},
+      templates: {},
+      tests: {},
+    },
+    templates: {},
+    tests: {},
+    type: Mesh.CodeModule,
+  })
+
+  const baseModule: Partial<SiteModuleType> = {
+    ...parse,
+    base,
+    blue,
+    id: card.id,
+    isModule: true,
+    link: code.createTopLink(parse.linkTree),
+    red,
+    scope,
+  }
+
+  baseModule.module = baseModule as SiteModuleType
+  baseModule.environment = code.createEnvironment(baseModule)
+
+  const module = baseModule as SiteModuleType
+
+  code.assertString(module.text)
+  code.assertLink(module.linkTree, Link.Tree)
+
+  card.bind(module)
+
+  if (module.text.trim()) {
+    module.linkTree.nest.forEach((nest, index) => {
+      code.addTask(base, () => {
+        code.process_codeCard_nestedChildren(
+          code.withEnvironment(module, {
+            index,
+            nest,
+          }),
+        )
+      })
+    })
   }
 }
 
@@ -174,7 +322,6 @@ export function resolve_codeCard(base: Base, link: string): void {
         functions: {},
         id: card.id,
         imports: [],
-        isModule: true,
         link: card.seed.link,
         nativeClassInterfaces: {},
         path: card.seed.path,

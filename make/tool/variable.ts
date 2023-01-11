@@ -1,15 +1,30 @@
-import { Mesh, MeshNodeType, MeshPlaceholderType, code } from '~'
+import {
+  BlueBooleanType,
+  BlueStringType,
+  Color,
+  Mesh,
+  MeshNodeType,
+  MeshPlaceholderType,
+  code,
+} from '~'
 import type {
-  MeshBooleanType,
   MeshPathLinkType,
   MeshStringArrayType,
-  MeshStringType,
   MeshVariableType,
 } from '~'
 
-export function createMeshBoolean(value: boolean): MeshBooleanType {
+export function createBlueBoolean(value: boolean): BlueBooleanType {
   return {
+    color: Color.Blue,
     type: Mesh.Boolean,
+    value,
+  }
+}
+
+export function createBlueString(value: string): BlueStringType {
+  return {
+    color: Color.Blue,
+    type: Mesh.String,
     value,
   }
 }
@@ -21,13 +36,6 @@ export function createMeshPlaceholder(
   return {
     name,
     type: Mesh.Placeholder,
-    value,
-  }
-}
-
-export function createMeshString(value: string): MeshStringType {
-  return {
-    type: Mesh.String,
     value,
   }
 }

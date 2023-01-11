@@ -29,7 +29,6 @@ export function generate_deckCard(
     deck,
     directory: input.module.directory,
     id: input.module.id,
-    isModule: true,
     link: input.module.link,
     path: input.module.path,
     public: {},
@@ -58,7 +57,6 @@ export function process_deckCard(base: Base, link: string): void {
     base,
     children: [],
     id: card.id,
-    isModule: true,
     scope,
     type: Nest.PackageModule,
   }

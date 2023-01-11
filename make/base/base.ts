@@ -20,6 +20,8 @@ export type BaseEncounterParamsType = {
 export type BaseFreeType = () => void
 
 class Base {
+  tasks: Array<() => void>
+
   textMap: Record<string, string>
 
   env: Record<string, unknown>
@@ -39,6 +41,7 @@ class Base {
   cardsById: Record<number, BaseCard>
 
   constructor() {
+    this.tasks = []
     this.textMap = {}
     this.env = {}
     this.observersByCardThenIdThenName = {}

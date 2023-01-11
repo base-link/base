@@ -1,50 +1,36 @@
-import { Link, LinkHint, Mesh, code } from '~'
+import { Color, Link, LinkHint, Mesh, YellowExportType, code } from '~'
 import type { MeshExportType, SiteProcessInputType } from '~'
 
 export * from './hide/index.js'
 
-export function create_codeCard_bearMesh(
-  input: SiteProcessInputType,
-): MeshExportType {
-  const absolutePath = code.findPlaceholderByName(
-    input,
-    'absolute-path',
-  )
-  code.assertMeshText(absolutePath)
-
-  const hides = code.filterPlaceholdersByName(input, 'hide')
-  code.assertMeshArray(hides, Mesh.HideExportVariable)
-
-  const hint = code.getMeshHintFromChildren(input)
-
-  return {
-    absolutePath,
-    hides,
-    hint,
-    type: Mesh.Export,
-  }
-}
-
 export function process_codeCard_bear(
   input: SiteProcessInputType,
 ): void {
-  const bear = code.createMeshGather('bear', input.scope)
-  code.gatherIntoMeshParent(input, bear)
+  const red = code.createRed(input, code.createRedGather(input, 'bear'))
+  const blue = code.pushBlue(input, 'exports', {
+    hides: [],
+    type: Mesh.Export,
+  })
+  const colorInput = code.withColors(input, { blue, red })
+  const nest = code.assumeLink(colorInput, Link.Tree)
 
-  const childInput = code.withElement(input, bear)
-  const nest = code.assumeLink(childInput, Link.Tree)
   nest.nest.forEach((nest, index) => {
-    code.process_codeCard_bear_nestedChildren(
-      code.withEnvironment(childInput, {
-        index,
-        nest,
-      }),
-    )
+    code.addTask(input.base, () => {
+      code.process_codeCard_bear_nestedChildren(
+        code.withEnvironment(colorInput, {
+          index,
+          nest,
+        }),
+      )
+    })
   })
 
-  code.potentiallyReplaceWithSemiStaticMesh(childInput, () =>
-    code.create_codeCard_bearMesh(childInput),
-  )
+  code.addTask(() => {
+    // potentiallyReplaceWithSemiStaticMesh
+    code.tryUpgradingToYellow(redInput, () =>
+      code.upgrade_yellow_codeCard_bear(childInput),
+    )
+  })
 }
 
 export function process_codeCard_bear_nestedChildren(
@@ -81,15 +67,14 @@ export function process_codeCard_bear_nestedChildren_dynamicText(
 ): void {
   const nest = code.assumeLinkNest(input)
   code.assertLink(nest, Link.Text)
-  code.gatherIntoMeshParent(
+  const red = code.createRed(
     input,
-    code.createMeshPlaceholder(
-      'absolute-path',
-      code.createMeshText(nest, input.scope),
-    ),
+    code.createRedGather(input, 'absolute-path', [nest]),
   )
 
-  code.bindText()
+  code.addTask(() => {
+    code.bindText()
+  })
 }
 
 export function process_codeCard_bear_nestedChildren_text(
@@ -100,11 +85,34 @@ export function process_codeCard_bear_nestedChildren_text(
 
   const path = code.resolveModulePath(input, text)
 
-  code.gatherIntoMeshParent(
+  code.createRed(
     input,
-    code.createMeshPlaceholder(
-      'absolute-path',
-      code.createMeshString(path),
-    ),
+    code.createRedGather(input, 'absolute-path', [
+      code.createBlueString(path),
+    ]),
   )
+
+  code.attachBlue(input, 'absolutePath', {
+    type: Mesh.String,
+    value: path,
+  })
+}
+
+export function upgrade_yellow_codeCard_bear(
+  input: SiteProcessInputType,
+): YellowExportType {
+  const absolutePath = code.findRedPlaceholder(input, 'absolute-path')
+  code.assertMeshText(absolutePath)
+
+  const hides = code.filterPlaceholders(input, 'hide')
+  code.assertMeshArray(hides, Mesh.HideExportVariable)
+
+  const yellow: YellowExportType = {
+    absolutePath,
+    color: Color.Yellow,
+    hides,
+    type: Mesh.Export,
+  }
+
+  return yellow
 }
