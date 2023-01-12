@@ -89,6 +89,37 @@ export type SiteModuleType = SiteModuleBaseType & {
   scope: SiteStepScopeType
 }
 
+export type SiteObjectWatcherSchemaHandleType = (value: unknown) => void
+
+export type SiteObjectWatcherSchemaType = {
+  children: Array<SiteObjectWatcherSchemaType>
+  handle?: SiteObjectWatcherSchemaHandleType
+  property: string
+  state: Array<SiteObserverState>
+}
+
+export type SiteObjectWatcherType = {
+  children: Array<SiteObjectWatcherType>
+  handle?: () => void
+  objectId: number
+  property: string
+  state: string
+}
+
+export enum SiteObserverState {
+  CollectionGathered = 'collection-gathered',
+  Initialized = 'initialized',
+  RuntimeComplete = 'runtime-complete',
+  StaticComplete = 'static-complete',
+}
+
+// eslint-disable-next-line sort-exports/sort-exports
+export const ALL_SITE_OBSERVER_STATE = [
+  SiteObserverState.Initialized,
+  SiteObserverState.StaticComplete,
+  SiteObserverState.RuntimeComplete,
+]
+
 export type SiteParseType = {
   directory: string
   linkTree: LinkTreeType
@@ -103,13 +134,12 @@ export type SitePotentialScopeType =
 
 export type SiteProcessInputType = {
   base: Base
-  blue?: SiteBlueType
+  blue: SiteBlueType
   environment: SiteEnvironmentType
   link: SiteLinkType
   module: SiteModuleBaseType
   red: SiteRedType
   scope: SiteStepScopeType
-  yellow?: SiteYellowType
 }
 
 export type SitePropertyObserverType = () => void

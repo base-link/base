@@ -7,6 +7,16 @@ export function assumeTermString(input: SiteProcessInputType): string {
   return term
 }
 
+export function attachStaticTerm(
+  input: SiteProcessInputType,
+  property: string,
+  value: string,
+): void {
+  const blueString = code.createBlueString(value)
+  code.pushRed(input, code.createRedValue(input, property, blueString))
+  code.attachBlue(input, property, blueString)
+}
+
 export function getTerm(
   input: SiteProcessInputType,
 ): LinkType<Link.Term> | undefined {

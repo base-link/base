@@ -1,13 +1,12 @@
-import { Base, code } from '~'
-import type {
-  SiteBindElementBaseInputType,
-  SiteBindElementHandlerInputType,
-  SiteBindElementInputType,
-  SiteBindModuleInputType,
-  SiteProcessInputType,
+import {
+  ALL_SITE_OBSERVER_STATE,
+  Base,
+  SiteObjectWatcherSchemaHandleType,
+  SiteObjectWatcherSchemaType,
+  SiteObserverState,
+  code,
 } from '~'
-
-let ID = 1
+import type { SiteProcessInputType } from '~'
 
 export function addPropertyObserver(
   input: SiteBindElementInputType,
@@ -17,7 +16,7 @@ export function addPropertyObserver(
   const id = input.id
   const moduleId = input.moduleId
   const observersByNameThenId = code.getWithObjectDefault(
-    input.base.observersByCardThenNameThenId,
+    input.base.observersByModuleThenNameThenId,
     String(moduleId),
   )
   const observersById = code.getWithObjectDefault(
@@ -27,7 +26,7 @@ export function addPropertyObserver(
   observersById[id] = handle
 
   const observersByIdThenName = code.getWithObjectDefault(
-    input.base.observersByCardThenIdThenName,
+    input.base.observersByModuleThenIdThenName,
     String(moduleId),
   )
   const observersByName = code.getWithObjectDefault(
@@ -94,7 +93,7 @@ export function clearPropertyObserver(
   const id = input.id
   const moduleId = input.moduleId
   const observersByNameThenId = code.getWithObjectDefault(
-    input.base.observersByCardThenNameThenId,
+    input.base.observersByModuleThenNameThenId,
     String(moduleId),
   )
   const observersById = code.getWithObjectDefault(
@@ -107,11 +106,11 @@ export function clearPropertyObserver(
     delete observersByNameThenId[id]
   }
   if (!Object.keys(observersByNameThenId)) {
-    delete input.base.observersByCardThenNameThenId[moduleId]
+    delete input.base.observersByModuleThenNameThenId[moduleId]
   }
 
   const observersByIdThenName = code.getWithObjectDefault(
-    input.base.observersByCardThenIdThenName,
+    input.base.observersByModuleThenIdThenName,
     String(moduleId),
   )
   const observersByName = code.getWithObjectDefault(
@@ -124,19 +123,73 @@ export function clearPropertyObserver(
     delete observersByIdThenName[id]
   }
   if (!Object.keys(observersByIdThenName)) {
-    delete input.base.observersByCardThenIdThenName[moduleId]
+    delete input.base.observersByModuleThenIdThenName[moduleId]
   }
 }
 
-export function generateObservableId(): string {
-  return String(ID++)
+export function createCodeModuleObjectNameObserverSchema(
+  property: string,
+  handle: SiteObjectWatcherSchemaHandleType,
+): SiteObjectWatcherSchemaType {
+  const defaultState = ALL_SITE_OBSERVER_STATE
+
+  return {
+    children: [
+      {
+        children: [
+          {
+            children: [],
+            property: 'name',
+            state: [SiteObserverState.RuntimeComplete],
+          },
+        ],
+        handle,
+        property: '*',
+        state: defaultState,
+      },
+    ],
+    property,
+    state: defaultState,
+  }
+}
+
+export function createCodeModulePublicCollectionObserverSchema(
+  property: string,
+  handle: SiteObjectWatcherSchemaHandleType,
+): SiteObjectWatcherSchemaType {
+  const defaultState = ALL_SITE_OBSERVER_STATE
+
+  return createCodeModulePublicObserverSchema([
+    {
+      children: [
+        {
+          children: [],
+          handle,
+          property: '*',
+          state: [SiteObserverState.CollectionInitialized],
+        },
+      ],
+      property,
+      state: defaultState,
+    },
+  ])
+}
+
+export function createCodeModulePublicObserverSchema(
+  children: Array<SiteObjectWatcherSchemaType>,
+): SiteObjectWatcherSchemaType {
+  return {
+    children,
+    property: 'public',
+    state: ALL_SITE_OBSERVER_STATE,
+  }
 }
 
 export function hasAllReferencesResolved(
   base: Base,
   moduleId: number,
 ): boolean {
-  return !(moduleId in base.observersByCardThenIdThenName)
+  return !(moduleId in base.observersByModuleThenIdThenName)
 }
 
 export function resolveModuleBindings(
@@ -204,7 +257,7 @@ export function triggerPropertyBinding(
   },
 ): void {
   const observersByNameThenId =
-    input.base.observersByCardThenNameThenId[input.module.id]
+    input.base.observersByModuleThenNameThenId[input.module.id]
   if (!observersByNameThenId) {
     return
   }

@@ -1,7 +1,122 @@
-import { Color, Link, LinkHint, Mesh, YellowExportType, code } from '~'
+import { Link, LinkHint, Mesh, code } from '~'
 import type { SiteProcessInputType } from '~'
 
 export * from './hide/index.js'
+
+export function bearImports(input: SiteProcessInputType): void {
+  const exportNode = input.blue.node
+  code.assertBlue(exportNode, Mesh.Export)
+
+  const schemas = [
+    code.createCodeModulePublicCollectionObserverSchema(
+      'classes',
+      handleClassesGathered,
+    ),
+    code.createCodeModulePublicCollectionObserverSchema(
+      'interfaces',
+      handleInterfacesGathered,
+    ),
+    code.createCodeModulePublicCollectionObserverSchema(
+      'functions',
+      handleFunctionsGathered,
+    ),
+    code.createCodeModulePublicCollectionObserverSchema(
+      'templates',
+      handleTemplatesGathered,
+    ),
+    code.createCodeModulePublicCollectionObserverSchema(
+      'variables',
+      handleVariablesGathered,
+    ),
+    code.createCodeModulePublicObserverSchema([
+      code.createCodeModuleObjectNameObserverSchema(
+        'classes',
+        handleClass,
+      ),
+    ]),
+    code.createCodeModulePublicObserverSchema([
+      code.createCodeModuleObjectNameObserverSchema(
+        'interfaces',
+        handleInterface,
+      ),
+    ]),
+    code.createCodeModulePublicObserverSchema([
+      code.createCodeModuleObjectNameObserverSchema(
+        'functions',
+        handleFunction,
+      ),
+    ]),
+    code.createCodeModulePublicObserverSchema([
+      code.createCodeModuleObjectNameObserverSchema(
+        'templates',
+        handleTemplate,
+      ),
+    ]),
+    code.createCodeModulePublicObserverSchema([
+      code.createCodeModuleObjectNameObserverSchema(
+        'variables',
+        handleVariable,
+      ),
+    ]),
+  ]
+
+  function handleClassesGathered(value: unknown): void {
+    code.triggerBindingUpdate(input.module.public.classes)
+  }
+
+  function handleInterfacesGathered(value: unknown): void {
+    code.triggerBindingUpdate(input.module.public.interfaces)
+  }
+
+  function handleFunctionsGathered(value: unknown): void {
+    code.triggerBindingUpdate(input.module.public.functions)
+  }
+
+  function handleTemplatesGathered(value: unknown): void {
+    code.triggerBindingUpdate(input.module.public.templates)
+  }
+
+  function handleVariablesGathered(value: unknown): void {
+    code.triggerBindingUpdate(input.module.public.variables)
+  }
+
+  function handleClass(value: unknown): void {
+    code.assertBlue(value, Mesh.Class)
+    code.assertBlue(input.module, Mesh.CodeModule)
+
+    input.module.classes.push(value)
+    input.module.public.classes.push(value)
+  }
+
+  function handleInterface(value: unknown): void {
+    code.assertBlue(value, Mesh.ClassInterface)
+    code.assertBlue(input.module, Mesh.CodeModule)
+
+    input.module.classInterfaces.push(value)
+    input.module.public.classInterfaces.push(value)
+  }
+
+  function handleFunction(value: unknown): void {
+    code.assertBlue(value, Mesh.Function)
+    code.assertBlue(input.module, Mesh.CodeModule)
+
+    input.module.functions.push(value)
+    input.module.public.functions.push(value)
+  }
+
+  function handleTemplate(value: unknown): void {
+    code.assertBlue(value, Mesh.Template)
+    code.assertBlue(input.module, Mesh.CodeModule)
+
+    input.module.templates.push(value)
+    input.module.public.templates.push(value)
+  }
+
+  function handleVariable(value: unknown): void {
+    code.assertBlue(value, Mesh.Variable)
+    code.assertBlue(input.module, Mesh.CodeModule)
+  }
+}
 
 export function process_codeCard_bear(
   input: SiteProcessInputType,
@@ -20,6 +135,10 @@ export function process_codeCard_bear(
         code.withLink(colorInput, nest, index),
       )
     })
+  })
+
+  code.addTask(input.base, () => {
+    code.bearImports(colorInput)
   })
 }
 

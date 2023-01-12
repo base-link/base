@@ -7,6 +7,7 @@ import {
   Mesh,
   MeshBaseType,
   SiteModuleBaseType,
+  SiteObserverState,
 } from '~'
 
 export type BlueAssertionType = BlueBaseType & {
@@ -15,6 +16,7 @@ export type BlueAssertionType = BlueBaseType & {
 
 export type BlueBaseType = MeshBaseType & {
   color: Color.Blue
+  state: SiteObserverState
 }
 
 export type BlueBindType = BlueBaseType & {
@@ -121,10 +123,11 @@ export type BlueComponentType = BlueBaseType & {
 }
 
 export type BlueConstantType = BlueBaseType & {
-  hidden: BlueBooleanLinkType
-  name: BlueTermLinkType
+  definedType?: BlueClassReferenceType
+  hidden?: BlueBooleanLinkType
+  name?: BlueTermLinkType
   type: Mesh.Constant
-  value: BlueValueType | Array<BlueConstantType>
+  value?: BlueValueType | Array<BlueConstantType>
 }
 
 export type BlueDecimalType = BlueBaseType & {
@@ -166,6 +169,12 @@ export type BlueHideExportVariableType = BlueBaseType & {
   type: Mesh.HideExportVariable
 }
 
+export type BlueHookType = BlueBaseType & {
+  content?: unknown
+  name?: BlueTermLinkType
+  type: Mesh.Hook
+}
+
 export type BlueImportType = BlueBaseType & {
   absolutePath?: BlueTextLinkType
   // exports: Array<BlueImportExportType>
@@ -195,6 +204,11 @@ export type BlueInputType = BlueBaseType & {
   type: Mesh.Input
 }
 
+export type BlueLinkType = BlueBaseType & {
+  type: Mesh.Link
+  value: LinkNodeType
+}
+
 export type BlueMappingType = {
   'mesh-assertion': BlueAssertionType
   'mesh-bind': BlueBindType
@@ -215,11 +229,13 @@ export type BlueMappingType = {
   'mesh-function': BlueFunctionType
   'mesh-gather': BlueGatherType
   'mesh-hide-export-variable': BlueHideExportVariableType
+  'mesh-hook': BlueHookType
   'mesh-import': BlueImportType
   'mesh-import-variable': BlueImportVariableType
   'mesh-import-variable-rename': BlueImportVariableRenameType
   'mesh-inject': BlueInjectType
   'mesh-input': BlueInputType
+  'mesh-link': BlueLinkType
   'mesh-native-class-interface': BlueNativeClassInterfaceType
   'mesh-output': BlueOutputType
   'mesh-package': BluePackageType
@@ -309,9 +325,9 @@ export type BlueStringType = BlueBaseType & {
 
 export type BlueTemplateType = BlueBaseType & {
   hidden?: BlueBooleanLinkType
+  hooks: Array<BlueHookType>
   inputs: Array<BlueInputType>
   name?: BlueTermLinkType
-  tree?: Array<LinkNodeType>
   type: Mesh.Template
 }
 
@@ -375,6 +391,8 @@ export type BlueType =
   | BlueVariableType
   | BlueCodeModuleType
   | BluePackageModuleType
+  | BlueHookType
+  | BlueLinkType
 
 export type BlueUnsignedIntegerType = BlueBaseType & {
   type: Mesh.UnsignedInteger

@@ -21,9 +21,9 @@ import {
   RedValueType,
   SiteBlueType,
   SiteColorsType,
+  SiteObserverState,
   SiteProcessInputType,
   SiteRedType,
-  SiteStepScopeType,
   code,
 } from '~'
 
@@ -114,22 +114,15 @@ export function assertRed<T extends Red>(
     code.throwError(
       code.generateIncorrectlyTypedVariable('red', property),
     )
-    // code.throwError(code.generateObjectNotTypeError(type))
   }
 }
 
 export function attachBlue(
   input: SiteProcessInputType,
   property: string,
-  node: DistributiveOmit<BlueType, 'color'>,
+  node: DistributiveOmit<BlueType, 'color' | 'state'>,
 ): SiteBlueType {
-  const child: SiteBlueType = {
-    node: {
-      ...node,
-      color: Color.Blue,
-    },
-    parent: input.blue,
-  }
+  const child: SiteBlueType = code.createBlue(input, node)
 
   if (child.parent) {
     const node = child.parent.node
@@ -139,14 +132,24 @@ export function attachBlue(
   return child
 }
 
+export function attachBlueValue(
+  input: SiteProcessInputType,
+  property: string,
+  node: unknown,
+): void {
+  code.assertRecord(input.blue)
+  ;(input.blue.node as Record<string, unknown>)[property] = node
+}
+
 export function createBlue(
   input: SiteProcessInputType,
-  node: DistributiveOmit<BlueType, 'color'>,
+  node: DistributiveOmit<BlueType, 'color' | 'state'>,
 ): SiteBlueType {
   return {
     node: {
       ...node,
       color: Color.Blue,
+      state: SiteObserverState.Initialized,
     },
     parent: input.blue,
   }
@@ -155,6 +158,7 @@ export function createBlue(
 export function createBlueBoolean(value: boolean): BlueBooleanType {
   return {
     color: Color.Blue,
+    state: SiteObserverState.RuntimeComplete,
     type: Mesh.Boolean,
     value,
   }
@@ -163,6 +167,7 @@ export function createBlueBoolean(value: boolean): BlueBooleanType {
 export function createBlueString(value: string): BlueStringType {
   return {
     color: Color.Blue,
+    state: SiteObserverState.RuntimeComplete,
     type: Mesh.String,
     value,
   }
@@ -173,6 +178,7 @@ export function createBlueStringArray(
 ): BlueStringArrayType {
   return {
     color: Color.Blue,
+    state: SiteObserverState.RuntimeComplete,
     type: Mesh.StringArray,
     value,
   }
@@ -185,6 +191,7 @@ export function createBlueText(
   return {
     color: Color.Blue,
     scope: input.scope,
+    state: SiteObserverState.Initialized,
     type: Mesh.Text,
     value,
   }
@@ -219,18 +226,19 @@ export function createRedValue(
 }
 
 export function createTopBlue(
-  node: DistributiveOmit<BlueType, 'color'>,
+  node: DistributiveOmit<BlueType, 'color' | 'state'>,
 ): SiteBlueType {
   return {
     node: {
       ...node,
       color: Color.Blue,
+      state: SiteObserverState.Initialized,
     },
   }
 }
 
 export function createTopRed(
-  node: DistributiveOmit<RedType, 'color'>,
+  node: DistributiveOmit<RedType, 'color' | 'state'>,
 ): SiteRedType {
   return {
     node: {
@@ -238,6 +246,22 @@ export function createTopRed(
       color: Color.Red,
     },
   }
+}
+
+export function getBlueValue(
+  input: SiteProcessInputType,
+  property: string,
+): unknown {
+  code.assertRecord(input.blue)
+  return (input.blue.node as Record<string, unknown>)[property]
+}
+
+export function hasBlueValue(
+  input: SiteProcessInputType,
+  property: string,
+): boolean {
+  code.assertRecord(input.blue)
+  return property in input.blue.node
 }
 
 export function isBlue<T extends Mesh>(
@@ -269,7 +293,7 @@ export function isRed<T extends Red>(
 export function pushBlue(
   input: SiteProcessInputType,
   property: string,
-  node: DistributiveOmit<BlueType, 'color'>,
+  node: DistributiveOmit<BlueType, 'color' | 'state'>,
 ): SiteBlueType {
   const child: SiteBlueType = {
     node: {
@@ -291,7 +315,7 @@ export function pushBlue(
 
 export function pushRed(
   input: SiteProcessInputType,
-  node: DistributiveOmit<RedType, 'color'>,
+  node: DistributiveOmit<RedType, 'color' | 'state'>,
 ): SiteRedType {
   const child: SiteRedType = {
     node: {

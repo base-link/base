@@ -26,12 +26,12 @@ class Base {
 
   env: Record<string, unknown>
 
-  observersByCardThenIdThenName: Record<
+  observersByModuleThenIdThenName: Record<
     string,
     Record<string, Record<string, SitePropertyObserverType>>
   >
 
-  observersByCardThenNameThenId: Record<
+  observersByModuleThenNameThenId: Record<
     string,
     Record<string, Record<string, SitePropertyObserverType>>
   >
@@ -44,8 +44,8 @@ class Base {
     this.tasks = []
     this.textMap = {}
     this.env = {}
-    this.observersByCardThenIdThenName = {}
-    this.observersByCardThenNameThenId = {}
+    this.observersByModuleThenIdThenName = {}
+    this.observersByModuleThenNameThenId = {}
     this.cardsByPath = {}
     this.cardsById = {}
   }

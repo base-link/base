@@ -1,26 +1,20 @@
-import { LinkHint, Mesh, code } from '~'
+import { BlueStringType, LinkHint, Mesh, code } from '~'
 import type { SiteProcessInputType } from '~'
 
 export function process_codeCard_tree_hook(
   input: SiteProcessInputType,
 ): void {
-  // const red = code.pushRed(
-  //   input,
-  //   code.createRedGather(input, 'callback'),
-  // )
-  // const blue = code.pushBlue(input, 'callbacks', {
-  //   functions: [],
-  //   inputs: [],
-  //   steps: [],
-  //   type: Mesh.Callback,
-  // })
+  const red = code.pushRed(input, code.createRedGather(input, 'hook'))
+  const blue = code.pushBlue(input, 'hooks', {
+    type: Mesh.Hook,
+  })
 
-  // const colorInput = code.withColors(input, { blue, red })
+  const colorInput = code.withColors(input, { blue, red })
 
-  code.assumeNest(input).forEach((nest, index) => {
-    code.addTask(input.base, () => {
+  code.assumeNest(colorInput).forEach((nest, index) => {
+    code.addTask(colorInput.base, () => {
       process_codeCard_tree_hook_nestedChildren(
-        code.withLink(input, nest, index),
+        code.withLink(colorInput, nest, index),
       )
     })
   })
@@ -34,16 +28,23 @@ export function process_codeCard_tree_hook_nestedChildren(
     case LinkHint.StaticTerm:
       const index = code.assumeLinkIndex(input)
       if (index === 0) {
-        // const name = code.assumeTermString(input)
-        // const blueString = code.createBlueString(name)
-        // code.pushRed(
-        //   input,
-        //   code.createRedValue(input, 'name', blueString),
-        // )
-        // code.attachBlue(input, 'name', blueString)
+        const name = code.assumeTermString(input)
+        code.attachStaticTerm(input, 'name', name)
       } else {
-        // const nest = code.assumeLink(input)
-        // code.gatherIntoMeshParent(input, nest)
+        const blueString = code.getBlueValue(
+          input,
+          'name',
+        ) as BlueStringType
+
+        if (blueString?.value === 'fuse') {
+          if (!code.hasBlueValue(input, 'content')) {
+            code.attachBlueValue(input, 'content', [])
+          }
+
+          const nest = input.link.element
+          code.pushRed(input, code.createRedValue(input, 'link', nest))
+          code.pushBlue(input, 'content', code.createBlueLink(nest))
+        }
       }
       break
     default:

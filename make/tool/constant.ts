@@ -1,7 +1,9 @@
 import {
+  BlueLinkType,
   BlueTermType,
   BlueTextType,
   Color,
+  LinkNodeType,
   LinkTermType,
   LinkTextType,
   Mesh,
@@ -24,6 +26,14 @@ export function createBlueConstant(
     hidden: code.createBlueBoolean(false),
     name,
     type: Mesh.Constant,
+    value,
+  }
+}
+
+export function createBlueLink(value: LinkNodeType): BlueLinkType {
+  return {
+    color: Color.Blue,
+    type: Mesh.Link,
     value,
   }
 }
