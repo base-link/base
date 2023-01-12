@@ -1,4 +1,4 @@
-import { Link, Mesh, code } from '~'
+import { Mesh, code } from '~'
 import type { SiteProcessInputType } from '~'
 
 export * from './hook/index.js'
@@ -11,7 +11,8 @@ export function process_codeCard_tree(
     code.createRedGather(input, 'template'),
   )
   const blue = code.pushBlue(input, 'templates', {
-    inputs: [],
+    hooks: code.createBlueArray(input),
+    inputs: code.createBlueArray(input),
     type: Mesh.Template,
   })
 
@@ -34,12 +35,7 @@ export function process_codeCard_tree_nestedChildren(
     const name = code.assumeTermString(input)
     const index = code.assumeLinkIndex(input)
     if (index === 0) {
-      const blueString = code.createBlueString(name)
-      code.pushRed(
-        input,
-        code.createRedValue(input, 'name', blueString),
-      )
-      code.attachBlue(input, 'name', blueString)
+      code.attachStaticTerm(input, 'name', name)
     } else {
       switch (name) {
         case 'take':

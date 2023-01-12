@@ -18,13 +18,13 @@ export function process_codeCard_form(
   const scope = code.createStepScope(container)
   const red = code.pushRed(input, code.createRedGather(input, 'class'))
   const blue = code.pushBlue(input, 'classes', {
-    callbacks: [],
-    interfaces: [],
-    methods: [],
-    parents: [],
-    properties: [],
+    callbacks: code.createBlueArray(input),
+    interfaces: code.createBlueArray(input),
+    methods: code.createBlueArray(input),
+    parents: code.createBlueArray(input),
+    properties: code.createBlueArray(input),
     type: Mesh.Class,
-    typeInputs: [],
+    typeInputs: code.createBlueArray(input),
   })
 
   const scopeInput = code.withScope(input, scope)

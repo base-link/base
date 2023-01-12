@@ -14,11 +14,11 @@ export function process_codeCard_task(
   const scopeInput = code.withScope(input, scope)
   const red = code.pushRed(input, code.createRedGather(input, property))
   const blue = code.pushBlue(input, property, {
-    functions: [],
-    inputs: [],
-    steps: [],
+    functions: code.createBlueArray(input),
+    inputs: code.createBlueArray(input),
+    steps: code.createBlueArray(input),
     type: Mesh.Function,
-    typeInputs: [],
+    typeInputs: code.createBlueArray(input),
   })
   const colorInput = code.withColors(scopeInput, { blue, red })
 

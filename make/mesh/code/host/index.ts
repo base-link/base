@@ -1,12 +1,19 @@
-import { code , Link, LinkHint } from '~'
+import { code, LinkHint, Mesh } from '~'
 import type { SiteProcessInputType } from '~'
 
 export function process_codeCard_host(
   input: SiteProcessInputType,
+  property = 'constants'
 ): void {
-  code.assumeLink(input, Link.Tree).nest.forEach((nest, index) => {
+  const red = code.pushRed(input, code.createRedGather(input, property))
+  const blue = code.pushBlue(input, property, {
+    type: Mesh.Constant
+  })
+
+  const colorInput = code.withColors(input, { blue, red })
+  code.assumeNest(colorInput).forEach((nest, index) => {
     process_codeCard_host_nestedChildren(
-      code.withLink(input, nest, index)
+      code.withLink(colorInput, nest, index)
     )
   })
 }
@@ -16,8 +23,15 @@ export function process_codeCard_host_nestedChildren(
 ): void {
   const type = code.getLinkHint(input)
   switch (type) {
-    case LinkHint.StaticTerm:
+    case LinkHint.StaticTerm: {
+      const term = code.assumeTermString(input)
+      const index = code.assumeLinkIndex(input)
+      if (index === 0) {
+        code.attachStaticTerm(input, 'name', term)
+        return
+      }
       break
+    }
     default:
       code.throwError(code.generateUnhandledNestCaseError(input, type))
   }

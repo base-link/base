@@ -33,7 +33,7 @@ export function process_codeCard_fuse(
 ): void {
   const red = code.pushRed(input, code.createRedGather(input, 'fuse'))
   const blue = code.createBlue(input, {
-    bind: [],
+    bind: code.createBlueArray(input),
     type: Mesh.Inject,
   })
 
@@ -57,12 +57,7 @@ export function process_codeCard_fuse_nestedChildren(
       const index = code.assumeLinkIndex(input)
       const term = code.assumeTermString(input)
       if (index === 0) {
-        const blueString = code.createBlueString(term)
-        code.pushRed(
-          input,
-          code.createRedValue(input, 'name', blueString),
-        )
-        code.attachBlue(input, 'name', blueString)
+        code.attachStaticTerm(input, 'name', term)
       } else {
         switch (term) {
           case 'bind':

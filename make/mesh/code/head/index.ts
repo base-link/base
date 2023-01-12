@@ -1,4 +1,4 @@
-import { Link, LinkHint, Mesh, code } from '~'
+import { LinkHint, Mesh, code } from '~'
 import type { SiteProcessInputType } from '~'
 
 export function process_codeCard_head(
@@ -32,12 +32,7 @@ export function process_codeCard_head_nestedChildren(
       const term = code.assumeTermString(input)
       const index = code.assumeLinkIndex(input)
       if (index === 0) {
-        const blueString = code.createBlueString(term)
-        code.pushRed(
-          input,
-          code.createRedValue(input, 'name', blueString),
-        )
-        code.attachBlue(input, 'name', blueString)
+        code.attachStaticTerm(input, 'name', term)
         return
       }
 

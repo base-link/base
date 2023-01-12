@@ -1,6 +1,6 @@
 import _ from 'lodash'
 
-import { code } from '~'
+import { SiteProcessInputType, code } from '~'
 
 export function assertString(
   object: unknown,
@@ -11,6 +11,16 @@ export function assertString(
     code.throwError(
       code.generateIncorrectlyTypedVariable('string', name, path),
     )
+  }
+}
+
+export function assertStringPattern(
+  input: SiteProcessInputType,
+  string: string,
+  pattern: RegExp,
+): void {
+  if (!string.match(pattern)) {
+    code.throwError(code.generateInvalidPatternError(input, pattern))
   }
 }
 

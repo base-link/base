@@ -1,4 +1,4 @@
-import { Base } from '~'
+import { Base, BlueArrayType, BlueMapType, BlueNodeType, Mesh } from '~'
 import type {
   BlueType,
   GreenClassReferenceType,
@@ -10,10 +10,16 @@ import type {
 
 export type SiteBindingCountdownType = {
   dependencies: Array<string>
-  handle: () => void
+  handle: SiteCallbackType
 }
 
-export type SiteBlueType = SiteColorType<BlueType>
+export type SiteBlueType = SiteColorType<
+  | BlueType
+  | BlueArrayType<BlueType>
+  | BlueMapType<
+      Record<string, BlueType | BlueArrayType<BlueType> | BlueMapType>
+    >
+>
 
 export type SiteColorType<T> = {
   node: T
@@ -23,7 +29,6 @@ export type SiteColorType<T> = {
 export type SiteColorsType = {
   blue?: SiteBlueType
   red?: SiteRedType
-  yellow?: SiteYellowType
 }
 
 export type SiteContainerScopeType = {
@@ -77,7 +82,6 @@ export type SiteModuleBaseType = {
 }
 
 export type SiteModuleBindingInputType = SiteProcessInputType & {
-  handleId: string
   moduleId: number
 }
 
@@ -88,6 +92,67 @@ export type SiteModuleType = SiteModuleBaseType & {
   red: SiteRedType
   scope: SiteStepScopeType
 }
+
+export type SiteObjectWatcherHandleType = (value: unknown) => void
+
+export type SiteObjectWatcherPropertiesType = {
+  [name: string]: SiteObjectWatcherPropertyType
+}
+
+export type SiteObjectWatcherPropertyType = {
+  counted: boolean
+  dynamicProperties?: SiteObjectWatcherPropertiesType
+  handle?: SiteObjectWatcherHandleType
+  matched: boolean
+  name: string
+  node?: BlueNodeType<Mesh>
+  parent?: SiteObjectWatcherPropertyType
+  pending: number
+  properties?: SiteObjectWatcherPropertiesType
+  state: Array<SiteObserverState>
+}
+
+export type SiteObjectWatcherSchemaPropertiesType = {
+  [name: string]: SiteObjectWatcherSchemaPropertyType
+}
+
+export type SiteObjectWatcherSchemaPropertyType = {
+  handle?: SiteObjectWatcherHandleType
+  properties?: SiteObjectWatcherSchemaPropertiesType
+  state: Array<SiteObserverState>
+}
+
+export type SiteObjectWatcherSchemaType = {
+  handle?: undefined
+  properties: SiteObjectWatcherSchemaPropertiesType
+}
+
+export type SiteObjectWatcherType = {
+  handle?: undefined
+  properties: SiteObjectWatcherPropertiesType
+}
+
+export enum SiteObserverState {
+  CollectionGathered = 'collection-gathered',
+  Initialized = 'initialized',
+  RuntimeComplete = 'runtime-complete',
+  StaticComplete = 'static-complete',
+}
+
+// eslint-disable-next-line sort-exports/sort-exports
+export const SITE_OBSERVER_STATE = [
+  SiteObserverState.Initialized,
+  SiteObserverState.StaticComplete,
+  SiteObserverState.RuntimeComplete,
+]
+
+// eslint-disable-next-line sort-exports/sort-exports
+export const SITE_OBSERVER_COMPLETE_STATE = [
+  SiteObserverState.StaticComplete,
+  SiteObserverState.RuntimeComplete,
+]
+
+export type SiteCallbackType = () => void
 
 export type SiteParseType = {
   directory: string
@@ -103,16 +168,13 @@ export type SitePotentialScopeType =
 
 export type SiteProcessInputType = {
   base: Base
-  blue?: SiteBlueType
+  blue: SiteBlueType
   environment: SiteEnvironmentType
   link: SiteLinkType
-  module: SiteModuleBaseType
+  module: SiteModuleType
   red: SiteRedType
   scope: SiteStepScopeType
-  yellow?: SiteYellowType
 }
-
-export type SitePropertyObserverType = () => void
 
 export type SiteRedType = SiteColorType<RedType>
 

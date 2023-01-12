@@ -31,9 +31,7 @@ export function process_deckCard(base: Base, link: string): void {
     type: Mesh.Gather,
   })
 
-  const blue = code.createTopBlue({
-    type: Mesh.PackageModule,
-  })
+  const blue = code.createTopBlue()
 
   const baseModule: Partial<SiteModuleType> = {
     ...parse,
@@ -56,11 +54,17 @@ export function process_deckCard(base: Base, link: string): void {
 
   card.bind(module)
 
+  const packageBlue = code.attachBlue(module, 'definitions', {
+    type: Mesh.PackageModule,
+  })
+
+  const colorInput = code.withColors(module, { blue: packageBlue })
+
   if (module.text.trim()) {
     module.linkTree.nest.forEach((nest, index) => {
       code.addTask(base, () => {
         code.process_deckCard_nestedChildren(
-          code.withLink(module, nest, index),
+          code.withLink(colorInput, nest, index),
         )
       })
     })
