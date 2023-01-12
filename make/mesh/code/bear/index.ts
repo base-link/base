@@ -6,9 +6,9 @@ export * from './hide/index.js'
 export function bearImports(input: SiteProcessInputType): void {
   const exportNode = input.blue.node
   code.assertBlue(exportNode, Mesh.Export)
-  code.assertString(exportNode.absolutePath)
+  code.assertBlueString(exportNode.absolutePath)
 
-  const card = input.base.card(exportNode.absolutePath)
+  const card = input.base.card(exportNode.absolutePath.value)
   code.assertRecord(card)
 
   const id = card.id

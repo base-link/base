@@ -88,37 +88,42 @@ export type SiteModuleType = SiteModuleBaseType & {
   scope: SiteStepScopeType
 }
 
-export type SiteObjectWatcherSchemaHandleType = (value: unknown) => void
+export type SiteObjectWatcherHandleType = (value: unknown) => void
+
+export type SiteObjectWatcherPropertiesType = {
+  [name: string]: SiteObjectWatcherPropertyType
+}
+
+export type SiteObjectWatcherPropertyType = {
+  dynamicProperties?: SiteObjectWatcherPropertiesType
+  handle?: SiteObjectWatcherHandleType
+  matched: boolean
+  name: string
+  node?: BlueType
+  parent?: SiteObjectWatcherPropertyType
+  pending: number
+  properties?: SiteObjectWatcherPropertiesType
+  state: Array<SiteObserverState>
+}
 
 export type SiteObjectWatcherSchemaPropertiesType = {
-  [property: string]: SiteObjectWatcherSchemaPropertyType
+  [name: string]: SiteObjectWatcherSchemaPropertyType
 }
 
 export type SiteObjectWatcherSchemaPropertyType = {
-  attachedAs?: string
-  handle?: SiteObjectWatcherSchemaHandleType
-  matched?: boolean
-  parent?: SiteObjectWatcherSchemaPropertyType
-  pending?: number
+  handle?: SiteObjectWatcherHandleType
   properties?: SiteObjectWatcherSchemaPropertiesType
   state: Array<SiteObserverState>
 }
 
 export type SiteObjectWatcherSchemaType = {
-  attachedAs?: string
   handle?: undefined
-  matched?: boolean
-  parent?: undefined
-  pending?: number
   properties: SiteObjectWatcherSchemaPropertiesType
 }
 
 export type SiteObjectWatcherType = {
-  children: Array<SiteObjectWatcherType>
-  handle?: () => void
-  objectId: number
-  property: string
-  state: string
+  handle?: undefined
+  properties: SiteObjectWatcherPropertiesType
 }
 
 export enum SiteObserverState {

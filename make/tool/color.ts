@@ -93,6 +93,12 @@ export function assertBlueStepArray(
   ])
 }
 
+export function assertBlueString(
+  object: unknown,
+): asserts object is BlueStringType {
+  code.assertBlue(object, [Mesh.String])
+}
+
 export function assertBlueTerm(
   object: unknown,
 ): asserts object is BlueNodeType<Mesh.String | Mesh.Term> {
