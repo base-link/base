@@ -109,20 +109,33 @@ export function createWatcherFromSchemaProperty(
   property: SiteObjectWatcherSchemaPropertyType,
   name: string,
   parent?: SiteObjectWatcherPropertyType,
+  pending = 1,
 ): SiteObjectWatcherPropertyType {
   const watcher: SiteObjectWatcherPropertyType = {
     counted: true,
     handle: property.handle,
     matched: false,
     name,
-    parent,
-    pending: 1,
+    pending,
     state: property.state,
   }
 
+  const isDynamic = name === '*'
+
+  Object.defineProperty(watcher, 'parent', {
+    enumerable: false,
+    value: parent,
+  })
+
+  Object.defineProperty(watcher, 'node', {
+    enumerable: false,
+    value: undefined,
+    writable: true,
+  })
+
   let higher = parent
   while (higher) {
-    higher.pending++
+    higher.pending += pending
     higher = higher.parent
   }
 
@@ -136,14 +149,17 @@ export function createWatcherFromSchemaProperty(
         name
       ] as SiteObjectWatcherPropertyType
 
+      const isChildDynamic = name === '*'
+
       nestedProperties[name] = createWatcherFromSchemaProperty(
         child,
         name,
-        watcher,
+        isDynamic ? undefined : watcher,
+        isChildDynamic ? 0 : 1,
       )
     })
 
-    if (name === '*') {
+    if (isDynamic) {
       watcher.dynamicProperties = nestedProperties
       watcher.properties = {}
     } else {
@@ -237,7 +253,7 @@ export function propagatePendingUpwards(
 export function queuePropertyUpdateHandle(
   input: SiteProcessInputType,
   handle: SiteObjectWatcherHandleType,
-  node: BlueType,
+  node: BlueNodeType<Mesh>,
 ): void {
   code.addTask(input.base, () => handle(node))
 }
@@ -304,6 +320,8 @@ export function updateAllThroughWatcher(
 
     code.updateAllThroughWatcherProperty(input, property, child)
   }
+
+  console.log(JSON.stringify(watcher, null, 2))
 }
 
 export function updateAllThroughWatcherProperty(
@@ -392,7 +410,7 @@ export function updateAllThroughWatcherProperty(
 export function updateWatcherForPath(
   input: SiteProcessInputType,
   watcher: SiteObjectWatcherType,
-  path: Array<BlueType>,
+  path: Array<BlueNodeType<Mesh>>,
 ): void {
   let properties: SiteObjectWatcherPropertiesType | undefined =
     watcher.properties
@@ -400,7 +418,7 @@ export function updateWatcherForPath(
   let i = 0
 
   while (i < path.length) {
-    const node = path[i++] as BlueType
+    const node = path[i++] as BlueNodeType<Mesh>
     code.assertString(node.attachedAs)
 
     let property: SiteObjectWatcherPropertyType | undefined =
