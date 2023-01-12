@@ -19,7 +19,7 @@ export function bearImports(input: SiteProcessInputType): void {
       handleClassesGathered,
     ),
     code.createCodeModulePublicCollectionObserverSchema(
-      'interfaces',
+      'classInterfaces',
       handleInterfacesGathered,
     ),
     code.createCodeModulePublicCollectionObserverSchema(
@@ -30,16 +30,16 @@ export function bearImports(input: SiteProcessInputType): void {
       'templates',
       handleTemplatesGathered,
     ),
-    code.createCodeModulePublicCollectionObserverSchema(
-      'variables',
-      handleVariablesGathered,
-    ),
+    // code.createCodeModulePublicCollectionObserverSchema(
+    //   'variables',
+    //   handleVariablesGathered,
+    // ),
     code.createCodeModuleObjectNameObserverSchema(
       'classes',
       handleClass,
     ),
     code.createCodeModuleObjectNameObserverSchema(
-      'interfaces',
+      'classInterfaces',
       handleInterface,
     ),
     code.createCodeModuleObjectNameObserverSchema(
@@ -50,10 +50,10 @@ export function bearImports(input: SiteProcessInputType): void {
       'templates',
       handleTemplate,
     ),
-    code.createCodeModuleObjectNameObserverSchema(
-      'variables',
-      handleVariable,
-    ),
+    // code.createCodeModuleObjectNameObserverSchema(
+    //   'variables',
+    //   handleVariable,
+    // ),
   ]
 
   function handleClassesGathered(value: unknown): void {
@@ -85,32 +85,32 @@ export function bearImports(input: SiteProcessInputType): void {
     code.assertBlue(value, Mesh.Class)
     code.assertBlue(input.module, Mesh.CodeModule)
 
-    input.module.classes.push(value)
-    input.module.public.classes.push(value)
+    input.module.classes.value.push(value)
+    input.module.public.value.classes.value.push(value)
   }
 
   function handleInterface(value: unknown): void {
     code.assertBlue(value, Mesh.ClassInterface)
     code.assertBlue(input.module, Mesh.CodeModule)
 
-    input.module.classInterfaces.push(value)
-    input.module.public.classInterfaces.push(value)
+    input.module.classInterfaces.value.push(value)
+    input.module.public.value.classInterfaces.value.push(value)
   }
 
   function handleFunction(value: unknown): void {
     code.assertBlue(value, Mesh.Function)
     code.assertBlue(input.module, Mesh.CodeModule)
 
-    input.module.functions.push(value)
-    input.module.public.functions.push(value)
+    input.module.functions.value.push(value)
+    input.module.public.value.functions.value.push(value)
   }
 
   function handleTemplate(value: unknown): void {
     code.assertBlue(value, Mesh.Template)
     code.assertBlue(input.module, Mesh.CodeModule)
 
-    input.module.templates.push(value)
-    input.module.public.templates.push(value)
+    input.module.templates.value.push(value)
+    input.module.public.value.templates.value.push(value)
   }
 
   function handleVariable(value: unknown): void {
@@ -128,7 +128,7 @@ export function process_codeCard_bear(
 ): void {
   const red = code.pushRed(input, code.createRedGather(input, 'bear'))
   const blue = code.pushBlue(input, 'exports', {
-    hides: [],
+    hides: code.createBlueArray(input),
     type: Mesh.Export,
   })
   const colorInput = code.withColors(input, { blue, red })

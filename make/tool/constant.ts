@@ -1,12 +1,11 @@
 import {
   BlueLinkType,
   BlueTermType,
-  BlueTextType,
   Color,
   LinkNodeType,
   LinkTermType,
-  LinkTextType,
   Mesh,
+  SiteObserverState,
   code,
 } from '~'
 import type {
@@ -25,6 +24,7 @@ export function createBlueConstant(
     color: Color.Blue,
     hidden: code.createBlueBoolean(false),
     name,
+    state: SiteObserverState.Initialized,
     type: Mesh.Constant,
     value,
   }
@@ -33,6 +33,7 @@ export function createBlueConstant(
 export function createBlueLink(value: LinkNodeType): BlueLinkType {
   return {
     color: Color.Blue,
+    state: SiteObserverState.Initialized,
     type: Mesh.Link,
     value,
   }
@@ -41,6 +42,7 @@ export function createBlueLink(value: LinkNodeType): BlueLinkType {
 export function createBluePath(value: LinkPathType): BluePathType {
   return {
     color: Color.Blue,
+    state: SiteObserverState.Initialized,
     type: Mesh.Path,
     value,
   }
@@ -49,6 +51,7 @@ export function createBluePath(value: LinkPathType): BluePathType {
 export function createBlueTerm(value: LinkTermType): BlueTermType {
   return {
     color: Color.Blue,
+    state: SiteObserverState.Initialized,
     type: Mesh.Term,
     value,
   }

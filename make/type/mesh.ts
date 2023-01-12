@@ -1,6 +1,7 @@
 import { SiteStepScopeType } from './site'
 
 export enum Mesh {
+  Array = 'mesh-array',
   Assertion = 'mesh-assertion',
   Bind = 'mesh-bind',
   Boolean = 'mesh-boolean',
@@ -27,6 +28,7 @@ export enum Mesh {
   Inject = 'mesh-inject',
   Input = 'mesh-input',
   Link = 'mesh-link',
+  Map = 'mesh-map',
   NativeClassInterface = 'mesh-native-class-interface',
   Output = 'mesh-output',
   Package = 'mesh-package',
@@ -89,6 +91,8 @@ export const MESH_TYPE = [
   Mesh.Function,
   Mesh.SignedInteger,
   Mesh.Decimal,
+  Mesh.Array,
+  Mesh.Map,
   Mesh.Import,
   Mesh.ImportVariable,
   Mesh.ImportVariableRename,

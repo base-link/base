@@ -11,8 +11,8 @@ export function process_codeCard_tree(
     code.createRedGather(input, 'template'),
   )
   const blue = code.pushBlue(input, 'templates', {
-    hooks: [],
-    inputs: [],
+    hooks: code.createBlueArray(input),
+    inputs: code.createBlueArray(input),
     type: Mesh.Template,
   })
 

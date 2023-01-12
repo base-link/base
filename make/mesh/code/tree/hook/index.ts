@@ -38,7 +38,11 @@ export function process_codeCard_tree_hook_nestedChildren(
 
         if (blueString?.value === 'fuse') {
           if (!code.hasBlueValue(input, 'content')) {
-            code.attachBlueValue(input, 'content', [])
+            code.attachBlueValue(
+              input,
+              'content',
+              code.createBlueArray(input),
+            )
           }
 
           const nest = input.link.element

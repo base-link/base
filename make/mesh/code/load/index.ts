@@ -9,9 +9,9 @@ export function process_codeCard_load(
 ): void {
   const red = code.pushRed(input, code.createRedGather(input, 'import'))
   const blue = code.pushBlue(input, 'imports', {
-    imports: [],
+    imports: code.createBlueArray(input),
     type: Mesh.Import,
-    variables: [],
+    variables: code.createBlueArray(input),
   })
   const colorInput = code.withColors(input, { blue, red })
 

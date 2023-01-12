@@ -1,4 +1,4 @@
-import { Base } from '~'
+import { Base, BlueArrayType, BlueMapType, BlueNodeType, Mesh } from '~'
 import type {
   BlueType,
   GreenClassReferenceType,
@@ -13,7 +13,13 @@ export type SiteBindingCountdownType = {
   handle: SiteCallbackType
 }
 
-export type SiteBlueType = SiteColorType<BlueType>
+export type SiteBlueType = SiteColorType<
+  | BlueType
+  | BlueArrayType<BlueType>
+  | BlueMapType<
+      Record<string, BlueType | BlueArrayType<BlueType> | BlueMapType>
+    >
+>
 
 export type SiteColorType<T> = {
   node: T
@@ -23,7 +29,6 @@ export type SiteColorType<T> = {
 export type SiteColorsType = {
   blue?: SiteBlueType
   red?: SiteRedType
-  yellow?: SiteYellowType
 }
 
 export type SiteContainerScopeType = {
@@ -95,11 +100,12 @@ export type SiteObjectWatcherPropertiesType = {
 }
 
 export type SiteObjectWatcherPropertyType = {
+  counted: boolean
   dynamicProperties?: SiteObjectWatcherPropertiesType
   handle?: SiteObjectWatcherHandleType
   matched: boolean
   name: string
-  node?: BlueType
+  node?: BlueNodeType<Mesh>
   parent?: SiteObjectWatcherPropertyType
   pending: number
   properties?: SiteObjectWatcherPropertiesType
@@ -134,8 +140,14 @@ export enum SiteObserverState {
 }
 
 // eslint-disable-next-line sort-exports/sort-exports
-export const ALL_SITE_OBSERVER_STATE = [
+export const SITE_OBSERVER_STATE = [
   SiteObserverState.Initialized,
+  SiteObserverState.StaticComplete,
+  SiteObserverState.RuntimeComplete,
+]
+
+// eslint-disable-next-line sort-exports/sort-exports
+export const SITE_OBSERVER_COMPLETE_STATE = [
   SiteObserverState.StaticComplete,
   SiteObserverState.RuntimeComplete,
 ]
@@ -159,7 +171,7 @@ export type SiteProcessInputType = {
   blue: SiteBlueType
   environment: SiteEnvironmentType
   link: SiteLinkType
-  module: SiteModuleBaseType
+  module: SiteModuleType
   red: SiteRedType
   scope: SiteStepScopeType
 }

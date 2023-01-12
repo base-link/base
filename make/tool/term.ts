@@ -17,6 +17,13 @@ export function attachStaticTerm(
   code.attachBlue(input, property, blueString)
 }
 
+export function bindTerm(input: SiteProcessInputType): void {
+  const dependencyTree = code.resolveTermDependencyTree(input)
+  const leafDependencyList = code.getLeafDependencyList(dependencyTree)
+  code.registerReferenceWatchers(leafDependencyList)
+  code.tryToResolveReferences()
+}
+
 export function getTerm(
   input: SiteProcessInputType,
 ): LinkType<Link.Term> | undefined {

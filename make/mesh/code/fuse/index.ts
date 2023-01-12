@@ -33,7 +33,7 @@ export function process_codeCard_fuse(
 ): void {
   const red = code.pushRed(input, code.createRedGather(input, 'fuse'))
   const blue = code.createBlue(input, {
-    bind: [],
+    bind: code.createBlueArray(input),
     type: Mesh.Inject,
   })
 
