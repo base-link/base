@@ -155,7 +155,7 @@ export function createWatcherFromSchemaProperty(
         child,
         name,
         isDynamic ? undefined : watcher,
-        isChildDynamic ? 0 : 1,
+        isDynamic ? 0 : 1,
       )
     })
 
