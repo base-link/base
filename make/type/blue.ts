@@ -6,15 +6,25 @@ import {
   LinkTextType,
   Mesh,
   MeshBaseType,
-  SiteModuleBaseType,
+  SiteObserverState,
 } from '~'
+
+export type BlueArrayType<T> = BlueBaseType & {
+  type: Mesh.Array
+  value: Array<T>
+}
 
 export type BlueAssertionType = BlueBaseType & {
   type: Mesh.Assertion
 }
 
 export type BlueBaseType = MeshBaseType & {
+  // how it is passed down.
+  attachedAs?: string
   color: Color.Blue
+  // id: number
+  parent?: BlueType
+  state: SiteObserverState
 }
 
 export type BlueBindType = BlueBaseType & {
@@ -36,7 +46,7 @@ export type BlueBooleanType = BlueBaseType & {
 }
 
 export type BlueCallType = BlueBaseType & {
-  bind: Array<BlueBindType>
+  bind: BlueArrayType<BlueBindType>
   bond?: BlueFunctionType
   path?: BluePathLinkType
   risk?: BlueBooleanLinkType
@@ -45,10 +55,10 @@ export type BlueCallType = BlueBaseType & {
 }
 
 export type BlueCallbackType = BlueBaseType & {
-  functions: Array<BlueFunctionType>
-  inputs: Array<BlueInputType>
+  functions: BlueArrayType<BlueFunctionType>
+  inputs: BlueArrayType<BlueInputType>
   name?: BlueTermLinkType
-  steps: Array<BlueStepType>
+  steps: BlueArrayType<BlueStepType>
   type: Mesh.Callback
 }
 
@@ -65,54 +75,54 @@ export type BlueClassInterfaceImplementationType = BlueBaseType & {
 
 export type BlueClassInterfaceType = BlueBaseType & {
   hidden?: BlueBooleanLinkType
-  methods: Array<BlueFunctionType>
+  methods: BlueArrayType<BlueFunctionType>
   name?: BlueTermLinkType
-  properties: Array<BlueInputType>
+  properties: BlueArrayType<BlueInputType>
   type: Mesh.ClassInterface
-  typeInputs: Array<BlueClassInputType>
+  typeInputs: BlueArrayType<BlueClassInputType>
 }
 
 export type BlueClassReferenceType = BlueBaseType & {
-  bind: Array<BlueClassReferenceType>
+  bind: BlueArrayType<BlueClassReferenceType>
   bond?: BlueClassType
   name?: BlueTermLinkType
   type: Mesh.ClassReference
 }
 
 export type BlueClassType = BlueBaseType & {
-  callbacks: Array<BlueCallbackType>
+  callbacks: BlueArrayType<BlueCallbackType>
   hidden?: BlueBooleanLinkType
-  interfaces: Array<BlueClassInterfaceImplementationType>
-  methods: Array<BlueFunctionType>
+  interfaces: BlueArrayType<BlueClassInterfaceImplementationType>
+  methods: BlueArrayType<BlueFunctionType>
   name?: BlueTermLinkType
-  parents: Array<BlueClassType>
-  properties: Array<BlueInputType>
+  parents: BlueArrayType<BlueClassType>
+  properties: BlueArrayType<BlueInputType>
   type: Mesh.Class
-  typeInputs: Array<BlueClassInputType>
+  typeInputs: BlueArrayType<BlueClassInputType>
 }
 
 export type BlueCodeModuleType = BlueBaseType & {
-  callbacks: Array<BlueCallbackType>
-  classInterfaces: Array<BlueClassInterfaceType>
-  classes: Array<BlueClassType>
-  components: Array<BlueComponentType>
-  constants: Array<BlueConstantType>
-  exports: Array<BlueExportType>
-  functions: Array<BlueFunctionType>
-  imports: Array<BlueImportType>
-  nativeClassInterfaces: Array<BlueNativeClassInterfaceType>
-  public: {
-    classInterfaces: Array<BlueClassInterfaceType>
-    classes: Array<BlueClassType>
-    components: Array<BlueComponentType>
-    constants: Array<BlueConstantType>
-    functions: Array<BlueFunctionType>
-    nativeClassInterfaces: Array<BlueNativeClassInterfaceType>
-    templates: Array<BlueTemplateType>
-    tests: Array<BlueTestType>
-  }
-  templates: Array<BlueTemplateType>
-  tests: Array<BlueTestType>
+  callbacks: BlueArrayType<BlueCallbackType>
+  classInterfaces: BlueArrayType<BlueClassInterfaceType>
+  classes: BlueArrayType<BlueClassType>
+  components: BlueArrayType<BlueComponentType>
+  constants: BlueArrayType<BlueConstantType>
+  exports: BlueArrayType<BlueExportType>
+  functions: BlueArrayType<BlueFunctionType>
+  imports: BlueArrayType<BlueImportType>
+  nativeClassInterfaces: BlueArrayType<BlueNativeClassInterfaceType>
+  public: BlueMapType<{
+    classInterfaces: BlueArrayType<BlueClassInterfaceType>
+    classes: BlueArrayType<BlueClassType>
+    components: BlueArrayType<BlueComponentType>
+    constants: BlueArrayType<BlueConstantType>
+    functions: BlueArrayType<BlueFunctionType>
+    nativeClassInterfaces: BlueArrayType<BlueNativeClassInterfaceType>
+    templates: BlueArrayType<BlueTemplateType>
+    tests: BlueArrayType<BlueTestType>
+  }>
+  templates: BlueArrayType<BlueTemplateType>
+  tests: BlueArrayType<BlueTestType>
   type: Mesh.CodeModule
 }
 
@@ -121,10 +131,11 @@ export type BlueComponentType = BlueBaseType & {
 }
 
 export type BlueConstantType = BlueBaseType & {
-  hidden: BlueBooleanLinkType
-  name: BlueTermLinkType
+  definedType?: BlueClassReferenceType
+  hidden?: BlueBooleanLinkType
+  name?: BlueTermLinkType
   type: Mesh.Constant
-  value: BlueValueType | Array<BlueConstantType>
+  value?: BlueValueType | Array<BlueConstantType>
 }
 
 export type BlueDecimalType = BlueBaseType & {
@@ -137,22 +148,22 @@ export type BlueElementType = BlueBaseType & {
 
 export type BlueExportType = BlueBaseType & {
   absolutePath?: BlueTextLinkType
-  hides: Array<BlueHideExportVariableType>
+  hides: BlueArrayType<BlueHideExportVariableType>
   type: Mesh.Export
 }
 
 export type BlueFunctionType = BlueBaseType & {
   baseType?: BlueFunctionType
   definedOutputType?: BlueClassReferenceType
-  functions: Array<BlueFunctionType>
+  functions: BlueArrayType<BlueFunctionType>
   hidden?: BlueBooleanLinkType
   inferredOutputType?: BlueClassReferenceType
-  inputs: Array<BlueInputType>
+  inputs: BlueArrayType<BlueInputType>
   name?: BlueTermLinkType
   risk?: BlueBooleanLinkType
-  steps: Array<BlueStepType>
+  steps: BlueArrayType<BlueStepType>
   type: Mesh.Function
-  typeInputs: Array<BlueClassInputType>
+  typeInputs: BlueArrayType<BlueClassInputType>
   wait?: BlueBooleanLinkType
 }
 
@@ -166,12 +177,18 @@ export type BlueHideExportVariableType = BlueBaseType & {
   type: Mesh.HideExportVariable
 }
 
+export type BlueHookType = BlueBaseType & {
+  content?: unknown
+  name?: BlueTermLinkType
+  type: Mesh.Hook
+}
+
 export type BlueImportType = BlueBaseType & {
   absolutePath?: BlueTextLinkType
   // exports: Array<BlueImportExportType>
-  imports: Array<BlueImportType>
+  imports: BlueArrayType<BlueImportType>
   type: Mesh.Import
-  variables: Array<BlueImportVariableType>
+  variables: BlueArrayType<BlueImportVariableType>
 }
 
 export type BlueImportVariableRenameType = BlueBaseType & {
@@ -186,7 +203,7 @@ export type BlueImportVariableType = BlueBaseType & {
 }
 
 export type BlueInjectType = BlueBaseType & {
-  bind: Array<BlueBindType>
+  bind: BlueArrayType<BlueBindType>
   name?: BlueTermLinkType
   type: Mesh.Inject
 }
@@ -195,7 +212,23 @@ export type BlueInputType = BlueBaseType & {
   type: Mesh.Input
 }
 
+export type BlueLinkType = BlueBaseType & {
+  type: Mesh.Link
+  value: LinkNodeType
+}
+
+export type BlueMapType<
+  T extends Record<
+    string,
+    BlueType | BlueArrayType<BlueType> | BlueMapType
+  > = Record<string, BlueType | BlueArrayType<BlueType>>,
+> = BlueBaseType & {
+  type: Mesh.Map
+  value: T
+}
+
 export type BlueMappingType = {
+  'mesh-array': BlueArrayType<BlueType>
   'mesh-assertion': BlueAssertionType
   'mesh-bind': BlueBindType
   'mesh-boolean': BlueBooleanType
@@ -215,11 +248,16 @@ export type BlueMappingType = {
   'mesh-function': BlueFunctionType
   'mesh-gather': BlueGatherType
   'mesh-hide-export-variable': BlueHideExportVariableType
+  'mesh-hook': BlueHookType
   'mesh-import': BlueImportType
   'mesh-import-variable': BlueImportVariableType
   'mesh-import-variable-rename': BlueImportVariableRenameType
   'mesh-inject': BlueInjectType
   'mesh-input': BlueInputType
+  'mesh-link': BlueLinkType
+  'mesh-map': BlueMapType<
+    Record<string, BlueType | BlueArrayType<BlueType> | BlueMapType>
+  >
   'mesh-native-class-interface': BlueNativeClassInterfaceType
   'mesh-output': BlueOutputType
   'mesh-package': BluePackageType
@@ -261,13 +299,13 @@ export type BluePackageModuleType = BlueBaseType & {
 
 export type BluePackageType = BlueBaseType & {
   bear?: BlueTextLinkType
-  face: Array<BluePackageUserType>
+  face: BlueArrayType<BluePackageUserType>
   host?: BlueTextLinkType
   mark?: BlueTextLinkType
   name?: BlueTextLinkType
   read?: BlueTextLinkType
   site?: BlueTextLinkType
-  term: Array<BluePackageLicenseType>
+  term: BlueArrayType<BluePackageLicenseType>
   test?: BlueTextLinkType
   type: Mesh.Package
 }
@@ -291,6 +329,11 @@ export type BluePlaceholderType = BlueBaseType & {
   type: Mesh.Placeholder
 }
 
+export type BluePossibleType =
+  | BlueType
+  | BlueArrayType<BlueType>
+  | BlueMapType
+
 export type BlueSignedIntegerType = BlueBaseType & {
   type: Mesh.SignedInteger
 }
@@ -309,9 +352,9 @@ export type BlueStringType = BlueBaseType & {
 
 export type BlueTemplateType = BlueBaseType & {
   hidden?: BlueBooleanLinkType
-  inputs: Array<BlueInputType>
+  hooks: BlueArrayType<BlueHookType>
+  inputs: BlueArrayType<BlueInputType>
   name?: BlueTermLinkType
-  tree?: Array<LinkNodeType>
   type: Mesh.Template
 }
 
@@ -375,6 +418,8 @@ export type BlueType =
   | BlueVariableType
   | BlueCodeModuleType
   | BluePackageModuleType
+  | BlueHookType
+  | BlueLinkType
 
 export type BlueUnsignedIntegerType = BlueBaseType & {
   type: Mesh.UnsignedInteger

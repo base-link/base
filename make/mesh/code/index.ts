@@ -1,5 +1,8 @@
 import {
   Base,
+  BlueArrayType,
+  BlueCodeModuleType,
+  BlueType,
   DEFAULT_CONTAINER_SCOPE,
   Link,
   LinkHint,
@@ -67,30 +70,7 @@ export function process_codeCard(base: Base, link: string): void {
     type: Mesh.Gather,
   })
 
-  const blue = code.createTopBlue({
-    callbacks: [],
-    classInterfaces: [],
-    classes: [],
-    components: [],
-    constants: [],
-    exports: [],
-    functions: [],
-    imports: [],
-    nativeClassInterfaces: [],
-    public: {
-      classInterfaces: [],
-      classes: [],
-      components: [],
-      constants: [],
-      functions: [],
-      nativeClassInterfaces: [],
-      templates: [],
-      tests: [],
-    },
-    templates: [],
-    tests: [],
-    type: Mesh.CodeModule,
-  })
+  const blue = code.createTopBlue()
 
   const baseModule: Partial<SiteModuleType> = {
     ...parse,
@@ -113,11 +93,38 @@ export function process_codeCard(base: Base, link: string): void {
 
   card.bind(module)
 
+  const packageBlue = code.attachBlue(module, 'definitions', {
+    callbacks: code.createBlueArray(module),
+    classInterfaces: code.createBlueArray(module),
+    classes: code.createBlueArray(module),
+    components: code.createBlueArray(module),
+    constants: code.createBlueArray(module),
+    exports: code.createBlueArray(module),
+    functions: code.createBlueArray(module),
+    imports: code.createBlueArray(module),
+    nativeClassInterfaces: code.createBlueArray(module),
+    public: code.createBlueMap(module, {
+      classInterfaces: code.createBlueArray(module),
+      classes: code.createBlueArray(module),
+      components: code.createBlueArray(module),
+      constants: code.createBlueArray(module),
+      functions: code.createBlueArray(module),
+      nativeClassInterfaces: code.createBlueArray(module),
+      templates: code.createBlueArray(module),
+      tests: code.createBlueArray(module),
+    }),
+    templates: code.createBlueArray(module),
+    tests: code.createBlueArray(module),
+    type: Mesh.CodeModule,
+  })
+
+  const colorInput = code.withColors(module, { blue: packageBlue })
+
   if (module.text.trim()) {
     module.linkTree.nest.forEach((nest, index) => {
       code.addTask(base, () => {
         code.process_codeCard_nestedChildren(
-          code.withLink(module, nest, index),
+          code.withLink(colorInput, nest, index),
         )
       })
     })

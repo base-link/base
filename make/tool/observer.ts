@@ -1,221 +1,470 @@
-import { Base, code } from '~'
-import type {
-  SiteBindElementBaseInputType,
-  SiteBindElementHandlerInputType,
-  SiteBindElementInputType,
-  SiteBindModuleInputType,
-  SiteProcessInputType,
+import {
+  BlueMapType,
+  BlueNodeType,
+  BluePossibleType,
+  BlueType,
+  Mesh,
+  SITE_OBSERVER_COMPLETE_STATE,
+  SITE_OBSERVER_STATE,
+  SiteModuleBindingInputType,
+  SiteObjectWatcherHandleType,
+  SiteObjectWatcherPropertiesType,
+  SiteObjectWatcherPropertyType,
+  SiteObjectWatcherSchemaPropertyType,
+  SiteObjectWatcherSchemaType,
+  SiteObjectWatcherType,
+  SiteObserverState,
+  code,
 } from '~'
+import type { SiteProcessInputType } from '~'
 
-let ID = 1
-
-export function addPropertyObserver(
-  input: SiteBindElementInputType,
+export function bindSchema(
+  input: SiteModuleBindingInputType,
+  schema: SiteObjectWatcherSchemaType,
 ): void {
-  const name = input.focus.name
-  const handle = input.handle
-  const id = input.id
-  const moduleId = input.moduleId
-  const observersByNameThenId = code.getWithObjectDefault(
-    input.base.observersByCardThenNameThenId,
-    String(moduleId),
-  )
-  const observersById = code.getWithObjectDefault(
-    observersByNameThenId,
-    name,
-  )
-  observersById[id] = handle
-
-  const observersByIdThenName = code.getWithObjectDefault(
-    input.base.observersByCardThenIdThenName,
-    String(moduleId),
-  )
-  const observersByName = code.getWithObjectDefault(
-    observersByIdThenName,
-    id,
-  )
-  observersByName[name] = handle
+  const watcher = code.registerSchema(input, schema)
+  code.updateAllThroughWatcher(input, watcher)
 }
 
-export function bindModule(input: SiteBindModuleInputType): void {
-  const has =
-    code.hasModuleById(input.module.base, input.moduleId) &&
-    code.hasModuleInitialized(input.module.base.card(input.moduleId)) &&
-    code.hasAllReferencesResolved(input.module.base, input.moduleId)
-
-  if (has) {
-    code.setModuleBindings(input)
-  } else {
-    code.addPropertyObserver({
-      ...input,
-      focus: {
-        name: '*',
+export function createCodeModuleObjectNameObserverSchema(
+  property: string,
+  handle: SiteObjectWatcherHandleType,
+): SiteObjectWatcherSchemaType {
+  return {
+    properties: {
+      definitions: {
+        properties: {
+          public: {
+            properties: {
+              [property]: {
+                properties: {
+                  ['*']: {
+                    handle,
+                    properties: {
+                      name: {
+                        state: [SiteObserverState.RuntimeComplete],
+                      },
+                    },
+                    state: SITE_OBSERVER_STATE,
+                  },
+                },
+                state: SITE_OBSERVER_STATE,
+              },
+            },
+            state: SITE_OBSERVER_STATE,
+          },
+        },
+        state: SITE_OBSERVER_STATE,
       },
-      handle: () => code.resolveModuleBindings(input),
-    })
-  }
-}
-
-export function bindReference(input: SiteBindElementInputType): void {
-  const focus = input.focus
-  const has = code.environmentHasProperty(input.environment, focus.name)
-
-  if (has) {
-    code.setPropertyReference(input)
-  } else {
-    code.addPropertyObserver({
-      ...input,
-      handle: () => code.setPropertyReference(input),
-    })
-  }
-}
-
-export function checkFocusForInputCompletion(
-  input: SiteBindElementBaseInputType & { value: unknown },
-): void {
-  input.focus.bond = input.value
-  if (code.childrenAreBoundMesh(input.element.node)) {
-    console.log('notify parent')
-  }
-}
-
-export function checkModuleForInputCompletion(
-  input: SiteBindModuleInputType,
-): void {
-  if (code.childrenAreBoundMesh(input.element.node)) {
-    console.log('notify parent')
-  }
-}
-
-export function clearPropertyObserver(
-  input: SiteBindElementInputType,
-): void {
-  const name = input.focus.name
-  const id = input.id
-  const moduleId = input.moduleId
-  const observersByNameThenId = code.getWithObjectDefault(
-    input.base.observersByCardThenNameThenId,
-    String(moduleId),
-  )
-  const observersById = code.getWithObjectDefault(
-    observersByNameThenId,
-    name,
-  )
-
-  delete observersById[id]
-  if (!Object.keys(observersById)) {
-    delete observersByNameThenId[id]
-  }
-  if (!Object.keys(observersByNameThenId)) {
-    delete input.base.observersByCardThenNameThenId[moduleId]
-  }
-
-  const observersByIdThenName = code.getWithObjectDefault(
-    input.base.observersByCardThenIdThenName,
-    String(moduleId),
-  )
-  const observersByName = code.getWithObjectDefault(
-    observersByIdThenName,
-    id,
-  )
-
-  delete observersByName[name]
-  if (!Object.keys(observersByName)) {
-    delete observersByIdThenName[id]
-  }
-  if (!Object.keys(observersByIdThenName)) {
-    delete input.base.observersByCardThenIdThenName[moduleId]
-  }
-}
-
-export function generateObservableId(): string {
-  return String(ID++)
-}
-
-export function hasAllReferencesResolved(
-  base: Base,
-  moduleId: number,
-): boolean {
-  return !(moduleId in base.observersByCardThenIdThenName)
-}
-
-export function resolveModuleBindings(
-  input: SiteBindModuleInputType,
-): void {
-  code.setModuleBindings(input)
-  code.clearPropertyObserver({
-    ...input,
-    focus: {
-      name: '*',
     },
-  })
+  }
 }
 
-export function resolvePropertyReference(
-  input: SiteBindElementInputType,
-): void {
-  code.setPropertyReference(input)
-  code.clearPropertyObserver(input)
+export function createCodeModulePublicCollectionObserverSchema(
+  property: string,
+  handle: SiteObjectWatcherHandleType,
+): SiteObjectWatcherSchemaType {
+  return {
+    properties: {
+      definitions: {
+        properties: {
+          public: {
+            properties: {
+              [property]: {
+                handle,
+                state: [SiteObserverState.CollectionGathered],
+              },
+            },
+            state: SITE_OBSERVER_STATE,
+          },
+        },
+        state: SITE_OBSERVER_STATE,
+      },
+    },
+  }
 }
 
-export function setModuleBindings(
-  input: SiteBindModuleInputType,
-): void {
-  const sourceModule = input.module.base.card(input.moduleId).seed
-  code.assertMeshModule(sourceModule)
-  const targetModule = input.module
-  code.assertMeshModule(targetModule)
+export function createWatcherFromSchema(
+  schema: SiteObjectWatcherSchemaType,
+): SiteObjectWatcherType {
+  const watcher: SiteObjectWatcherType = {
+    properties: {},
+  }
 
-  Object.keys(sourceModule.public).forEach(scopeName => {
-    const sourceScopePublic = sourceModule.public[scopeName]
+  Object.keys(schema.properties).forEach(name => {
+    const property = schema.properties[
+      name
+    ] as SiteObjectWatcherPropertyType
 
-    const targetScopePublic = code.getWithObjectDefault(
-      targetModule.public,
-      scopeName,
+    watcher.properties[name] = code.createWatcherFromSchemaProperty(
+      property,
+      name,
     )
+  })
 
-    if (code.isRecord(sourceScopePublic)) {
-      Object.keys(sourceScopePublic).forEach(propName => {
-        targetScopePublic[propName] = sourceScopePublic[propName]
-        // TODO: skip hidden export properties.
-      })
+  return watcher
+}
+
+export function createWatcherFromSchemaProperty(
+  property: SiteObjectWatcherSchemaPropertyType,
+  name: string,
+  parent?: SiteObjectWatcherPropertyType,
+  pending = 1,
+): SiteObjectWatcherPropertyType {
+  const watcher: SiteObjectWatcherPropertyType = {
+    counted: true,
+    handle: property.handle,
+    matched: false,
+    name,
+    pending,
+    state: property.state,
+  }
+
+  const isDynamic = name === '*'
+
+  Object.defineProperty(watcher, 'parent', {
+    enumerable: false,
+    value: parent,
+  })
+
+  Object.defineProperty(watcher, 'node', {
+    enumerable: false,
+    value: undefined,
+    writable: true,
+  })
+
+  let higher = parent
+  while (higher) {
+    higher.pending += pending
+    higher = higher.parent
+  }
+
+  const propertyProperties = property.properties
+
+  if (propertyProperties) {
+    const nestedProperties: SiteObjectWatcherPropertiesType = {}
+
+    Object.keys(propertyProperties).forEach(name => {
+      const child = propertyProperties[
+        name
+      ] as SiteObjectWatcherPropertyType
+
+      const isChildDynamic = name === '*'
+
+      nestedProperties[name] = createWatcherFromSchemaProperty(
+        child,
+        name,
+        isDynamic ? undefined : watcher,
+        isDynamic ? 0 : 1,
+      )
+    })
+
+    if (isDynamic) {
+      watcher.dynamicProperties = nestedProperties
+      watcher.properties = {}
+    } else {
+      watcher.properties = nestedProperties
     }
-  })
+  }
+
+  return watcher
 }
 
-export function setPropertyReference(
-  input: SiteBindElementHandlerInputType,
-): void {
-  const focus = input.focus
-  const value = code.getEnvironmentProperty(
-    input.environment,
-    focus.name,
-  )
+export function extendDynamicPropertyWatcher(
+  input: SiteProcessInputType,
+  watcher: SiteObjectWatcherPropertyType,
+  name: string,
+): SiteObjectWatcherPropertyType {
+  const { dynamicProperties } = watcher
+  code.assertRecord(dynamicProperties)
 
-  input.handle({
-    ...input,
-    value,
+  const childWatcher: SiteObjectWatcherPropertyType = {
+    counted: false,
+    matched: false,
+    name,
+    parent: watcher,
+    pending: 0,
+    state: [],
+  }
+
+  const nestedProperties: Record<
+    string,
+    SiteObjectWatcherPropertyType
+  > = {}
+
+  Object.keys(dynamicProperties).forEach(name => {
+    const child = dynamicProperties[
+      name
+    ] as SiteObjectWatcherPropertyType
+
+    nestedProperties[name] = createWatcherFromSchemaProperty(
+      child,
+      name,
+      childWatcher,
+    )
   })
+
+  childWatcher.properties = nestedProperties
+
+  const { properties } = watcher
+
+  code.assertRecord(properties)
+
+  properties[name] = childWatcher
+
+  return childWatcher
 }
 
-export function triggerPropertyBinding(
-  input: SiteProcessInputType & {
-    propertyName: string
-  },
+export function isObserverStateAccepted(
+  input: SiteObserverState,
+  potential: Array<SiteObserverState>,
+): boolean {
+  if (potential.includes(SiteObserverState.CollectionGathered)) {
+    return input === SiteObserverState.CollectionGathered
+  }
+
+  if (potential.includes(SiteObserverState.Initialized)) {
+    return SITE_OBSERVER_STATE.includes(input)
+  }
+
+  if (potential.includes(SiteObserverState.StaticComplete)) {
+    return SITE_OBSERVER_COMPLETE_STATE.includes(input)
+  }
+
+  if (potential.includes(SiteObserverState.RuntimeComplete)) {
+    return input === SiteObserverState.RuntimeComplete
+  }
+
+  return false
+}
+
+export function propagatePendingUpwards(
+  property: SiteObjectWatcherPropertyType,
+  amount: number,
 ): void {
-  const observersByNameThenId =
-    input.base.observersByCardThenNameThenId[input.module.id]
-  if (!observersByNameThenId) {
+  let higher: SiteObjectWatcherPropertyType | undefined = property
+
+  while (higher) {
+    higher.pending += amount
+    higher = higher.parent
+  }
+}
+
+export function queuePropertyUpdateHandle(
+  input: SiteProcessInputType,
+  handle: SiteObjectWatcherHandleType,
+  node: BlueNodeType<Mesh>,
+): void {
+  code.addTask(input.base, () => handle(node))
+}
+
+export function registerSchema(
+  input: SiteModuleBindingInputType,
+  schema: SiteObjectWatcherSchemaType,
+): SiteObjectWatcherType {
+  let list = input.base.watchers[input.moduleId]
+
+  if (!list) {
+    list = input.base.watchers[input.moduleId] = []
+  }
+
+  const watcher = code.createWatcherFromSchema(schema)
+
+  list.push(watcher)
+
+  return watcher
+}
+
+export function resolveBluePath(
+  blue: BlueNodeType<Mesh>,
+): Array<BlueNodeType<Mesh>> {
+  let node: BlueNodeType<Mesh> | undefined = blue
+  const array: Array<BlueNodeType<Mesh>> = []
+  while (node) {
+    array.push(node)
+    node = node.parent
+  }
+  return array.reverse()
+}
+
+export function triggerObjectBindingUpdate(
+  input: SiteProcessInputType,
+  node: BlueNodeType<Mesh>,
+): void {
+  const watchers = input.base.watchers[input.module.id]
+
+  if (!watchers) {
     return
   }
 
-  const observersById = observersByNameThenId[input.propertyName]
-  if (!observersById) {
-    return
+  const path = code.resolveBluePath(node)
+  watchers.forEach(watcher => {
+    code.updateWatcherForPath(input, watcher, path)
+  })
+}
+
+export function updateAllThroughWatcher(
+  input: SiteModuleBindingInputType,
+  watcher: SiteObjectWatcherType,
+): void {
+  let node = input.module.blue.node as BlueMapType<
+    Record<string, BluePossibleType>
+  >
+
+  for (const name in watcher.properties) {
+    const property = watcher.properties[
+      name
+    ] as SiteObjectWatcherPropertyType
+
+    let child = node.value[name] as BlueType
+
+    code.updateAllThroughWatcherProperty(input, property, child)
   }
 
-  Object.keys(observersById).forEach(id => {
-    const handle = observersById[id]
-    handle?.()
-  })
+  console.log(JSON.stringify(watcher, null, 2))
+}
+
+export function updateAllThroughWatcherProperty(
+  input: SiteModuleBindingInputType,
+  property: SiteObjectWatcherPropertyType,
+  node: Record<string, unknown>,
+): void {
+  code.assertGenericBlue(node)
+
+  if (code.isObserverStateAccepted(node.state, property.state)) {
+    property.matched = true
+    code.propagatePendingUpwards(property, -1)
+  }
+
+  property.node = node
+
+  const { properties } = property
+
+  if (properties) {
+    Object.keys(properties).forEach(name => {
+      const childProperty = properties[
+        name
+      ] as SiteObjectWatcherPropertyType
+
+      if (childProperty.dynamicProperties) {
+        switch (node.type) {
+          case Mesh.Array: {
+            const potentialChildren = node.value as Array<BlueType>
+            potentialChildren.forEach((childValue, i) => {
+              const elementProperty = code.extendDynamicPropertyWatcher(
+                input,
+                property,
+                String(i),
+              )
+
+              code.updateAllThroughWatcherProperty(
+                input,
+                elementProperty,
+                childValue,
+              )
+            })
+            break
+          }
+          case Mesh.Map: {
+            const potentialMap = node.value as Record<string, BlueType>
+            for (const key in potentialMap) {
+              const childValue = potentialMap[key] as BlueType
+              const elementProperty = code.extendDynamicPropertyWatcher(
+                input,
+                property,
+                key,
+              )
+
+              code.updateAllThroughWatcherProperty(
+                input,
+                elementProperty,
+                childValue,
+              )
+            }
+            break
+          }
+          default:
+            code.throwError(code.generateInvalidCompilerStateError())
+        }
+      } else {
+        switch (node.type) {
+          case Mesh.Map: {
+            node = node.value as Record<string, BlueType>
+          }
+          default:
+            break
+        }
+
+        const childValue = node[name] as BlueType
+
+        code.updateAllThroughWatcherProperty(
+          input,
+          childProperty,
+          childValue,
+        )
+      }
+    })
+  }
+}
+
+export function updateWatcherForPath(
+  input: SiteProcessInputType,
+  watcher: SiteObjectWatcherType,
+  path: Array<BlueNodeType<Mesh>>,
+): void {
+  let properties: SiteObjectWatcherPropertiesType | undefined =
+    watcher.properties
+
+  let i = 0
+
+  while (i < path.length) {
+    const node = path[i++] as BlueNodeType<Mesh>
+    code.assertString(node.attachedAs)
+
+    let property: SiteObjectWatcherPropertyType | undefined =
+      properties[node.attachedAs]
+
+    if (!property) {
+      return
+    }
+
+    property.node = node
+
+    if (i === path.length) {
+      if (property.matched) {
+        return
+      }
+
+      property.matched = property.state.includes(node.state)
+
+      if (property.matched) {
+        while (property) {
+          property.pending--
+          if (property.pending === 0 && property.handle) {
+            code.assertRecord(property.node)
+
+            const parent = property.parent
+            if (parent?.properties) {
+              delete parent.properties[property.name]
+            }
+
+            code.queuePropertyUpdateHandle(
+              input,
+              property.handle,
+              property.node,
+            )
+          }
+          property = property.parent
+        }
+      }
+
+      return
+    }
+
+    properties = property.properties
+
+    if (!properties) {
+      return
+    }
+  }
 }

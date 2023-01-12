@@ -1,4 +1,9 @@
-import { BaseCard, code } from '~'
+import {
+  BaseCard,
+  SiteObjectWatcherSchemaType,
+  SiteObjectWatcherType,
+  code,
+} from '~'
 import type { SitePropertyObserverType } from '~'
 
 export { Base }
@@ -24,14 +29,16 @@ class Base {
 
   textMap: Record<string, string>
 
+  watchers: Record<number, Array<SiteObjectWatcherType>>
+
   env: Record<string, unknown>
 
-  observersByCardThenIdThenName: Record<
+  observersByModuleThenIdThenName: Record<
     string,
     Record<string, Record<string, SitePropertyObserverType>>
   >
 
-  observersByCardThenNameThenId: Record<
+  observersByModuleThenNameThenId: Record<
     string,
     Record<string, Record<string, SitePropertyObserverType>>
   >
@@ -43,9 +50,10 @@ class Base {
   constructor() {
     this.tasks = []
     this.textMap = {}
+    this.watchers = {}
     this.env = {}
-    this.observersByCardThenIdThenName = {}
-    this.observersByCardThenNameThenId = {}
+    this.observersByModuleThenIdThenName = {}
+    this.observersByModuleThenNameThenId = {}
     this.cardsByPath = {}
     this.cardsById = {}
   }

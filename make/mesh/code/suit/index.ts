@@ -9,10 +9,10 @@ export function process_codeCard_suit(
     code.createRedGather(input, 'classInterface'),
   )
   const blue = code.pushBlue(input, 'classInterfaces', {
-    methods: [],
-    properties: [],
+    methods: code.createBlueArray(input),
+    properties: code.createBlueArray(input),
     type: Mesh.ClassInterface,
-    typeInputs: [],
+    typeInputs: code.createBlueArray(input),
   })
   const colorInput = code.withColors(input, { blue, red })
 
