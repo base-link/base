@@ -2,6 +2,7 @@ import {
   ALL_SITE_OBSERVER_STATE,
   Base,
   BlueType,
+  SiteModuleBindingInputType,
   SiteObjectWatcherSchemaHandleType,
   SiteObjectWatcherSchemaPropertiesType,
   SiteObjectWatcherSchemaPropertyType,
@@ -69,6 +70,15 @@ export function bindReference(input: SiteBindElementInputType): void {
       ...input,
       handle: () => code.setPropertyReference(input),
     })
+  }
+}
+
+export function bindSchema(
+  input: SiteModuleBindingInputType,
+  schema: SiteObjectWatcherSchemaType,
+): void {
+  if (!code.tryToSatisfySchema(input, schema)) {
+    code.registerSchema(input, schema)
   }
 }
 
@@ -140,6 +150,7 @@ export function connectSchema(
 ): void {
   schema.pending = 1
   schema.matched = false
+  schema.attachedAs = '*'
 
   let higher = parent
   while (higher) {
@@ -156,6 +167,7 @@ export function connectSchema(
         name
       ] as SiteObjectWatcherSchemaPropertyType
       connectSchema(property, schema)
+      property.attachedAs = name
     })
   }
 }
@@ -216,19 +228,36 @@ export function createCodeModulePublicCollectionObserverSchema(
   return schema
 }
 
-export function findSchemaHandle(
+export function findSchemaHandleAndPath(
   schema: SiteObjectWatcherSchemaType,
-): SiteObjectWatcherSchemaHandleType | undefined {
+): [SiteObjectWatcherSchemaHandleType, Array<string>] | [] {
   const stack: Array<
     SiteObjectWatcherSchemaPropertyType | SiteObjectWatcherSchemaType
   > = [schema]
+
   while (stack.length) {
     const schemaNode = stack.pop() as
       | SiteObjectWatcherSchemaType
       | SiteObjectWatcherSchemaPropertyType
 
     if (schemaNode.handle) {
-      return schemaNode.handle
+      const path: Array<string> = []
+
+      let node:
+        | SiteObjectWatcherSchemaPropertyType
+        | SiteObjectWatcherSchemaType
+        | undefined = schemaNode
+
+      while (node) {
+        if (node !== schema) {
+          code.assertString(node.attachedAs)
+          path.push(node.attachedAs)
+        }
+
+        node = node.parent
+      }
+
+      return [schemaNode.handle, path.reverse()]
     }
 
     const { properties } = schemaNode
@@ -241,6 +270,8 @@ export function findSchemaHandle(
       })
     }
   }
+
+  return []
 }
 
 export function hasAllReferencesResolved(
@@ -248,6 +279,27 @@ export function hasAllReferencesResolved(
   moduleId: number,
 ): boolean {
   return !(moduleId in base.observersByModuleThenIdThenName)
+}
+
+export function isSchemaSatisfied(
+  property: SiteObjectWatcherSchemaPropertyType,
+  node: Record<string, unknown>,
+): boolean {
+  code.assertString(property.attachedAs)
+  const value = node[property.attachedAs]
+}
+
+export function registerSchema(
+  input: SiteModuleBindingInputType,
+  schema: SiteObjectWatcherSchemaType,
+): void {
+  let list = input.base.observers[input.moduleId]
+
+  if (!list) {
+    list = input.base.observers[input.moduleId] = []
+  }
+
+  list.push(schema)
 }
 
 export function resolveBluePath(blue: BlueType): Array<BlueType> {
@@ -323,13 +375,31 @@ export function triggerObjectBindingUpdate(
   input: SiteProcessInputType,
   node: BlueType,
 ): void {
+  const schemas = input.base.observers[input.module.id]
+
+  if (!schemas) {
+    return
+  }
+
   const path = code.resolveBluePath(node)
-  const schemas = module.schemas
   schemas.forEach(schema => {
     code.updateWatcherSchema(schema, path)
-    if (schema.pending === 0) {
-      const handle = code.findSchemaHandle(schema)
+
+    schema.pending ??= 0
+
+    if (schema.pending > 0) {
+      return
     }
+
+    const [handle, schemaPath] = code.findSchemaHandleAndPath(schema)
+
+    if (!handle || !schemaPath) {
+      return
+    }
+
+    const value = path[schemaPath.length - 1] as BlueType
+
+    code.addTask(input.base, () => handle(value))
   })
 }
 
@@ -353,6 +423,57 @@ export function triggerPropertyBinding(
     const handle = observersById[id]
     handle?.()
   })
+}
+
+export function tryToSatisfySchema(
+  input: SiteModuleBindingInputType,
+  schema: SiteObjectWatcherSchemaType,
+): boolean {
+  const card = input.base.card(input.moduleId)
+  code.assertRecord(card)
+
+  const { seed } = card
+
+  if (!code.isModule(seed)) {
+    return false
+  }
+
+  for (const name in schema.properties) {
+    if (!code.isSchemaSatisfied(schema.properties[name], seed.blue)) {
+      return false
+    }
+  }
+
+  const [handle, schemaPath] = code.findSchemaHandleAndPath(schema)
+
+  if (!handle || !schemaPath) {
+    return false
+  }
+
+  let node: Record<string, unknown> | unknown | undefined =
+    seed.blue.node
+
+  let stack = [node]
+  let i = 0
+  while (i < schemaPath.length && code.isRecord(node)) {
+    const part = schemaPath[i++] as string
+    const item = stack.shift()
+    code.assertRecord(item)
+
+    const value = item[part]
+
+    if (part === '*') {
+      if (code.isArray(value)) {
+        stack.push(...value)
+      } else if (code.isRecord(value)) {
+        stack.push(...Object.values(value))
+      }
+    } else {
+      stack.push(value)
+    }
+  }
+
+  return false
 }
 
 export function updateWatcherSchema(

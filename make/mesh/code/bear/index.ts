@@ -6,6 +6,12 @@ export * from './hide/index.js'
 export function bearImports(input: SiteProcessInputType): void {
   const exportNode = input.blue.node
   code.assertBlue(exportNode, Mesh.Export)
+  code.assertString(exportNode.absolutePath)
+
+  const card = input.base.card(exportNode.absolutePath)
+  code.assertRecord(card)
+
+  const id = card.id
 
   const schemas = [
     code.createCodeModulePublicCollectionObserverSchema(
@@ -51,23 +57,28 @@ export function bearImports(input: SiteProcessInputType): void {
   ]
 
   function handleClassesGathered(value: unknown): void {
-    code.triggerBindingUpdate(input.module.public.classes)
+    code.assertGenericBlue(value)
+    code.triggerObjectBindingUpdate(input, value)
   }
 
   function handleInterfacesGathered(value: unknown): void {
-    code.triggerBindingUpdate(input.module.public.interfaces)
+    code.assertGenericBlue(value)
+    code.triggerObjectBindingUpdate(input, value)
   }
 
   function handleFunctionsGathered(value: unknown): void {
-    code.triggerBindingUpdate(input.module.public.functions)
+    code.assertGenericBlue(value)
+    code.triggerObjectBindingUpdate(input, value)
   }
 
   function handleTemplatesGathered(value: unknown): void {
-    code.triggerBindingUpdate(input.module.public.templates)
+    code.assertGenericBlue(value)
+    code.triggerObjectBindingUpdate(input, value)
   }
 
   function handleVariablesGathered(value: unknown): void {
-    code.triggerBindingUpdate(input.module.public.variables)
+    code.assertGenericBlue(value)
+    code.triggerObjectBindingUpdate(input, value)
   }
 
   function handleClass(value: unknown): void {
@@ -106,6 +117,10 @@ export function bearImports(input: SiteProcessInputType): void {
     code.assertBlue(value, Mesh.Variable)
     code.assertBlue(input.module, Mesh.CodeModule)
   }
+
+  schemas.forEach(schema => {
+    code.bindSchema({ ...input, moduleId: id }, schema)
+  })
 }
 
 export function process_codeCard_bear(

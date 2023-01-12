@@ -10,7 +10,7 @@ import type {
 
 export type SiteBindingCountdownType = {
   dependencies: Array<string>
-  handle: () => void
+  handle: SiteCallbackType
 }
 
 export type SiteBlueType = SiteColorType<BlueType>
@@ -77,7 +77,6 @@ export type SiteModuleBaseType = {
 }
 
 export type SiteModuleBindingInputType = SiteProcessInputType & {
-  handleId: string
   moduleId: number
 }
 
@@ -96,6 +95,7 @@ export type SiteObjectWatcherSchemaPropertiesType = {
 }
 
 export type SiteObjectWatcherSchemaPropertyType = {
+  attachedAs?: string
   handle?: SiteObjectWatcherSchemaHandleType
   matched?: boolean
   parent?: SiteObjectWatcherSchemaPropertyType
@@ -105,6 +105,7 @@ export type SiteObjectWatcherSchemaPropertyType = {
 }
 
 export type SiteObjectWatcherSchemaType = {
+  attachedAs?: string
   handle?: undefined
   matched?: boolean
   parent?: undefined
@@ -134,6 +135,8 @@ export const ALL_SITE_OBSERVER_STATE = [
   SiteObserverState.RuntimeComplete,
 ]
 
+export type SiteCallbackType = () => void
+
 export type SiteParseType = {
   directory: string
   linkTree: LinkTreeType
@@ -155,8 +158,6 @@ export type SiteProcessInputType = {
   red: SiteRedType
   scope: SiteStepScopeType
 }
-
-export type SitePropertyObserverType = () => void
 
 export type SiteRedType = SiteColorType<RedType>
 

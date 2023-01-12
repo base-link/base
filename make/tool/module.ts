@@ -2,13 +2,14 @@ import {
   Base,
   BaseCard,
   SiteModuleBaseType,
+  SiteModuleType,
   SiteParseType,
   code,
 } from '~'
 
 export function assertModule(
   object: unknown,
-): asserts object is SiteModuleBaseType {
+): asserts object is SiteModuleType {
   if (!code.isModule(object)) {
     code.throwError(code.generateObjectNotTypeError(object, ['module']))
   }
@@ -26,10 +27,8 @@ export function hasModuleInitialized(module: BaseCard): boolean {
   return Object.keys(module.seed).length > 0
 }
 
-export function isModule(
-  object: unknown,
-): object is SiteModuleBaseType {
-  return (object as SiteModuleBaseType).isModule === true
+export function isModule(object: unknown): object is SiteModuleType {
+  return (object as SiteModuleType).isModule === true
 }
 
 export function loadLinkModule(

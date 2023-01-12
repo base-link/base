@@ -33,7 +33,7 @@ export function assertBlue<T extends Mesh>(
   name?: string,
 ): asserts object is BlueNodeType<T> {
   if (!code.isBlue(object, type)) {
-    code.throwError(code.generateIncorrectlyTypedVariable('mesh', name))
+    code.throwError(code.generateIncorrectlyTypedVariable('blue', name))
   }
 }
 
@@ -45,7 +45,7 @@ export function assertBlueArray<T extends Mesh>(
   array.forEach(object => {
     if (!code.isBlue(object, type)) {
       code.throwError(
-        code.generateIncorrectlyTypedVariable('mesh', name),
+        code.generateIncorrectlyTypedVariable('blue', name),
       )
     }
   })
@@ -105,6 +105,15 @@ export function assertBlueText(
   code.assertBlue(object, [Mesh.String, Mesh.Text])
 }
 
+export function assertGenericBlue(
+  object: unknown,
+  name?: string,
+): asserts object is BlueType {
+  if (!code.isGenericBlue(object)) {
+    code.throwError(code.generateIncorrectlyTypedVariable('blue', name))
+  }
+}
+
 export function assertRed<T extends Red>(
   object: unknown,
   type: T,
@@ -123,11 +132,11 @@ export function attachBlue(
   node: DistributiveOmit<BlueType, 'color' | 'state'>,
 ): SiteBlueType {
   const child: SiteBlueType = code.createBlue(input, node)
+  const parent = child.parent
+  code.assertRecord(parent)
 
-  if (child.parent) {
-    const node = child.parent.node
-    ;(node as Record<string, unknown>)[property] = child.node
-  }
+  child.node.attachedAs = property
+  ;(parent.node as Record<string, unknown>)[property] = child.node
 
   return child
 }
@@ -138,12 +147,15 @@ export function attachBlueValue(
   node: unknown,
 ): void {
   code.assertRecord(input.blue)
+  if (code.isGenericBlue(node)) {
+    node.attachedAs = property
+  }
   ;(input.blue.node as Record<string, unknown>)[property] = node
 }
 
 export function createBlue(
   input: SiteProcessInputType,
-  node: DistributiveOmit<BlueType, 'color' | 'state'>,
+  node: DistributiveOmit<BlueType, 'color' | 'state' | 'attachedAs'>,
 ): SiteBlueType {
   return {
     node: {
@@ -226,7 +238,7 @@ export function createRedValue(
 }
 
 export function createTopBlue(
-  node: DistributiveOmit<BlueType, 'color' | 'state'>,
+  node: DistributiveOmit<BlueType, 'color' | 'state' | 'attachedAs'>,
 ): SiteBlueType {
   return {
     node: {
@@ -273,7 +285,17 @@ export function isBlue<T extends Mesh>(
     code.isRecord(object) &&
     'type' in object &&
     code.isString(object.type) &&
-    array.includes(object.type)
+    array.includes(object.type) &&
+    object.color === Color.Blue
+  )
+}
+
+export function isGenericBlue(object: unknown): object is BlueType {
+  return (
+    code.isRecord(object) &&
+    'color' in object &&
+    code.isString(object.color) &&
+    object.color === Color.Blue
   )
 }
 
@@ -286,19 +308,22 @@ export function isRed<T extends Red>(
     code.isRecord(object) &&
     'type' in object &&
     code.isString(object.type) &&
-    array.includes(object.type)
+    array.includes(object.type) &&
+    object.color === Color.Red
   )
 }
 
 export function pushBlue(
   input: SiteProcessInputType,
   property: string,
-  node: DistributiveOmit<BlueType, 'color' | 'state'>,
+  node: DistributiveOmit<BlueType, 'color' | 'state' | 'attachedAs'>,
 ): SiteBlueType {
   const child: SiteBlueType = {
     node: {
       ...node,
+      attachedAs: '*',
       color: Color.Blue,
+      state: SiteObserverState.Initialized,
     },
     parent: input.blue,
   }
@@ -309,6 +334,8 @@ export function pushBlue(
     code.assertArray(array, property, input.module.path)
     array.push(child.node)
   }
+
+  code.triggerObjectBindingUpdate
 
   return child
 }

@@ -1,6 +1,6 @@
-import { Base } from '~'
+import { Base, SiteCallbackType } from '~'
 
-export function addTask(base: Base, handle: () => void): void {
+export function addTask(base: Base, handle: SiteCallbackType): void {
   base.tasks.push(handle)
 }
 
