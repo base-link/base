@@ -91,11 +91,25 @@ export type SiteModuleType = SiteModuleBaseType & {
 
 export type SiteObjectWatcherSchemaHandleType = (value: unknown) => void
 
-export type SiteObjectWatcherSchemaType = {
-  children: Array<SiteObjectWatcherSchemaType>
+export type SiteObjectWatcherSchemaPropertiesType = {
+  [property: string]: SiteObjectWatcherSchemaPropertyType
+}
+
+export type SiteObjectWatcherSchemaPropertyType = {
   handle?: SiteObjectWatcherSchemaHandleType
-  property: string
+  matched?: boolean
+  parent?: SiteObjectWatcherSchemaPropertyType
+  pending?: number
+  properties?: SiteObjectWatcherSchemaPropertiesType
   state: Array<SiteObserverState>
+}
+
+export type SiteObjectWatcherSchemaType = {
+  handle?: undefined
+  matched?: boolean
+  parent?: undefined
+  pending?: number
+  properties: SiteObjectWatcherSchemaPropertiesType
 }
 
 export type SiteObjectWatcherType = {

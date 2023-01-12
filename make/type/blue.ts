@@ -15,7 +15,11 @@ export type BlueAssertionType = BlueBaseType & {
 }
 
 export type BlueBaseType = MeshBaseType & {
+  // how it is passed down.
+  attachedAs: string
   color: Color.Blue
+  id: number
+  parent?: BlueType
   state: SiteObserverState
 }
 

@@ -1,7 +1,10 @@
 import {
   ALL_SITE_OBSERVER_STATE,
   Base,
+  BlueType,
   SiteObjectWatcherSchemaHandleType,
+  SiteObjectWatcherSchemaPropertiesType,
+  SiteObjectWatcherSchemaPropertyType,
   SiteObjectWatcherSchemaType,
   SiteObserverState,
   code,
@@ -127,61 +130,116 @@ export function clearPropertyObserver(
   }
 }
 
+export function connectSchema(
+  schema:
+    | SiteObjectWatcherSchemaType
+    | SiteObjectWatcherSchemaPropertyType,
+  parent?:
+    | SiteObjectWatcherSchemaType
+    | SiteObjectWatcherSchemaPropertyType,
+): void {
+  schema.pending = 1
+  schema.matched = false
+
+  let higher = parent
+  while (higher) {
+    higher.pending ??= 0
+    higher.pending++
+    higher = higher.parent
+  }
+
+  const { properties } = schema
+
+  if (properties) {
+    Object.keys(properties).forEach(name => {
+      const property = properties[
+        name
+      ] as SiteObjectWatcherSchemaPropertyType
+      connectSchema(property, schema)
+    })
+  }
+}
+
 export function createCodeModuleObjectNameObserverSchema(
   property: string,
   handle: SiteObjectWatcherSchemaHandleType,
 ): SiteObjectWatcherSchemaType {
-  const defaultState = ALL_SITE_OBSERVER_STATE
-
-  return {
-    children: [
-      {
-        children: [
-          {
-            children: [],
-            property: 'name',
-            state: [SiteObserverState.RuntimeComplete],
+  const schema: SiteObjectWatcherSchemaType = {
+    properties: {
+      public: {
+        properties: {
+          [property]: {
+            properties: {
+              ['*']: {
+                handle,
+                properties: {
+                  name: {
+                    state: [SiteObserverState.RuntimeComplete],
+                  },
+                },
+                state: ALL_SITE_OBSERVER_STATE,
+              },
+            },
+            state: ALL_SITE_OBSERVER_STATE,
           },
-        ],
-        handle,
-        property: '*',
-        state: defaultState,
+        },
+        state: ALL_SITE_OBSERVER_STATE,
       },
-    ],
-    property,
-    state: defaultState,
+    },
   }
+
+  code.connectSchema(schema)
+
+  return schema
 }
 
 export function createCodeModulePublicCollectionObserverSchema(
   property: string,
   handle: SiteObjectWatcherSchemaHandleType,
 ): SiteObjectWatcherSchemaType {
-  const defaultState = ALL_SITE_OBSERVER_STATE
-
-  return createCodeModulePublicObserverSchema([
-    {
-      children: [
-        {
-          children: [],
-          handle,
-          property: '*',
-          state: [SiteObserverState.CollectionInitialized],
+  const schema: SiteObjectWatcherSchemaType = {
+    properties: {
+      public: {
+        properties: {
+          [property]: {
+            handle,
+            state: [SiteObserverState.CollectionGathered],
+          },
         },
-      ],
-      property,
-      state: defaultState,
+        state: ALL_SITE_OBSERVER_STATE,
+      },
     },
-  ])
+  }
+
+  code.connectSchema(schema)
+
+  return schema
 }
 
-export function createCodeModulePublicObserverSchema(
-  children: Array<SiteObjectWatcherSchemaType>,
-): SiteObjectWatcherSchemaType {
-  return {
-    children,
-    property: 'public',
-    state: ALL_SITE_OBSERVER_STATE,
+export function findSchemaHandle(
+  schema: SiteObjectWatcherSchemaType,
+): SiteObjectWatcherSchemaHandleType | undefined {
+  const stack: Array<
+    SiteObjectWatcherSchemaPropertyType | SiteObjectWatcherSchemaType
+  > = [schema]
+  while (stack.length) {
+    const schemaNode = stack.pop() as
+      | SiteObjectWatcherSchemaType
+      | SiteObjectWatcherSchemaPropertyType
+
+    if (schemaNode.handle) {
+      return schemaNode.handle
+    }
+
+    const { properties } = schemaNode
+
+    if (properties) {
+      Object.keys(properties).forEach(name => {
+        stack.push(
+          properties[name] as SiteObjectWatcherSchemaPropertyType,
+        )
+      })
+    }
   }
 }
 
@@ -190,6 +248,16 @@ export function hasAllReferencesResolved(
   moduleId: number,
 ): boolean {
   return !(moduleId in base.observersByModuleThenIdThenName)
+}
+
+export function resolveBluePath(blue: BlueType): Array<BlueType> {
+  let node: BlueType | undefined = blue
+  const array: Array<BlueType> = []
+  while (node) {
+    array.push(node)
+    node = node.parent
+  }
+  return array.reverse()
 }
 
 export function resolveModuleBindings(
@@ -251,6 +319,20 @@ export function setPropertyReference(
   })
 }
 
+export function triggerObjectBindingUpdate(
+  input: SiteProcessInputType,
+  node: BlueType,
+): void {
+  const path = code.resolveBluePath(node)
+  const schemas = module.schemas
+  schemas.forEach(schema => {
+    code.updateWatcherSchema(schema, path)
+    if (schema.pending === 0) {
+      const handle = code.findSchemaHandle(schema)
+    }
+  })
+}
+
 export function triggerPropertyBinding(
   input: SiteProcessInputType & {
     propertyName: string
@@ -271,4 +353,46 @@ export function triggerPropertyBinding(
     const handle = observersById[id]
     handle?.()
   })
+}
+
+export function updateWatcherSchema(
+  schema: SiteObjectWatcherSchemaType,
+  path: Array<BlueType>,
+): void {
+  let properties: SiteObjectWatcherSchemaPropertiesType | undefined =
+    schema.properties
+
+  let i = 0
+
+  while (i < path.length) {
+    const node = path[i++] as BlueType
+    let property: SiteObjectWatcherSchemaPropertyType | undefined =
+      properties[node.attachedAs]
+
+    if (!property) {
+      return
+    }
+
+    if (i === path.length) {
+      if (property.matched) {
+        return
+      }
+
+      property.matched = true
+
+      while (property) {
+        property.pending ??= 0
+        property.pending--
+        property = property.parent
+      }
+
+      return
+    }
+
+    properties = property.properties
+
+    if (!properties) {
+      return
+    }
+  }
 }

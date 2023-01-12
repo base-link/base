@@ -28,36 +28,26 @@ export function bearImports(input: SiteProcessInputType): void {
       'variables',
       handleVariablesGathered,
     ),
-    code.createCodeModulePublicObserverSchema([
-      code.createCodeModuleObjectNameObserverSchema(
-        'classes',
-        handleClass,
-      ),
-    ]),
-    code.createCodeModulePublicObserverSchema([
-      code.createCodeModuleObjectNameObserverSchema(
-        'interfaces',
-        handleInterface,
-      ),
-    ]),
-    code.createCodeModulePublicObserverSchema([
-      code.createCodeModuleObjectNameObserverSchema(
-        'functions',
-        handleFunction,
-      ),
-    ]),
-    code.createCodeModulePublicObserverSchema([
-      code.createCodeModuleObjectNameObserverSchema(
-        'templates',
-        handleTemplate,
-      ),
-    ]),
-    code.createCodeModulePublicObserverSchema([
-      code.createCodeModuleObjectNameObserverSchema(
-        'variables',
-        handleVariable,
-      ),
-    ]),
+    code.createCodeModuleObjectNameObserverSchema(
+      'classes',
+      handleClass,
+    ),
+    code.createCodeModuleObjectNameObserverSchema(
+      'interfaces',
+      handleInterface,
+    ),
+    code.createCodeModuleObjectNameObserverSchema(
+      'functions',
+      handleFunction,
+    ),
+    code.createCodeModuleObjectNameObserverSchema(
+      'templates',
+      handleTemplate,
+    ),
+    code.createCodeModuleObjectNameObserverSchema(
+      'variables',
+      handleVariable,
+    ),
   ]
 
   function handleClassesGathered(value: unknown): void {
