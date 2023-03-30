@@ -12,7 +12,7 @@
 
 <h3 align='center'>base.link</h3>
 <p align='center'>
-  The Link Text Compiler
+  A Link Text Compiler
 </p>
 
 <br/>
