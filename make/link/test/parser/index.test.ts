@@ -7,10 +7,7 @@ import { fileURLToPath } from 'url'
 
 import { code } from '~'
 
-import {
-  TextInputType,
-  parseLinkText as parse,
-} from '../../index.js'
+import { TextInputType, parseLinkText as parse } from '../../index.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename).replace(
@@ -23,7 +20,7 @@ const __dirname = dirname(__filename).replace(
 // const nest = form(`link {a}-x-{y/z}, foo <bar>`)
 // const nest = parse(`
 
-// load @treesurf/wolf/code
+// load @tunebond/wolf/code
 //   load /shared/result
 //     take tree free-result
 //     take tree is-below-or-return-error
@@ -51,9 +48,7 @@ const __dirname = dirname(__filename).replace(
 
 async function start() {
   await code.loadSourceMaps()
-  const fixtures = (
-    await fs.promises.readdir(`${__dirname}/file`)
-  )
+  const fixtures = (await fs.promises.readdir(`${__dirname}/file`))
     .filter(x => x.endsWith('.link'))
     .map(x => `${__dirname}/file/${x}`)
 
@@ -73,11 +68,7 @@ async function start() {
 
 start()
 
-function assertParse(
-  path: string,
-  input: string,
-  expected: string,
-) {
+function assertParse(path: string, input: string, expected: string) {
   const data = parse({ path, text: input })
   const output = trimLines(code.printMesh(data.link))
 
@@ -88,9 +79,7 @@ function assertParse(
     if (process.env.DEVELOP) {
       console.log(output)
     }
-    code.throwError(
-      code.generateStringMismatchError(data, a, b),
-    )
+    code.throwError(code.generateStringMismatchError(data, a, b))
   }
 }
 

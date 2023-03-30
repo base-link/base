@@ -7,7 +7,7 @@
 <br/>
 
 <p align='center'>
-  <img src='https://github.com/teamtreesurf/base.link/blob/make/view/base.svg?raw=true' height='192'>
+  <img src='https://github.com/tunebond/base.link/blob/make/view/base.svg?raw=true' height='192'>
 </p>
 
 <h3 align='center'>base.link</h3>
@@ -74,12 +74,12 @@ just a hack for the moment, will abstract it out at some point).
 So do this to get going:
 
 ```bash
-mkdir treesurf
-cd treesurf
-git clone git@github.com:teamtreesurf/base.link.git
-git clone git@github.com:teamtreesurf/wolf.link.git
-git clone git@github.com:teamtreesurf/moon.link.git
-git clone git@github.com:teamtreesurf/nest.link.git
+mkdir tunebond
+cd tunebond
+git clone git@github.com:tunebond/base.link.git
+git clone git@github.com:tunebond/wolf.link.git
+git clone git@github.com:tunebond/moon.link.git
+git clone git@github.com:tunebond/nest.link.git
 cd base.link
 # then watch or run files from here.
 ```
@@ -513,7 +513,7 @@ file. Certain folder collections are standard, like Ruby on Rails.
 
 ### License
 
-Copyright 2021-2023 <a href='https://drum.work'>TreeSurf</a>
+Copyright 2021-2023 <a href='https://drum.work'>TuneBond</a>
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may
 not use this file except in compliance with the License. You may obtain
@@ -527,17 +527,17 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-### TreeSurf
+### TuneBond
 
-This is being developed by the folks at [TreeSurf](https://tree.surf), a
+This is being developed by the folks at [TuneBond](https://tree.surf), a
 California-based project for helping humanity master information and
-computation. TreeSurf started off in the winter of 2008 as a spark of an
+computation. TuneBond started off in the winter of 2008 as a spark of an
 idea, to forming a company 10 years later in the winter of 2018, to a
 seed of a project just beginning its development phases. It is entirely
 bootstrapped by working full time and running
-[Etsy](https://etsy.com/shop/teamtreesurf) and
+[Etsy](https://etsy.com/shop/tunebond) and
 [Amazon](https://www.amazon.com/s?rh=p_27%3AMount+Build) shops. Also
-find us on [Facebook](https://www.facebook.com/teamtreesurf),
-[Twitter](https://twitter.com/teamtreesurf), and
-[LinkedIn](https://www.linkedin.com/company/teamtreesurf). Check out our
+find us on [Facebook](https://www.facebook.com/tunebond),
+[Twitter](https://twitter.com/tunebond), and
+[LinkedIn](https://www.linkedin.com/company/tunebond). Check out our
 other GitHub projects as well!

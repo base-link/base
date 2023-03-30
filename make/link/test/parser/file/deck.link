@@ -1,10 +1,10 @@
 
-deck <@treesurf/wolf>
+deck <@tunebond/wolf>
   bear ./code
   test ./test
   mint <0.0.1>
 
-deck @treesurf/wolf
+deck @tunebond/wolf
   bear ./code
   mint <0.0.1>
   test ./test{{{another 12}}}two/one
@@ -12,7 +12,7 @@ deck @treesurf/wolf
 ---
 
 deck
-  <@treesurf/wolf>
+  <@tunebond/wolf>
   bear
     <./code>
   test
@@ -20,7 +20,7 @@ deck
   mint
     <0.0.1>
 deck
-  <@treesurf/wolf>
+  <@tunebond/wolf>
   bear
     <./code>
   mint

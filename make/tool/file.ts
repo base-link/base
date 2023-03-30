@@ -43,11 +43,11 @@ export function findPath(
   link: string,
   context = process.cwd(),
 ): string | undefined {
-  if (link.startsWith('@treesurf')) {
+  if (link.startsWith('@tunebond')) {
     link = pathResolve
       .resolve(
         link.replace(
-          /@treesurf\/(\w+)/,
+          /@tunebond\/(\w+)/,
           (_: string, $1: string): string => `../${$1}.link`,
         ),
       )
