@@ -4,7 +4,7 @@ start()
 
 async function start() {
   await code.loadSourceMaps()
-  const link = code.findPath('@treesurf/wolf')
+  const link = code.findPath('@tunebond/wolf')
   code.assertString(link)
   const base = code.createBase()
   code.setEnvironmentVariable(base, 'dock', 'javascript')

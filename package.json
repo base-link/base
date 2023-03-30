@@ -1,5 +1,5 @@
 {
-  "name": "@treesurf/base",
+  "name": "@tunebond/base",
   "main": "./host",
   "type": "module",
   "scripts": {
