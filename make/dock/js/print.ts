@@ -36,9 +36,7 @@ function printBodyNode(node, state) {
 
     CallExpression() {
       const _callee = printExpression(node.callee)
-      const args = node.arguments.map(arg =>
-        printExpression(arg),
-      )
+      const args = node.arguments.map(arg => printExpression(arg))
       text.push(`${_callee}(${args.join(', ')})`)
     },
 
@@ -249,9 +247,7 @@ function printClassBody(node) {
 function printMethodDefinition(node) {
   const key = printExpression(node.key)
   const value = printFunctionDeclaration(node.value, true)
-  const text: Array<string> = (
-    `${key}` + value.join('\n')
-  ).split('\n')
+  const text: Array<string> = (`${key}` + value.join('\n')).split('\n')
   return text
 }
 
@@ -386,15 +382,11 @@ function printReturnStatement(node) {
 function printArrowFunctionExpression(node) {
   const printers = {
     ArrayExpression() {
-      return [
-        'return ' + printArrayExpression(node.body).join('\n'),
-      ]
+      return ['return ' + printArrayExpression(node.body).join('\n')]
     },
 
     BlockStatement() {
-      return node.body.body.map(x =>
-        printBodyNode(x).join('\n'),
-      )
+      return node.body.body.map(x => printBodyNode(x).join('\n'))
     },
 
     CallExpression() {
@@ -406,18 +398,12 @@ function printArrowFunctionExpression(node) {
     },
 
     ObjectExpression() {
-      return [
-        'return ' + printObjectExpression(node.body).join('\n'),
-      ]
+      return ['return ' + printObjectExpression(node.body).join('\n')]
     },
   }
   const text: Array<string> = []
-  const params = node.params.map(param =>
-    printExpression(param),
-  )
-  const body = call(printers, node.body.type).map(
-    line => `  ${line}`,
-  )
+  const params = node.params.map(param => printExpression(param))
+  const body = call(printers, node.body.type).map(line => `  ${line}`)
   text.push(`(${params.join(', ')}) => {`)
   text.push(...body)
   text.push(`}`)
@@ -427,9 +413,7 @@ function printArrowFunctionExpression(node) {
 function printFunctionDeclaration(node, omitKeyword) {
   const text: Array<string> = []
   const id = node.id ? ` ${printExpression(node.id)}` : ''
-  const params = node.params.map(param =>
-    printExpression(param),
-  )
+  const params = node.params.map(param => printExpression(param))
   // console.log(JSON.stringify(node, null, 2))
   const body = node.body.body
     .map(x => printBodyNode(x).join('\n'))
@@ -493,9 +477,7 @@ function printVariableDeclarator(parent, node) {
     },
 
     ArrowFunctionExpression() {
-      text.push(
-        printArrowFunctionExpression(node.init).join('\n'),
-      )
+      text.push(printArrowFunctionExpression(node.init).join('\n'))
     },
 
     AssignmentExpression() {
@@ -510,9 +492,7 @@ function printVariableDeclarator(parent, node) {
 
     CallExpression() {
       const _callee = printExpression(node.init.callee)
-      const args = node.init.arguments.map(arg =>
-        printExpression(arg),
-      )
+      const args = node.init.arguments.map(arg => printExpression(arg))
       text.push(`${_callee}(${args.join(', ')})`)
     },
 
@@ -565,9 +545,7 @@ function printVariableDeclarator(parent, node) {
     },
 
     TaggedTemplateExpression() {
-      text.push(
-        printTaggedTemplateExpression(node.init).join('\n'),
-      )
+      text.push(printTaggedTemplateExpression(node.init).join('\n'))
     },
 
     TemplateLiteral() {
@@ -644,9 +622,7 @@ function printExpressionStatement(node) {
 
     TaggedTemplateExpression() {
       text.push(
-        printTaggedTemplateExpression(node.expression).join(
-          '\n',
-        ),
+        printTaggedTemplateExpression(node.expression).join('\n'),
       )
     },
 
@@ -707,9 +683,7 @@ function printExpression(node) {
 
     CallExpression() {
       const _callee = printExpression(node.callee)
-      const args = node.arguments.map(arg =>
-        printExpression(arg),
-      )
+      const args = node.arguments.map(arg => printExpression(arg))
       return `${_callee}(${args.join(', ')})`
     },
 

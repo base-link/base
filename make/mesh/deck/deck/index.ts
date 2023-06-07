@@ -13,8 +13,8 @@ export function process_deckCard_deck(
 ): void {
   const red = code.pushRed(input, code.createRedGather(input, 'deck'))
   const blue = code.attachBlue(input, 'deck', {
-    face: [],
-    term: [],
+    face: [] as unknown as code.BlueArrayType<code.BluePackageUserType>,
+    term: [] as unknown as code.BlueArrayType<code.BluePackageLicenseType>,
     type: Mesh.Package,
   })
 

@@ -4,7 +4,6 @@ import {
   SiteObjectWatcherType,
   code,
 } from '~'
-import type { SitePropertyObserverType } from '~'
 
 export { Base }
 
@@ -35,12 +34,12 @@ class Base {
 
   observersByModuleThenIdThenName: Record<
     string,
-    Record<string, Record<string, SitePropertyObserverType>>
+    Record<string, Record<string, unknown>>
   >
 
   observersByModuleThenNameThenId: Record<
     string,
-    Record<string, Record<string, SitePropertyObserverType>>
+    Record<string, Record<string, unknown>>
   >
 
   cardsByPath: Record<string, BaseCard>

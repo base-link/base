@@ -59,18 +59,18 @@ export function process_codeCard_form_nestedChildren(
         case 'head':
           code.process_codeCard_head(input)
           break
-        case 'wear':
-          code.process_codeCard_form_wear(input)
-          break
+        // case 'wear':
+        //   code.process_codeCard_form_wear(input)
+        //   break
         case 'base':
           code.process_codeCard_form_base(input)
           break
         case 'case':
           code.process_codeCard_formCase(input)
           break
-        case 'fuse':
-          code.process_codeCard_fuse(input)
-          break
+        // case 'fuse':
+        //   code.process_codeCard_fuse(input)
+        //   break
         case 'hold':
           code.process_codeCard_hold(input)
           break

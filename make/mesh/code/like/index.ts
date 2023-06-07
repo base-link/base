@@ -9,7 +9,7 @@ export function process_codeCard_like(
     code.createRedGather(input, 'definedType'),
   )
   const blue = code.attachBlue(input, 'definedType', {
-    bind: [],
+    bind: [] as unknown as code.BlueArrayType<code.BlueClassReferenceType>,
     type: Mesh.ClassReference,
   })
 

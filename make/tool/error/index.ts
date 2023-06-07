@@ -6,6 +6,7 @@ import {
   LINK_HINT_TEXT,
   Link,
   LinkHint,
+  LinkNodeType,
   SOURCE_MAP_MESH,
   Text,
   code,
@@ -156,6 +157,7 @@ export function generateChangeVariableTypeError(
   input: SiteProcessInputType,
 ): SiteErrorType {
   return {
+    code: '0031',
     note: `Attempt to change a variable's type.`,
   }
 }
@@ -299,7 +301,7 @@ export function generateInvalidNestCaseError(
 ): SiteErrorType {
   let scope
   try {
-    scope = code.resolveTermString(input, 1)
+    scope = code.resolveTermString(input)
   } catch (e) {}
   const text = code.generateHighlightedErrorForLinkTree(input)
   return {
@@ -320,20 +322,20 @@ export function generateInvalidNestChildrenLengthError(
   }
 }
 
-export function generateInvalidPatternError(
-  input: SiteProcessInputType,
-  pattern: unknown,
-): SiteErrorType {
-  const { module } = input
-  const nest = code.assumeLink(input)
-  const text = code.generateHighlightedErrorForText(input)
-  return {
-    code: `0012`,
-    file: `${module.path}`,
-    note: `Text does not match pattern ${pattern}.`,
-    text: text,
-  }
-}
+// export function generateInvalidPatternError(
+//   input: SiteProcessInputType,
+//   pattern: unknown,
+// ): SiteErrorType {
+//   const { module } = input
+//   const nest = code.assumeLink(input)
+//   const text = code.generateHighlightedErrorForText(input)
+//   return {
+//     code: `0012`,
+//     file: `${module.path}`,
+//     note: `Text does not match pattern ${pattern}.`,
+//     text: text,
+//   }
+// }
 
 export function generateInvalidWhitespaceError(
   input: FoldStateInputType,
@@ -467,7 +469,8 @@ export function generateUnhandledNestCaseError(
 ): SiteErrorType {
   let scope
   try {
-    scope = code.resolveTermString(input, 1)
+    // scope = code.resolveTermString(input, 1)
+    scope = code.resolveTermString(input)
   } catch (e) {}
   const text = code.generateHighlightedErrorForLinkTree(input)
   return {
@@ -485,7 +488,8 @@ export function generateUnhandledTermCaseError(
 ): SiteErrorType {
   let scope
   try {
-    scope = code.resolveTermString(input, 1)
+    // scope = code.resolveTermString(input, 1)
+    scope = code.resolveTermString(input)
   } catch (e) {}
   const name = code.resolveTermString(input)
   code.assertString(name)
@@ -518,7 +522,8 @@ export function generateUnknownTermError(
   const { module } = input
   const name = code.resolveTermString(input)
   const text = code.generateHighlightedErrorForLinkTree(input)
-  const insideName = code.resolveTermString(input, 1)
+  // const insideName = code.resolveTermString(input, 1)
+  const insideName = code.resolveTermString(input)
   return {
     code: `0003`,
     file: `${module.path}`,
@@ -559,14 +564,14 @@ export function getCursorRangeForPath(
   input: SiteProcessInputType,
 ): CursorRangeType {
   const path = code.assumeLink(input, Link.Path)
+  const firstSegment = path.segment[0] as LinkNodeType
+  const lastSegment = path.segment[
+    path.segment.length - 1
+  ] as LinkNodeType
   const start = getCursorRangeForTerm(
-    code.withLink(input, { nest: path.segment[0] }),
+    code.withLink(input, firstSegment),
   )
-  const end = getCursorRangeForTerm(
-    code.withLink(input, {
-      nest: path.segment[path.segment.length - 1],
-    }),
-  )
+  const end = getCursorRangeForTerm(code.withLink(input, lastSegment))
   const range: CursorRangeType = {
     end: {
       character: end.end.character,
@@ -588,13 +593,13 @@ export function getCursorRangeForPlugin(
 
   switch (child?.type) {
     case Link.Term: {
-      return code.getCursorRangeForTerm(code.withLink(input, { nest }))
+      return code.getCursorRangeForTerm(code.withLink(input, nest))
     }
     case Link.Path: {
-      return code.getCursorRangeForPath(code.withLink(input, { nest }))
+      return code.getCursorRangeForPath(code.withLink(input, nest))
     }
     case Link.Tree: {
-      return code.getCursorRangeForTree(code.withLink(input, { nest }))
+      return code.getCursorRangeForTree(code.withLink(input, nest))
     }
     default:
       code.throwError(code.generateInvalidCompilerStateError())
@@ -671,11 +676,11 @@ export function getCursorRangeForText(
 
   if (first.type === Link.String) {
     firstRange = code.getCursorRangeForString(
-      code.withLink(input, { nest: first }),
+      code.withLink(input, first),
     )
   } else if (first.type === Link.Plugin) {
     firstRange = code.getCursorRangeForPlugin(
-      code.withLink(input, { nest: first }),
+      code.withLink(input, first),
     )
   } else {
     code.throwError(code.generateInvalidCompilerStateError())
@@ -692,13 +697,9 @@ export function getCursorRangeForText(
   let lastRange: CursorRangeType
 
   if (last.type === Link.String) {
-    lastRange = code.getCursorRangeForString(
-      code.withLink(input, { nest: last }),
-    )
+    lastRange = code.getCursorRangeForString(code.withLink(input, last))
   } else if (last.type === Link.Plugin) {
-    lastRange = code.getCursorRangeForPlugin(
-      code.withLink(input, { nest: last }),
-    )
+    lastRange = code.getCursorRangeForPlugin(code.withLink(input, last))
   } else {
     code.throwError(code.generateInvalidCompilerStateError())
     throw new CompilerError()
