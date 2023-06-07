@@ -1,14 +1,4 @@
-import {
-  Base,
-  BlueArrayType,
-  BlueCodeModuleType,
-  BlueType,
-  DEFAULT_CONTAINER_SCOPE,
-  Link,
-  LinkHint,
-  Mesh,
-  code,
-} from '~'
+import { Base, Link, LinkHint, Mesh, code } from '~'
 import type { SiteModuleType, SiteProcessInputType } from '~'
 
 export * from './bear/index.js'
@@ -162,10 +152,10 @@ export function process_codeCard_nestedChildren_term(
       code.process_codeCard_load(input)
       break
     }
-    case 'fuse': {
-      code.process_codeCard_fuse(input)
-      break
-    }
+    // case 'fuse': {
+    //   code.process_codeCard_fuse(input)
+    //   break
+    // }
     case 'tree': {
       code.process_codeCard_tree(input)
       break

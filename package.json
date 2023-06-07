@@ -7,7 +7,8 @@
     "watch": "concurrently --kill-others \"tsc -w\" \"tsc-alias -w\"",
     "lint": "eslint --ext .ts ./make",
     "lint:fix": "npm run lint -- --fix",
-    "test": "node host/task/build"
+    "test": "node host/task/build",
+    "text": "npx ts-node -P tmp/tsconfig.json tmp/parseText"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.0.0",
@@ -39,12 +40,20 @@
     "typescript": "^4.9.4"
   },
   "dependencies": {
+    "@drumwork/tone": "^4.2.1",
     "@lancejpollard/pretty-compact-json.js": "^0.2.0",
     "chalk": "^5.2.0",
     "colors": "^1.4.0",
     "error-stack-parser": "^2.1.4",
+    "gematriya": "^2.0.0",
     "glob": "^8.0.3",
+    "js-yaml": "^4.1.0",
+    "json-keys-sort": "^2.1.0",
     "lodash": "^4.17.21",
+    "mkdirp": "^3.0.0",
+    "nodejieba": "^2.6.0",
+    "opencc-js": "^1.0.5",
+    "sort-keys-recursive": "^2.1.8",
     "source-map": "^0.7.4",
     "stacktrace-js": "^2.0.2",
     "strip-ansi": "^7.0.1",

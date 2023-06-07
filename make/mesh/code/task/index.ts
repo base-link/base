@@ -88,9 +88,9 @@ export function process_codeCard_task_nestedChildren(
         case 'base':
           code.process_codeCard_task_base(input)
           break
-        case 'fuse':
-          code.process_codeCard_fuse(input)
-          break
+        // case 'fuse':
+        //   code.process_codeCard_fuse(input)
+        //   break
         case 'hold':
           code.process_codeCard_hold(input)
           break

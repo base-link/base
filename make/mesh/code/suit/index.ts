@@ -57,9 +57,9 @@ export function process_codeCard_suit_nestedChildren(
       case 'head':
         code.process_codeCard_head(input)
         break
-      case 'fuse':
-        code.process_codeCard_fuse(input)
-        break
+      // case 'fuse':
+      //   code.process_codeCard_fuse(input)
+      //   break
       case 'hold':
         code.process_codeCard_hold(input)
         break

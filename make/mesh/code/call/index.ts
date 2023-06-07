@@ -6,7 +6,7 @@ export function process_codeCard_call(
 ): void {
   const red = code.pushRed(input, code.createRedGather(input, 'step'))
   const blue = code.pushBlue(input, 'steps', {
-    bind: [],
+    bind: [] as unknown as code.BlueArrayType<code.BlueBindType>,
     type: Mesh.Call,
   })
   const colorInput = code.withColors(input, { blue, red })

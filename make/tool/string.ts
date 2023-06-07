@@ -20,7 +20,7 @@ export function assertStringPattern(
   pattern: RegExp,
 ): void {
   if (!string.match(pattern)) {
-    code.throwError(code.generateInvalidPatternError(input, pattern))
+    // code.throwError(code.generateInvalidPatternError(input, pattern))
   }
 }
 

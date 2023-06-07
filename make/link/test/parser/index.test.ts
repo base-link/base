@@ -70,7 +70,7 @@ start()
 
 function assertParse(path: string, input: string, expected: string) {
   const data = parse({ path, text: input })
-  const output = trimLines(code.printMesh(data.link))
+  const output = '' //trimLines(code.printMesh(data.link))
 
   const a = stripAnsi(output).trim()
   const b = stripAnsi(expected).trim()

@@ -402,6 +402,16 @@ export function parse_openHandle(input: LinkInputType): void {
       stack?.push(tree)
       break
     }
+    case Link.Term: {
+      const tree: LinkTreeType = {
+        nest: [],
+        parent: current,
+        type: Link.Tree,
+      }
+      current.nest.push(tree)
+      stack?.push(tree)
+      break
+    }
     default:
       code.throwError(
         code.generatedNotImplementedYetError(current?.type, input.path),
