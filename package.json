@@ -2,14 +2,15 @@
   "name": "@tunebond/base",
   "main": "./host",
   "type": "module",
+  "bin": {
+    "base": "./host/line/index.js"
+  },
   "scripts": {
-    "build": "tsc && tsc-alias",
-    "watch": "concurrently --kill-others \"tsc -w\" \"tsc-alias -w\"",
+    "make": "tsc && tsc-alias",
+    "scan": "concurrently --kill-others \"tsc -w\" \"tsc-alias -w\"",
     "lint": "eslint --ext .ts ./make",
     "lint:fix": "npm run lint -- --fix",
-    "test": "node host/task/build",
-    "text": "npx ts-node -P tmp/tsconfig.json tmp/parseText",
-    "update": "git submodule update --init --recursive"
+    "test": "node host/task/build"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.0.0",
@@ -45,6 +46,7 @@
     "@lancejpollard/pretty-compact-json.js": "^0.2.0",
     "chalk": "^5.2.0",
     "colors": "^1.4.0",
+    "commander": "^10.0.1",
     "error-stack-parser": "^2.1.4",
     "gematriya": "^2.0.0",
     "glob": "^8.0.3",

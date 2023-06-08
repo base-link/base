@@ -175,6 +175,74 @@ second-level compilation target is still incomplete however, because
 some of the nodes can still be dynamic. So then we try and resolve them,
 if they resolve, they are static. If not, they are runtime.
 
+## Inspiration
+
+- [package dependency structure](https://pnpm.io/symlinked-node-modules-structure)
+
+## Future Commands
+
+```bash
+# link local repo to global dependency store
+base link deck
+# link globally linked dependency to local project
+base link deck @foo/bar
+# run project tests
+base test deck
+# install packages
+base load deck @foo/bar
+# create a new package
+base make deck
+# create a user account
+base make face
+# create an org/namespace
+base make host
+# login
+base bind face
+# logout
+base void face
+# publish a package
+base host deck
+# bump patch version
+base move mark
+base move mark 3
+# bump minor version
+base move mark 2
+# bump major version
+base move mark 1
+# help
+base hint
+```
+
+The linking to the global store stores it at:
+
+```
+~/Library/base
+  /host # global dependency store
+    /link
+      /<host>
+        /<deck>
+          /...files
+  /link # file store
+```
+
+When you install packages, it hard symlinks them to your `./deck`
+folder.
+
+```
+./deck
+  /base.link # configuration settings
+  /hold # hardlink folder
+    /<host>
+      /<deck>
+        /<mark>
+          /deck
+            /<deck>
+            /<other-decks>
+  /link
+    /<host>
+      /<deck> # symlink to the hold
+```
+
 ## Base Type System
 
 Every object in the system is a mesh, in a graph of nodes so to speak,
