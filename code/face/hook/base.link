@@ -1,0 +1,52 @@
+
+hook /, show base
+hook /love, show love
+  note <Values, mission, and brand>
+hook /love/team, show love-team
+hook /land, show land
+hook /land/code, show land-code
+hook /land/home, show land-home
+hook /find, show find
+hook /show, show show
+hook /show/:make, show show-make
+hook /host/:host, task link-host
+hook /host/:host/deck, show host-deck
+hook /host/:host/like, show host-like
+hook /host/:host/lead, show host-lead
+hook /host/:host/save, show host-save
+hook /host/:host/save/bill, show host-save-bill
+hook /host/:host/save/bill/lead, show host-save-bill-lead
+hook /host/:host/save/lock, show host-save-lock
+hook /host/:host/save/lock/lead, show host-save-lock-lead
+hook /host/:host/save/face, show host-save-face
+hook /host/:host/save/face/lock, show host-save-face-lock
+hook /@:host, show host
+hook /@:host/:deck, show deck
+hook /@:host/:deck/tree, task link-head-tree
+hook /@:host/:deck/tree/:tree, show deck-tree
+hook /@:host/:deck/tree/:tree/show, task link-head-deck-tree-file-show-read
+hook /@:host/:deck/tree/:tree/show/:file+, show deck-tree-file-show
+hook /@:host/:deck/tree/:tree/make, task link-head-deck-tree-file-make-read
+hook /@:host/:deck/tree/:tree/make/:file+, show deck-tree-file-make
+hook /@:host/:deck/save, show deck-save
+hook /@:host/:deck/save,/face, show deck-save-face
+hook /@:host/:deck/save,/lock, show deck-save-lock
+hook /@:host/:deck/save,/tool, show deck-save-tool
+hook /@:host/:deck/view, show deck-view
+hook /@:host/:deck/view/base, show deck-view-base
+hook /@:host/:deck/face, show deck-face
+hook /@:host/:deck/face/:face, show deck-face-face
+hook /dock, show dock
+hook /dock/:site, task lock-site
+hook /dock/:site/back, task lock-site-back
+hook /void, task link-void
+  note <Logout.>
+hook /code, show code
+  note <Playground.>
+hook /note, show note
+hook /note/lock, show code-lock
+hook /note/term, show code-term
+hook /note/void, show code-void
+hook /read, show read
+  note <Guides.>
+hook /read/:read+, show read-leaf
