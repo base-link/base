@@ -113,6 +113,21 @@ form counter
         like item
 ```
 
+## The `mask` API
+
+This is an interface for a form.
+
+```
+mask base-form
+  link name, like term
+  link head, list head
+  link base, list base
+  link bond, list bond
+  link hook, list hook
+  link task, list task
+  link turn, like turn
+```
+
 ## The error API
 
 ```

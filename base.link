@@ -8,9 +8,10 @@ deck @tunebond/base
   term <Platform>
   term <White Label>
   face <Lance Pollard>, site <lp@elk.fm>
-  mint <0.0.1>
+  mark <0.0.1>
   dock task # the task loader
   dock code # the library loader
   read book # also a default
   lock <apache-2.0>
   deck ../moon.link
+  deck ../wolf.link
