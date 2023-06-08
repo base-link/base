@@ -43,6 +43,7 @@ export function findPath(
   link: string,
   context = process.cwd(),
 ): string | undefined {
+  // tmp hack
   if (link.startsWith('@tunebond')) {
     link = pathResolve
       .resolve(

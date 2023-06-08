@@ -13,13 +13,15 @@
     "noUncheckedIndexedAccess": true,
     "baseUrl": "./make",
     "noErrorTruncation": true,
-    "paths": {
-      "~": ["./index.js"]
-    },
     "types": ["node"],
     "typeRoots": ["node_modules/@types"],
-    "noImplicitAny": true
+    "noImplicitAny": true,
+    "declaration": true,
+    "paths": {
+      "~/*": ["./*"],
+      "~": ["./index.js"]
+    }
   },
-  "include": ["make"],
-  "exclude": ["node_modules", "make/dock"]
+  "include": ["*.ts", "**/*.ts", "*.d.ts"],
+  "exclude": ["node_modules", "host", "tmp"]
 }
