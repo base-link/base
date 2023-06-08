@@ -2,6 +2,7 @@
   "name": "@tunebond/base",
   "main": "./host",
   "type": "module",
+  "version": "0.3.0",
   "bin": {
     "base": "./host/line/index.js"
   },
@@ -10,7 +11,8 @@
     "scan": "concurrently --kill-others \"tsc -w\" \"tsc-alias -w\"",
     "lint": "eslint --ext .ts ./make",
     "lint:fix": "npm run lint -- --fix",
-    "test": "node host/task/build"
+    "test": "node host/task/build",
+    "host": "pnpm make && npm publish --access=public"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.0.0",

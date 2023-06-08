@@ -23,5 +23,5 @@
     }
   },
   "include": ["*.ts", "**/*.ts", "*.d.ts"],
-  "exclude": ["node_modules", "host", "tmp"]
+  "exclude": ["node_modules", "host", "tmp", "make/dock"]
 }
