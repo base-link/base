@@ -8,7 +8,8 @@
     "lint": "eslint --ext .ts ./make",
     "lint:fix": "npm run lint -- --fix",
     "test": "node host/task/build",
-    "text": "npx ts-node -P tmp/tsconfig.json tmp/parseText"
+    "text": "npx ts-node -P tmp/tsconfig.json tmp/parseText",
+    "update": "git submodule update --init --recursive"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.0.0",
