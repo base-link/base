@@ -49,6 +49,9 @@ in constant flux at this point, so you are welcome to make sweeping
 changes as well! Next we will outline how the compiler TypeScript code
 is generally organized.
 
+[Here](https://blog.nextwebb.tech/git-submodules-an-ideal-workflow) is a
+good intro to git submodules, which we make extensive use of.
+
 ### Project Structure
 
 Check the `package.json` for more detail, but the project starts at
