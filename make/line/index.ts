@@ -4,6 +4,7 @@ import { Command } from 'commander'
 import fs from 'fs'
 import pathResolver from 'path'
 import os from 'os'
+import build from '../task/build.js'
 
 const program = new Command()
 
@@ -19,7 +20,53 @@ link
     }
   })
 
+const test = program.command('test')
+test
+  .command('deck')
+  .action(() => {
+    testDeck()
+  })
+
+const kill = program.command('kill')
+const killLink = kill.command('link')
+const killLinkDeck = killLink.command('deck')
+
+killLinkDeck
+  .argument('[deck]')
+  .action((deck) => {
+    if (deck) {
+      killLinkDeckDeck(deck)
+    } else {
+      killLinkDeckSelfBase()
+    }
+  })
+
 program.parse()
+
+async function testDeck() {
+  const deckHost = process.cwd()
+  await build(deckHost)
+}
+
+function killLinkDeckDeck(deck: string) {
+  const [host, name] = String(deck).split('/').map(x => x.replace('@', ''))
+
+  if (!name) {
+    throw new Error(`Invalid name ${deck}`)
+  }
+
+  const deckHost = process.cwd()
+
+  const link = `${deckHost}/deck/link/${host}/${name}`
+
+  if (fs.lstatSync(link).isSymbolicLink()) {
+    fs.unlinkSync(link)
+  }
+}
+
+function killLinkDeckSelfBase() {
+
+}
 
 function linkSelfBase() {
   // TODO: windows/linux support

@@ -41,21 +41,9 @@ export async function findFilePathsRecursively(
 
 export function findPath(
   link: string,
-  context = process.cwd(),
+  context?: string,
 ): string | undefined {
-  // tmp hack
-  if (link.startsWith('@tunebond')) {
-    link = pathResolve
-      .resolve(
-        link.replace(
-          /@tunebond\/(\w+)/,
-          (_: string, $1: string): string => `../${$1}.link`,
-        ),
-      )
-      .replace(/\/$/, '')
-  } else {
-    link = pathResolve.join(context, link).replace(/\/$/, '')
-  }
+  link = (context ? pathResolve.join(context, link) : link).replace(/\/$/, '')
 
   if (fs.existsSync(`${link}/base.link`)) {
     link = `${link}/base.link`

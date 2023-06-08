@@ -20,7 +20,7 @@ function printBodyNode(node, state) {
     },
 
     BinaryExpression() {
-      console.log(node)
+      // console.log(node)
       const left = printExpression(node.left)
       const right = printExpression(node.right)
       text.push(`${left} ${node.operator} ${right}`)
