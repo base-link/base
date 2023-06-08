@@ -39,7 +39,7 @@ export function handle_codeCard(base: Base, link: string): void {
     return
   }
 
-  console.log(link)
+  // console.log(link)
 
   if (link.match(/drumwork\/deck\/([\w\.]+)\/base.link/)) {
     code.process_deckCard(base, link)

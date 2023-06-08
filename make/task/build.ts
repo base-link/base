@@ -1,10 +1,8 @@
 import { code } from '~'
 
-start()
-
-async function start() {
+export default async function build(host: string) {
   await code.loadSourceMaps()
-  const link = code.findPath('@tunebond/wolf')
+  const link = code.findPath(host)
   code.assertString(link)
   const base = code.createBase()
   code.setEnvironmentVariable(base, 'dock', 'javascript')

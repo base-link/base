@@ -401,13 +401,13 @@ export function tokenizeLinkText(input: TextInputType): TextResultType {
           let match = textLine.match(config.pattern)
 
           if (match) {
-            console.log(
-              state,
-              type,
-              match?.[0],
-              textLine,
-              config.pattern,
-            )
+            // console.log(
+            //   state,
+            //   type,
+            //   match?.[0],
+            //   textLine,
+            //   config.pattern,
+            // )
             if (config.after) {
               const token = tokenList[tokenList.length - 1]
               if (!token) {

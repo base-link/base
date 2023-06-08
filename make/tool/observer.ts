@@ -321,7 +321,7 @@ export function updateAllThroughWatcher(
     code.updateAllThroughWatcherProperty(input, property, child)
   }
 
-  console.log(JSON.stringify(watcher, null, 2))
+  // console.log(JSON.stringify(watcher, null, 2))
 }
 
 export function updateAllThroughWatcherProperty(
