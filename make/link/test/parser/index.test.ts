@@ -7,7 +7,7 @@ import { fileURLToPath } from 'url'
 
 import { code } from '~'
 
-import { TextInputType, parseLinkText as parse } from '../../index.js'
+import { parseLinkText as parse } from '../../index.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename).replace(
