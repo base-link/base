@@ -118,8 +118,8 @@ call foo/bar
 To set a default value, there are two syntaxes:
 
 ```
-fall back, mark 1
-fall 1
+base back, mark 1
+base 1
 ```
 
 ### Defining a "class" function
@@ -131,11 +131,11 @@ is in the end.
 ```
 form user
 
-host user-form
+host user-task
   task x
   task y
 
-call user-form/x
+call user-task/x
 ```
 
 ### Defining a variable
@@ -177,13 +177,17 @@ text <This is some text.>
 ### Interpolate a term
 
 ```
+# interpolates at compile time
 form mark-{size}
+# interpolates at runtime
+form mark-{{size}}
 ```
 
 ### Instantiate a class
 
 ```
 make user
+  bind email, text <foo@bar.com>
 ```
 
 ## Keywords
@@ -194,7 +198,7 @@ A form is a class basically, something that instantiates an object.
 
 ```
 form user
-  take email, like text
+  link email, like text
 
   task login
     take email
@@ -270,11 +274,11 @@ take x, like mark
 
 ### `head`
 
-A head has the same syntax as a take, but it is used for "type
+A head has a similar syntax as a take, but it is used for "type
 generics".
 
 ```
-head x, like mark
+head x
 ```
 
 ### `like`
@@ -289,7 +293,7 @@ Some examples include:
 like task
   head x
   take y
-  free z
+  like z
 like list
   like x
 like or
@@ -415,10 +419,10 @@ form x
     hook tick
       take site
       beam self
-        take {site/name}, like {site/type}
+        link {site/name}, like {site/type}
 ```
 
-Here we dynamically define attributes on the form (`take`). The beam is
+Here we dynamically define attributes on the form (`link`). The beam is
 required so we know what context we are using the DSL terms in.
 
 ### `walk`
@@ -501,6 +505,10 @@ fork case, loan status/form
 
 This is a simple debug printing tool for the command-line.
 
+```
+show <text>
+```
+
 ### `back`
 
 ### `halt`
@@ -509,11 +517,9 @@ This is a simple debug printing tool for the command-line.
 
 A risk tells if a particular task is unsafe (like in rust).
 
-### `coat`
+### `suit`
 
-#### `suit`
-
-#### `wear`
+### `wear`
 
 ## Types
 

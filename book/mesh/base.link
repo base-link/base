@@ -26,11 +26,10 @@ All properties are immutable in tasks by default. To make them mutable, add {cod
 
 Each test.link file is for running tests.
 
-lock free (mutable)
+flex true (mutable)
 move (shift)
 loan (borrow)
 read (clone)
-link (any of these)
 
 fork for this scope
 fork/head for parent
@@ -40,7 +39,7 @@ host is a variable
 
 Everything is a work (task and form).
 
-A base is a record with links.
+A site is a record with links.
 
 A deed is a call instance.
 

@@ -76,10 +76,16 @@ So do this to get going:
 ```bash
 mkdir tunebond
 cd tunebond
-git clone git@github.com:tunebond/base.link.git
-git clone git@github.com:tunebond/wolf.link.git
+# bolt is the native interface definitions
+git clone git@github.com:tunebond/bolt.link.git
+# moon and wolf are the base abstraction
 git clone git@github.com:tunebond/moon.link.git
+git clone git@github.com:tunebond/wolf.link.git
+# nest and crow is an application framework
 git clone git@github.com:tunebond/nest.link.git
+git clone git@github.com:tunebond/crow.link.git
+# the compiler and main entrypoint
+git clone git@github.com:tunebond/base.link.git
 cd base.link
 # then watch or run files from here.
 ```
@@ -288,23 +294,22 @@ Tasks are function definitions.
 
 ```link
 task find-fibonacci-via-loop
-  take i, form natural-number
-  free natural-number
+  take i, like natural-number
+  like natural-number
 
-  save g, size 0
+  save g, mark 0
     flex true
 
-  save o, size 1
+  save o, mark 1
     flex true
 
   save d
     flex true
 
   walk test
-    hook test
-      test is-gt
-        loan i
-        text 0
+    test is-gt
+      loan i
+      text 0
     hook tick
       save d, move o
       save o
@@ -344,8 +349,8 @@ You can specify that the call is async with `wait`:
 ```link
 call check-gt-async
   wait true
-  bind base, loan i
-  bind head, text 0
+  loan i
+  text 0
 ```
 
 Likewise, you can define `wait` on the task to say that it is async.
@@ -377,7 +382,7 @@ back 0
 
 #### Make
 
-The make is the mesh constructor.
+The make is the site constructor.
 
 ```link
 make bind
@@ -407,7 +412,8 @@ A card is a module. It belongs to a deck, the package.
 
 #### Deck
 
-A deck is a package. It belongs to a host, or an organization/entity.
+A deck is a package or project. It belongs to a host, or an
+organization/entity.
 
 #### Host
 
