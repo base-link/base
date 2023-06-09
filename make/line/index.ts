@@ -57,7 +57,7 @@ function killLinkDeckDeck(deck: string) {
 
   const deckHost = process.cwd()
 
-  const link = `${deckHost}/deck/link/${host}/${name}`
+  const link = `${deckHost}/link/hold/${host}/${name}`
 
   if (fs.lstatSync(link).isSymbolicLink()) {
     fs.unlinkSync(link)
@@ -74,8 +74,8 @@ function linkSelfBase() {
   const deckHost = process.cwd()
 
   fs.mkdirSync(`${baseHost}/Library/base`, { recursive: true })
-  fs.mkdirSync(`${baseHost}/Library/base/host`, { recursive: true })
-  fs.mkdirSync(`${baseHost}/Library/base/host/link`, { recursive: true })
+  fs.mkdirSync(`${baseHost}/Library/base/nest`, { recursive: true })
+  fs.mkdirSync(`${baseHost}/Library/base/nest/link`, { recursive: true })
 
   const deck = JSON.parse(fs.readFileSync(`${deckHost}/package.json`, 'utf-8')) as Record<string, unknown>
   const [host, name] = String(deck.name).split('/').map(x => x.replace('@', ''))
@@ -84,17 +84,17 @@ function linkSelfBase() {
     throw new Error(`Invalid name ${deck.name}`)
   }
 
-  fs.mkdirSync(`${baseHost}/Library/base/host/link/${host}`, { recursive: true })
+  fs.mkdirSync(`${baseHost}/Library/base/nest/link/${host}`, { recursive: true })
 
   // TODO: do it like pnpm with hard links
-  const baseDeckHost = `${baseHost}/Library/base/host/link/${host}/${name}`
+  const baseDeckHost = `${baseHost}/Library/base/nest/link/${host}/${name}`
   fs.symlinkSync(deckHost, baseDeckHost)
 }
 
 function linkDeck(deck: string) {
   const baseHost = os.homedir()
 
-  if (!fs.existsSync(`${baseHost}/Library/base/host/link`)) {
+  if (!fs.existsSync(`${baseHost}/Library/base/nest/link`)) {
     return
   }
 
@@ -106,8 +106,8 @@ function linkDeck(deck: string) {
     throw new Error(`Invalid name ${deck}`)
   }
 
-  fs.mkdirSync(`${deckHost}/deck/link/${host}`, { recursive: true })
+  fs.mkdirSync(`${deckHost}/link/hold/${host}`, { recursive: true })
 
   // TODO: do it like pnpm with hard links
-  fs.symlinkSync(`${baseHost}/Library/base/host/link/${host}/${name}`, `${deckHost}/deck/link/${host}/${name}`)
+  fs.symlinkSync(`${baseHost}/Library/base/nest/link/${host}/${name}`, `${deckHost}/link/hold/${host}/${name}`)
 }

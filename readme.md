@@ -120,9 +120,9 @@ The compiler works in a few rough phases currently:
    general AST.
 1. **Generate the central AST**, the "mesh". This is the main data
    structure we use for the rest of compiling.
-1. **Resolve interpolation and variable references**. This makes sure
-   all the variables have been figured out (even if at this point they
-   are incorrectly typed).
+1. **Resolve variable references**. This makes sure all the variables
+   have been figured out (even if at this point they are incorrectly
+   typed).
 1. **Check variable lifetime** to make sure variables are defined in the
    right spots.
 1. **Infer types** to figure out the implied and intended types.
@@ -132,12 +132,13 @@ The compiler works in a few rough phases currently:
    modified aren't.
 1. **Verify borrowing/ownership** to make sure only one owner exists per
    variable.
-1. **Generate target language output code**.
+1. **Generate target language output code ast**.
+1. **Write to string**.
 
-Right now we have generated most of the "central AST", and are now
-moving onto the next few steps of figuring out variable references and
-doing typechecking/inference. We have also started on code generation
-which doesn't really require the intermediate typechecking steps.
+Right now we are figuring out how to properly resolve the "central AST",
+which is kind of complex because of things being able to be interpolated
+in several ways. We have also started on code generation which doesn't
+really require the intermediate typechecking steps.
 
 In the evaluation of written text to runtime interpreted code, there are
 several possibilities for how a `term`, a `path`, or `text` is compiled.
@@ -175,6 +176,12 @@ second-level compilation target is still incomplete however, because
 some of the nodes can still be dynamic. So then we try and resolve them,
 if they resolve, they are static. If not, they are runtime.
 
+The way the interpolation resolves is like a queue which is continuously
+being processed, but which is interrupted often as new things a
+recognizable. Eventually it reaches a point where things don't change,
+and if all things are complete, then it was a success, otherwise there
+were potential errors.
+
 ## Inspiration
 
 - [package dependency structure](https://pnpm.io/symlinked-node-modules-structure)
@@ -188,10 +195,14 @@ base link deck
 base link deck @foo/bar
 # run project tests
 base test deck
+# install defined packages
+base load deck
 # install packages
-base load deck @foo/bar
+base save deck @foo/bar
 # create a new package
 base make deck
+# build the package
+base cast deck
 # create a user account
 base make face
 # create an org/namespace
@@ -211,36 +222,79 @@ base move mark 2
 base move mark 1
 # help
 base hint
+# show dependency tree
+base show deck tree
+# execute the code
+base boot deck
+# clean artifacts
+base wash deck
+# make documentation, hosted in ./hint
+base make code book
+# generate PDF from book
+base make book
+# remove package from manifest
+base toss deck <deck>
+# remove a symlink
+base toss deck link <deck>
+# add owner to package
+base link deck face <face>
+# remove owner
+base toss deck face <face>
+# remove from website
+base toss deck host link
+# show info about a deck
+base show deck <deck>
+# execute an arbitrary task
+base <name>
 ```
 
 The linking to the global store stores it at:
 
 ```
 ~/Library/base
-  /host # global dependency store
+  /nest # global dependency store
     /link
       /<host>
         /<deck>
           /...files
-  /link # file store
+  /mint # file store
+    /<hash-base>
+      /<hash>
 ```
 
 When you install packages, it hard symlinks them to your `./deck`
 folder.
 
 ```
-./deck
+./link
   /base.link # configuration settings
   /hold # hardlink folder
     /<host>
       /<deck>
         /<mark>
-          /deck
-            /<deck>
-            /<other-decks>
-  /link
+          /link
+            /<host>
+              /<deck> (soft symlink, except actual folder)
+  /hook # symlink folder
     /<host>
-      /<deck> # symlink to the hold
+      /<deck> (soft symlink to hold/host/deck/mark/link/host/deck)
+```
+
+You can have "workspaces" by adding a `deck` folder (or wherever you put
+it).
+
+```
+./deck
+  /deck-1
+  /deck-2
+```
+
+You specify "workspaces" as "slots" where decks live.
+
+```
+deck @my/deck
+  link @another/deck
+  slot ./deck
 ```
 
 ## Base Type System
