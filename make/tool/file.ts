@@ -39,6 +39,10 @@ export async function findFilePathsRecursively(
   })
 }
 
+/**
+ * This is the core finding algorithm.
+ */
+
 export function findPath(
   link: string,
   context?: string,
@@ -47,6 +51,8 @@ export function findPath(
 
   if (fs.existsSync(`${link}/base.link`)) {
     link = `${link}/base.link`
+  } else if (fs.existsSync(`${link}/deck.link`)) {
+    link = `${link}/deck.link`
   } else if (fs.existsSync(`${link}.link`)) {
     link = `${link}.link`
   } else {

@@ -13,6 +13,7 @@ deck @tunebond/base
   dock code # the library loader
   read book # also a default
   lock <apache-2.0>
-  deck @tunebond/moon
-  deck @tunebond/wolf
-  deck @tunebond/crow
+  deck base
+    link @tunebond/moon
+    link @tunebond/wolf
+    link @tunebond/crow
