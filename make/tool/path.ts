@@ -1,5 +1,3 @@
-import { SiteProcessInputType, code } from '~'
-
 export function bindPath(input: SiteProcessInputType): void {
   const dependencyTree = code.resolvePathDependencyTree(input)
   const leafDependencyList = code.getLeafDependencyList(dependencyTree)

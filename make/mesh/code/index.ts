@@ -1,39 +1,5 @@
-import { Base, Link, LinkHint, Mesh, code } from '~'
 import type { SiteModuleType, MeshLoad } from '~'
 import { RiffDeck } from '../form.js'
-
-export * from './bear/index.js'
-export * from './bind/index.js'
-export * from './bond/index.js'
-export * from './call/index.js'
-export * from './face/index.js'
-export * from './form/index.js'
-export * from './fuse/index.js'
-export * from './head/index.js'
-export * from './hide/index.js'
-export * from './hold/index.js'
-export * from './hook/index.js'
-export * from './host/index.js'
-export * from './like/index.js'
-export * from './link/index.js'
-export * from './load/index.js'
-export * from './note/index.js'
-export * from './risk/index.js'
-export * from './save/index.js'
-export * from './show/index.js'
-export * from './slot/index.js'
-export * from './stem/index.js'
-export * from './suit/index.js'
-export * from './take/index.js'
-export * from './task/index.js'
-export * from './term/index.js'
-export * from './test/index.js'
-export * from './time/index.js'
-export * from './tree/index.js'
-export * from './void/index.js'
-export * from './wait/index.js'
-export * from './walk/index.js'
-export * from './zone/index.js'
 
 export function loadMintFile(deck: RiffDeck) {
   if (deck.mint) {
@@ -111,7 +77,9 @@ export function load_codeCard(base: Base, link: string): void {
   }
 }
 
-export function load_codeCard_nestedChildren(load: MeshLoad): void {
+export function load_codeCard_nestedChildren(
+  load: code.MeshLoad,
+): void {
   const type = code.getLinkHint(load)
   switch (type) {
     case LinkHint.DynamicTerm: {
@@ -128,7 +96,7 @@ export function load_codeCard_nestedChildren(load: MeshLoad): void {
 }
 
 export function load_codeCard_nestedChildren_term(
-  load: MeshLoad,
+  load: code.MeshLoad,
 ): void {
   const term = code.resolveTermString(load)
   switch (term) {

@@ -1,5 +1,3 @@
-import { Link, SiteProcessInputType, code } from '~'
-
 export function resolveHashtagAsNumber(
   input: SiteProcessInputType,
 ): number | undefined {

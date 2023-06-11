@@ -7,10 +7,6 @@ import {
 } from '~'
 import type { MeshLink } from '~'
 
-export * from './base/index.js'
-export * from './case/index.js'
-export * from './wear/index.js'
-
 export function load_codeCard_form(load: MeshLink): void {
   const container = code.createContainerScope(load)
   const scope = code.createStepScope(container)

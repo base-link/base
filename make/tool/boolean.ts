@@ -1,7 +1,5 @@
 import _ from 'lodash'
 
-import { code } from '~'
-
 export function assertBoolean(
   object: unknown,
 ): asserts object is boolean {

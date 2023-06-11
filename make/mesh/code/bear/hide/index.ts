@@ -1,7 +1,4 @@
-import { Mesh, code } from '~'
-import type { MeshLoad } from '~'
-
-export function load_codeCard_bear_hide(load: MeshLoad): void {
+export function load_codeCard_bear_hide(load: code.MeshLoad): void {
   const red = code.pushRed(load, code.createRedGather(load, 'hide'))
   const blue = code.pushBlue(load, 'hides', {
     type: Mesh.HideExportVariable,

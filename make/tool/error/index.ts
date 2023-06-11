@@ -19,8 +19,6 @@ import type {
   TextTokenType,
 } from '~'
 
-export * from './content.js'
-
 export class BaseLinkError extends Error {
   data: SiteErrorType
 

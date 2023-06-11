@@ -1,7 +1,4 @@
-import { Link, LinkHint, Mesh, code } from '~'
-import type { MeshLoad } from '~'
-
-export function load_codeCard_like(load: MeshLoad): void {
+export function load_codeCard_like(load: code.MeshLoad): void {
   const red = code.pushRed(
     load,
     code.createRedGather(load, 'definedType'),
@@ -22,18 +19,18 @@ export function load_codeCard_like(load: MeshLoad): void {
   })
 }
 
-export function load_codeCard_like_free(load: MeshLoad): void {}
+export function load_codeCard_like_free(load: code.MeshLoad): void {}
 
-export function load_codeCard_like_head(load: MeshLoad): void {}
+export function load_codeCard_like_head(load: code.MeshLoad): void {}
 
-export function load_codeCard_like_like(load: MeshLoad): void {}
+export function load_codeCard_like_like(load: code.MeshLoad): void {}
 
-export function load_codeCard_like_list(load: MeshLoad): void {}
+export function load_codeCard_like_list(load: code.MeshLoad): void {}
 
-export function load_codeCard_like_mesh(load: MeshLoad): void {}
+export function load_codeCard_like_mesh(load: code.MeshLoad): void {}
 
 export function load_codeCard_like_nestedChildren(
-  load: MeshLoad,
+  load: code.MeshLoad,
 ): void {
   const type = code.getLinkHint(load)
   switch (type) {
@@ -95,6 +92,6 @@ export function load_codeCard_like_nestedChildren(
   }
 }
 
-export function load_codeCard_like_take(load: MeshLoad): void {}
+export function load_codeCard_like_take(load: code.MeshLoad): void {}
 
-export function load_codeCard_like_term(load: MeshLoad): void {}
+export function load_codeCard_like_term(load: code.MeshLoad): void {}

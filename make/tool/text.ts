@@ -1,4 +1,3 @@
-import { Link, code } from '~'
 import type { SiteProcessInputType } from '~'
 
 export function assumeText(input: SiteProcessInputType): string {

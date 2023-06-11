@@ -1,7 +1,4 @@
-import { Link, Mesh, code } from '~'
-import type { MeshLoad } from '~'
-
-export function load_codeCard_suit(load: MeshLoad): void {
+export function load_codeCard_suit(load: code.MeshLoad): void {
   const red = code.pushRed(
     load,
     code.createRedGather(load, 'classInterface'),
@@ -24,7 +21,7 @@ export function load_codeCard_suit(load: MeshLoad): void {
 }
 
 export function load_codeCard_suit_nestedChildren(
-  load: MeshLoad,
+  load: code.MeshLoad,
 ): void {
   const type = code.getLinkHint(load)
   if (type === 'static-term') {

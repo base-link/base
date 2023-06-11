@@ -1,8 +1,5 @@
-import { Link, LinkHint, Mesh, code } from '~'
-import type { MeshLoad } from '~'
-
 // export function load_codeCard_form_wear(
-//   load: MeshLoad,
+//   load: code.MeshLoad,
 // ): void {
 //   const container = code.createContainerScope(load)
 //   const scope = code.createStepScope(container)
@@ -22,7 +19,7 @@ import type { MeshLoad } from '~'
 // }
 
 // export function load_codeCard_form_wear_nestedChildren(
-//   load: MeshLoad,
+//   load: code.MeshLoad,
 // ): void {
 //   const type = code.getLinkHint(load)
 //   switch (type) {

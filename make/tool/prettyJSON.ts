@@ -1,7 +1,5 @@
 import chalk from 'chalk'
 
-import { code } from '~'
-
 export function prettifyJSON(obj: unknown, indent = 0) {
   return makePrettyArray(obj, indent).join('')
 }

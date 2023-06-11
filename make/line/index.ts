@@ -2,7 +2,6 @@
 
 import { Command } from 'commander'
 import fs from 'fs'
-import pathResolver from 'path'
 import os from 'os'
 import build from '../task/build.js'
 

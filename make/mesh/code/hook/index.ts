@@ -1,8 +1,5 @@
-import { Link, LinkHint, Mesh, code } from '~'
-import type { MeshLoad } from '~'
-
 // export function load_codeCard_hook(
-//   load: MeshLoad,
+//   load: code.MeshLoad,
 // ): void {
 //   const hook = code.createNest(Nest.Callback)
 //   code.gatherIntoMeshParent(load, hook)
@@ -17,7 +14,7 @@ import type { MeshLoad } from '~'
 // }
 
 // export function load_codeCard_hook_nestedChildren(
-//   load: MeshLoad,
+//   load: code.MeshLoad,
 // ): void {
 //   const type = code.getLinkHint(load)
 //   switch (type) {

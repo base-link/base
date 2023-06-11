@@ -2,8 +2,6 @@ import chalk from 'chalk'
 import cp from 'child_process'
 import { FinalResults, Parser, Result } from 'tap-parser'
 
-import { SiteStackTraceType, code } from '~'
-
 const p = new Parser()
 
 p.on('pass', handlePass)

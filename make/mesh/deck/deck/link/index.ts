@@ -1,7 +1,4 @@
-import { Mesh, code } from '~'
-import type { MeshLoad } from '~'
-
-export function load_deckCard_deck_link(load: MeshLoad) {
+export function load_deckCard_deck_link(load: code.MeshLoad) {
   const text = code.assumeText(load)
 
   code.assertStringPattern(load, text, /^@[a-z0-9]+\/[a-z0-9]+$/)

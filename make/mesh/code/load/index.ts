@@ -1,10 +1,4 @@
-import { Link, LinkHint, Mesh, code } from '~'
-import type { MeshLoad } from '~'
-
-export * from './bear/index.js'
-export * from './find/index.js'
-
-export function load_codeCard_load(load: MeshLoad): void {
+export function load_codeCard_load(load: code.MeshLoad): void {
   const red = code.pushRed(load, code.createRedGather(load, 'import'))
   const blue = code.pushBlue(load, 'imports', {
     imports: code.createBlueArray(load),
@@ -20,7 +14,7 @@ export function load_codeCard_load(load: MeshLoad): void {
   })
 }
 
-export function load_codeCard_load_nestedChildren(load: MeshLoad) {
+export function load_codeCard_load_nestedChildren(load: code.MeshLoad) {
   const type = code.getLinkHint(load)
   switch (type) {
     case LinkHint.StaticText: {

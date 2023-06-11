@@ -1,24 +1,9 @@
-import {
-  Base,
-  Color,
-  DEFAULT_CONTAINER_SCOPE,
-  Link,
-  LinkHint,
-  Mesh,
-  SiteModuleType,
-  code,
-} from '~'
-import type { MeshLoad } from '~'
-
-export * from './deck/index.js'
-
 /**
  * Entrypoint function.
  */
 
-export function load_deckCard(base: Base, link: string): void {
+export function load_deckCard(base: code.Base, link: string): void {
   const parse = code.loadLinkModule(base, link)
-  const card = base.card(link)
   const container = code.createTopContainerScope()
   const scope = code.createStepScope(container)
 
@@ -68,7 +53,9 @@ export function load_deckCard(base: Base, link: string): void {
   }
 }
 
-export function load_deckCard_nestedChildren(load: MeshLoad): void {
+export function load_deckCard_nestedChildren(
+  load: code.MeshLoad,
+): void {
   const type = code.getLinkHint(load)
   switch (type) {
     case LinkHint.StaticTerm: {
@@ -80,7 +67,7 @@ export function load_deckCard_nestedChildren(load: MeshLoad): void {
   }
 }
 
-export function load_deckCard_staticTerm(load: MeshLoad): void {
+export function load_deckCard_staticTerm(load: code.MeshLoad): void {
   const term = code.resolveTermString(load)
   switch (term) {
     case 'deck':

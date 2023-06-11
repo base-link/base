@@ -1,7 +1,6 @@
-import { Link, LinkHint, code } from '~'
-import type { MeshLoad } from '~'
-
-export function load_codeCard_load_find_save(load: MeshLoad): void {
+export function load_codeCard_load_find_save(
+  load: code.MeshLoad,
+): void {
   const nest = code.assumeLink(load, Link.Tree)
 
   nest.nest.forEach((nest, index) => {
@@ -14,7 +13,7 @@ export function load_codeCard_load_find_save(load: MeshLoad): void {
 }
 
 export function load_codeCard_load_find_save_nestedChildren(
-  load: MeshLoad,
+  load: code.MeshLoad,
 ): void {
   const type = code.getLinkHint(load)
   if (type === LinkHint.StaticTerm) {

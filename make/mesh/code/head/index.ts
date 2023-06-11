@@ -1,7 +1,4 @@
-import { LinkHint, Mesh, code } from '~'
-import type { MeshLoad } from '~'
-
-export function load_codeCard_head(load: MeshLoad): void {
+export function load_codeCard_head(load: code.MeshLoad): void {
   const red = code.pushRed(
     load,
     code.createRedGather(load, 'typeInputs'),
@@ -22,7 +19,7 @@ export function load_codeCard_head(load: MeshLoad): void {
 }
 
 export function load_codeCard_head_nestedChildren(
-  load: MeshLoad,
+  load: code.MeshLoad,
 ): void {
   const type = code.getLinkHint(load)
   switch (type) {

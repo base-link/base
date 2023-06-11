@@ -1,7 +1,4 @@
-import { BlueStringType, LinkHint, Mesh, code } from '~'
-import type { MeshLoad } from '~'
-
-export function load_codeCard_tree_hook(load: MeshLoad): void {
+export function load_codeCard_tree_hook(load: code.MeshLoad): void {
   const red = code.pushRed(load, code.createRedGather(load, 'hook'))
   const blue = code.pushBlue(load, 'hooks', {
     type: Mesh.Hook,
@@ -19,7 +16,7 @@ export function load_codeCard_tree_hook(load: MeshLoad): void {
 }
 
 export function load_codeCard_tree_hook_nestedChildren(
-  load: MeshLoad,
+  load: code.MeshLoad,
 ): void {
   const type = code.getLinkHint(load)
   switch (type) {

@@ -1,10 +1,4 @@
-import { Link, LinkHint, Mesh, code } from '~'
-import type { MeshLoad } from '~'
-
-export * from './bear/index.js'
-export * from './save/index.js'
-
-export function load_codeCard_load_find(load: MeshLoad): void {
+export function load_codeCard_load_find(load: code.MeshLoad): void {
   const red = code.pushRed(load, code.createRedGather(load, 'find'))
   const blue = code.pushBlue(load, 'variables', {
     type: Mesh.ImportVariable,
@@ -21,7 +15,7 @@ export function load_codeCard_load_find(load: MeshLoad): void {
 }
 
 export function load_codeCard_load_find_nestedChildren(
-  load: MeshLoad,
+  load: code.MeshLoad,
 ): void {
   const type = code.getLinkHint(load)
   switch (type) {
@@ -42,7 +36,7 @@ export function load_codeCard_load_find_nestedChildren(
 }
 
 export function load_codeCard_load_find_staticTerm(
-  load: MeshLoad,
+  load: code.MeshLoad,
 ): void {
   const term = code.resolveTermString(load)
   switch (term) {
@@ -57,7 +51,7 @@ export function load_codeCard_load_find_staticTerm(
   }
 }
 
-export function load_find_scope(load: MeshLoad): void {
+export function load_find_scope(load: code.MeshLoad): void {
   const nest = code.assumeLink(load, Link.Tree)
   const scope = code.assumeTermString(load)
   const nestedNest = nest.nest[0]

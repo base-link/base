@@ -1,22 +1,19 @@
-import { LinkHint, code } from '~'
-import type { MeshLoad } from '~'
-
-export function load_codeCard_bond(load: MeshLoad): void {
+export function load_codeCard_bond(load: code.MeshLoad): void {
   load_codeCard_bond_nestedChildren(load)
 }
 
-export function load_codeCard_bond_code(load: MeshLoad): void {}
+export function load_codeCard_bond_code(load: code.MeshLoad): void {}
 
-export function load_codeCard_bond_comb(load: MeshLoad): void {}
+export function load_codeCard_bond_comb(load: code.MeshLoad): void {}
 
-export function load_codeCard_bond_loan(load: MeshLoad): void {}
+export function load_codeCard_bond_loan(load: code.MeshLoad): void {}
 
-export function load_codeCard_bond_mark(load: MeshLoad): void {}
+export function load_codeCard_bond_mark(load: code.MeshLoad): void {}
 
-export function load_codeCard_bond_move(load: MeshLoad): void {}
+export function load_codeCard_bond_move(load: code.MeshLoad): void {}
 
 export function load_codeCard_bond_nestedChildren(
-  load: MeshLoad,
+  load: code.MeshLoad,
 ): void {
   const type = code.getLinkHint(load)
   switch (type) {
@@ -59,10 +56,10 @@ export function load_codeCard_bond_nestedChildren(
   }
 }
 
-export function load_codeCard_bond_read(load: MeshLoad): void {}
+export function load_codeCard_bond_read(load: code.MeshLoad): void {}
 
-export function load_codeCard_bond_term(load: MeshLoad): void {}
+export function load_codeCard_bond_term(load: code.MeshLoad): void {}
 
-export function load_codeCard_bond_text(load: MeshLoad): void {}
+export function load_codeCard_bond_text(load: code.MeshLoad): void {}
 
-export function load_codeCard_bond_wave(load: MeshLoad): void {}
+export function load_codeCard_bond_wave(load: code.MeshLoad): void {}

@@ -1,7 +1,5 @@
 import _ from 'lodash'
 
-import { code } from '~'
-
 export function assertArray<T = unknown>(
   object: unknown,
   name?: string,

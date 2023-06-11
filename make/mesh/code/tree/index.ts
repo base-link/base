@@ -1,9 +1,4 @@
-import { Mesh, code } from '~'
-import type { MeshLoad } from '~'
-
-export * from './hook/index.js'
-
-export function load_codeCard_tree(load: MeshLoad): void {
+export function load_codeCard_tree(load: code.MeshLoad): void {
   const red = code.pushRed(load, code.createRedGather(load, 'template'))
   const blue = code.pushBlue(load, 'templates', {
     hooks: code.createBlueArray(load),
@@ -23,7 +18,7 @@ export function load_codeCard_tree(load: MeshLoad): void {
 }
 
 export function load_codeCard_tree_nestedChildren(
-  load: MeshLoad,
+  load: code.MeshLoad,
 ): void {
   const type = code.getLinkHint(load)
   if (type === 'static-term') {

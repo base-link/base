@@ -1,5 +1,4 @@
-import { RiffDeck } from './riff.js'
-import { SiteLookFormLink } from './site.js'
+import { RiffDeck, SiteLookFormLink } from '~'
 
 export class Base {
   // tasks to be run

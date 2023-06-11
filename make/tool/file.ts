@@ -4,7 +4,6 @@ import pathResolve, { dirname } from 'path'
 import smc from 'source-map'
 import { fileURLToPath } from 'url'
 
-import { code } from '~'
 import type { Base, SiteProcessInputType } from '~'
 
 export const SOURCE_MAP_MESH: Record<string, smc.SourceMapConsumer> = {}
@@ -47,7 +46,10 @@ export function findPath(
   link: string,
   context?: string,
 ): string | undefined {
-  link = (context ? pathResolve.join(context, link) : link).replace(/\/$/, '')
+  link = (context ? pathResolve.join(context, link) : link).replace(
+    /\/$/,
+    '',
+  )
 
   if (fs.existsSync(`${link}/base.link`)) {
     link = `${link}/base.link`

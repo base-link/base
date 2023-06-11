@@ -1,12 +1,5 @@
-import { LinkHint, Mesh, code } from '~'
-import type { MeshLoad } from '~'
-
-export * from './back/index.js'
-export * from './base/index.js'
-export * from './free/index.js'
-
 export function load_codeCard_task(
-  load: MeshLoad,
+  load: code.MeshLoad,
   property = 'functions',
 ): void {
   const container = code.createContainerScope(load)
@@ -32,7 +25,7 @@ export function load_codeCard_task(
 }
 
 export function load_codeCard_task_nestedChildren(
-  load: MeshLoad,
+  load: code.MeshLoad,
 ): void {
   const type = code.getLinkHint(load)
   switch (type) {

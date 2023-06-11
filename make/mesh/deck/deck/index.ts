@@ -1,14 +1,4 @@
-import { LinkHint, Mesh, code } from '~'
-import type { MeshLoad } from '~'
-
-export * from './bear/index.js'
-export * from './face/index.js'
-export * from './link/index.js'
-export * from './mint/index.js'
-export * from './term/index.js'
-export * from './test/index.js'
-
-export function load_deckCard_deck(load: MeshLoad): void {
+export function load_deckCard_deck(load: code.MeshLoad): void {
   const red = code.pushRed(load, code.createRedGather(load, 'deck'))
   const blue = code.attachBlue(load, 'deck', {
     face: [] as unknown as code.BlueArrayType<code.BluePackageUserType>,
@@ -28,7 +18,7 @@ export function load_deckCard_deck(load: MeshLoad): void {
 }
 
 export function load_deckCard_deck_nestedChildren(
-  load: MeshLoad,
+  load: code.MeshLoad,
 ): void {
   const type = code.getLinkHint(load)
   const index = code.assumeLinkIndex(load)
@@ -59,7 +49,9 @@ export function load_deckCard_deck_nestedChildren(
   }
 }
 
-export function load_deckCard_deck_nestedTerm(load: MeshLoad): void {
+export function load_deckCard_deck_nestedTerm(
+  load: code.MeshLoad,
+): void {
   const term = code.resolveTermString(load)
   switch (term) {
     case 'bear': {

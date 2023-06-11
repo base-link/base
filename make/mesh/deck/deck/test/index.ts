@@ -1,7 +1,4 @@
-import { Link, LinkHint, code } from '~'
-import type { MeshLoad } from '~'
-
-export function load_deckCard_deck_test(load: MeshLoad): void {
+export function load_deckCard_deck_test(load: code.MeshLoad): void {
   code.assumeNest(load).forEach((nest, index) => {
     code.addTask(load.base, () => {
       code.load_deckCard_deck_test_nestedChildren(
@@ -12,7 +9,7 @@ export function load_deckCard_deck_test(load: MeshLoad): void {
 }
 
 export function load_deckCard_deck_test_nestedChildren(
-  load: MeshLoad,
+  load: code.MeshLoad,
 ): void {
   const index = code.assumeLinkIndex(load)
   if (index === 0) {

@@ -1,10 +1,5 @@
-import { LinkHint, Mesh, code } from '~'
-import type { MeshLoad } from '~'
-
-export * from './take/index.js'
-
 export function load_codeCard_link(
-  load: MeshLoad,
+  load: code.MeshLoad,
   property = 'loads',
 ): void {
   const red = code.pushRed(load, code.createRedGather(load, property))
@@ -23,10 +18,10 @@ export function load_codeCard_link(
   })
 }
 
-export function load_codeCard_link_base(load: MeshLoad): void {}
+export function load_codeCard_link_base(load: code.MeshLoad): void {}
 
 export function load_codeCard_link_nestedChildren(
-  load: MeshLoad,
+  load: code.MeshLoad,
 ): void {
   const type = code.getLinkHint(load)
   switch (type) {

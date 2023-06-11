@@ -39,13 +39,20 @@ export type Riff =
   | RiffLink
 
 export type RiffBase = {
-  base?: RiffBase
   // id
-  code: string
+  // code: string
+  // parent, so we can build paths
+  base?: RiffBase
+  // module associated with this
+  card?: RiffCard
+  // list of children values which are dynamic unparsed terms
+  // list: Array<LinkTreeType>
   // how it is passed down.
   name: string
   // state of how complete the AST node is.
   riseMark: RiffRiseMark
+  // the link tree (parsed text) associated with this
+  // tree: LinkTreeType
   // runtime type
   workForm?: RiffName
   // whether or not the type form is accepted
@@ -102,13 +109,6 @@ export type RiffCall = RiffBase & {
 
 export type RiffCard = RiffCodeCard | RiffDeckCard
 
-export type RiffCardBase = {
-  lineText: Array<string>
-  link: string
-  linkTree: LinkTree
-  text: string
-}
-
 export type RiffCite = RiffBase & {
   form: RiffName.Cite
   link: {
@@ -120,17 +120,21 @@ export type RiffCite = RiffBase & {
 
 export type RiffCodeCard = RiffBase & {
   form: RiffName.CodeCard
-  link: RiffCardBase & {
+  link: {
     bear: Array<RiffBear>
     dock: Array<RiffDock>
     form: Array<RiffForm>
     fuse: Array<RiffFuse>
     hook: Array<RiffHook>
     host: Array<RiffHost>
+    line: string
+    lineText: Array<string>
+    // linkTree: LinkTreeType
     load: Array<RiffLoad>
     suit: Array<RiffSuit>
     task: Array<RiffTask>
     test: Array<RiffTest>
+    text: string
     tree: Array<RiffTree>
   }
 }
@@ -158,8 +162,9 @@ export type RiffDeck = RiffBase & {
 
 export type RiffDeckCard = RiffBase & {
   form: RiffName.DeckCard
-  link: RiffCardBase & {
+  link: {
     deck?: RiffDeck
+    line: string
   }
 }
 
@@ -178,6 +183,9 @@ export type RiffDeckLock = RiffBase & {
 export type RiffDock = RiffBase & {
   form: RiffName.Dock
 }
+
+// a placeholder unparsed yet.
+export type RiffFoldList = RiffBase & {}
 
 export type RiffForm = RiffBase & {
   form: RiffName.Form
@@ -244,7 +252,7 @@ export type RiffHost = RiffBase & {
 export type RiffLine = RiffBase & {
   form: RiffName.Line
   link: {
-    bond: LinkPath
+    // bond: LinkPathType
   }
 }
 
@@ -260,7 +268,7 @@ export type RiffLink = RiffBase & {
     flex: RiffWave
     // mutable
     have: RiffWave
-    path: RiffLineForm
+    line: RiffLineForm
     // reference
     time?: string
   }
@@ -288,42 +296,49 @@ export type RiffLoadFindTake = RiffBase & {
 }
 
 export enum RiffName {
-  Bear = 'bear',
-  Bind = 'bind',
-  Call = 'call',
-  Cite = 'cite',
-  CodeCard = 'code-card',
-  Comb = 'comb',
-  Deck = 'deck',
-  DeckCard = 'deck-card',
-  DeckFace = 'deck-face',
-  DeckLock = 'deck-lock',
-  Dock = 'dock',
-  Form = 'form',
-  FormHead = 'form-head',
-  Fuse = 'fuse',
-  HideBear = 'hide-bear',
-  Hold = 'hold',
-  Hook = 'hook',
-  Host = 'host',
-  Line = 'line',
-  Link = 'link',
-  Load = 'load',
-  LoadFind = 'load-find',
-  LoadFindTake = 'load-find-take',
-  SideSize = 'side-size',
-  Size = 'size',
-  Suit = 'suit',
-  Take = 'take',
-  Task = 'task',
-  TermLink = 'term-link',
-  Test = 'test',
-  Text = 'text',
-  TextLink = 'text-link',
-  TextList = 'text-list',
-  Tree = 'tree',
-  Wave = 'wave',
-  Wear = 'wear',
+  Bear = 'riff-bear',
+  Bind = 'riff-bind',
+  Call = 'riff-call',
+  Cite = 'riff-cite',
+  CodeCard = 'riff-code-card',
+  Comb = 'riff-comb',
+  Deck = 'riff-deck',
+  DeckCard = 'riff-deck-card',
+  DeckFace = 'riff-deck-face',
+  DeckLock = 'riff-deck-lock',
+  Dock = 'riff-dock',
+  Form = 'riff-form',
+  FormHead = 'riff-form-head',
+  Fuse = 'riff-fuse',
+  HideBear = 'riff-hide-bear',
+  Hold = 'riff-hold',
+  Hook = 'riff-hook',
+  Host = 'riff-host',
+  Line = 'riff-line',
+  Link = 'riff-link',
+  Load = 'riff-load',
+  LoadFind = 'riff-load-find',
+  LoadFindTake = 'riff-load-find-take',
+  SideSize = 'riff-side-size',
+  Size = 'riff-size',
+  Suit = 'riff-suit',
+  Take = 'riff-take',
+  Task = 'riff-task',
+  TermLink = 'riff-term-link',
+  Test = 'riff-test',
+  Text = 'riff-text',
+  TextLink = 'riff-text-link',
+  TextList = 'riff-text-list',
+  Tree = 'riff-tree',
+  Wave = 'riff-wave',
+  Wear = 'riff-wear',
+}
+
+export enum RiffNote {
+  CollectionGathered = 'collection-gathered',
+  Initialized = 'initialized',
+  RuntimeComplete = 'runtime-complete',
+  StaticComplete = 'static-complete',
 }
 
 export enum RiffRiseMark {
@@ -384,7 +399,7 @@ export type RiffTask = RiffBase & {
 export type RiffTermLink = RiffBase & {
   form: RiffName.TermLink
   link: {
-    bond: LinkTerm
+    // bond: LinkTermType
   }
 }
 
@@ -403,7 +418,7 @@ export type RiffText = RiffBase & {
 export type RiffTextLink = RiffBase & {
   form: RiffName.TextLink
   link: {
-    bond: LinkText
+    // bond: LinkTextType
   }
 }
 
@@ -434,3 +449,16 @@ export type RiffWave = RiffBase & {
 export type RiffWear = RiffBase & {
   form: RiffName.Wear
 }
+
+// eslint-disable-next-line sort-exports/sort-exports
+export const SITE_OBSERVER_STATE = [
+  RiffNote.Initialized,
+  RiffNote.StaticComplete,
+  RiffNote.RuntimeComplete,
+]
+
+// eslint-disable-next-line sort-exports/sort-exports
+export const SITE_OBSERVER_COMPLETE_STATE = [
+  RiffNote.StaticComplete,
+  RiffNote.RuntimeComplete,
+]

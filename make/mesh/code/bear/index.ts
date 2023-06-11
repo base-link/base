@@ -1,9 +1,4 @@
-import { Link, LinkHint, Mesh, code } from '~'
-import type { MeshLoad } from '~'
-
-export * from './hide/index.js'
-
-export function bearImports(load: MeshLoad): void {
+export function bearImports(load: code.MeshLoad): void {
   const exportNode = load.blue.node
   code.assertBlue(exportNode, Mesh.Export)
   code.assertBlueString(exportNode.absolutePath)
@@ -123,7 +118,7 @@ export function bearImports(load: MeshLoad): void {
   })
 }
 
-export function load_codeCard_bear(load: MeshLoad): void {
+export function load_codeCard_bear(load: code.MeshLoad): void {
   const red = code.pushRed(load, code.createRedGather(load, 'bear'))
   const blue = code.pushBlue(load, 'exports', {
     hides: code.createBlueArray(load),
@@ -146,7 +141,7 @@ export function load_codeCard_bear(load: MeshLoad): void {
 }
 
 export function load_codeCard_bear_nestedChildren(
-  load: MeshLoad,
+  load: code.MeshLoad,
 ): void {
   const type = code.getLinkHint(load)
   switch (type) {
@@ -175,7 +170,7 @@ export function load_codeCard_bear_nestedChildren(
 }
 
 export function load_codeCard_bear_nestedChildren_dynamicText(
-  load: MeshLoad,
+  load: code.MeshLoad,
 ): void {
   const nest = code.assumeLink(load, Link.Text)
 
@@ -196,7 +191,7 @@ export function load_codeCard_bear_nestedChildren_dynamicText(
 }
 
 export function load_codeCard_bear_nestedChildren_text(
-  load: MeshLoad,
+  load: code.MeshLoad,
 ): void {
   const text = code.assumeText(load)
   const path = code.resolveModulePath(load, text)

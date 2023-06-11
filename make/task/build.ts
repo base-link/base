@@ -1,15 +1,22 @@
-import { code } from '~'
+import { load_deckCard } from '~/mesh/deck/index.js'
+import {
+  performNextTask,
+  findPath,
+  loadSourceMaps,
+  createBase,
+  setEnvironmentVariable,
+} from '~/tool/index.js'
 
 export default async function build(host: string) {
-  await code.loadSourceMaps()
-  const link = code.findPath(host)
-  code.assertString(link)
-  const base = code.createBase()
-  code.setEnvironmentVariable(base, 'dock', 'javascript')
-  code.setEnvironmentVariable(base, 'site', 'test')
-  code.handle_deckCard(base, link)
+  await loadSourceMaps()
+  const link = findPath(host)
+  assertString(link)
+  const base = createBase()
+  setEnvironmentVariable(base, 'dock', 'javascript')
+  setEnvironmentVariable(base, 'site', 'test')
+  load_deckCard(base, link)
   while (base.tasks.length) {
-    code.performNextTask(base)
+    performNextTask(base)
   }
-  // code.exportNodeJS(base)
+  // exportNodeJS(base)
 }

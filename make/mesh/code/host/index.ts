@@ -1,8 +1,8 @@
-import { code, LinkHint, Mesh } from '~'
-import type { MeshLoad } from '~'
+
+
 
 export function load_codeCard_host(
-  load: MeshLoad,
+  load: code.MeshLoad,
   property = 'constants'
 ): void {
   const red = code.pushRed(load, code.createRedGather(load, property))
@@ -19,7 +19,7 @@ export function load_codeCard_host(
 }
 
 export function load_codeCard_host_nestedChildren(
-  load: MeshLoad,
+  load: code.MeshLoad,
 ): void {
   const type = code.getLinkHint(load)
   switch (type) {

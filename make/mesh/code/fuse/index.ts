@@ -1,7 +1,4 @@
-import { LinkHint, LinkNodeType, Mesh, code } from '~'
-import type { MeshLoad } from '~'
-
-// export function attemptResolveFuse(load: MeshLoad): void {
+// export function attemptResolveFuse(load: code.MeshLoad): void {
 //   const name = code.findFullStringConstantByName(load, 'name')
 //   code.assertString(name)
 
@@ -21,7 +18,7 @@ import type { MeshLoad } from '~'
 // }
 
 // export function evaluateTemplate(
-//   load: MeshLoad,
+//   load: code.MeshLoad,
 // ): Array<LinkNodeType> {
 //   const result: Array<LinkNodeType> = []
 
@@ -29,7 +26,7 @@ import type { MeshLoad } from '~'
 // }
 
 // export function load_codeCard_fuse(
-//   load: MeshLoad,
+//   load: code.MeshLoad,
 // ): void {
 //   const red = code.pushRed(load, code.createRedGather(load, 'fuse'))
 //   const blue = code.createBlue(load, {
@@ -49,7 +46,7 @@ import type { MeshLoad } from '~'
 // }
 
 // export function load_codeCard_fuse_nestedChildren(
-//   load: MeshLoad,
+//   load: code.MeshLoad,
 // ): void {
 //   const type = code.getLinkHint(load)
 //   switch (type) {

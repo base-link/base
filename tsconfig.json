@@ -18,10 +18,9 @@
     "noImplicitAny": true,
     "declaration": true,
     "paths": {
-      "~/*": ["./*"],
-      "~": ["./index.js"]
+      "~/*": ["./*"]
     }
   },
   "include": ["*.ts", "**/*.ts", "*.d.ts"],
-  "exclude": ["node_modules", "host", "tmp", "make/dock"]
+  "exclude": ["node_modules", "host", "tmp"]
 }
