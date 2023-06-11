@@ -1,19 +1,19 @@
 import { Link, LinkHint, code } from '~'
 import type { SiteProcessInputType } from '~'
 
-export function process_deckCard_deck_bear(
+export function load_deckCard_deck_bear(
   input: SiteProcessInputType,
 ): void {
-  code.assumeNest(input).forEach((nest, index) => {
+  code.loadLink(input).forEach((nest, index) => {
     code.addTask(input.base, () => {
-      code.process_deckCard_deck_bear_nestedChildren(
+      code.load_deckCard_deck_bear_nestedChildren(
         code.withLink(input, nest, index),
       )
     })
   })
 }
 
-export function process_deckCard_deck_bear_nestedChildren(
+export function load_deckCard_deck_bear_nestedChildren(
   input: SiteProcessInputType,
 ): void {
   const index = code.assumeLinkIndex(input)

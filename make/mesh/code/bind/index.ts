@@ -7,18 +7,14 @@ export function assumeNest(
   return code.assumeLink(input, Link.Tree).nest
 }
 
-export function process_codeCard_bind(
-  input: SiteProcessInputType,
-): void {
+export function load_codeCard_bind(input: SiteProcessInputType): void {
   const nest = code.assumeNest(input)
   nest.forEach((nest, index) => {
-    process_codeCard_bind_nestedChildren(
-      code.withLink(input, nest, index),
-    )
+    load_codeCard_bind_nestedChildren(code.withLink(input, nest, index))
   })
 }
 
-export function process_codeCard_bind_nestedChildren(
+export function load_codeCard_bind_nestedChildren(
   input: SiteProcessInputType,
 ): void {
   const type = code.getLinkHint(input)

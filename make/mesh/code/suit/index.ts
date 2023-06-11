@@ -1,9 +1,7 @@
 import { Link, Mesh, code } from '~'
 import type { SiteProcessInputType } from '~'
 
-export function process_codeCard_suit(
-  input: SiteProcessInputType,
-): void {
+export function load_codeCard_suit(input: SiteProcessInputType): void {
   const red = code.pushRed(
     input,
     code.createRedGather(input, 'classInterface'),
@@ -18,14 +16,14 @@ export function process_codeCard_suit(
 
   code.assumeNest(colorInput).forEach((nest, index) => {
     code.addTask(colorInput.base, () => {
-      code.process_codeCard_suit_nestedChildren(
+      code.load_codeCard_suit_nestedChildren(
         code.withLink(colorInput, nest, index),
       )
     })
   })
 }
 
-export function process_codeCard_suit_nestedChildren(
+export function load_codeCard_suit_nestedChildren(
   input: SiteProcessInputType,
 ): void {
   const type = code.getLinkHint(input)
@@ -43,40 +41,40 @@ export function process_codeCard_suit_nestedChildren(
     }
     switch (term) {
       case 'link':
-        code.process_codeCard_link(input, 'properties')
+        code.load_codeCard_link(input, 'properties')
         break
       case 'task':
-        code.process_codeCard_task(input, 'methods')
+        code.load_codeCard_task(input, 'methods')
         break
       case 'case':
-        // code.process_codeCard_formTask(input)
+        // code.load_codeCard_formTask(input)
         break
       case 'note':
-        code.process_codeCard_note(input)
+        code.load_codeCard_note(input)
         break
       case 'head':
-        code.process_codeCard_head(input)
+        code.load_codeCard_head(input)
         break
       // case 'fuse':
-      //   code.process_codeCard_fuse(input)
+      //   code.load_codeCard_fuse(input)
       //   break
       case 'hold':
-        code.process_codeCard_hold(input)
+        code.load_codeCard_hold(input)
         break
       case 'slot':
-        code.process_codeCard_slot(input)
+        code.load_codeCard_slot(input)
         break
       case 'walk':
-        code.process_codeCard_walk(input)
+        code.load_codeCard_walk(input)
         break
       case 'stem':
-        code.process_codeCard_stem(input)
+        code.load_codeCard_stem(input)
         break
       case 'base':
-        code.process_codeCard_form_base(input)
+        code.load_codeCard_form_base(input)
         break
       case 'like':
-        code.process_codeCard_like(input)
+        code.load_codeCard_like(input)
         break
       default:
         code.throwError(code.generateUnhandledTermCaseError(input))

@@ -3,8 +3,8 @@ load @tunebond/mesh
   find mint test-file
   find mint task-file
 
-list ./**/test.link
-  mint test-file
+mint test
+  link ./**/test.link
 
-list ./task/**/base.link
-  mint task-file
+mint task
+  link ./task/**/base.link

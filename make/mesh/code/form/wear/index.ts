@@ -1,7 +1,7 @@
 import { Link, LinkHint, Mesh, code } from '~'
 import type { SiteProcessInputType } from '~'
 
-// export function process_codeCard_form_wear(
+// export function load_codeCard_form_wear(
 //   input: SiteProcessInputType,
 // ): void {
 //   const container = code.createContainerScope(input)
@@ -15,13 +15,13 @@ import type { SiteProcessInputType } from '~'
 //   const childInput = code.withElement(scopeInput, wear)
 
 //   code.assumeLink(input, Link.Tree).nest.forEach((nest, index) => {
-//     process_codeCard_form_wear_nestedChildren(
+//     load_codeCard_form_wear_nestedChildren(
 //       code.withLink(childInput, nest, index),
 //     )
 //   })
 // }
 
-// export function process_codeCard_form_wear_nestedChildren(
+// export function load_codeCard_form_wear_nestedChildren(
 //   input: SiteProcessInputType,
 // ): void {
 //   const type = code.getLinkHint(input)
@@ -40,7 +40,7 @@ import type { SiteProcessInputType } from '~'
 
 //       switch (term) {
 //         case 'head':
-//           code.process_codeCard_head(input)
+//           code.load_codeCard_head(input)
 //           break
 //         default:
 //           code.throwError(code.generateUnknownTermError(input))

@@ -55,6 +55,7 @@
     "js-yaml": "^4.1.0",
     "json-keys-sort": "^2.1.0",
     "lodash": "^4.17.21",
+    "minimatch": "^9.0.1",
     "mkdirp": "^3.0.0",
     "nodejieba": "^2.6.0",
     "opencc-js": "^1.0.5",

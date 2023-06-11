@@ -1,9 +1,7 @@
 import { Mesh, code } from '~'
 import type { SiteProcessInputType } from '~'
 
-export function process_deckCard_deck_link(
-  input: SiteProcessInputType,
-) {
+export function load_deckCard_deck_link(input: SiteProcessInputType) {
   const text = code.assumeText(input)
 
   code.assertStringPattern(input, text, /^@[a-z0-9]+\/[a-z0-9]+$/)

@@ -1,17 +1,17 @@
 import { Link, LinkHint, code } from '~'
 import type { SiteProcessInputType } from '~'
 
-export function process_codeCard_task_base(
+export function load_codeCard_task_base(
   input: SiteProcessInputType,
 ): void {
   code.assumeLink(input, Link.Tree).nest.forEach((nest, index) => {
-    process_codeCard_task_base_nestedChildren(
+    load_codeCard_task_base_nestedChildren(
       code.withLink(input, nest, index),
     )
   })
 }
 
-export function process_codeCard_task_base_nestedChildren(
+export function load_codeCard_task_base_nestedChildren(
   input: SiteProcessInputType,
 ): void {
   const type = code.getLinkHint(input)

@@ -1,5 +1,6 @@
 import { Base, Link, LinkHint, Mesh, code } from '~'
 import type { SiteModuleType, SiteProcessInputType } from '~'
+import { minimatch } from 'minimatch'
 
 export * from './bear/index.js'
 export * from './bind/index.js'
@@ -34,25 +35,45 @@ export * from './wait/index.js'
 export * from './walk/index.js'
 export * from './zone/index.js'
 
-export function handle_codeCard(base: Base, link: string): void {
-  if (code.hasModuleByPath(base, link)) {
+export function loadCard(base: Base, link: string): void {
+  if (code.testHaveCard(base, link)) {
     return
   }
 
-  // console.log(link)
+  const deck = code.loadDeckFile(link)
+  const mint = code.loadMintFile(deck)
 
-  if (link.match(/drumwork\/deck\/([\w\.]+)\/base.link/)) {
-    code.process_deckCard(base, link)
-  } else {
-    code.process_codeCard(base, link)
+  walk: for (const have of mint.mint) {
+    if (minimatch(link, have.link)) {
+      switch (have.name) {
+        case 'deck':
+          return code.load_deckCard(base, link)
+        case 'code':
+          return code.load_codeCard(base, link)
+        case 'mint':
+          return code.load_mintCard(base, link)
+        case 'note':
+          // a note type is a scratch type which isn't validated
+          return code.load_noteCard(base, link)
+        case 'book':
+          return code.load_bookCard(base, link)
+        default:
+          break walk
+      }
+    }
+  }
+
+  throw code.haltCardMiss()
+}
+
+export function loadMintFile(deck) {
+  if (deck.mint) {
+    return code.readFileLink(path.relative(deck.mint, deck.link))
   }
 }
 
-export function process_codeCard(base: Base, link: string): void {
-  const parse = code.loadLinkModule(base, link)
-  const card = base.card(link)
-  const container = code.createTopContainerScope()
-  const scope = code.createStepScope(container)
+export function load_codeCard(base: Base, link: string): void {
+  const linkText = code.readLinkText(base, link)
 
   const red = code.createTopRed({
     children: [],
@@ -113,7 +134,7 @@ export function process_codeCard(base: Base, link: string): void {
   if (module.text.trim()) {
     module.linkTree.nest.forEach((nest, index) => {
       code.addTask(base, () => {
-        code.process_codeCard_nestedChildren(
+        code.load_codeCard_nestedChildren(
           code.withLink(colorInput, nest, index),
         )
       })
@@ -121,17 +142,17 @@ export function process_codeCard(base: Base, link: string): void {
   }
 }
 
-export function process_codeCard_nestedChildren(
+export function load_codeCard_nestedChildren(
   input: SiteProcessInputType,
 ): void {
   const type = code.getLinkHint(input)
   switch (type) {
     case LinkHint.DynamicTerm: {
-      code.process_dynamicTerm(input)
+      code.load_dynamicTerm(input)
       break
     }
     case LinkHint.StaticTerm:
-      code.process_codeCard_nestedChildren_term(input)
+      code.load_codeCard_nestedChildren_term(input)
       break
     default: {
       code.throwError(code.generateUnhandledNestCaseError(input, type))
@@ -139,49 +160,49 @@ export function process_codeCard_nestedChildren(
   }
 }
 
-export function process_codeCard_nestedChildren_term(
+export function load_codeCard_nestedChildren_term(
   input: SiteProcessInputType,
 ): void {
   const term = code.resolveTermString(input)
   switch (term) {
     case 'bear': {
-      code.process_codeCard_bear(input)
+      code.load_codeCard_bear(input)
       break
     }
     case 'load': {
-      code.process_codeCard_load(input)
+      code.load_codeCard_load(input)
       break
     }
     // case 'fuse': {
-    //   code.process_codeCard_fuse(input)
+    //   code.load_codeCard_fuse(input)
     //   break
     // }
     case 'tree': {
-      code.process_codeCard_tree(input)
+      code.load_codeCard_tree(input)
       break
     }
     case 'face': {
-      code.process_codeCard_face(input)
+      code.load_codeCard_face(input)
       break
     }
     case 'host': {
-      code.process_codeCard_host(input)
+      code.load_codeCard_host(input)
       break
     }
     case 'form': {
-      code.process_codeCard_form(input)
+      code.load_codeCard_form(input)
       break
     }
     case 'suit': {
-      code.process_codeCard_suit(input)
+      code.load_codeCard_suit(input)
       break
     }
     case 'task': {
-      code.process_codeCard_task(input)
+      code.load_codeCard_task(input)
       break
     }
     case 'note': {
-      code.process_codeCard_note(input)
+      code.load_codeCard_note(input)
       break
     }
     default: {

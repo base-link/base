@@ -1,7 +1,7 @@
 import { code, LinkHint, Mesh } from '~'
 import type { SiteProcessInputType } from '~'
 
-export function process_codeCard_host(
+export function load_codeCard_host(
   input: SiteProcessInputType,
   property = 'constants'
 ): void {
@@ -12,13 +12,13 @@ export function process_codeCard_host(
 
   const colorInput = code.withColors(input, { blue, red })
   code.assumeNest(colorInput).forEach((nest, index) => {
-    process_codeCard_host_nestedChildren(
+    load_codeCard_host_nestedChildren(
       code.withLink(colorInput, nest, index)
     )
   })
 }
 
-export function process_codeCard_host_nestedChildren(
+export function load_codeCard_host_nestedChildren(
   input: SiteProcessInputType,
 ): void {
   const type = code.getLinkHint(input)

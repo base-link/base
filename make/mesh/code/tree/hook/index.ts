@@ -1,7 +1,7 @@
 import { BlueStringType, LinkHint, Mesh, code } from '~'
 import type { SiteProcessInputType } from '~'
 
-export function process_codeCard_tree_hook(
+export function load_codeCard_tree_hook(
   input: SiteProcessInputType,
 ): void {
   const red = code.pushRed(input, code.createRedGather(input, 'hook'))
@@ -13,14 +13,14 @@ export function process_codeCard_tree_hook(
 
   code.assumeNest(colorInput).forEach((nest, index) => {
     code.addTask(colorInput.base, () => {
-      process_codeCard_tree_hook_nestedChildren(
+      load_codeCard_tree_hook_nestedChildren(
         code.withLink(colorInput, nest, index),
       )
     })
   })
 }
 
-export function process_codeCard_tree_hook_nestedChildren(
+export function load_codeCard_tree_hook_nestedChildren(
   input: SiteProcessInputType,
 ): void {
   const type = code.getLinkHint(input)

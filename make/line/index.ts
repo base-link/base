@@ -14,7 +14,7 @@ link
   .argument('[deck]')
   .action(deck => {
     if (deck) {
-      linkDeck(deck)
+      linkDeck(deck as string)
     } else {
       linkSelfBase()
     }
@@ -31,7 +31,7 @@ const killLinkDeck = killLink.command('deck')
 
 killLinkDeck.argument('[deck]').action(deck => {
   if (deck) {
-    killLinkDeckDeck(deck)
+    killLinkDeckDeck(deck as string)
   } else {
     killLinkDeckSelfBase()
   }

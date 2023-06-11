@@ -3,9 +3,7 @@ import type { SiteProcessInputType } from '~'
 
 export * from './hook/index.js'
 
-export function process_codeCard_tree(
-  input: SiteProcessInputType,
-): void {
+export function load_codeCard_tree(input: SiteProcessInputType): void {
   const red = code.pushRed(
     input,
     code.createRedGather(input, 'template'),
@@ -20,14 +18,14 @@ export function process_codeCard_tree(
 
   code.assumeNest(colorInput).forEach((nest, index) => {
     code.addTask(input.base, () => {
-      code.process_codeCard_tree_nestedChildren(
+      code.load_codeCard_tree_nestedChildren(
         code.withLink(colorInput, nest, index),
       )
     })
   })
 }
 
-export function process_codeCard_tree_nestedChildren(
+export function load_codeCard_tree_nestedChildren(
   input: SiteProcessInputType,
 ): void {
   const type = code.getLinkHint(input)
@@ -39,14 +37,14 @@ export function process_codeCard_tree_nestedChildren(
     } else {
       switch (name) {
         case 'take':
-          code.process_codeCard_link(input)
+          code.load_codeCard_link(input)
           break
         case 'hook':
-          code.process_codeCard_tree_hook(input)
+          code.load_codeCard_tree_hook(input)
           break
 
         case 'head':
-          code.process_codeCard_head(input)
+          code.load_codeCard_head(input)
           break
         default:
           code.throwError(code.generateUnknownTermError(input))

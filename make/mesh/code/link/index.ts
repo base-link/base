@@ -3,7 +3,7 @@ import type { SiteProcessInputType } from '~'
 
 export * from './take/index.js'
 
-export function process_codeCard_link(
+export function load_codeCard_link(
   input: SiteProcessInputType,
   property = 'inputs',
 ): void {
@@ -16,18 +16,18 @@ export function process_codeCard_link(
 
   code.assumeNest(colorInput).forEach((nest, index) => {
     code.addTask(input.base, () => {
-      code.process_codeCard_link_nestedChildren(
+      code.load_codeCard_link_nestedChildren(
         code.withLink(colorInput, nest, index),
       )
     })
   })
 }
 
-export function process_codeCard_link_base(
+export function load_codeCard_link_base(
   input: SiteProcessInputType,
 ): void {}
 
-export function process_codeCard_link_nestedChildren(
+export function load_codeCard_link_nestedChildren(
   input: SiteProcessInputType,
 ): void {
   const type = code.getLinkHint(input)
@@ -46,34 +46,34 @@ export function process_codeCard_link_nestedChildren(
       const term = code.assumeTermString(input)
       switch (term) {
         case 'like':
-          code.process_codeCard_like(input)
+          code.load_codeCard_like(input)
           break
         case 'list':
-          code.process_codeCard_like_list(input)
+          code.load_codeCard_like_list(input)
           break
         case 'mesh':
-          code.process_codeCard_like_mesh(input)
+          code.load_codeCard_like_mesh(input)
           break
         case 'time':
-          code.process_codeCard_time(input)
+          code.load_codeCard_time(input)
           break
         case 'hide':
-          code.process_codeCard_hide(input)
+          code.load_codeCard_hide(input)
           break
         case 'link':
-          code.process_codeCard_link(input)
+          code.load_codeCard_link(input)
           break
         case 'void':
-          code.process_codeCard_void(input)
+          code.load_codeCard_void(input)
           break
         case 'take':
-          code.process_codeCard_link_take(input)
+          code.load_codeCard_link_take(input)
           break
         case 'base':
-          code.process_codeCard_link_base(input)
+          code.load_codeCard_link_base(input)
           break
         case 'note':
-          code.process_codeCard_note(input)
+          code.load_codeCard_note(input)
           break
         default:
           code.throwError(code.generateUnhandledTermCaseError(input))

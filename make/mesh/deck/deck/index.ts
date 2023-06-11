@@ -8,9 +8,7 @@ export * from './mint/index.js'
 export * from './term/index.js'
 export * from './test/index.js'
 
-export function process_deckCard_deck(
-  input: SiteProcessInputType,
-): void {
+export function load_deckCard_deck(input: SiteProcessInputType): void {
   const red = code.pushRed(input, code.createRedGather(input, 'deck'))
   const blue = code.attachBlue(input, 'deck', {
     face: [] as unknown as code.BlueArrayType<code.BluePackageUserType>,
@@ -22,14 +20,14 @@ export function process_deckCard_deck(
 
   code.assumeNest(input).forEach((nest, index) => {
     code.addTask(input.base, () => {
-      code.process_deckCard_deck_nestedChildren(
+      code.load_deckCard_deck_nestedChildren(
         code.withLink(colorInput, nest, index),
       )
     })
   })
 }
 
-export function process_deckCard_deck_nestedChildren(
+export function load_deckCard_deck_nestedChildren(
   input: SiteProcessInputType,
 ): void {
   const type = code.getLinkHint(input)
@@ -43,7 +41,7 @@ export function process_deckCard_deck_nestedChildren(
       break
     case LinkHint.StaticText: {
       if (index === 0) {
-        code.process_deckCard_deck_link(input)
+        code.load_deckCard_deck_link(input)
       } else {
         throw new Error('Unhandled text.')
       }
@@ -51,7 +49,7 @@ export function process_deckCard_deck_nestedChildren(
     }
     case LinkHint.StaticTerm:
       if (index > 0) {
-        code.process_deckCard_deck_nestedTerm(input)
+        code.load_deckCard_deck_nestedTerm(input)
       } else {
         throw new Error('Unhandled term.')
       }
@@ -61,21 +59,21 @@ export function process_deckCard_deck_nestedChildren(
   }
 }
 
-export function process_deckCard_deck_nestedTerm(
+export function load_deckCard_deck_nestedTerm(
   input: SiteProcessInputType,
 ): void {
   const term = code.resolveTermString(input)
   switch (term) {
     case 'bear': {
-      code.process_deckCard_deck_bear(input)
+      code.load_deckCard_deck_bear(input)
       break
     }
     case 'test': {
-      code.process_deckCard_deck_test(input)
+      code.load_deckCard_deck_test(input)
       break
     }
     case 'mint': {
-      code.process_deckCard_deck_mint(input)
+      code.load_deckCard_deck_mint(input)
       break
     }
     default: {

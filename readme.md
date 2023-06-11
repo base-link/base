@@ -248,55 +248,6 @@ base show deck <deck>
 base <name>
 ```
 
-The linking to the global store stores it at:
-
-```
-~/Library/base
-  /nest # global dependency store
-    /link
-      /<host>
-        /<deck>
-          /...files
-  /mint # file store
-    /<hash-base>
-      /<hash>
-```
-
-When you install packages, it hard symlinks them to your `./deck`
-folder.
-
-```
-./link
-  /base.link # configuration settings
-  /hold # hardlink folder
-    /<host>
-      /<deck>
-        /<mark>
-          /link
-            /<host>
-              /<deck> (soft symlink, except actual folder)
-  /hook # symlink folder
-    /<host>
-      /<deck> (soft symlink to hold/host/deck/mark/link/host/deck)
-```
-
-You can have "workspaces" by adding a `deck` folder (or wherever you put
-it).
-
-```
-./deck
-  /deck-1
-  /deck-2
-```
-
-You specify "workspaces" as "slots" where decks live.
-
-```
-deck @my/deck
-  link @another/deck
-  slot ./deck
-```
-
 ## Base Type System
 
 Every object in the system is a mesh, in a graph of nodes so to speak,

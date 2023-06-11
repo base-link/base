@@ -15,14 +15,6 @@ export function assertModule(
   }
 }
 
-export function hasModuleById(base: Base, id: number): boolean {
-  return id in base.cardsById
-}
-
-export function hasModuleByPath(base: Base, path: string): boolean {
-  return path in base.cardsByPath
-}
-
 export function hasModuleInitialized(module: BaseCard): boolean {
   return Object.keys(module.seed).length > 0
 }
@@ -31,10 +23,7 @@ export function isModule(object: unknown): object is SiteModuleType {
   return (object as SiteModuleType).isModule === true
 }
 
-export function loadLinkModule(
-  base: Base,
-  path: string,
-): SiteCardCode {
+export function loadLinkModule(base: Base, path: string): SiteCardCode {
   const text = code.readTextFile(base, path)
   const data = code.parseLinkText({ path, text })
   const directory = code.getLinkHost(path)
@@ -42,4 +31,8 @@ export function loadLinkModule(
     directory,
     ...data,
   }
+}
+
+export function testHaveCard(base: Base, path: string): boolean {
+  return path in base.cardsByPath
 }

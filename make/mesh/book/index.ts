@@ -1,1 +1,1 @@
-export function process_bookCard(link: string): void {}
+export function load_bookCard(link: string): void {}

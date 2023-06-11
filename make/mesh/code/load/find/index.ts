@@ -4,7 +4,7 @@ import type { SiteProcessInputType } from '~'
 export * from './bear/index.js'
 export * from './save/index.js'
 
-export function process_codeCard_load_find(
+export function load_codeCard_load_find(
   input: SiteProcessInputType,
 ): void {
   const red = code.pushRed(input, code.createRedGather(input, 'find'))
@@ -15,14 +15,14 @@ export function process_codeCard_load_find(
 
   code.assumeNest(colorInput).forEach((nest, index) => {
     code.addTask(input.base, () => {
-      code.process_codeCard_load_find_nestedChildren(
+      code.load_codeCard_load_find_nestedChildren(
         code.withLink(colorInput, nest, index),
       )
     })
   })
 }
 
-export function process_codeCard_load_find_nestedChildren(
+export function load_codeCard_load_find_nestedChildren(
   input: SiteProcessInputType,
 ): void {
   const type = code.getLinkHint(input)
@@ -31,9 +31,9 @@ export function process_codeCard_load_find_nestedChildren(
       const index = code.assumeLinkIndex(input)
 
       if (index > 0) {
-        code.process_codeCard_load_find_staticTerm(input)
+        code.load_codeCard_load_find_staticTerm(input)
       } else {
-        code.process_find_scope(input)
+        code.load_find_scope(input)
       }
       break
     }
@@ -43,23 +43,23 @@ export function process_codeCard_load_find_nestedChildren(
   }
 }
 
-export function process_codeCard_load_find_staticTerm(
+export function load_codeCard_load_find_staticTerm(
   input: SiteProcessInputType,
 ): void {
   const term = code.resolveTermString(input)
   switch (term) {
     case 'save':
-      code.process_codeCard_load_find_save(input)
+      code.load_codeCard_load_find_save(input)
       break
     case 'bear':
-      code.process_codeCard_load_find_bear(input)
+      code.load_codeCard_load_find_bear(input)
       break
     default:
       code.throwError(code.generateUnknownTermError(input))
   }
 }
 
-export function process_find_scope(input: SiteProcessInputType): void {
+export function load_find_scope(input: SiteProcessInputType): void {
   const nest = code.assumeLink(input, Link.Tree)
   const scope = code.assumeTermString(input)
   const nestedNest = nest.nest[0]

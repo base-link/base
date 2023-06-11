@@ -1,9 +1,7 @@
 import { Link, LinkHint, Mesh, code } from '~'
 import type { SiteProcessInputType } from '~'
 
-export function process_codeCard_call(
-  input: SiteProcessInputType,
-): void {
+export function load_codeCard_call(input: SiteProcessInputType): void {
   const red = code.pushRed(input, code.createRedGather(input, 'step'))
   const blue = code.pushBlue(input, 'steps', {
     bind: [] as unknown as code.BlueArrayType<code.BlueBindType>,
@@ -13,14 +11,14 @@ export function process_codeCard_call(
 
   code.assumeNest(input).forEach((nest, index) => {
     code.addTask(input.base, () => {
-      process_codeCard_call_nestedChildren(
+      load_codeCard_call_nestedChildren(
         code.withLink(colorInput, nest, index),
       )
     })
   })
 }
 
-export function process_codeCard_call_nestedChildren(
+export function load_codeCard_call_nestedChildren(
   input: SiteProcessInputType,
 ): void {
   const type = code.getLinkHint(input)
@@ -74,7 +72,7 @@ export function process_codeCard_call_nestedChildren(
           case 'loan':
             break
           case 'bind':
-            code.process_codeCard_bind(input)
+            code.load_codeCard_bind(input)
             break
           default:
             code.throwError(code.generateUnhandledTermCaseError(input))

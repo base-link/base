@@ -49,12 +49,12 @@ export function getTerm(
   return child
 }
 
-export function process_dynamicTerm(input: SiteProcessInputType): void {
+export function load_dynamicTerm(input: SiteProcessInputType): void {
   const nest = input.link.element
   code.pushRed(input, code.createRedValue(input, undefined, nest))
 }
 
-export function process_first_dynamicTerm(
+export function load_first_dynamicTerm(
   input: SiteProcessInputType,
   property: string,
 ): void {
@@ -65,7 +65,7 @@ export function process_first_dynamicTerm(
   code.attachBlue(input, property, code.createBlueTerm(nest))
 }
 
-export function process_first_staticTerm(
+export function load_first_staticTerm(
   input: SiteProcessInputType,
   property: string,
 ): void {

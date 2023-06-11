@@ -1,17 +1,13 @@
 import { Link, LinkHint, code } from '~'
 import type { SiteProcessInputType } from '~'
 
-export function process_codeCard_make(
-  input: SiteProcessInputType,
-): void {
+export function load_codeCard_make(input: SiteProcessInputType): void {
   code.assumeLink(input, Link.Tree).nest.forEach((nest, index) => {
-    process_codeCard_make_nestedChildren(
-      code.withLink(input, nest, index),
-    )
+    load_codeCard_make_nestedChildren(code.withLink(input, nest, index))
   })
 }
 
-export function process_codeCard_make_nestedChildren(
+export function load_codeCard_make_nestedChildren(
   input: SiteProcessInputType,
 ): void {
   const type = code.getLinkHint(input)
@@ -20,7 +16,7 @@ export function process_codeCard_make_nestedChildren(
       const term = code.resolveTermString(input)
       switch (term) {
         case 'bind':
-          code.process_codeCard_bind(input)
+          code.load_codeCard_bind(input)
           break
         default:
           code.throwError(code.generateUnhandledTermCaseError(input))

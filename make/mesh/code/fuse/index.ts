@@ -28,7 +28,7 @@ import type { SiteProcessInputType } from '~'
 //   return result
 // }
 
-// export function process_codeCard_fuse(
+// export function load_codeCard_fuse(
 //   input: SiteProcessInputType,
 // ): void {
 //   const red = code.pushRed(input, code.createRedGather(input, 'fuse'))
@@ -41,14 +41,14 @@ import type { SiteProcessInputType } from '~'
 
 //   code.assumeNest(input).forEach((nest, index) => {
 //     code.addTask(input.base, () => {
-//       process_codeCard_fuse_nestedChildren(
+//       load_codeCard_fuse_nestedChildren(
 //         code.withLink(colorInput, nest, index),
 //       )
 //     })
 //   })
 // }
 
-// export function process_codeCard_fuse_nestedChildren(
+// export function load_codeCard_fuse_nestedChildren(
 //   input: SiteProcessInputType,
 // ): void {
 //   const type = code.getLinkHint(input)
@@ -61,16 +61,16 @@ import type { SiteProcessInputType } from '~'
 //       } else {
 //         switch (term) {
 //           case 'bind':
-//             code.process_codeCard_bind(input)
+//             code.load_codeCard_bind(input)
 //             break
 //           case 'mark':
-//             code.process_codeCard_bond_mark(input)
+//             code.load_codeCard_bond_mark(input)
 //             break
 //           case 'loan':
-//             code.process_codeCard_bond_loan(input)
+//             code.load_codeCard_bond_loan(input)
 //             break
 //           case 'term':
-//             code.process_codeCard_term(input)
+//             code.load_codeCard_term(input)
 //             break
 //           default:
 //             code.throwError(code.generateUnhandledTermCaseError(input))

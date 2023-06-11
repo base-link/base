@@ -12,15 +12,11 @@ import type { SiteProcessInputType } from '~'
 
 export * from './deck/index.js'
 
-export function handle_deckCard(base: Base, link: string): void {
-  code.process_deckCard(base, link)
-}
-
 /**
  * Entrypoint function.
  */
 
-export function process_deckCard(base: Base, link: string): void {
+export function load_deckCard(base: Base, link: string): void {
   const parse = code.loadLinkModule(base, link)
   const card = base.card(link)
   const container = code.createTopContainerScope()
@@ -64,7 +60,7 @@ export function process_deckCard(base: Base, link: string): void {
   if (module.text.trim()) {
     module.linkTree.nest.forEach((nest, index) => {
       code.addTask(base, () => {
-        code.process_deckCard_nestedChildren(
+        code.load_deckCard_nestedChildren(
           code.withLink(colorInput, nest, index),
         )
       })
@@ -72,13 +68,13 @@ export function process_deckCard(base: Base, link: string): void {
   }
 }
 
-export function process_deckCard_nestedChildren(
+export function load_deckCard_nestedChildren(
   input: SiteProcessInputType,
 ): void {
   const type = code.getLinkHint(input)
   switch (type) {
     case LinkHint.StaticTerm: {
-      code.process_deckCard_staticTerm(input)
+      code.load_deckCard_staticTerm(input)
       break
     }
     default:
@@ -86,13 +82,13 @@ export function process_deckCard_nestedChildren(
   }
 }
 
-export function process_deckCard_staticTerm(
+export function load_deckCard_staticTerm(
   input: SiteProcessInputType,
 ): void {
   const term = code.resolveTermString(input)
   switch (term) {
     case 'deck':
-      code.process_deckCard_deck(input)
+      code.load_deckCard_deck(input)
       break
     default:
       code.throwError(code.generateUnhandledTermCaseError(input))

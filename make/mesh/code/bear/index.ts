@@ -123,9 +123,7 @@ export function bearImports(input: SiteProcessInputType): void {
   })
 }
 
-export function process_codeCard_bear(
-  input: SiteProcessInputType,
-): void {
+export function load_codeCard_bear(input: SiteProcessInputType): void {
   const red = code.pushRed(input, code.createRedGather(input, 'bear'))
   const blue = code.pushBlue(input, 'exports', {
     hides: code.createBlueArray(input),
@@ -136,7 +134,7 @@ export function process_codeCard_bear(
 
   nest.forEach((nest, index) => {
     code.addTask(input.base, () => {
-      code.process_codeCard_bear_nestedChildren(
+      code.load_codeCard_bear_nestedChildren(
         code.withLink(colorInput, nest, index),
       )
     })
@@ -147,24 +145,24 @@ export function process_codeCard_bear(
   })
 }
 
-export function process_codeCard_bear_nestedChildren(
+export function load_codeCard_bear_nestedChildren(
   input: SiteProcessInputType,
 ): void {
   const type = code.getLinkHint(input)
   switch (type) {
     case LinkHint.StaticText: {
-      code.process_codeCard_bear_nestedChildren_text(input)
+      code.load_codeCard_bear_nestedChildren_text(input)
       break
     }
     case LinkHint.DynamicText: {
-      code.process_codeCard_bear_nestedChildren_dynamicText(input)
+      code.load_codeCard_bear_nestedChildren_dynamicText(input)
       break
     }
     case LinkHint.StaticTerm: {
       const term = code.resolveTermString(input)
       switch (term) {
         case 'hide':
-          code.process_codeCard_bear_hide(input)
+          code.load_codeCard_bear_hide(input)
           break
         default:
           code.throwError(code.generateUnhandledTermCaseError(input))
@@ -176,7 +174,7 @@ export function process_codeCard_bear_nestedChildren(
   }
 }
 
-export function process_codeCard_bear_nestedChildren_dynamicText(
+export function load_codeCard_bear_nestedChildren_dynamicText(
   input: SiteProcessInputType,
 ): void {
   const nest = code.assumeLink(input, Link.Text)
@@ -197,7 +195,7 @@ export function process_codeCard_bear_nestedChildren_dynamicText(
   })
 }
 
-export function process_codeCard_bear_nestedChildren_text(
+export function load_codeCard_bear_nestedChildren_text(
   input: SiteProcessInputType,
 ): void {
   const text = code.assumeText(input)

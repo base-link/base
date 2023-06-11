@@ -11,9 +11,7 @@ export * from './base/index.js'
 export * from './case/index.js'
 export * from './wear/index.js'
 
-export function process_codeCard_form(
-  input: MeshLink,
-): void {
+export function load_codeCard_form(input: MeshLink): void {
   const container = code.createContainerScope(input)
   const scope = code.createStepScope(container)
   const red = code.pushRed(input, code.createRedGather(input, 'class'))
@@ -32,56 +30,56 @@ export function process_codeCard_form(
 
   code.assumeNest(colorInput).forEach((nest, index) => {
     code.addTask(colorInput.base, () => {
-      code.process_codeCard_form_nestedChildren(
+      code.load_codeCard_form_nestedChildren(
         code.withLink(colorInput, nest, index),
       )
     })
   })
 }
 
-export function process_codeCard_form_nestedChildren(
+export function load_codeCard_form_nestedChildren(
   input: MeshLink,
 ): void {
   const type = code.getLinkHint(input)
   if (type === 'static-term') {
     const index = code.assumeLinkIndex(input)
     if (index === 0) {
-      code.process_first_staticTerm(input, 'name')
+      code.load_first_staticTerm(input, 'name')
     } else {
       const term = code.assumeTermString(input)
       switch (term) {
         case 'link':
-          code.process_codeCard_link(input, 'properties')
+          code.load_codeCard_link(input, 'properties')
           break
         case 'task':
-          code.process_codeCard_task(input, 'methods')
+          code.load_codeCard_task(input, 'methods')
           break
         case 'head':
-          code.process_codeCard_head(input)
+          code.load_codeCard_head(input)
           break
         // case 'wear':
-        //   code.process_codeCard_form_wear(input)
+        //   code.load_codeCard_form_wear(input)
         //   break
         case 'base':
-          code.process_codeCard_form_base(input)
+          code.load_codeCard_form_base(input)
           break
         case 'case':
-          code.process_codeCard_formCase(input)
+          code.load_codeCard_formCase(input)
           break
         // case 'fuse':
-        //   code.process_codeCard_fuse(input)
+        //   code.load_codeCard_fuse(input)
         //   break
         case 'hold':
-          code.process_codeCard_hold(input)
+          code.load_codeCard_hold(input)
           break
         case 'stem':
-          code.process_codeCard_stem(input)
+          code.load_codeCard_stem(input)
           break
         case 'note':
-          code.process_codeCard_note(input)
+          code.load_codeCard_note(input)
           break
         case 'like':
-          code.process_codeCard_like(input)
+          code.load_codeCard_like(input)
           break
         default:
           code.throwError(code.generateUnknownTermError(input))

@@ -1,7 +1,7 @@
 import { LinkHint, Mesh, code } from '~'
 import type { SiteProcessInputType } from '~'
 
-export function process_codeCard_task_free(
+export function load_codeCard_task_free(
   input: SiteProcessInputType,
 ): void {
   const red = code.pushRed(
@@ -15,14 +15,14 @@ export function process_codeCard_task_free(
 
   code.assumeNest(colorInput).forEach((nest, index) => {
     code.addTask(colorInput.base, () => {
-      code.process_codeCard_task_free_nestedChildren(
+      code.load_codeCard_task_free_nestedChildren(
         code.withLink(colorInput, nest, index),
       )
     })
   })
 }
 
-export function process_codeCard_task_free_nestedChildren(
+export function load_codeCard_task_free_nestedChildren(
   input: SiteProcessInputType,
 ): void {
   const type = code.getLinkHint(input)

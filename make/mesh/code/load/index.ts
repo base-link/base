@@ -4,9 +4,7 @@ import type { SiteProcessInputType } from '~'
 export * from './bear/index.js'
 export * from './find/index.js'
 
-export function process_codeCard_load(
-  input: SiteProcessInputType,
-): void {
+export function load_codeCard_load(input: SiteProcessInputType): void {
   const red = code.pushRed(input, code.createRedGather(input, 'import'))
   const blue = code.pushBlue(input, 'imports', {
     imports: code.createBlueArray(input),
@@ -16,13 +14,13 @@ export function process_codeCard_load(
   const colorInput = code.withColors(input, { blue, red })
 
   code.assumeNest(colorInput).forEach((nest, index) => {
-    process_codeCard_load_nestedChildren(
+    load_codeCard_load_nestedChildren(
       code.withLink(colorInput, nest, index),
     )
   })
 }
 
-export function process_codeCard_load_nestedChildren(
+export function load_codeCard_load_nestedChildren(
   input: SiteProcessInputType,
 ) {
   const type = code.getLinkHint(input)
@@ -55,13 +53,13 @@ export function process_codeCard_load_nestedChildren(
       switch (term) {
         case 'find':
         case 'take':
-          code.process_codeCard_load_find(input)
+          code.load_codeCard_load_find(input)
           break
         case 'load':
-          code.process_codeCard_load(input)
+          code.load_codeCard_load(input)
           break
         case 'bear':
-          code.process_codeCard_load_bear(input)
+          code.load_codeCard_load_bear(input)
           break
         default:
           code.throwError(code.generateUnknownTermError(input))
