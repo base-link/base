@@ -1,5 +1,10 @@
 import { SiteProcessInputType, code } from '~'
 import type { SiteEnvironmentType } from '~'
+import { Base } from '../form/base.js'
+
+export * from '../form/base.js'
+
+export * from './card.js'
 
 export function assertEnvironment(
   object: unknown,
@@ -9,6 +14,10 @@ export function assertEnvironment(
       code.generateObjectNotTypeError(object, ['environment']),
     )
   }
+}
+
+export function createBase(): Base {
+  return new Base()
 }
 
 export function createEnvironment(
@@ -41,6 +50,13 @@ export function getEnvironmentProperty(
   }
 }
 
+export function getEnvironmentVariable(
+  base: Base,
+  key: string,
+): unknown {
+  return base.env[key]
+}
+
 export function hasEnvironmentVariable(
   environment: SiteEnvironmentType,
   name: string | number | symbol,
@@ -59,11 +75,18 @@ export function hasEnvironmentVariable(
 
   return false
 }
-
 export function isEnvironment(
   object: unknown,
 ): object is SiteEnvironmentType {
   return (object as SiteEnvironmentType).isEnv === true
+}
+
+export function setCachedFile(
+  base: Base,
+  path: string,
+  content: string,
+): void {
+  base.textMap[path] = content
 }
 
 export function setEnvironmentProperty(
@@ -80,6 +103,14 @@ export function setEnvironmentProperty(
       code.generateEnvironmentMissingPropertyError(property),
     )
   }
+}
+
+export function setEnvironmentVariable(
+  base: Base,
+  key: string,
+  value: unknown,
+): void {
+  base.env[key] = value
 }
 
 export function withEnvironment(

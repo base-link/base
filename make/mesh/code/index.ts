@@ -52,13 +52,16 @@ export function loadCard(base: Base, link: string): void {
           return code.load_codeCard(base, link)
         case 'mint':
           return code.load_mintCard(base, link)
-        case 'note':
-          // a note type is a scratch type which isn't validated
+        case 'call': // api urls
+          return code.load_callCard(base, link)
+        case 'line': // cli hooks
+          return code.load_lineCard(base, link)
+        case 'note': // a note type is a scratch type which isn't validated
           return code.load_noteCard(base, link)
         case 'book':
           return code.load_bookCard(base, link)
         default:
-          break walk
+          throw code.haltMissMintName()
       }
     }
   }
