@@ -1,11 +1,12 @@
 import { RiffDeck } from './riff.js'
+import { SiteLookFormLink } from './site.js'
 
 export class Base {
   // tasks to be run
   task: Array<() => void>
 
   // observers
-  bind: Record<string, Array<SiteObjectWatcherType>>
+  hook: Record<string, Array<SiteLookFormLink>>
 
   // env variables
   host: Record<string, unknown>
@@ -15,7 +16,7 @@ export class Base {
 
   constructor() {
     this.task = []
-    this.bind = {}
+    this.hook = {}
     this.host = {}
     this.deck = {}
   }

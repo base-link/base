@@ -1,6 +1,4 @@
 import { code } from '~'
-import type { SiteProcessInputType } from '~'
+import type { MeshLoad } from '~'
 
-export function load_codeCard_zoneHook(
-  input: SiteProcessInputType,
-): void {}
+export function load_codeCard_zoneHook(load: MeshLoad): void {}

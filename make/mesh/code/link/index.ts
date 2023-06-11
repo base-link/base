@@ -1,21 +1,21 @@
 import { LinkHint, Mesh, code } from '~'
-import type { SiteProcessInputType } from '~'
+import type { MeshLoad } from '~'
 
 export * from './take/index.js'
 
 export function load_codeCard_link(
-  input: SiteProcessInputType,
-  property = 'inputs',
+  load: MeshLoad,
+  property = 'loads',
 ): void {
-  const red = code.pushRed(input, code.createRedGather(input, property))
-  const blue = code.pushBlue(input, property, {
+  const red = code.pushRed(load, code.createRedGather(load, property))
+  const blue = code.pushBlue(load, property, {
     type: Mesh.Input,
   })
 
-  const colorInput = code.withColors(input, { blue, red })
+  const colorInput = code.withColors(load, { blue, red })
 
   code.assumeNest(colorInput).forEach((nest, index) => {
-    code.addTask(input.base, () => {
+    code.addTask(load.base, () => {
       code.load_codeCard_link_nestedChildren(
         code.withLink(colorInput, nest, index),
       )
@@ -23,64 +23,62 @@ export function load_codeCard_link(
   })
 }
 
-export function load_codeCard_link_base(
-  input: SiteProcessInputType,
-): void {}
+export function load_codeCard_link_base(load: MeshLoad): void {}
 
 export function load_codeCard_link_nestedChildren(
-  input: SiteProcessInputType,
+  load: MeshLoad,
 ): void {
-  const type = code.getLinkHint(input)
+  const type = code.getLinkHint(load)
   switch (type) {
     case LinkHint.StaticTerm: {
-      const index = code.assumeLinkIndex(input)
+      const index = code.assumeLinkIndex(load)
       if (index === 0) {
-        const string = code.assumeTermString(input)
+        const string = code.assumeTermString(load)
         const term = code.createBlueString(string)
 
-        code.pushRed(input, code.createRedValue(input, 'name', term))
-        code.attachBlue(input, 'name', term)
+        code.pushRed(load, code.createRedValue(load, 'name', term))
+        code.attachBlue(load, 'name', term)
         return
       }
 
-      const term = code.assumeTermString(input)
+      const term = code.assumeTermString(load)
       switch (term) {
         case 'like':
-          code.load_codeCard_like(input)
+          code.load_codeCard_like(load)
           break
         case 'list':
-          code.load_codeCard_like_list(input)
+          code.load_codeCard_like_list(load)
           break
         case 'mesh':
-          code.load_codeCard_like_mesh(input)
+          code.load_codeCard_like_mesh(load)
           break
         case 'time':
-          code.load_codeCard_time(input)
+          code.load_codeCard_time(load)
           break
         case 'hide':
-          code.load_codeCard_hide(input)
+          code.load_codeCard_hide(load)
           break
         case 'link':
-          code.load_codeCard_link(input)
+          code.load_codeCard_link(load)
           break
         case 'void':
-          code.load_codeCard_void(input)
+          code.load_codeCard_void(load)
           break
         case 'take':
-          code.load_codeCard_link_take(input)
+          code.load_codeCard_link_take(load)
           break
         case 'base':
-          code.load_codeCard_link_base(input)
+          code.load_codeCard_link_base(load)
           break
         case 'note':
-          code.load_codeCard_note(input)
+          code.load_codeCard_note(load)
           break
         default:
-          code.throwError(code.generateUnhandledTermCaseError(input))
+          code.throwError(code.generateUnhandledTermCaseError(load))
       }
       break
     }
     default:
-      code.throwError(code.generateUnhandledNestCaseError(input, type))
+      code.throwError(code.generateUnhandledNestCaseError(load, type))
   }
 }

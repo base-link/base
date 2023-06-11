@@ -1,17 +1,15 @@
 import { LinkHint, Mesh, code } from '~'
-import type { SiteProcessInputType } from '~'
+import type { MeshLoad } from '~'
 
-export function load_codeCard_task_free(
-  input: SiteProcessInputType,
-): void {
+export function load_codeCard_task_free(load: MeshLoad): void {
   const red = code.pushRed(
-    input,
-    code.createRedGather(input, 'definedOutputType'),
+    load,
+    code.createRedGather(load, 'definedOutputType'),
   )
-  const blue = code.attachBlue(input, 'definedOutputType', {
+  const blue = code.attachBlue(load, 'definedOutputType', {
     type: Mesh.Output,
   })
-  const colorInput = code.withColors(input, { blue, red })
+  const colorInput = code.withColors(load, { blue, red })
 
   code.assumeNest(colorInput).forEach((nest, index) => {
     code.addTask(colorInput.base, () => {
@@ -23,25 +21,25 @@ export function load_codeCard_task_free(
 }
 
 export function load_codeCard_task_free_nestedChildren(
-  input: SiteProcessInputType,
+  load: MeshLoad,
 ): void {
-  const type = code.getLinkHint(input)
+  const type = code.getLinkHint(load)
   switch (type) {
     case LinkHint.StaticTerm: {
-      const term = code.assumeTermString(input)
-      const index = code.assumeLinkIndex(input)
+      const term = code.assumeTermString(load)
+      const index = code.assumeLinkIndex(load)
       if (index === 0) {
         const blueString = code.createBlueString(term)
         code.pushRed(
-          input,
-          code.createRedValue(input, 'name', blueString),
+          load,
+          code.createRedValue(load, 'name', blueString),
         )
-        code.attachBlue(input, 'name', blueString)
+        code.attachBlue(load, 'name', blueString)
         return
       }
       break
     }
     default:
-      code.throwError(code.generateUnhandledTermCaseError(input))
+      code.throwError(code.generateUnhandledTermCaseError(load))
   }
 }

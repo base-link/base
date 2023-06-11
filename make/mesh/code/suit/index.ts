@@ -1,18 +1,18 @@
 import { Link, Mesh, code } from '~'
-import type { SiteProcessInputType } from '~'
+import type { MeshLoad } from '~'
 
-export function load_codeCard_suit(input: SiteProcessInputType): void {
+export function load_codeCard_suit(load: MeshLoad): void {
   const red = code.pushRed(
-    input,
-    code.createRedGather(input, 'classInterface'),
+    load,
+    code.createRedGather(load, 'classInterface'),
   )
-  const blue = code.pushBlue(input, 'classInterfaces', {
-    methods: code.createBlueArray(input),
-    properties: code.createBlueArray(input),
+  const blue = code.pushBlue(load, 'classInterfaces', {
+    methods: code.createBlueArray(load),
+    properties: code.createBlueArray(load),
     type: Mesh.ClassInterface,
-    typeInputs: code.createBlueArray(input),
+    typeInputs: code.createBlueArray(load),
   })
-  const colorInput = code.withColors(input, { blue, red })
+  const colorInput = code.withColors(load, { blue, red })
 
   code.assumeNest(colorInput).forEach((nest, index) => {
     code.addTask(colorInput.base, () => {
@@ -24,62 +24,59 @@ export function load_codeCard_suit(input: SiteProcessInputType): void {
 }
 
 export function load_codeCard_suit_nestedChildren(
-  input: SiteProcessInputType,
+  load: MeshLoad,
 ): void {
-  const type = code.getLinkHint(input)
+  const type = code.getLinkHint(load)
   if (type === 'static-term') {
-    const term = code.assumeTermString(input)
-    const index = code.assumeLinkIndex(input)
+    const term = code.assumeTermString(load)
+    const index = code.assumeLinkIndex(load)
     if (index === 0) {
       const blueString = code.createBlueString(term)
-      code.pushRed(
-        input,
-        code.createRedValue(input, 'name', blueString),
-      )
-      code.attachBlue(input, 'name', blueString)
+      code.pushRed(load, code.createRedValue(load, 'name', blueString))
+      code.attachBlue(load, 'name', blueString)
       return
     }
     switch (term) {
       case 'link':
-        code.load_codeCard_link(input, 'properties')
+        code.load_codeCard_link(load, 'properties')
         break
       case 'task':
-        code.load_codeCard_task(input, 'methods')
+        code.load_codeCard_task(load, 'methods')
         break
       case 'case':
-        // code.load_codeCard_formTask(input)
+        // code.load_codeCard_formTask(load)
         break
       case 'note':
-        code.load_codeCard_note(input)
+        code.load_codeCard_note(load)
         break
       case 'head':
-        code.load_codeCard_head(input)
+        code.load_codeCard_head(load)
         break
       // case 'fuse':
-      //   code.load_codeCard_fuse(input)
+      //   code.load_codeCard_fuse(load)
       //   break
       case 'hold':
-        code.load_codeCard_hold(input)
+        code.load_codeCard_hold(load)
         break
       case 'slot':
-        code.load_codeCard_slot(input)
+        code.load_codeCard_slot(load)
         break
       case 'walk':
-        code.load_codeCard_walk(input)
+        code.load_codeCard_walk(load)
         break
       case 'stem':
-        code.load_codeCard_stem(input)
+        code.load_codeCard_stem(load)
         break
       case 'base':
-        code.load_codeCard_form_base(input)
+        code.load_codeCard_form_base(load)
         break
       case 'like':
-        code.load_codeCard_like(input)
+        code.load_codeCard_like(load)
         break
       default:
-        code.throwError(code.generateUnhandledTermCaseError(input))
+        code.throwError(code.generateUnhandledTermCaseError(load))
     }
   } else {
-    code.throwError(code.generateUnhandledNestCaseError(input, type))
+    code.throwError(code.generateUnhandledNestCaseError(load, type))
   }
 }

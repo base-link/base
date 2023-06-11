@@ -1,20 +1,20 @@
 import { Link, LinkHint, Mesh, code } from '~'
-import type { SiteProcessInputType } from '~'
+import type { MeshLoad } from '~'
 
 // export function load_codeCard_form_wear(
-//   input: SiteProcessInputType,
+//   load: MeshLoad,
 // ): void {
-//   const container = code.createContainerScope(input)
+//   const container = code.createContainerScope(load)
 //   const scope = code.createStepScope(container)
-//   const scopeInput = code.withScope(input, scope)
+//   const scopeInput = code.withScope(load, scope)
 //   return
 //   const wear = code.createNest(
 //     Mesh.ClassInterfaceImplementation,
-//     input.scope,
+//     load.scope,
 //   )
 //   const childInput = code.withElement(scopeInput, wear)
 
-//   code.assumeLink(input, Link.Tree).nest.forEach((nest, index) => {
+//   code.assumeLink(load, Link.Tree).nest.forEach((nest, index) => {
 //     load_codeCard_form_wear_nestedChildren(
 //       code.withLink(childInput, nest, index),
 //     )
@@ -22,16 +22,16 @@ import type { SiteProcessInputType } from '~'
 // }
 
 // export function load_codeCard_form_wear_nestedChildren(
-//   input: SiteProcessInputType,
+//   load: MeshLoad,
 // ): void {
-//   const type = code.getLinkHint(input)
+//   const type = code.getLinkHint(load)
 //   switch (type) {
 //     case LinkHint.StaticTerm: {
-//       const term = code.assumeTermString(input)
-//       const index = code.assumeLinkIndex(input)
+//       const term = code.assumeTermString(load)
+//       const index = code.assumeLinkIndex(load)
 //       if (index === 0) {
 //         const wear = code.assumeElementAsNest(
-//           input,
+//           load,
 //           Mesh.ClassInterfaceImplementation,
 //         )
 //         wear.children.push(code.createStringConstant('name', term))
@@ -40,14 +40,14 @@ import type { SiteProcessInputType } from '~'
 
 //       switch (term) {
 //         case 'head':
-//           code.load_codeCard_head(input)
+//           code.load_codeCard_head(load)
 //           break
 //         default:
-//           code.throwError(code.generateUnknownTermError(input))
+//           code.throwError(code.generateUnknownTermError(load))
 //       }
 //       break
 //     }
 //     default:
-//       code.throwError(code.generateUnhandledTermCaseError(input))
+//       code.throwError(code.generateUnhandledTermCaseError(load))
 //   }
 // }

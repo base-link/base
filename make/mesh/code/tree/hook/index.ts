@@ -1,15 +1,13 @@
 import { BlueStringType, LinkHint, Mesh, code } from '~'
-import type { SiteProcessInputType } from '~'
+import type { MeshLoad } from '~'
 
-export function load_codeCard_tree_hook(
-  input: SiteProcessInputType,
-): void {
-  const red = code.pushRed(input, code.createRedGather(input, 'hook'))
-  const blue = code.pushBlue(input, 'hooks', {
+export function load_codeCard_tree_hook(load: MeshLoad): void {
+  const red = code.pushRed(load, code.createRedGather(load, 'hook'))
+  const blue = code.pushBlue(load, 'hooks', {
     type: Mesh.Hook,
   })
 
-  const colorInput = code.withColors(input, { blue, red })
+  const colorInput = code.withColors(load, { blue, red })
 
   code.assumeNest(colorInput).forEach((nest, index) => {
     code.addTask(colorInput.base, () => {
@@ -21,37 +19,37 @@ export function load_codeCard_tree_hook(
 }
 
 export function load_codeCard_tree_hook_nestedChildren(
-  input: SiteProcessInputType,
+  load: MeshLoad,
 ): void {
-  const type = code.getLinkHint(input)
+  const type = code.getLinkHint(load)
   switch (type) {
     case LinkHint.StaticTerm:
-      const index = code.assumeLinkIndex(input)
+      const index = code.assumeLinkIndex(load)
       if (index === 0) {
-        const name = code.assumeTermString(input)
-        code.attachStaticTerm(input, 'name', name)
+        const name = code.assumeTermString(load)
+        code.attachStaticTerm(load, 'name', name)
       } else {
         const blueString = code.getBlueValue(
-          input,
+          load,
           'name',
         ) as BlueStringType
 
         if (blueString?.value === 'fuse') {
-          if (!code.hasBlueValue(input, 'content')) {
+          if (!code.hasBlueValue(load, 'content')) {
             code.attachBlueValue(
-              input,
+              load,
               'content',
-              code.createBlueArray(input),
+              code.createBlueArray(load),
             )
           }
 
-          const nest = input.link.element
-          code.pushRed(input, code.createRedValue(input, 'link', nest))
-          code.pushBlue(input, 'content', code.createBlueLink(nest))
+          const nest = load.link.element
+          code.pushRed(load, code.createRedValue(load, 'link', nest))
+          code.pushBlue(load, 'content', code.createBlueLink(nest))
         }
       }
       break
     default:
-      code.throwError(code.generateUnhandledNestCaseError(input, type))
+      code.throwError(code.generateUnhandledNestCaseError(load, type))
   }
 }

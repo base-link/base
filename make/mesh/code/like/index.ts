@@ -1,20 +1,20 @@
 import { Link, LinkHint, Mesh, code } from '~'
-import type { SiteProcessInputType } from '~'
+import type { MeshLoad } from '~'
 
-export function load_codeCard_like(input: SiteProcessInputType): void {
+export function load_codeCard_like(load: MeshLoad): void {
   const red = code.pushRed(
-    input,
-    code.createRedGather(input, 'definedType'),
+    load,
+    code.createRedGather(load, 'definedType'),
   )
-  const blue = code.attachBlue(input, 'definedType', {
+  const blue = code.attachBlue(load, 'definedType', {
     bind: [] as unknown as code.BlueArrayType<code.BlueClassReferenceType>,
     type: Mesh.ClassReference,
   })
 
-  const childInput = code.withColors(input, { blue, red })
+  const childInput = code.withColors(load, { blue, red })
 
-  code.assumeNest(input).forEach((nest, index) => {
-    code.addTask(input.base, () => {
+  code.assumeNest(load).forEach((nest, index) => {
+    code.addTask(load.base, () => {
       load_codeCard_like_nestedChildren(
         code.withLink(childInput, nest, index),
       )
@@ -22,93 +22,79 @@ export function load_codeCard_like(input: SiteProcessInputType): void {
   })
 }
 
-export function load_codeCard_like_free(
-  input: SiteProcessInputType,
-): void {}
+export function load_codeCard_like_free(load: MeshLoad): void {}
 
-export function load_codeCard_like_head(
-  input: SiteProcessInputType,
-): void {}
+export function load_codeCard_like_head(load: MeshLoad): void {}
 
-export function load_codeCard_like_like(
-  input: SiteProcessInputType,
-): void {}
+export function load_codeCard_like_like(load: MeshLoad): void {}
 
-export function load_codeCard_like_list(
-  input: SiteProcessInputType,
-): void {}
+export function load_codeCard_like_list(load: MeshLoad): void {}
 
-export function load_codeCard_like_mesh(
-  input: SiteProcessInputType,
-): void {}
+export function load_codeCard_like_mesh(load: MeshLoad): void {}
 
 export function load_codeCard_like_nestedChildren(
-  input: SiteProcessInputType,
+  load: MeshLoad,
 ): void {
-  const type = code.getLinkHint(input)
+  const type = code.getLinkHint(load)
   switch (type) {
     case LinkHint.DynamicTerm: {
-      const index = code.assumeLinkIndex(input)
+      const index = code.assumeLinkIndex(load)
       if (index === 0) {
-        code.load_first_dynamicTerm(input, 'name')
+        code.load_first_dynamicTerm(load, 'name')
       } else {
-        code.load_dynamicTerm(input)
+        code.load_dynamicTerm(load)
       }
       break
     }
     case LinkHint.StaticTerm: {
-      const index = code.assumeLinkIndex(input)
+      const index = code.assumeLinkIndex(load)
       if (index === 0) {
-        code.load_first_staticTerm(input, 'name')
+        code.load_first_staticTerm(load, 'name')
         return
       }
 
-      const term = code.assumeTermString(input)
+      const term = code.assumeTermString(load)
       switch (term) {
         case 'head':
-          code.load_codeCard_head(input)
+          code.load_codeCard_head(load)
           break
         case 'like':
-          code.load_codeCard_like_like(input)
+          code.load_codeCard_like_like(load)
           break
         case 'list':
-          code.load_codeCard_like_list(input)
+          code.load_codeCard_like_list(load)
           break
         case 'mesh':
-          code.load_codeCard_like_mesh(input)
+          code.load_codeCard_like_mesh(load)
           break
         case 'take':
-          code.load_codeCard_like_take(input)
+          code.load_codeCard_like_take(load)
           break
         case 'free':
-          code.load_codeCard_like_free(input)
+          code.load_codeCard_like_free(load)
           break
         case 'term':
-          code.load_codeCard_like_term(input)
+          code.load_codeCard_like_term(load)
           break
         case 'link':
-          // code.load_codeCard_link(input)
+          // code.load_codeCard_link(load)
           break
         case 'task':
-          code.load_codeCard_task(input)
+          code.load_codeCard_task(load)
           break
         case 'stem':
-          code.load_codeCard_stem(input)
+          code.load_codeCard_stem(load)
           break
         default:
-          code.throwError(code.generateUnhandledTermCaseError(input))
+          code.throwError(code.generateUnhandledTermCaseError(load))
       }
       break
     }
     default:
-      code.throwError(code.generateUnhandledNestCaseError(input, type))
+      code.throwError(code.generateUnhandledNestCaseError(load, type))
   }
 }
 
-export function load_codeCard_like_take(
-  input: SiteProcessInputType,
-): void {}
+export function load_codeCard_like_take(load: MeshLoad): void {}
 
-export function load_codeCard_like_term(
-  input: SiteProcessInputType,
-): void {}
+export function load_codeCard_like_term(load: MeshLoad): void {}

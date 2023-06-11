@@ -1,6 +1,6 @@
 import { Base, Link, LinkHint, Mesh, code } from '~'
-import type { SiteModuleType, SiteProcessInputType } from '~'
-import { minimatch } from 'minimatch'
+import type { SiteModuleType, MeshLoad } from '~'
+import { RiffDeck } from '../form.js'
 
 export * from './bear/index.js'
 export * from './bind/index.js'
@@ -35,41 +35,7 @@ export * from './wait/index.js'
 export * from './walk/index.js'
 export * from './zone/index.js'
 
-export function loadCard(base: Base, link: string): void {
-  if (code.testHaveCard(base, link)) {
-    return
-  }
-
-  const deck = code.loadDeckFile(link)
-  const mint = code.loadMintFile(deck)
-
-  walk: for (const have of mint.mint) {
-    if (minimatch(link, have.link)) {
-      switch (have.name) {
-        case 'deck':
-          return code.load_deckCard(base, link)
-        case 'code':
-          return code.load_codeCard(base, link)
-        case 'mint':
-          return code.load_mintCard(base, link)
-        case 'call': // api urls
-          return code.load_callCard(base, link)
-        case 'line': // cli hooks
-          return code.load_lineCard(base, link)
-        case 'note': // a note type is a scratch type which isn't validated
-          return code.load_noteCard(base, link)
-        case 'book':
-          return code.load_bookCard(base, link)
-        default:
-          throw code.haltMissMintName()
-      }
-    }
-  }
-
-  throw code.haltCardMiss()
-}
-
-export function loadMintFile(deck) {
+export function loadMintFile(deck: RiffDeck) {
   if (deck.mint) {
     return code.readFileLink(path.relative(deck.mint, deck.link))
   }
@@ -145,71 +111,69 @@ export function load_codeCard(base: Base, link: string): void {
   }
 }
 
-export function load_codeCard_nestedChildren(
-  input: SiteProcessInputType,
-): void {
-  const type = code.getLinkHint(input)
+export function load_codeCard_nestedChildren(load: MeshLoad): void {
+  const type = code.getLinkHint(load)
   switch (type) {
     case LinkHint.DynamicTerm: {
-      code.load_dynamicTerm(input)
+      code.load_dynamicTerm(load)
       break
     }
     case LinkHint.StaticTerm:
-      code.load_codeCard_nestedChildren_term(input)
+      code.load_codeCard_nestedChildren_term(load)
       break
     default: {
-      code.throwError(code.generateUnhandledNestCaseError(input, type))
+      code.throwError(code.generateUnhandledNestCaseError(load, type))
     }
   }
 }
 
 export function load_codeCard_nestedChildren_term(
-  input: SiteProcessInputType,
+  load: MeshLoad,
 ): void {
-  const term = code.resolveTermString(input)
+  const term = code.resolveTermString(load)
   switch (term) {
     case 'bear': {
-      code.load_codeCard_bear(input)
+      code.load_codeCard_bear(load)
       break
     }
     case 'load': {
-      code.load_codeCard_load(input)
+      code.load_codeCard_load(load)
       break
     }
     // case 'fuse': {
-    //   code.load_codeCard_fuse(input)
+    //   code.load_codeCard_fuse(load)
     //   break
     // }
     case 'tree': {
-      code.load_codeCard_tree(input)
+      code.load_codeCard_tree(load)
       break
     }
     case 'face': {
-      code.load_codeCard_face(input)
+      code.load_codeCard_face(load)
       break
     }
     case 'host': {
-      code.load_codeCard_host(input)
+      code.load_codeCard_host(load)
       break
     }
     case 'form': {
-      code.load_codeCard_form(input)
+      code.load_codeCard_form(load)
       break
     }
     case 'suit': {
-      code.load_codeCard_suit(input)
+      code.load_codeCard_suit(load)
       break
     }
     case 'task': {
-      code.load_codeCard_task(input)
+      code.load_codeCard_task(load)
       break
     }
     case 'note': {
-      code.load_codeCard_note(input)
+      code.load_codeCard_note(load)
       break
     }
     default: {
-      code.throwError(code.generateUnhandledTermCaseError(input))
+      code.throwError(code.generateUnhandledTermCaseError(load))
     }
   }
 }

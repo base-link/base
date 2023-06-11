@@ -1,36 +1,36 @@
 import { Link, code } from '~'
-import type { SiteProcessInputType } from '~'
+import type { MeshLoad } from '~'
 
 export * from './hook/index.js'
 
-export function load_codeCard_zone(input: SiteProcessInputType): void {
-  code.assumeLink(input, Link.Tree).nest.forEach((nest, index) => {
+export function load_codeCard_zone(load: MeshLoad): void {
+  code.assumeLink(load, Link.Tree).nest.forEach((nest, index) => {
     code.load_codeCard_zone_nestedChildren(
-      code.withLink(input, nest, index),
+      code.withLink(load, nest, index),
     )
   })
 }
 
 export function load_codeCard_zone_nestedChildren(
-  input: SiteProcessInputType,
+  load: MeshLoad,
 ): void {
-  const type = code.getLinkHint(input)
+  const type = code.getLinkHint(load)
   if (type === 'static-term') {
-    const term = code.resolveTermString(input)
+    const term = code.resolveTermString(load)
     switch (term) {
       case 'take':
-        code.load_codeCard_link(input)
+        code.load_codeCard_link(load)
         break
       case 'hook':
-        code.load_codeCard_zoneHook(input)
+        code.load_codeCard_zoneHook(load)
         break
       case 'head':
-        code.load_codeCard_head(input)
+        code.load_codeCard_head(load)
         break
       default:
-        code.throwError(code.generateUnknownTermError(input))
+        code.throwError(code.generateUnknownTermError(load))
     }
   } else {
-    code.throwError(code.generateUnhandledNestCaseError(input, type))
+    code.throwError(code.generateUnhandledNestCaseError(load, type))
   }
 }

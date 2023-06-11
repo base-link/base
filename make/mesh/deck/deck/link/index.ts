@@ -1,10 +1,10 @@
 import { Mesh, code } from '~'
-import type { SiteProcessInputType } from '~'
+import type { MeshLoad } from '~'
 
-export function load_deckCard_deck_link(input: SiteProcessInputType) {
-  const text = code.assumeText(input)
+export function load_deckCard_deck_link(load: MeshLoad) {
+  const text = code.assumeText(load)
 
-  code.assertStringPattern(input, text, /^@[a-z0-9]+\/[a-z0-9]+$/)
+  code.assertStringPattern(load, text, /^@[a-z0-9]+\/[a-z0-9]+$/)
 
   const [host, name] = code.splitPackageModuleName(text)
   code.assertString(host)
@@ -14,12 +14,12 @@ export function load_deckCard_deck_link(input: SiteProcessInputType) {
   const nameString = code.createBlueString(name)
 
   code.pushRed(
-    input,
-    code.createRedGather(input, 'link', [hostString, nameString]),
+    load,
+    code.createRedGather(load, 'link', [hostString, nameString]),
   )
 
-  code.attachBlue(input, 'host', hostString)
-  code.attachBlue(input, 'name', nameString)
+  code.attachBlue(load, 'host', hostString)
+  code.attachBlue(load, 'name', nameString)
 }
 
 export function splitPackageModuleName(string: string): Array<string> {

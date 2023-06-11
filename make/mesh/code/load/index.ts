@@ -1,17 +1,17 @@
 import { Link, LinkHint, Mesh, code } from '~'
-import type { SiteProcessInputType } from '~'
+import type { MeshLoad } from '~'
 
 export * from './bear/index.js'
 export * from './find/index.js'
 
-export function load_codeCard_load(input: SiteProcessInputType): void {
-  const red = code.pushRed(input, code.createRedGather(input, 'import'))
-  const blue = code.pushBlue(input, 'imports', {
-    imports: code.createBlueArray(input),
+export function load_codeCard_load(load: MeshLoad): void {
+  const red = code.pushRed(load, code.createRedGather(load, 'import'))
+  const blue = code.pushBlue(load, 'imports', {
+    imports: code.createBlueArray(load),
     type: Mesh.Import,
-    variables: code.createBlueArray(input),
+    variables: code.createBlueArray(load),
   })
-  const colorInput = code.withColors(input, { blue, red })
+  const colorInput = code.withColors(load, { blue, red })
 
   code.assumeNest(colorInput).forEach((nest, index) => {
     load_codeCard_load_nestedChildren(
@@ -20,54 +20,52 @@ export function load_codeCard_load(input: SiteProcessInputType): void {
   })
 }
 
-export function load_codeCard_load_nestedChildren(
-  input: SiteProcessInputType,
-) {
-  const type = code.getLinkHint(input)
+export function load_codeCard_load_nestedChildren(load: MeshLoad) {
+  const type = code.getLinkHint(load)
   switch (type) {
     case LinkHint.StaticText: {
-      const index = code.assumeLinkIndex(input)
+      const index = code.assumeLinkIndex(load)
       if (index !== 0) {
         code.throwError(code.generateInvalidCompilerStateError())
       } else {
-        const string = code.assumeText(input)
-        const path = code.resolveModulePath(input, string)
+        const string = code.assumeText(load)
+        const path = code.resolveModulePath(load, string)
         const bluePath = code.createBlueString(path)
 
         code.pushRed(
-          input,
-          code.createRedValue(input, 'absolutePath', bluePath),
+          load,
+          code.createRedValue(load, 'absolutePath', bluePath),
         )
 
-        code.attachBlue(input, 'absolutePath', bluePath)
+        code.attachBlue(load, 'absolutePath', bluePath)
 
-        code.addTask(input.base, () => {
-          code.handle_codeCard(input.base, path)
+        code.addTask(load.base, () => {
+          code.handle_codeCard(load.base, path)
         })
       }
       break
     }
 
     case LinkHint.StaticTerm: {
-      const term = code.resolveTermString(input)
+      const term = code.resolveTermString(load)
       switch (term) {
         case 'find':
         case 'take':
-          code.load_codeCard_load_find(input)
+          code.load_codeCard_load_find(load)
           break
         case 'load':
-          code.load_codeCard_load(input)
+          code.load_codeCard_load(load)
           break
         case 'bear':
-          code.load_codeCard_load_bear(input)
+          code.load_codeCard_load_bear(load)
           break
         default:
-          code.throwError(code.generateUnknownTermError(input))
+          code.throwError(code.generateUnknownTermError(load))
       }
       break
     }
 
     default:
-      code.throwError(code.generateUnhandledNestCaseError(input, type))
+      code.throwError(code.generateUnhandledNestCaseError(load, type))
   }
 }

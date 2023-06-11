@@ -1,12 +1,12 @@
 import { LinkHint, LinkNodeType, Mesh, code } from '~'
-import type { SiteProcessInputType } from '~'
+import type { MeshLoad } from '~'
 
-// export function attemptResolveFuse(input: SiteProcessInputType): void {
-//   const name = code.findFullStringConstantByName(input, 'name')
+// export function attemptResolveFuse(load: MeshLoad): void {
+//   const name = code.findFullStringConstantByName(load, 'name')
 //   code.assertString(name)
 
 //   const templateMesh = code.getEnvironmentProperty(
-//     input.environment,
+//     load.environment,
 //     'allTemplateMesh',
 //   )
 
@@ -16,12 +16,12 @@ import type { SiteProcessInputType } from '~'
 //       return // not yet
 //     }
 
-//     const nodes = code.evaluateTemplate(input)
+//     const nodes = code.evaluateTemplate(load)
 //   }
 // }
 
 // export function evaluateTemplate(
-//   input: SiteProcessInputType,
+//   load: MeshLoad,
 // ): Array<LinkNodeType> {
 //   const result: Array<LinkNodeType> = []
 
@@ -29,18 +29,18 @@ import type { SiteProcessInputType } from '~'
 // }
 
 // export function load_codeCard_fuse(
-//   input: SiteProcessInputType,
+//   load: MeshLoad,
 // ): void {
-//   const red = code.pushRed(input, code.createRedGather(input, 'fuse'))
-//   const blue = code.createBlue(input, {
-//     bind: code.createBlueArray(input),
+//   const red = code.pushRed(load, code.createRedGather(load, 'fuse'))
+//   const blue = code.createBlue(load, {
+//     bind: code.createBlueArray(load),
 //     type: Mesh.Inject,
 //   })
 
-//   const colorInput = code.withColors(input, { blue, red })
+//   const colorInput = code.withColors(load, { blue, red })
 
-//   code.assumeNest(input).forEach((nest, index) => {
-//     code.addTask(input.base, () => {
+//   code.assumeNest(load).forEach((nest, index) => {
+//     code.addTask(load.base, () => {
 //       load_codeCard_fuse_nestedChildren(
 //         code.withLink(colorInput, nest, index),
 //       )
@@ -49,36 +49,36 @@ import type { SiteProcessInputType } from '~'
 // }
 
 // export function load_codeCard_fuse_nestedChildren(
-//   input: SiteProcessInputType,
+//   load: MeshLoad,
 // ): void {
-//   const type = code.getLinkHint(input)
+//   const type = code.getLinkHint(load)
 //   switch (type) {
 //     case LinkHint.StaticTerm: {
-//       const index = code.assumeLinkIndex(input)
-//       const term = code.assumeTermString(input)
+//       const index = code.assumeLinkIndex(load)
+//       const term = code.assumeTermString(load)
 //       if (index === 0) {
-//         code.attachStaticTerm(input, 'name', term)
+//         code.attachStaticTerm(load, 'name', term)
 //       } else {
 //         switch (term) {
 //           case 'bind':
-//             code.load_codeCard_bind(input)
+//             code.load_codeCard_bind(load)
 //             break
 //           case 'mark':
-//             code.load_codeCard_bond_mark(input)
+//             code.load_codeCard_bond_mark(load)
 //             break
 //           case 'loan':
-//             code.load_codeCard_bond_loan(input)
+//             code.load_codeCard_bond_loan(load)
 //             break
 //           case 'term':
-//             code.load_codeCard_term(input)
+//             code.load_codeCard_term(load)
 //             break
 //           default:
-//             code.throwError(code.generateUnhandledTermCaseError(input))
+//             code.throwError(code.generateUnhandledTermCaseError(load))
 //         }
 //       }
 //       break
 //     }
 //     default:
-//       code.throwError(code.generateUnhandledTermCaseError(input))
+//       code.throwError(code.generateUnhandledTermCaseError(load))
 //   }
 // }

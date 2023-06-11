@@ -1,67 +1,60 @@
 import { Link, LinkHint, code } from '~'
-import type { SiteProcessInputType } from '~'
+import type { MeshLoad } from '~'
 
-export function load_deckCard_deck_bear(
-  input: SiteProcessInputType,
-): void {
-  code.loadLink(input).forEach((nest, index) => {
-    code.addTask(input.base, () => {
+export function load_deckCard_deck_bear(load: MeshLoad): void {
+  code.loadLink(load).forEach((nest, index) => {
+    code.addTask(load.base, () => {
       code.load_deckCard_deck_bear_nestedChildren(
-        code.withLink(input, nest, index),
+        code.withLink(load, nest, index),
       )
     })
   })
 }
 
 export function load_deckCard_deck_bear_nestedChildren(
-  input: SiteProcessInputType,
+  load: MeshLoad,
 ): void {
-  const index = code.assumeLinkIndex(input)
+  const index = code.assumeLinkIndex(load)
   if (index === 0) {
-    const type = code.getLinkHint(input)
+    const type = code.getLinkHint(load)
     switch (type) {
       case LinkHint.StaticText: {
-        const string = code.assumeText(input)
-        const path = code.resolveModulePath(input, string)
+        const string = code.assumeText(load)
+        const path = code.resolveModulePath(load, string)
         const blueString = code.createBlueString(path)
 
         code.pushRed(
-          input,
-          code.createRedValue(input, 'bear', blueString),
+          load,
+          code.createRedValue(load, 'bear', blueString),
         )
-        code.attachBlue(input, 'bear', blueString)
+        code.attachBlue(load, 'bear', blueString)
 
-        code.addTask(input.base, () => {
-          code.handle_codeCard(input.base, path)
+        code.addTask(load.base, () => {
+          code.handle_codeCard(load.base, path)
         })
         break
       }
       case LinkHint.DynamicText: {
-        const textNode = code.assumeLink(input, Link.Text)
+        const textNode = code.assumeLink(load, Link.Text)
 
-        code.pushRed(
-          input,
-          code.createRedValue(input, 'bear', textNode),
-        )
+        code.pushRed(load, code.createRedValue(load, 'bear', textNode))
 
         code.attachBlue(
-          input,
+          load,
           'bear',
-          code.createBlueText(input, textNode),
+          code.createBlueText(load, textNode),
         )
 
-        code.bindText(input, () => {
-          const string = code.assumeText(input)
-          const path = code.resolveModulePath(input, string)
-          code.attachBlue(input, 'bear', code.createBlueString(path))
+        code.bindText(load, () => {
+          const string = code.assumeText(load)
+          const path = code.resolveModulePath(load, string)
+          code.attachBlue(load, 'bear', code.createBlueString(path))
         })
       }
       default:
-        code.throwError(
-          code.generateUnhandledNestCaseError(input, type),
-        )
+        code.throwError(code.generateUnhandledNestCaseError(load, type))
     }
   } else {
-    throw new Error('Too many inputs.')
+    throw new Error('Too many loads.')
   }
 }

@@ -100,6 +100,15 @@ export type RiffCall = RiffBase & {
   }
 }
 
+export type RiffCard = RiffCodeCard | RiffDeckCard
+
+export type RiffCardBase = {
+  lineText: Array<string>
+  link: string
+  linkTree: LinkTree
+  text: string
+}
+
 export type RiffCite = RiffBase & {
   form: RiffName.Cite
   link: {
@@ -111,7 +120,7 @@ export type RiffCite = RiffBase & {
 
 export type RiffCodeCard = RiffBase & {
   form: RiffName.CodeCard
-  link: {
+  link: RiffCardBase & {
     bear: Array<RiffBear>
     dock: Array<RiffDock>
     form: Array<RiffForm>
@@ -149,7 +158,7 @@ export type RiffDeck = RiffBase & {
 
 export type RiffDeckCard = RiffBase & {
   form: RiffName.DeckCard
-  link: {
+  link: RiffCardBase & {
     deck?: RiffDeck
   }
 }

@@ -1,23 +1,20 @@
 import { Mesh, code } from '~'
-import type { SiteProcessInputType } from '~'
+import type { MeshLoad } from '~'
 
 export * from './hook/index.js'
 
-export function load_codeCard_tree(input: SiteProcessInputType): void {
-  const red = code.pushRed(
-    input,
-    code.createRedGather(input, 'template'),
-  )
-  const blue = code.pushBlue(input, 'templates', {
-    hooks: code.createBlueArray(input),
-    inputs: code.createBlueArray(input),
+export function load_codeCard_tree(load: MeshLoad): void {
+  const red = code.pushRed(load, code.createRedGather(load, 'template'))
+  const blue = code.pushBlue(load, 'templates', {
+    hooks: code.createBlueArray(load),
+    loads: code.createBlueArray(load),
     type: Mesh.Template,
   })
 
-  const colorInput = code.withColors(input, { blue, red })
+  const colorInput = code.withColors(load, { blue, red })
 
   code.assumeNest(colorInput).forEach((nest, index) => {
-    code.addTask(input.base, () => {
+    code.addTask(load.base, () => {
       code.load_codeCard_tree_nestedChildren(
         code.withLink(colorInput, nest, index),
       )
@@ -26,31 +23,31 @@ export function load_codeCard_tree(input: SiteProcessInputType): void {
 }
 
 export function load_codeCard_tree_nestedChildren(
-  input: SiteProcessInputType,
+  load: MeshLoad,
 ): void {
-  const type = code.getLinkHint(input)
+  const type = code.getLinkHint(load)
   if (type === 'static-term') {
-    const name = code.assumeTermString(input)
-    const index = code.assumeLinkIndex(input)
+    const name = code.assumeTermString(load)
+    const index = code.assumeLinkIndex(load)
     if (index === 0) {
-      code.attachStaticTerm(input, 'name', name)
+      code.attachStaticTerm(load, 'name', name)
     } else {
       switch (name) {
         case 'take':
-          code.load_codeCard_link(input)
+          code.load_codeCard_link(load)
           break
         case 'hook':
-          code.load_codeCard_tree_hook(input)
+          code.load_codeCard_tree_hook(load)
           break
 
         case 'head':
-          code.load_codeCard_head(input)
+          code.load_codeCard_head(load)
           break
         default:
-          code.throwError(code.generateUnknownTermError(input))
+          code.throwError(code.generateUnknownTermError(load))
       }
     }
   } else {
-    code.throwError(code.generateUnhandledTermCaseError(input))
+    code.throwError(code.generateUnhandledTermCaseError(load))
   }
 }

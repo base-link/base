@@ -1,16 +1,16 @@
 import { code, LinkHint, Mesh } from '~'
-import type { SiteProcessInputType } from '~'
+import type { MeshLoad } from '~'
 
 export function load_codeCard_host(
-  input: SiteProcessInputType,
+  load: MeshLoad,
   property = 'constants'
 ): void {
-  const red = code.pushRed(input, code.createRedGather(input, property))
-  const blue = code.pushBlue(input, property, {
+  const red = code.pushRed(load, code.createRedGather(load, property))
+  const blue = code.pushBlue(load, property, {
     type: Mesh.Constant
   })
 
-  const colorInput = code.withColors(input, { blue, red })
+  const colorInput = code.withColors(load, { blue, red })
   code.assumeNest(colorInput).forEach((nest, index) => {
     load_codeCard_host_nestedChildren(
       code.withLink(colorInput, nest, index)
@@ -19,20 +19,20 @@ export function load_codeCard_host(
 }
 
 export function load_codeCard_host_nestedChildren(
-  input: SiteProcessInputType,
+  load: MeshLoad,
 ): void {
-  const type = code.getLinkHint(input)
+  const type = code.getLinkHint(load)
   switch (type) {
     case LinkHint.StaticTerm: {
-      const term = code.assumeTermString(input)
-      const index = code.assumeLinkIndex(input)
+      const term = code.assumeTermString(load)
+      const index = code.assumeLinkIndex(load)
       if (index === 0) {
-        code.attachStaticTerm(input, 'name', term)
+        code.attachStaticTerm(load, 'name', term)
         return
       }
       break
     }
     default:
-      code.throwError(code.generateUnhandledNestCaseError(input, type))
+      code.throwError(code.generateUnhandledNestCaseError(load, type))
   }
 }

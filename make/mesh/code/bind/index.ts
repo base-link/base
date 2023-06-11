@@ -1,28 +1,26 @@
 import { Link, LinkHint, LinkNodeType, code } from '~'
-import type { SiteProcessInputType } from '~'
+import type { MeshLoad } from '~'
 
-export function assumeNest(
-  input: SiteProcessInputType,
-): Array<LinkNodeType> {
-  return code.assumeLink(input, Link.Tree).nest
+export function assumeNest(load: MeshLoad): Array<LinkNodeType> {
+  return code.assumeLink(load, Link.Tree).nest
 }
 
-export function load_codeCard_bind(input: SiteProcessInputType): void {
-  const nest = code.assumeNest(input)
+export function load_codeCard_bind(load: MeshLoad): void {
+  const nest = code.assumeNest(load)
   nest.forEach((nest, index) => {
-    load_codeCard_bind_nestedChildren(code.withLink(input, nest, index))
+    load_codeCard_bind_nestedChildren(code.withLink(load, nest, index))
   })
 }
 
 export function load_codeCard_bind_nestedChildren(
-  input: SiteProcessInputType,
+  load: MeshLoad,
 ): void {
-  const type = code.getLinkHint(input)
+  const type = code.getLinkHint(load)
   switch (type) {
     case LinkHint.StaticTerm:
-      const term = code.resolveTermString(input)
+      const term = code.resolveTermString(load)
       break
     default:
-      code.throwError(code.generateUnhandledTermCaseError(input))
+      code.throwError(code.generateUnhandledTermCaseError(load))
   }
 }

@@ -1,21 +1,21 @@
 import { Link, LinkHint, code } from '~'
-import type { SiteProcessInputType } from '~'
+import type { MeshLoad } from '~'
 
-export function load_codeCard_time(input: SiteProcessInputType): void {
-  code.assumeLink(input, Link.Tree).nest.forEach((nest, index) => {
-    load_codeCard_time_nestedChildren(code.withLink(input, nest, index))
+export function load_codeCard_time(load: MeshLoad): void {
+  code.assumeLink(load, Link.Tree).nest.forEach((nest, index) => {
+    load_codeCard_time_nestedChildren(code.withLink(load, nest, index))
   })
 }
 
 export function load_codeCard_time_nestedChildren(
-  input: SiteProcessInputType,
+  load: MeshLoad,
 ): void {
-  const type = code.getLinkHint(input)
+  const type = code.getLinkHint(load)
   switch (type) {
     case LinkHint.StaticTerm:
-      const term = code.resolveTermString(input)
+      const term = code.resolveTermString(load)
       break
     default:
-      code.throwError(code.generateUnhandledNestCaseError(input, type))
+      code.throwError(code.generateUnhandledNestCaseError(load, type))
   }
 }

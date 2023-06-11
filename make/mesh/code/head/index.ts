@@ -1,51 +1,51 @@
 import { LinkHint, Mesh, code } from '~'
-import type { SiteProcessInputType } from '~'
+import type { MeshLoad } from '~'
 
-export function load_codeCard_head(input: SiteProcessInputType): void {
+export function load_codeCard_head(load: MeshLoad): void {
   const red = code.pushRed(
-    input,
-    code.createRedGather(input, 'typeInputs'),
+    load,
+    code.createRedGather(load, 'typeInputs'),
   )
-  const blue = code.pushBlue(input, 'typeInputs', {
+  const blue = code.pushBlue(load, 'typeInputs', {
     type: Mesh.ClassInput,
   })
 
-  const colorInput = code.withColors(input, { blue, red })
+  const colorInput = code.withColors(load, { blue, red })
 
   code.assumeNest(colorInput).forEach((nest, index) => {
-    code.addTask(input.base, () => {
+    code.addTask(load.base, () => {
       code.load_codeCard_head_nestedChildren(
-        code.withLink(input, nest, index),
+        code.withLink(load, nest, index),
       )
     })
   })
 }
 
 export function load_codeCard_head_nestedChildren(
-  input: SiteProcessInputType,
+  load: MeshLoad,
 ): void {
-  const type = code.getLinkHint(input)
+  const type = code.getLinkHint(load)
   switch (type) {
     case LinkHint.StaticTerm:
-      const term = code.assumeTermString(input)
-      const index = code.assumeLinkIndex(input)
+      const term = code.assumeTermString(load)
+      const index = code.assumeLinkIndex(load)
       if (index === 0) {
-        code.attachStaticTerm(input, 'name', term)
+        code.attachStaticTerm(load, 'name', term)
         return
       }
 
       switch (term) {
         case 'like':
-          code.load_codeCard_like(input)
+          code.load_codeCard_like(load)
           break
         case 'base':
-          code.load_codeCard_like(input)
+          code.load_codeCard_like(load)
           break
         default:
-          code.throwError(code.generateUnhandledTermCaseError(input))
+          code.throwError(code.generateUnhandledTermCaseError(load))
       }
       break
     default:
-      code.throwError(code.generateUnhandledNestCaseError(input, type))
+      code.throwError(code.generateUnhandledNestCaseError(load, type))
   }
 }

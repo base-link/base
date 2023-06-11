@@ -8,7 +8,7 @@ import {
   SiteModuleType,
   code,
 } from '~'
-import type { SiteProcessInputType } from '~'
+import type { MeshLoad } from '~'
 
 export * from './deck/index.js'
 
@@ -68,29 +68,25 @@ export function load_deckCard(base: Base, link: string): void {
   }
 }
 
-export function load_deckCard_nestedChildren(
-  input: SiteProcessInputType,
-): void {
-  const type = code.getLinkHint(input)
+export function load_deckCard_nestedChildren(load: MeshLoad): void {
+  const type = code.getLinkHint(load)
   switch (type) {
     case LinkHint.StaticTerm: {
-      code.load_deckCard_staticTerm(input)
+      code.load_deckCard_staticTerm(load)
       break
     }
     default:
-      code.throwError(code.generateUnhandledNestCaseError(input, type))
+      code.throwError(code.generateUnhandledNestCaseError(load, type))
   }
 }
 
-export function load_deckCard_staticTerm(
-  input: SiteProcessInputType,
-): void {
-  const term = code.resolveTermString(input)
+export function load_deckCard_staticTerm(load: MeshLoad): void {
+  const term = code.resolveTermString(load)
   switch (term) {
     case 'deck':
-      code.load_deckCard_deck(input)
+      code.load_deckCard_deck(load)
       break
     default:
-      code.throwError(code.generateUnhandledTermCaseError(input))
+      code.throwError(code.generateUnhandledTermCaseError(load))
   }
 }
