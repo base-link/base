@@ -1,7 +1,7 @@
 
 head 3, text <The {code(<load>)}>
 
-flow <The load is for importing cards into this existing card.>
+flow <The load is for importing cards into this existing mesh.>
 
 code link, text <
   load ./x

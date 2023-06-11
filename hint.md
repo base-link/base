@@ -373,7 +373,7 @@ languages.
 
 ### `load`
 
-This is for importing other modules ("cards") into the current card.
+This is for importing other modules ("cards") into the current mesh.
 
 ### `tree`
 
