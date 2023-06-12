@@ -19,6 +19,7 @@ export function handle_deckCard(base: Base, link: string): void {
 /**
  * Entrypoint function.
  */
+
 export function process_deckCard(base: Base, link: string): void {
   const parse = code.loadLinkModule(base, link)
   const card = base.card(link)

@@ -5,14 +5,14 @@ import {
   Mesh,
   code,
 } from '~'
-import type { SiteProcessInputType } from '~'
+import type { MeshLink } from '~'
 
 export * from './base/index.js'
 export * from './case/index.js'
 export * from './wear/index.js'
 
 export function process_codeCard_form(
-  input: SiteProcessInputType,
+  input: MeshLink,
 ): void {
   const container = code.createContainerScope(input)
   const scope = code.createStepScope(container)
@@ -40,7 +40,7 @@ export function process_codeCard_form(
 }
 
 export function process_codeCard_form_nestedChildren(
-  input: SiteProcessInputType,
+  input: MeshLink,
 ): void {
   const type = code.getLinkHint(input)
   if (type === 'static-term') {

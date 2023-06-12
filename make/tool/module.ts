@@ -3,7 +3,7 @@ import {
   BaseCard,
   SiteModuleBaseType,
   SiteModuleType,
-  SiteParseType,
+  SiteCardCode,
   code,
 } from '~'
 
@@ -34,7 +34,7 @@ export function isModule(object: unknown): object is SiteModuleType {
 export function loadLinkModule(
   base: Base,
   path: string,
-): SiteParseType {
+): SiteCardCode {
   const text = code.readTextFile(base, path)
   const data = code.parseLinkText({ path, text })
   const directory = code.getLinkHost(path)

@@ -37,7 +37,7 @@ nodes, and the Form nodes (types). Each mesh has a form node.
     riff.form (its ast type)
     riff.note.take (if it is accepted)
     riff.note.form (its runtime type)
-    riff.note.link (link tree nodes)
+    riff.note.link (link tree nodes, so we can get back to error handling)
     riff.link (properties)
 
 The riff is the AST node.
@@ -47,3 +47,32 @@ fork (the environment)
 Step through the AST (iterate through the calls), and construct a fork
 for each step. Then test that the riff matches the form, or infer it and
 then check.
+
+    function testFormForm() {
+
+    }
+
+    function testForm(riff, form) {
+      for (const name in riff.link) {
+
+      }
+    }
+
+Can mark the literals with the final type instantly.
+
+    if (riff.workFormTake && riff.workForm !== form) {
+      throw halt('invalid_type')
+    }
+
+The compile target is just an AST, it's not the actual executable. The
+executable is the finally generated code. The AST is a tree structure,
+not a graph, so there won't be a problem rendering it.
+
+    riff.base //=> calculate path to notify watchers
+
+    base.hook[line].push(hook)
+
+Actually we want to add a tree of watchers, so they look up by property
+key.
+
+The interpolated references are used to generate more of the AST?
