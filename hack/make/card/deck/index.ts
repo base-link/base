@@ -1,79 +1,47 @@
-import { Base } from '~/make/form.js'
+import { Base, TreeFork, TreeSite, formBase } from '~/make/form.js'
 import tool from '~/make/tool.js'
 
 export * from './deck/index.js'
 
 export function load_deckCard(base: Base, link: string): void {
-  const linkText = tool.readLinkText(base, link)
-  const card = new Site()
-  const container = card.createTopContainerScope()
-  const scope = card.createStepScope(container)
-
-  const red = card.createTopRed({
-    children: [],
-    scope,
-    type: Mesh.Gather,
-  })
-
-  const blue = card.createTopBlue()
-
-  const baseModule: Partial<SiteModuleType> = {
-    ...parse,
+  const { tree: linkTree, text: linkText } = tool.readLinkText(
     base,
-    blue,
-    id: card.id,
-    isModule: true,
-    link: card.createTopLink(parse.linkTree),
-    red,
-    scope,
+    link,
+  )
+  if (!linkText.trim()) {
+    return
   }
 
-  baseModule.module = baseModule as SiteModuleType
-  baseModule.environment = card.createEnvironment(baseModule)
-
-  const module = baseModule as SiteModuleType
-
-  card.assertString(module.text)
-  card.assertLink(module.linkTree, Link.Tree)
-
-  card.bind(module)
-
-  const packageBlue = card.attachBlue(module, 'definitions', {
-    type: Mesh.PackageModule,
+  const cardTree = new TreeSite({
+    fork: new TreeFork(),
+    form: formBase.deckCard,
   })
 
-  const colorInput = card.withColors(module, { blue: packageBlue })
+  cardTree.fork.save('card', cardTree)
+  cardTree.fork.save('base', base)
 
-  if (module.text.trim()) {
-    module.linkTree.nest.forEach((nest, index) => {
-      tool.loadTask(base, () => {
-        card.load_deckCard_leadLink(
-          card.withLink(colorInput, nest, index),
-        )
-      })
-    })
-  }
+  linkTree.nest.forEach(nest => {
+    card.load_deckCard_leadLink({ base, nest, tree: cardTree })
+  })
 }
 
 export function load_deckCard_leadLink(load: MeshLoad): void {
   const type = card.getLinkHint(load)
   switch (type) {
     case LinkHint.StaticTerm: {
-      card.load_deckCard_staticTerm(load)
+      const term = card.resolveTermString(load)
+      switch (term) {
+        case 'deck':
+          card.load_deckCard_deck(load)
+          break
+        default:
+          card.throwError(card.generateUnhandledTermCaseError(load))
+      }
       break
     }
     default:
-      card.throwError(card.generateUnhandledNestCaseError(load, type))
-  }
-}
-
-export function load_deckCard_staticTerm(load: MeshLoad): void {
-  const term = card.resolveTermString(load)
-  switch (term) {
-    case 'deck':
-      card.load_deckCard_deck(load)
-      break
-    default:
-      card.throwError(card.generateUnhandledTermCaseError(load))
+      if (!card.saveNick(load)) {
+        card.waitNick(load, () => load_deckCard_leadLink(load))
+      }
   }
 }

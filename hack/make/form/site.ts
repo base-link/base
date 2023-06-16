@@ -74,14 +74,13 @@ export class TreeSite<
   ) {
     const link = this.form.link[name]
     this.link[name] = bond
-    for (const lead of this.lead) {
-      if (lead.name === name) {
-        if (haveProps(bond, lead.link)) {
+    if (!testMesh(bond)) {
+      const bindList = this.bind[name]
+      if (bindList) {
+        for (const bind of bindList) {
+          bind.hook(this)
         }
       }
-    }
-    if (this.lead[name]) {
-      this.lead[name]()
     }
   }
 

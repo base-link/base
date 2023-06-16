@@ -4,55 +4,22 @@ import tool from '~/make/tool'
 
 export function load_deckCard_deck_bear(load: MeshLoad): void {
   card.loadLink(load).forEach((nest, index) => {
-    tool.loadTask(load.base, () => {
-      card.load_deckCard_deck_bear_leadLink(
-        card.withLink(load, nest, index),
-      )
-    })
+    card.load_deckCard_deck_bear_leadLink(
+      card.withLink(load, nest, index),
+    )
   })
 }
 
 export function load_deckCard_deck_bear_leadLink(load: MeshLoad): void {
-  const index = card.loadLinkIndex(load)
+  const index = card.loadLinkSlot(load)
   if (index === 0) {
-    const type = card.getLinkHint(load)
-    switch (type) {
-      case LinkHint.StaticText: {
-        const string = card.assumeText(load)
-        const path = card.resolveModulePath(load, string)
-        const blueString = card.createBlueString(path)
+    card.bindText(load, text => {
+      const path = card.resolveModulePath(load, text)
 
-        card.pushRed(
-          load,
-          card.createRedValue(load, 'bear', blueString),
-        )
-        card.attachBlue(load, 'bear', blueString)
-
-        tool.loadTask(load.base, () => {
-          card.handle_codeCard(load.base, path)
-        })
-        break
-      }
-      case LinkHint.DynamicText: {
-        const textNode = card.loadLink(load, Link.Text)
-
-        card.pushRed(load, card.createRedValue(load, 'bear', textNode))
-
-        card.attachBlue(
-          load,
-          'bear',
-          card.createBlueText(load, textNode),
-        )
-
-        card.bindText(load, () => {
-          const string = card.assumeText(load)
-          const path = card.resolveModulePath(load, string)
-          card.attachBlue(load, 'bear', card.createBlueString(path))
-        })
-      }
-      default:
-        card.throwError(card.generateUnhandledNestCaseError(load, type))
-    }
+      tool.loadTask(load.base, () => {
+        card.handle_codeCard(load.base, path)
+      })
+    })
   } else {
     throw new Error('Too many loads.')
   }

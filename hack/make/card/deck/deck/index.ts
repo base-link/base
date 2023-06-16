@@ -32,6 +32,12 @@ export function load_deckCard_deck_leadLink(load: MeshLoad): void {
   const index = card.loadLinkIndex(load)
   switch (type) {
     case LinkHint.DynamicTerm:
+      const nickBond = card.readNick(load)
+      if (!nickBond && !fork) {
+        card.waitNick(load, () =>
+          load_deckCard_deck_leadLink({ ...load, fork: 1 }),
+        )
+      }
     case LinkHint.DynamicText:
     case LinkHint.DynamicPath:
     case LinkHint.StaticPath:
