@@ -45,6 +45,8 @@ export type TreeBase = {
   base?: TreeBase
   // module associated with this
   card?: TreeCard
+  // scope associated with this node.
+  fork: any
   // unprocessed yet
   needSize: number
   // state of how complete the AST node is.
