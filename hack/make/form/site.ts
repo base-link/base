@@ -1,75 +1,14 @@
-import { Base } from '@tunebond/form'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Base, FormMesh } from '@tunebond/form'
 
-export type SiteFork = {
-  base?: SiteFork
-  link: Record<string, unknown>
-}
-
-export type SiteLookForm = {
-  hook?: undefined
-  link: SiteLookFormLinkList
-}
-
-export type SiteLookFormLink = {
-  hook?: SiteLookHook
-  link?: SiteLookFormLinkList
-  // look: Array<RiffRiseMark>
-}
-
-export type SiteLookFormLinkList = {
-  [name: string]: SiteLookFormLink
-}
-
-export type SiteLookHook = (value: unknown) => void
-
-export type SiteLookLink = {
-  base?: SiteLookLink
-  bond: boolean
-  // counted
-  // dynamic properties
-  flowLink?: SiteLookLinkList
-  hook?: SiteLookHook
-  link?: SiteLookLinkList
-  // look: Array<RiffRiseMark>
-  name: string
-  size: number
-  test: boolean
-}
-
-export type SiteLookLinkList = {
-  [name: string]: SiteLookLink
-}
-
-export type SiteObjectWatcherType = {
-  hook?: undefined
-  link: SiteLookLinkList
-}
-
-export class Tree {
-  form: Base
-
-  fork: Fork
-
+export class TreeBase {
   link: Record<string, unknown>
 
   hook: Record<string, () => void>
 
-  constructor({ form, fork }: { fork: Fork; form: Base }) {
-    this.form = form
-    this.fork = fork
+  constructor() {
     this.link = {}
     this.hook = {}
-  }
-
-  make(name: string, { fork }: { fork: Fork }) {
-    const make = new Tree()
-    if (this.form[name].list) {
-      const list = (this.link[name] ??= [])
-      list.push(make)
-    } else {
-      this.link[name] = make
-    }
-    return make
   }
 
   bind(name, form, hook) {
@@ -84,10 +23,9 @@ export class Tree {
         bind[name] = true
       }
     }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     list.push({ bind, hook, nest })
   }
-
-  save(name, bond) {}
 }
 
 export class TreeBind {}
@@ -103,3 +41,98 @@ export class TreeFork {
 
   save(name, bond) {}
 }
+
+type MakeTreeBase<B extends Base, FM extends FormMesh> = {
+  base: B
+  fork: TreeFork
+  form: FM
+}
+
+// eslint-disable-next-line sort-exports/sort-exports
+export class TreeSite<
+  B extends Base,
+  FM extends FormMesh,
+> extends TreeBase {
+  base: B
+
+  form: FM
+
+  fork: TreeFork
+
+  bond: any
+
+  constructor({ base, form, fork }: MakeTreeBase<B, FM>) {
+    super()
+    this.base = base
+    this.form = form
+    this.fork = fork
+  }
+
+  save(
+    name: string,
+    bond: TreeSite<B, FM> | string | number | boolean | null,
+  ) {
+    const link = this.form.link[name]
+    this.link[name] = bond
+    for (const lead of this.lead) {
+      if (lead.name === name) {
+        if (haveProps(bond, lead.link)) {
+        }
+      }
+    }
+    if (this.lead[name]) {
+      this.lead[name]()
+    }
+  }
+
+  bind1(hook: TreeHook) {
+    // self and all children are resolved
+    for (const name in form.link) {
+      const nestHook = () => {
+        this.needSize--
+        this.needLink[name] = false
+        this.killBind2(name, nestHook)
+        if (this.needSize === 0) {
+          hook()
+        }
+      }
+      this.bind2(name, nestHook)
+    }
+  }
+
+  bind2(name: string, hook: TreeHook) {
+    // all the children are resolved
+    const list = (this.bind[name] ??= [])
+    list.push({ hook })
+  }
+
+  bind3(name: string, test: TreeTest, hook: TreeHook) {
+    // subset of children are resolved
+    const list = (this.bind[name] ??= [])
+    const nest = makeTestNest(test, hook)
+    list.push({ hook, nest })
+
+    function makeTestNest(test, hook) {
+      const nest = []
+      const site = this
+      let need = 0
+      for (const name in test) {
+        need++
+        const hookSelf = self => {
+          self.need--
+          if (self.need === 0) {
+            hook(site)
+          }
+        }
+        nest.push({ hook: hookSelf, name, need })
+      }
+      return nest
+    }
+  }
+}
+
+type TreeTest = {
+  [name: string]: true | TreeTest
+}
+
+type TreeHook = () => void
