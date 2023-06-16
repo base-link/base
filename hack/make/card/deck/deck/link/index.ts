@@ -2,24 +2,19 @@ import card from '~/make/card.js'
 import { MeshLoad } from '~/make/form.js'
 
 export function load_deckCard_deck_link(load: MeshLoad) {
-  const text = card.assumeText(load)
+  const text = card.loadText(load)
 
-  card.assertStringPattern(load, text, /^@[a-z0-9]+\/[a-z0-9]+$/)
+  card.haveTextForm(load, text, /^@[a-z0-9]+\/[a-z0-9]+$/)
 
   const [host, name] = card.splitPackageModuleName(text)
-  card.assertString(host)
-  card.assertString(name)
+  card.haveText(host)
+  card.haveText(name)
 
-  const hostString = card.createBlueString(host)
-  const nameString = card.createBlueString(name)
+  const hostText = code.makeText(host)
+  const nameText = code.makeText(name)
 
-  card.pushRed(
-    load,
-    card.createRedGather(load, 'link', [hostString, nameString]),
-  )
-
-  card.attachBlue(load, 'host', hostString)
-  card.attachBlue(load, 'name', nameString)
+  load.tree.save('host', hostText)
+  load.tree.save('name', nameText)
 }
 
 export function splitPackageModuleName(string: string): Array<string> {
