@@ -16,17 +16,15 @@ export function load_codeCard_suit(load: MeshLoad): void {
   const colorInput = card.withColors(load, { blue, red })
 
   card.assumeNest(colorInput).forEach((nest, index) => {
-    card.addTask(colorInput.base, () => {
-      card.load_codeCard_suit_nestedChildren(
+    tool.loadTask(colorInput.base, () => {
+      card.load_codeCard_suit_leadLink(
         card.withLink(colorInput, nest, index),
       )
     })
   })
 }
 
-export function load_codeCard_suit_nestedChildren(
-  load: MeshLoad,
-): void {
+export function load_codeCard_suit_leadLink(load: MeshLoad): void {
   const type = card.getLinkHint(load)
   if (type === 'static-term') {
     const term = card.assumeTermString(load)

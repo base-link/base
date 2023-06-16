@@ -41,15 +41,15 @@ import { MeshLoad } from '~/make/form.js'
 //   const colorInput = card.withColors(load, { blue, red })
 
 //   card.assumeNest(load).forEach((nest, index) => {
-//     card.addTask(load.base, () => {
-//       load_codeCard_fuse_nestedChildren(
+//     tool.loadTask(load.base, () => {
+//       load_codeCard_fuse_leadLink(
 //         card.withLink(colorInput, nest, index),
 //       )
 //     })
 //   })
 // }
 
-// export function load_codeCard_fuse_nestedChildren(
+// export function load_codeCard_fuse_leadLink(
 //   load: MeshLoad,
 // ): void {
 //   const type = card.getLinkHint(load)

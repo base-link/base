@@ -12,13 +12,13 @@
 //   const childInput = card.withElement(scopeInput, wear)
 
 //   card.loadLink(load, Link.Tree).nest.forEach((nest, index) => {
-//     load_codeCard_form_wear_nestedChildren(
+//     load_codeCard_form_wear_leadLink(
 //       card.withLink(childInput, nest, index),
 //     )
 //   })
 // }
 
-// export function load_codeCard_form_wear_nestedChildren(
+// export function load_codeCard_form_wear_leadLink(
 //   load: MeshLoad,
 // ): void {
 //   const type = card.getLinkHint(load)

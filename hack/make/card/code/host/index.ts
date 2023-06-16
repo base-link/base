@@ -13,13 +13,13 @@ export function load_codeCard_host(
 
   const colorInput = card.withColors(load, { blue, red })
   card.assumeNest(colorInput).forEach((nest, index) => {
-    load_codeCard_host_nestedChildren(
+    load_codeCard_host_leadLink(
       card.withLink(colorInput, nest, index)
     )
   })
 }
 
-export function load_codeCard_host_nestedChildren(
+export function load_codeCard_host_leadLink(
   load: MeshLoad,
 ): void {
   const type = card.getLinkHint(load)

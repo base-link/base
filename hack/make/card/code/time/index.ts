@@ -4,13 +4,11 @@ import { MeshLoad } from '~/make/form.js'
 
 export function load_codeCard_time(load: MeshLoad): void {
   card.loadLink(load, Link.Tree).nest.forEach((nest, index) => {
-    load_codeCard_time_nestedChildren(card.withLink(load, nest, index))
+    load_codeCard_time_leadLink(card.withLink(load, nest, index))
   })
 }
 
-export function load_codeCard_time_nestedChildren(
-  load: MeshLoad,
-): void {
+export function load_codeCard_time_leadLink(load: MeshLoad): void {
   const type = card.getLinkHint(load)
   switch (type) {
     case LinkHint.StaticTerm:

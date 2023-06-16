@@ -11,17 +11,15 @@ export function load_codeCard_call(load: MeshLoad): void {
   const colorInput = card.withColors(load, { blue, red })
 
   card.assumeNest(load).forEach((nest, index) => {
-    card.addTask(load.base, () => {
-      load_codeCard_call_nestedChildren(
+    tool.loadTask(load.base, () => {
+      load_codeCard_call_leadLink(
         card.withLink(colorInput, nest, index),
       )
     })
   })
 }
 
-export function load_codeCard_call_nestedChildren(
-  load: MeshLoad,
-): void {
+export function load_codeCard_call_leadLink(load: MeshLoad): void {
   const type = card.getLinkHint(load)
   switch (type) {
     case LinkHint.DynamicTerm: {

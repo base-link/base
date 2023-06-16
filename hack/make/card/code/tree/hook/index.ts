@@ -11,17 +11,15 @@ export function load_codeCard_tree_hook(load: MeshLoad): void {
   const colorInput = card.withColors(load, { blue, red })
 
   card.assumeNest(colorInput).forEach((nest, index) => {
-    card.addTask(colorInput.base, () => {
-      load_codeCard_tree_hook_nestedChildren(
+    tool.loadTask(colorInput.base, () => {
+      load_codeCard_tree_hook_leadLink(
         card.withLink(colorInput, nest, index),
       )
     })
   })
 }
 
-export function load_codeCard_tree_hook_nestedChildren(
-  load: MeshLoad,
-): void {
+export function load_codeCard_tree_hook_leadLink(load: MeshLoad): void {
   const type = card.getLinkHint(load)
   switch (type) {
     case LinkHint.StaticTerm:

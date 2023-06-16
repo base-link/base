@@ -14,8 +14,8 @@ export function load_codeCard_link(
   const colorInput = card.withColors(load, { blue, red })
 
   card.assumeNest(colorInput).forEach((nest, index) => {
-    card.addTask(load.base, () => {
-      card.load_codeCard_link_nestedChildren(
+    tool.loadTask(load.base, () => {
+      card.load_codeCard_link_leadLink(
         card.withLink(colorInput, nest, index),
       )
     })
@@ -24,9 +24,7 @@ export function load_codeCard_link(
 
 export function load_codeCard_link_base(load: MeshLoad): void {}
 
-export function load_codeCard_link_nestedChildren(
-  load: MeshLoad,
-): void {
+export function load_codeCard_link_leadLink(load: MeshLoad): void {
   const type = card.getLinkHint(load)
   switch (type) {
     case LinkHint.StaticTerm: {

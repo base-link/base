@@ -12,13 +12,11 @@ export function load_codeCard_load(load: MeshLoad): void {
   const colorInput = card.withColors(load, { blue, red })
 
   card.assumeNest(colorInput).forEach((nest, index) => {
-    load_codeCard_load_nestedChildren(
-      card.withLink(colorInput, nest, index),
-    )
+    load_codeCard_load_leadLink(card.withLink(colorInput, nest, index))
   })
 }
 
-export function load_codeCard_load_nestedChildren(load: MeshLoad) {
+export function load_codeCard_load_leadLink(load: MeshLoad) {
   const type = card.getLinkHint(load)
   switch (type) {
     case LinkHint.StaticText: {
@@ -37,7 +35,7 @@ export function load_codeCard_load_nestedChildren(load: MeshLoad) {
 
         card.attachBlue(load, 'absolutePath', bluePath)
 
-        card.addTask(load.base, () => {
+        tool.loadTask(load.base, () => {
           card.handle_codeCard(load.base, path)
         })
       }

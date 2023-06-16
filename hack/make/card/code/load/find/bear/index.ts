@@ -4,13 +4,13 @@ import { MeshLoad } from '~/make/form.js'
 
 export function load_codeCard_load_find_bear(load: MeshLoad): void {
   card.loadLink(load, Link.Tree).nest.forEach((nest, index) => {
-    card.load_codeCard_load_find_bear_nestedChildren(
+    card.load_codeCard_load_find_bear_leadLink(
       card.withLink(load, nest, index),
     )
   })
 }
 
-export function load_codeCard_load_find_bear_nestedChildren(
+export function load_codeCard_load_find_bear_leadLink(
   load: MeshLoad,
 ): void {
   const type = card.getLinkHint(load)

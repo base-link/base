@@ -13,17 +13,15 @@ export function load_codeCard_task_free(load: MeshLoad): void {
   const colorInput = card.withColors(load, { blue, red })
 
   card.assumeNest(colorInput).forEach((nest, index) => {
-    card.addTask(colorInput.base, () => {
-      card.load_codeCard_task_free_nestedChildren(
+    tool.loadTask(colorInput.base, () => {
+      card.load_codeCard_task_free_leadLink(
         card.withLink(colorInput, nest, index),
       )
     })
   })
 }
 
-export function load_codeCard_task_free_nestedChildren(
-  load: MeshLoad,
-): void {
+export function load_codeCard_task_free_leadLink(load: MeshLoad): void {
   const type = card.getLinkHint(load)
   switch (type) {
     case LinkHint.StaticTerm: {

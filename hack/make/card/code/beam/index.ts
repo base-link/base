@@ -4,13 +4,11 @@ import { MeshLoad } from '~/make/form.js'
 
 export function load_codeCard_beam(load: MeshLoad): void {
   tool.loadLink(load, Link.Tree).nest.forEach((nest, index) => {
-    load_codeCard_beam_nestedChildren(card.withLink(load, nest, index))
+    load_codeCard_beam_leadLink(card.withLink(load, nest, index))
   })
 }
 
-export function load_codeCard_beam_nestedChildren(
-  load: MeshLoad,
-): void {
+export function load_codeCard_beam_leadLink(load: MeshLoad): void {
   const type = tool.getLinkHint(load)
   switch (type) {
     case LinkHint.StaticTerm:

@@ -1,19 +1,18 @@
 import card from '~/make/card.js'
 import { MeshLoad } from '~/make/form.js'
+import tool from '~/make/tool'
 
 export function load_deckCard_deck_bear(load: MeshLoad): void {
   card.loadLink(load).forEach((nest, index) => {
-    card.addTask(load.base, () => {
-      card.load_deckCard_deck_bear_nestedChildren(
+    tool.loadTask(load.base, () => {
+      card.load_deckCard_deck_bear_leadLink(
         card.withLink(load, nest, index),
       )
     })
   })
 }
 
-export function load_deckCard_deck_bear_nestedChildren(
-  load: MeshLoad,
-): void {
+export function load_deckCard_deck_bear_leadLink(load: MeshLoad): void {
   const index = card.loadLinkIndex(load)
   if (index === 0) {
     const type = card.getLinkHint(load)
@@ -29,7 +28,7 @@ export function load_deckCard_deck_bear_nestedChildren(
         )
         card.attachBlue(load, 'bear', blueString)
 
-        card.addTask(load.base, () => {
+        tool.loadTask(load.base, () => {
           card.handle_codeCard(load.base, path)
         })
         break

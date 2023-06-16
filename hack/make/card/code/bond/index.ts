@@ -3,22 +3,14 @@ import tool from '~/make/tool.js'
 import { MeshLoad } from '~/make/form.js'
 
 export function load_codeCard_bond(load: MeshLoad): void {
-  load_codeCard_bond_nestedChildren(load)
+  load_codeCard_bond_leadLink(load)
 }
 
 export function load_codeCard_bond_code(load: MeshLoad): void {}
 
 export function load_codeCard_bond_comb(load: MeshLoad): void {}
 
-export function load_codeCard_bond_loan(load: MeshLoad): void {}
-
-export function load_codeCard_bond_mark(load: MeshLoad): void {}
-
-export function load_codeCard_bond_move(load: MeshLoad): void {}
-
-export function load_codeCard_bond_nestedChildren(
-  load: MeshLoad,
-): void {
+export function load_codeCard_bond_leadLink(load: MeshLoad): void {
   const type = card.getLinkHint(load)
   switch (type) {
     case LinkHint.StaticTerm:
@@ -59,6 +51,12 @@ export function load_codeCard_bond_nestedChildren(
       card.throwError(card.generateUnhandledNestCaseError(load, type))
   }
 }
+
+export function load_codeCard_bond_loan(load: MeshLoad): void {}
+
+export function load_codeCard_bond_mark(load: MeshLoad): void {}
+
+export function load_codeCard_bond_move(load: MeshLoad): void {}
 
 export function load_codeCard_bond_read(load: MeshLoad): void {}
 

@@ -9,13 +9,11 @@ export function assumeNest(load: MeshLoad): Array<LinkNodeType> {
 export function load_codeCard_bind(load: MeshLoad): void {
   const nest = card.assumeNest(load)
   nest.forEach((nest, index) => {
-    load_codeCard_bind_nestedChildren(card.withLink(load, nest, index))
+    load_codeCard_bind_leadLink(card.withLink(load, nest, index))
   })
 }
 
-export function load_codeCard_bind_nestedChildren(
-  load: MeshLoad,
-): void {
+export function load_codeCard_bind_leadLink(load: MeshLoad): void {
   const type = card.getLinkHint(load)
   switch (type) {
     case LinkHint.StaticTerm:

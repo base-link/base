@@ -1,9 +1,11 @@
 import { Base } from '~/make/form.js'
+import tool from '~/make/tool.js'
 
 export * from './deck/index.js'
 
 export function load_deckCard(base: Base, link: string): void {
-  const parse = card.loadLinkModule(base, link)
+  const linkText = tool.readLinkText(base, link)
+  const hook = hold
   const container = card.createTopContainerScope()
   const scope = card.createStepScope(container)
 
@@ -44,8 +46,8 @@ export function load_deckCard(base: Base, link: string): void {
 
   if (module.text.trim()) {
     module.linkTree.nest.forEach((nest, index) => {
-      card.addTask(base, () => {
-        card.load_deckCard_nestedChildren(
+      tool.loadTask(base, () => {
+        card.load_deckCard_leadLink(
           card.withLink(colorInput, nest, index),
         )
       })
@@ -53,7 +55,7 @@ export function load_deckCard(base: Base, link: string): void {
   }
 }
 
-export function load_deckCard_nestedChildren(load: MeshLoad): void {
+export function load_deckCard_leadLink(load: MeshLoad): void {
   const type = card.getLinkHint(load)
   switch (type) {
     case LinkHint.StaticTerm: {

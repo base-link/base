@@ -69,8 +69,8 @@ export function load_codeCard(base: Base, link: string): void {
 
   if (module.text.trim()) {
     module.linkTree.nest.forEach((nest, index) => {
-      card.addTask(base, () => {
-        card.load_codeCard_nestedChildren(
+      tool.loadTask(base, () => {
+        card.load_codeCard_leadLink(
           card.withLink(colorInput, nest, index),
         )
       })
@@ -78,7 +78,7 @@ export function load_codeCard(base: Base, link: string): void {
   }
 }
 
-export function load_codeCard_nestedChildren(load: MeshLoad): void {
+export function load_codeCard_leadLink(load: MeshLoad): void {
   const type = card.getLinkHint(load)
   switch (type) {
     case LinkHint.DynamicTerm: {
@@ -86,7 +86,7 @@ export function load_codeCard_nestedChildren(load: MeshLoad): void {
       break
     }
     case LinkHint.StaticTerm:
-      card.load_codeCard_nestedChildren_term(load)
+      card.load_codeCard_leadLink_term(load)
       break
     default: {
       card.throwError(card.generateUnhandledNestCaseError(load, type))
@@ -94,9 +94,7 @@ export function load_codeCard_nestedChildren(load: MeshLoad): void {
   }
 }
 
-export function load_codeCard_nestedChildren_term(
-  load: MeshLoad,
-): void {
+export function load_codeCard_leadLink_term(load: MeshLoad): void {
   const term = card.resolveTermString(load)
   switch (term) {
     case 'bear': {

@@ -132,29 +132,27 @@ export function load_codeCard_bear(load: MeshLoad): void {
   const nest = card.assumeNest(colorInput)
 
   nest.forEach((nest, index) => {
-    card.addTask(load.base, () => {
-      card.load_codeCard_bear_nestedChildren(
+    tool.loadTask(load.base, () => {
+      card.load_codeCard_bear_leadLink(
         card.withLink(colorInput, nest, index),
       )
     })
   })
 
-  card.addTask(load.base, () => {
+  tool.loadTask(load.base, () => {
     card.bearImports(colorInput)
   })
 }
 
-export function load_codeCard_bear_nestedChildren(
-  load: MeshLoad,
-): void {
+export function load_codeCard_bear_leadLink(load: MeshLoad): void {
   const type = card.getLinkHint(load)
   switch (type) {
     case LinkHint.StaticText: {
-      card.load_codeCard_bear_nestedChildren_text(load)
+      card.load_codeCard_bear_leadLink_text(load)
       break
     }
     case LinkHint.DynamicText: {
-      card.load_codeCard_bear_nestedChildren_dynamicText(load)
+      card.load_codeCard_bear_leadLink_dynamicText(load)
       break
     }
     case LinkHint.StaticTerm: {
@@ -173,7 +171,7 @@ export function load_codeCard_bear_nestedChildren(
   }
 }
 
-export function load_codeCard_bear_nestedChildren_dynamicText(
+export function load_codeCard_bear_leadLink_dynamicText(
   load: MeshLoad,
 ): void {
   const nest = card.loadLink(load, Link.Text)
@@ -189,14 +187,12 @@ export function load_codeCard_bear_nestedChildren_dynamicText(
 
   card.attachBlue(load, 'absolutePath', string)
 
-  card.addTask(load.base, () => {
+  tool.loadTask(load.base, () => {
     card.handle_codeCard(load.base, path)
   })
 }
 
-export function load_codeCard_bear_nestedChildren_text(
-  load: MeshLoad,
-): void {
+export function load_codeCard_bear_leadLink_text(load: MeshLoad): void {
   const text = card.assumeText(load)
   const path = card.resolveModulePath(load, text)
   const string = card.createBlueString(path)
@@ -208,7 +204,7 @@ export function load_codeCard_bear_nestedChildren_text(
 
   card.attachBlue(load, 'absolutePath', string)
 
-  card.addTask(load.base, () => {
+  tool.loadTask(load.base, () => {
     card.handle_codeCard(load.base, path)
   })
 }

@@ -1,16 +1,14 @@
 export function load_deckCard_deck_test(load: MeshLoad): void {
   card.assumeNest(load).forEach((nest, index) => {
-    card.addTask(load.base, () => {
-      card.load_deckCard_deck_test_nestedChildren(
+    tool.loadTask(load.base, () => {
+      card.load_deckCard_deck_test_leadLink(
         card.withLink(load, nest, index),
       )
     })
   })
 }
 
-export function load_deckCard_deck_test_nestedChildren(
-  load: MeshLoad,
-): void {
+export function load_deckCard_deck_test_leadLink(load: MeshLoad): void {
   const index = card.loadLinkIndex(load)
   if (index === 0) {
     const type = card.getLinkHint(load)
@@ -26,7 +24,7 @@ export function load_deckCard_deck_test_nestedChildren(
         )
         card.attachBlue(load, 'test', blueString)
 
-        card.addTask(load.base, () => {
+        tool.loadTask(load.base, () => {
           card.handle_codeCard(load.base, path)
         })
         break

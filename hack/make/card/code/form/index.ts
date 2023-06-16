@@ -20,17 +20,15 @@ export function load_codeCard_form(load: MeshLink): void {
   const colorInput = card.withColors(scopeInput, { blue, red })
 
   card.assumeNest(colorInput).forEach((nest, index) => {
-    card.addTask(colorInput.base, () => {
-      card.load_codeCard_form_nestedChildren(
+    tool.loadTask(colorInput.base, () => {
+      card.load_codeCard_form_leadLink(
         card.withLink(colorInput, nest, index),
       )
     })
   })
 }
 
-export function load_codeCard_form_nestedChildren(
-  load: MeshLink,
-): void {
+export function load_codeCard_form_leadLink(load: MeshLink): void {
   const type = card.getLinkHint(load)
   if (type === 'static-term') {
     const index = card.loadLinkIndex(load)

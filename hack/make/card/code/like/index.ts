@@ -15,8 +15,8 @@ export function load_codeCard_like(load: MeshLoad): void {
   const childInput = card.withColors(load, { blue, red })
 
   card.assumeNest(load).forEach((nest, index) => {
-    card.addTask(load.base, () => {
-      load_codeCard_like_nestedChildren(
+    tool.loadTask(load.base, () => {
+      load_codeCard_like_leadLink(
         card.withLink(childInput, nest, index),
       )
     })
@@ -27,15 +27,7 @@ export function load_codeCard_like_free(load: MeshLoad): void {}
 
 export function load_codeCard_like_head(load: MeshLoad): void {}
 
-export function load_codeCard_like_like(load: MeshLoad): void {}
-
-export function load_codeCard_like_list(load: MeshLoad): void {}
-
-export function load_codeCard_like_mesh(load: MeshLoad): void {}
-
-export function load_codeCard_like_nestedChildren(
-  load: MeshLoad,
-): void {
+export function load_codeCard_like_leadLink(load: MeshLoad): void {
   const type = card.getLinkHint(load)
   switch (type) {
     case LinkHint.DynamicTerm: {
@@ -95,6 +87,12 @@ export function load_codeCard_like_nestedChildren(
       card.throwError(card.generateUnhandledNestCaseError(load, type))
   }
 }
+
+export function load_codeCard_like_like(load: MeshLoad): void {}
+
+export function load_codeCard_like_list(load: MeshLoad): void {}
+
+export function load_codeCard_like_mesh(load: MeshLoad): void {}
 
 export function load_codeCard_like_take(load: MeshLoad): void {}
 
