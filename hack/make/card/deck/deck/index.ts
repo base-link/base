@@ -8,6 +8,22 @@ export * from './mint/index.js'
 export * from './term/index.js'
 export * from './test/index.js'
 
+export function bindNick(load: MeshLoad, hook: (text: string) => void) {
+  const nickBond = card.readNick(load)
+  if (nickBond) {
+    hook(nickBond)
+  } else {
+    card.waitNick(load, () => {
+      const nickBond = card.readNick(load)
+      if (nickBond) {
+        hook(nickBond)
+      } else {
+        throw new Error('Unresolved term')
+      }
+    })
+  }
+}
+
 export function load_deckCard_deck(load: MeshLoad): void {
   const red = card.pushRed(load, card.createRedGather(load, 'deck'))
   const blue = card.attachBlue(load, 'deck', {
@@ -32,12 +48,10 @@ export function load_deckCard_deck_leadLink(load: MeshLoad): void {
   const index = card.loadLinkIndex(load)
   switch (type) {
     case LinkHint.DynamicTerm:
-      const nickBond = card.readNick(load)
-      if (!nickBond && !fork) {
-        card.waitNick(load, () =>
-          load_deckCard_deck_leadLink({ ...load, fork: 1 }),
-        )
-      }
+      card.bindNick(load, term => {
+        load_deckCard_deck_nestedTerm(term, load)
+      })
+      break
     case LinkHint.DynamicText:
     case LinkHint.DynamicPath:
     case LinkHint.StaticPath:
@@ -53,7 +67,8 @@ export function load_deckCard_deck_leadLink(load: MeshLoad): void {
     }
     case LinkHint.StaticTerm:
       if (index > 0) {
-        card.load_deckCard_deck_nestedTerm(load)
+        const term = card.resolveTermString(load)
+        card.load_deckCard_deck_nestedTerm(term, load)
       } else {
         throw new Error('Unhandled term.')
       }
@@ -63,8 +78,10 @@ export function load_deckCard_deck_leadLink(load: MeshLoad): void {
   }
 }
 
-export function load_deckCard_deck_nestedTerm(load: MeshLoad): void {
-  const term = card.resolveTermString(load)
+export function load_deckCard_deck_nestedTerm(
+  term: string,
+  load: MeshLoad,
+): void {
   switch (term) {
     case 'bear': {
       card.load_deckCard_deck_bear(load)
