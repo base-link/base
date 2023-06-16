@@ -1,4 +1,4 @@
-// import { RiffRiseMark } from './riff.js'
+import { Base } from '@tunebond/form'
 
 export type SiteFork = {
   base?: SiteFork
@@ -43,4 +43,63 @@ export type SiteLookLinkList = {
 export type SiteObjectWatcherType = {
   hook?: undefined
   link: SiteLookLinkList
+}
+
+export class Tree {
+  form: Base
+
+  fork: Fork
+
+  link: Record<string, unknown>
+
+  hook: Record<string, () => void>
+
+  constructor({ form, fork }: { fork: Fork; form: Base }) {
+    this.form = form
+    this.fork = fork
+    this.link = {}
+    this.hook = {}
+  }
+
+  make(name: string, { fork }: { fork: Fork }) {
+    const make = new Tree()
+    if (this.form[name].list) {
+      const list = (this.link[name] ??= [])
+      list.push(make)
+    } else {
+      this.link[name] = make
+    }
+    return make
+  }
+
+  bind(name, form, hook) {
+    const list = (this.hook[name] ??= [])
+    const bind = {}
+    const nest = {}
+    for (const name in form) {
+      const bond = form[name]
+      if (isObject(bond)) {
+        nest[name] = bond
+      } else {
+        bind[name] = true
+      }
+    }
+    list.push({ bind, hook, nest })
+  }
+
+  save(name, bond) {}
+}
+
+export class TreeBind {}
+
+export class TreeFork {
+  constructor() {
+    this.link = {}
+  }
+
+  bind(name, form, bond) {}
+
+  form(name, form) {}
+
+  save(name, bond) {}
 }

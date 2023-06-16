@@ -46,6 +46,7 @@
   "dependencies": {
     "@drumwork/tone": "^4.2.1",
     "@lancejpollard/pretty-compact-json.js": "^0.2.0",
+    "@tunebond/form": "^0.2.2",
     "chalk": "^5.2.0",
     "colors": "^1.4.0",
     "commander": "^10.0.1",

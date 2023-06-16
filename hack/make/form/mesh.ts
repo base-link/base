@@ -1,11 +1,11 @@
 import { Base } from './base'
-import { Riff, RiffCard } from './tree'
+import { Tree, TreeCard } from './tree'
 import { SiteFork } from './site'
 
 export type MeshLoad = {
   base: Base
-  card: RiffCard
+  card: TreeCard
   fork: SiteFork
   // link: Link
-  riff: Riff
+  riff: Tree
 }

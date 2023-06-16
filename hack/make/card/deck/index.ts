@@ -5,7 +5,7 @@ export * from './deck/index.js'
 
 export function load_deckCard(base: Base, link: string): void {
   const linkText = tool.readLinkText(base, link)
-  const hook = hold
+  const card = new Site()
   const container = card.createTopContainerScope()
   const scope = card.createStepScope(container)
 

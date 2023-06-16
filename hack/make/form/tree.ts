@@ -42,8 +42,8 @@ export type TreeBase = {
   // id
   // code: string
   // parent, so we can build paths
-  base?: TreeBase
-  // module associated with this
+  base?: Tree
+  // module associated with this, for easier error reporting
   card?: TreeCard
   // scope associated with this node.
   fork: any
