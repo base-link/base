@@ -94,3 +94,36 @@ The definition of types is the public Mesh. But the compiler may deal with them 
 task
   take name, like name
   free name
+
+- And (twin)
+- Or (sink)
+- Decidable (side)
+- Maybe/Option (weed)
+  - Some (boom)
+  - None (bust)
+- Empty (void)
+- Any (cool)
+- Boolean (code)
+- Never (miss)
+- Not (turn)
+- Goal (want)
+- IO (lead)
+- Result (bill)
+- Unknown (mask)
+
+like and
+  like x
+  like y
+twin
+  like x
+  like y
+
+like maybe
+  like x
+
+weed x
+
+like not
+  like x
+
+turn x

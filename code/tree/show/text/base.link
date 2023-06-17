@@ -1,0 +1,11 @@
+
+form show-text
+  note <Log>
+  link time, form time
+  link host, form term
+  link term, list term
+    note <Type of log>
+  link text, form text
+    note <Message>
+  link tree
+    note <Data>

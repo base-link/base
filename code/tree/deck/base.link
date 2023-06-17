@@ -1,0 +1,19 @@
+
+load ../text
+  take form text
+
+load ../term
+  take form term
+
+form deck
+  link mark, like text
+  link term, list term
+  link head, like text
+  link host, like text
+  link name, like text
+  link bear, like text
+  link card, list card
+
+form card
+  link link, like text
+  link deck, like deck

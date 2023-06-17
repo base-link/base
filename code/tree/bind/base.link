@@ -1,0 +1,10 @@
+
+load ../term
+  take form term
+
+load ../bond
+  take form bond
+
+form bind
+  link term, like term
+  link bond, like bond
