@@ -4,24 +4,23 @@
     "target": "ESNext",
     "lib": ["es2020"],
     "outDir": "host",
-    "rootDir": "make",
+    "rootDir": "hack",
     "sourceMap": true,
     "moduleResolution": "node",
     "strictNullChecks": true,
     "strict": true,
     "esModuleInterop": true,
     "noUncheckedIndexedAccess": true,
-    "baseUrl": "./make",
+    "baseUrl": "./hack",
     "noErrorTruncation": true,
     "types": ["node"],
     "typeRoots": ["node_modules/@types"],
     "noImplicitAny": true,
     "declaration": true,
     "paths": {
-      "~/*": ["./*"],
-      "~": ["./index.js"]
+      "~/*": ["./*"]
     }
   },
   "include": ["*.ts", "**/*.ts", "*.d.ts"],
-  "exclude": ["node_modules", "host", "tmp", "make/dock"]
+  "exclude": ["node_modules", "host", "tmp"]
 }

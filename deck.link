@@ -1,5 +1,6 @@
 
 deck @tunebond/base
+  mark <0.0.1>
   head <Link Script Compiler>
   term <Link Script>
   term <Computation>
@@ -8,12 +9,13 @@ deck @tunebond/base
   term <Platform>
   term <White Label>
   face <Lance Pollard>, site <lp@elk.fm>
-  mark <0.0.1>
-  dock task # the task loader
-  dock code # the library loader
-  read book # also a default
+  line ./dock/line # the task loader
+  code ./code # the library loader
+  read ./book # also a default
   lock <apache-2.0>
-  deck base
-    link @tunebond/moon
-    link @tunebond/wolf
-    link @tunebond/crow
+  load base
+    link @tunebond/moon, mark <*>
+    link @tunebond/wolf, mark <*>
+    link @tunebond/crow, mark <*>
+  load work
+  load host

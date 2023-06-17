@@ -54,40 +54,14 @@ good intro to git submodules, which we make extensive use of.
 
 ### Project Structure
 
-Check the `package.json` for more detail, but the project starts at
-`make/task/build.ts`, which gets compiled through `npm run watch` to
-`host/task/build.js`. You can keep the `npm run watch` command going and
-it will rebuild the TypeScript output into the `host` directory as
-things change. So basically:
-
-```bash
-npm run watch
-```
-
-and in another terminal window:
-
-```bash
-node host/task/build
-```
-
-You also need the current suite of dependencies installed. at the same
-level as `base.link`, so it can compile the dependent files (this is
-just a hack for the moment, will abstract it out at some point).
-
-So do this to get going:
+Do this to get going:
 
 ```bash
 mkdir tunebond
 cd tunebond
-# bolt is the native interface definitions
 git clone git@github.com:tunebond/bolt.link.git
-# moon and wolf are the base abstraction
-git clone git@github.com:tunebond/moon.link.git
 git clone git@github.com:tunebond/wolf.link.git
-# nest and crow is an application framework
-git clone git@github.com:tunebond/nest.link.git
-git clone git@github.com:tunebond/crow.link.git
-# the compiler and main entrypoint
+git clone git@github.com:tunebond/moon.link.git
 git clone git@github.com:tunebond/base.link.git
 cd base.link
 # then watch or run files from here.
@@ -98,10 +72,10 @@ Those 4 projects should be all you need for now to get going.
 Also of note, is that the `code` object which you'll see throughout the
 compiler TypeScript codebase is basically a global object which is
 constructed through circular module imports/exports. I feel this way is
-a simple and clean way to do this, despite the circular references. If
-you have strong opinions on a different non-circular way, which isn't
-hacky and you have a clean solution for it, please bring it up as always
-looking for ways to improve the code.
+Ddo this, despite the circular references. If you have strong opinions
+on a different non-circular way, which isn't hacky and you have a clean
+solution for it, please bring it up as always looking for ways to
+improve the code.
 
 This TS compiler code will eventually (probably in multi-year timeframe)
 ideally be replaced with native link text code instead. So not making
@@ -118,7 +92,7 @@ The compiler works in a few rough phases currently:
 1. **Parse the text** into a "link tree" (link, the language). This
    generates a simple object tree which we then convert into a more
    general AST.
-1. **Generate the central AST**, the "mesh". This is the main data
+1. **Generate the central AST**, the "tree". This is the main data
    structure we use for the rest of compiling.
 1. **Resolve variable references**. This makes sure all the variables
    have been figured out (even if at this point they are incorrectly
@@ -200,13 +174,13 @@ base load deck
 # install packages
 base save deck @foo/bar
 # create a new package
-base make deck
-# build the package
 base cast deck
+# build the package
+base make deck
 # create a user account
-base make face
+base cast face
 # create an org/namespace
-base make host
+base cast host
 # login
 base bind face
 # logout
@@ -246,55 +220,8 @@ base toss deck host link
 base show deck <deck>
 # execute an arbitrary task
 base <name>
-```
-
-The linking to the global store stores it at:
-
-```
-~/Library/base
-  /nest # global dependency store
-    /link
-      /<host>
-        /<deck>
-          /...files
-  /mint # file store
-    /<hash-base>
-      /<hash>
-```
-
-When you install packages, it hard symlinks them to your `./deck`
-folder.
-
-```
-./link
-  /base.link # configuration settings
-  /hold # hardlink folder
-    /<host>
-      /<deck>
-        /<mark>
-          /link
-            /<host>
-              /<deck> (soft symlink, except actual folder)
-  /hook # symlink folder
-    /<host>
-      /<deck> (soft symlink to hold/host/deck/mark/link/host/deck)
-```
-
-You can have "workspaces" by adding a `deck` folder (or wherever you put
-it).
-
-```
-./deck
-  /deck-1
-  /deck-2
-```
-
-You specify "workspaces" as "slots" where decks live.
-
-```
-deck @my/deck
-  link @another/deck
-  slot ./deck
+# execute arbitrary task from another repo
+base <name> <deck>
 ```
 
 ## Base Type System
@@ -322,14 +249,14 @@ save x, text 10
   flex true
 ```
 
-#### Work
+#### Beat
 
-All types of abstract things are work objects. These are subdivided into
-form work and task work.
+All types of abstract things are beat objects. These are subdivided into
+form beat and task beat.
 
 #### Form
 
-This is a record type. An instance is a mesh, a site with links.
+This is a record type. An instance is a site with links.
 
 ```link
 form bind
@@ -517,7 +444,7 @@ make bind
 #### Load
 
 The load is the import of other modules or "cards". Loads can be nested,
-and do pattern matching to select out object by type and name.
+Ddo pattern matching to select out object by type and name.
 
 ```link
 load /form
@@ -644,7 +571,7 @@ file. Certain folder collections are standard, like Ruby on Rails.
 
 ### License
 
-Copyright 2021-2023 <a href='https://drum.work'>TuneBond</a>
+Copyright 2021-2023 <a href='https://tune.bond'>TuneBond</a>
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may
 not use this file except in compliance with the License. You may obtain

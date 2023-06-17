@@ -46,6 +46,7 @@
   "dependencies": {
     "@drumwork/tone": "^4.2.1",
     "@lancejpollard/pretty-compact-json.js": "^0.2.0",
+    "@tunebond/form": "^0.2.2",
     "chalk": "^5.2.0",
     "colors": "^1.4.0",
     "commander": "^10.0.1",
@@ -55,6 +56,7 @@
     "js-yaml": "^4.1.0",
     "json-keys-sort": "^2.1.0",
     "lodash": "^4.17.21",
+    "minimatch": "^9.0.1",
     "mkdirp": "^3.0.0",
     "nodejieba": "^2.6.0",
     "opencc-js": "^1.0.5",
