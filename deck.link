@@ -9,13 +9,12 @@ deck @tunebond/base
   term <Platform>
   term <White Label>
   face <Lance Pollard>, site <lp@elk.fm>
-  line ./dock/line # the task loader
+  task ./task # the task loader
   code ./code # the library loader
   read ./book # also a default
   lock <apache-2.0>
   load base
-    link @tunebond/moon, mark <*>
+    link @tunebond/bolt, mark <*>
     link @tunebond/wolf, mark <*>
-    link @tunebond/crow, mark <*>
   load work
   load host
