@@ -2,8 +2,6 @@ import { minimatch } from 'minimatch'
 import { Base } from '~/make/form.js'
 import tool from '~/make/tool.js'
 
-export * from './book/index.js'
-export * from './code/index.js'
 export * from './deck/index.js'
 export * from './mind/index.js'
 

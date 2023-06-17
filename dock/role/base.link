@@ -1,0 +1,6 @@
+
+load @tunebond/crow
+  find mind code
+
+role code
+  link ./**/test.link
