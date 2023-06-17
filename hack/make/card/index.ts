@@ -5,7 +5,7 @@ import tool from '~/make/tool.js'
 export * from './book/index.js'
 export * from './code/index.js'
 export * from './deck/index.js'
-export * from './mint/index.js'
+export * from './mind/index.js'
 
 export function loadCard(base: Base, link: string): void {
   if (tool.testHaveCard(base, link)) {

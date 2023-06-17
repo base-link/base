@@ -1,22 +1,23 @@
 import { MeshLoad } from '~/make/form.js'
 import card from '~/make/card.js'
+import tool from '~/make/tool.js'
 
 export function bindText(load: MeshLoad, hook: (text: string) => void) {
-  const type = card.getLinkHint(load)
-  switch (type) {
-    case LinkHint.StaticText: {
-      const string = card.assumeText(load)
+  const hint = tool.readLinkHint(load)
+  switch (hint) {
+    case LinkHint.Text: {
+      const string = tool.loadText(load)
       hook(string)
       break
     }
-    case LinkHint.DynamicText: {
-      const string = card.loadLink(load, Link.Text)
+    case LinkHint.NickText: {
+      const string = tool.loadNickText(load)
 
       if (string) {
         hook(string)
       } else {
-        card.waitText(load, () => {
-          const string = card.loadLink(load, Link.Text)
+        tool.waitText(load, () => {
+          const string = tool.loadNickText(load)
           if (!string) {
             tool.throwError(`Received null for string`, load)
           } else {
@@ -26,6 +27,11 @@ export function bindText(load: MeshLoad, hook: (text: string) => void) {
       }
     }
     default:
-      card.throwError(card.generateUnhandledNestCaseError(load, type))
+      tool.throwError(tool.generateUnhandledNestCaseError(load, hint))
   }
 }
+
+// https://github.com/tunebond/base.link/blob/make/make/tool/dependency.ts#L277
+export function loadNickText(load: MeshLoad) {}
+
+export function loadText(load: MeshLoad) {}
