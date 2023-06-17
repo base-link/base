@@ -135,3 +135,71 @@ type TreeTest = {
 }
 
 type TreeHook = () => void
+
+type Matcher = {
+    [key: string]: true | Matcher
+};
+
+type Callback = () => void;
+
+abstract class TreeElement  {
+    #parent?: TreeObject;
+    #listeners: Array<{ matcher?: Matcher, callback: Callback }> = [];
+
+    constructor(parent?: TreeObject) {
+        this.#parent = parent;
+    }
+
+    watch(callback: Callback, matcher?: Matcher) {
+        if (this.isResolved(matcher)) {
+            callback.call(this);
+        } else {
+            this.#listeners.push({callback, matcher});
+        }
+    }
+
+    notify() {
+        // empty(!) the listeners array and let the watch method deal with them
+        for (const {callback, matcher} of this.#listeners.splice(0)) {
+            this.watch(callback, matcher);
+        }
+        this.#parent?.notify(); // bubble up
+    }
+
+    abstract isResolved(matcher?: Matcher): boolean;
+}
+
+class TreeObject extends TreeElement {
+    #properties: Record<string, TreeObject | TreeLiteral> = {};
+
+    createObject(name: string) {
+        return this.#properties[name] = new TreeObject(this);
+    }
+    createLiteral(name: string) {
+        return this.#properties[name] = new TreeLiteral(this);
+    }
+    isResolved(matcher?: Matcher): boolean {
+        const keys = Object.keys(matcher ?? this.#properties);
+        return keys.length > 0 && keys.every(key =>
+              this.#properties[key]?.isResolved(
+                  !matcher || matcher?.[key] === true ? undefined
+                                                      : matcher[key] as Matcher
+              )
+        );
+    }
+}
+
+class TreeLiteral extends TreeElement {
+    #literalValue: any;
+    #isResolved = false;
+
+    set(value: any) {
+        this.#literalValue = value;
+        this.#isResolved = true;
+        this.notify();
+    }
+
+    isResolved(): boolean {
+        return this.#isResolved;
+    }
+}
