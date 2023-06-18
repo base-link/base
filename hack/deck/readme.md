@@ -93,10 +93,10 @@ deck are parsed. It says essentially what parser should be used on a set
 of files matching a path.
 
 ```
-file ./**/test.link
+role ./**/test.link
   mint test
 
-file ./task/**/base.link
+role ./task/**/base.link
   mint task
 ```
 
@@ -104,7 +104,7 @@ The path to this is specified in the deck file:
 
 ```
 deck <@foo/bar>
-  mint ./dock/mint
+  role ./dock/role
 ```
 
 So the process is, the base loader first loads the deck file, then finds
@@ -114,3 +114,148 @@ handled.
 Eventually this will all be defined in link code directly, but for now
 it is just built into the compiler, the specific ways different file
 types are handled.
+
+```
+https://base.link/@tunebond/base/head/deck.link
+https://base.link/@tunebond/base/1.2.3/deck.link
+```
+
+Limit to 256mb decks.
+
+The repo call.base.link is for the creating your own registry. It is a
+headless API.
+
+host.base.link is the website for base.link
+
+The decks are stored on google cloud.
+
+```
+deck <host/name>
+  base <0.0.1> # base.link version
+  lock <mit> # required for publishing
+  head <Required summary of the package in 92 characters or less.>
+  site <repo>
+```
+
+To publish:
+
+```
+base host deck
+```
+
+Stored on google cloud like:
+
+```
+deck.base.link/@tunebond/base/1.2.3/host.tar.gz
+deck.base.link/@tunebond/base/1.2.3/host.link
+```
+
+The `host.link` gives us the metadata associated with the deck:
+
+```
+{
+  "shasum": "392617f69a947e40cec7848d85fcc3dd29d74bc5",
+  "tarball": "https://registry.npmjs.org/lodash/-/lodash-0.1.0.tgz",
+  "integrity": "sha512-ufIfwX7g5obXKaJhzbnAJBNf5Idxqty+AHaNadWFxtNKjGmF/ZO8ptSEjQRQRymBPZtLa0NV9sbrsH87Ae2R1A==",
+  "signatures": [
+    {
+      "keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+      "sig": "MEQCIBB7pdqPfBFUsZQhVr3woDJ7/bbRWV3tlXQZNp3ivosbAiBMhwfq9fqaJvFFX1/scqPbIywUUZCQkfJaISqaJbZX2Q=="
+    }
+  ]
+}
+
+hash sha, <392617f69a947e40cec7848d85fcc3dd29d74bc5>
+hash integrity
+```
+
+If there are more than 256 downloads, it can't be deleted without
+reaching out to support at meet@tune.bond.
+
+On publish to base.link, once the package hits the server and streams
+the upload to google cloud, it generates the hash and saves the
+`host.link`.
+
+```js
+// open file stream
+var fstream = fs.createReadStream('./test/hmac.js')
+var hash = crypto.createHash('sha512', key)
+hash.setEncoding('hex')
+
+// once the stream is done, we read the values
+fstream.on('end', () => {
+  hash.end()
+  // print result
+  console.log(hash.read())
+})
+
+// pipe file to hash generator
+fstream.pipe(hash)
+```
+
+The lockfile then loads the data:
+
+```
+base <0.0.1>
+
+load @tunebond/moon
+  mark <*>
+  lock <0.0.1>
+load @tunebond/bolt
+  mark <*>
+  lock <0.0.1>
+load @tunebond/wolf
+  mark <*>
+  lock <0.0.1>
+
+link <@tunebond/wolf:0.0.1>
+  hash <sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==>
+  load @tunebond/bolt
+    mark <0.0.1>
+```
+
+The website is pinged:
+
+```
+PATCH https://base.link/deck
+```
+
+With the payload:
+
+```
+hint code, nick false
+```
+
+It streams the file to google cloud. It streams a local zip file to
+remote.
+
+It stores a copy of the package readme.md and the deck file metadata for
+display in the UI.
+
+```
+https://base.link/@tunebond/base
+```
+
+Shows readme, with link to source.
+
+```
+call host-deck
+call test-deck # does it exist?
+```
+
+Can check directly with google cloud if it exists.
+
+```
+stats = storage.Blob(bucket=bucket, name=name).exists(storage_client)
+```
+
+For each version, it stores the readme and the metadata on the site in
+postgres, to render the website.
+
+```
+https://base.link/@tunebond/base/1.2.3
+```
+
+The registry chooses to not use URLs and instead use the `@` at sign to
+keep things simple. A host is required to manage a deck, to provide a
+namespace as well.

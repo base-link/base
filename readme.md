@@ -184,6 +184,10 @@ base make deck
 base cast face
 # create an org/namespace
 base cast host
+# change the default registry from base.link to something else
+base save hold <url>
+# change the org registry
+base save hold <host> <url>
 # login
 base bind face
 # logout
