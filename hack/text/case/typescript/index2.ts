@@ -116,9 +116,9 @@ function handleBody(node: Node, state: State) {
     case 'TSInterfaceDeclaration':
       makeInterfaceDeclaration(node, state)
       break
-    // case 'TSModuleDeclaration':
-    //   makeModuleDeclaration(node, state)
-    //   break
+    case 'TSModuleDeclaration':
+      makeModuleDeclaration(node, state)
+      break
     // case 'VariableDeclaration': {
     //   makeVariableDeclaration(node, state)
     //   break
@@ -179,6 +179,89 @@ function makeInterfaceDeclaration(
     const head = makeTSTypeParameter(param, form.link.head, state.load)
     form.link.head[head.link.name] = head
   })
+}
+
+function makeModuleDeclaration(
+  node: TSModuleDeclaration,
+  state: State,
+) {
+  const name =
+    node.id.type === 'Identifier'
+      ? makeName(node.id.name)
+      : makeName(node.id.value)
+
+  const isGlobal = name === 'global'
+
+  const hostName = [state.host, name].filter(x => x).join('/')
+
+  const host = {
+    form: 'rise-host',
+    link: {
+      name,
+    },
+  }
+
+  if (node.body.type === 'TSModuleDeclaration') {
+    // makeModuleImports(
+    //   node.body,
+    //   isTop
+    //     ? mod
+    //     : [mod, n]
+    //         .filter(x => x)
+    //         .join('/')
+    //         .replace(/google\/maps\/?/, ''),
+    //   declared,
+    //   isGlobal,
+    // )
+  } else {
+    node.body.body.forEach(node => {
+      handleBody(node, { ...state, host: hostName })
+    })
+  }
+}
+
+function makeModuleImports(
+  node: TSModuleDeclaration,
+  mod: Mod,
+  declared: Declared,
+  isTop?: boolean,
+  isGlobal?: boolean,
+) {
+  const name =
+    node.id.type === 'Identifier'
+      ? makeName(node.id.name)
+      : makeName(node.id.value)
+
+  isGlobal = isGlobal || name === 'global'
+
+  let n = isGlobal
+    ? null
+    : OUTPUT_PATH.split('/').pop() === name
+    ? null
+    : name
+
+  if (node.body.type === 'TSModuleDeclaration') {
+    makeModuleImports(
+      node.body,
+      isTop
+        ? mod
+        : [mod, n]
+            .filter(x => x)
+            .join('/')
+            .replace(/google\/maps\/?/, ''),
+      declared,
+      isGlobal,
+    )
+  } else {
+    node.body.body.forEach(node => {
+      handleImports(
+        node,
+        isTop ? mod : [mod, n].filter(x => x).join('/'),
+        declared,
+        isGlobal,
+      )
+    })
+  }
 }
 
 function makeTSTypeParameter(

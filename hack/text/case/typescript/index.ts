@@ -49,7 +49,7 @@ type Declared = Record<string, DeclaredValue | undefined>
 
 type Imports = Record<
   string,
-  | { value: DeclaredValue | undefined; fromFile: boolean }
+  | { fromFile: boolean; value: DeclaredValue | undefined }
   | number
   | Array<string>
   | boolean
@@ -61,12 +61,12 @@ type Heads = Record<string, boolean>
 
 type HostsAndTasks = {
   bears: Record<string, string>
-  imports: Imports
   globals: {
     hosts: Array<string>
     tasks: Array<string>
   }
   hosts: Array<string>
+  imports: Imports
   tasks: Array<string>
 }
 
@@ -160,9 +160,9 @@ let defined: Declared = {}
 let writes: Record<
   string,
   {
+    b: Array<string>
     i: Array<Record<string, Record<string, boolean>>>
     t: Array<string>
-    b: Array<string>
   }
 > = {}
 
@@ -199,11 +199,11 @@ function process() {
     // console.log('output', OUTPUT_PATH)
 
     const ast = babel.parse(code, {
-      sourceType: 'module',
-      strictMode: false,
       allowUndeclaredExports: true,
       errorRecovery: true,
       plugins: ['classProperties', 'typescript'],
+      sourceType: 'module',
+      strictMode: false,
     })
 
     const declared: Declared = {}
@@ -214,12 +214,12 @@ function process() {
 
     const hostsAndTasks: HostsAndTasks = {
       bears: {},
-      imports: {},
       globals: {
         hosts: [],
         tasks: [],
       },
       hosts: [],
+      imports: {},
       tasks: [],
     }
 
@@ -246,9 +246,9 @@ function process() {
     ]
 
     const write = (writes[path2] = writes[path2] ?? {
+      b: [],
       i: [],
       t: [],
-      b: [],
     })
     write.i.push(finalImportText)
     write.t.push('\n', ...t)
@@ -277,16 +277,16 @@ function process() {
       'bear @tunebond/bolt/code/javascript',
     )
     const write = (writes[parentPath] = writes[parentPath] ?? {
+      b: [],
       i: [],
       t: [],
-      b: [],
     })
     write.b.push(importPath)
   })
 
   Object.keys(writes).forEach(path => {
     mkdir(path)
-    const { i, t, b } = writes[path] ?? { i: [], t: [], b: [] }
+    const { i, t, b } = writes[path] ?? { b: [], i: [], t: [] }
     let imports = [] //Object.keys(i.reduce((m, x) => m[x] = true && m, {})).sort()
     let bears = Object.keys(
       b.reduce<Record<string, boolean>>((m, x) => {
@@ -781,7 +781,7 @@ function makeClass(
     ? `tmp/${OUTPUT_PATH}/${mod}/${makeName(name)}`
     : `tmp/${OUTPUT_PATH}/${makeName(name)}`
 
-  const write = (writes[path] = writes[path] ?? { i: [], t: [], b: [] })
+  const write = (writes[path] = writes[path] ?? { b: [], i: [], t: [] })
   write.i.push(finalImportText)
   write.t.push('\n', ...text)
 }
@@ -1145,13 +1145,13 @@ function makeModule(
 
     const ht = {
       bears: hostsAndTasks.bears,
-      imports: {},
-      hosts: [],
-      tasks: [],
       globals: {
         hosts: [],
         tasks: [],
       },
+      hosts: [],
+      imports: {},
+      tasks: [],
     }
 
     node.body.body.forEach(node => {
@@ -1175,9 +1175,9 @@ function makeModule(
     ]
 
     const write = (writes[path] = writes[path] ?? {
+      b: [],
       i: [],
       t: [],
-      b: [],
     })
     write.i.push(finalImportText)
     write.t.push('\n', ...t)
@@ -1298,7 +1298,7 @@ function makeAlias(
     ? `tmp/${OUTPUT_PATH}/${mod}/${makeName(typeName)}`
     : `tmp/${OUTPUT_PATH}/${makeName(typeName)}`
 
-  const write = (writes[path] = writes[path] ?? { i: [], t: [], b: [] })
+  const write = (writes[path] = writes[path] ?? { b: [], i: [], t: [] })
   write.i.push(finalImportText)
   write.t.push('\n', ...text)
 }
@@ -1418,7 +1418,7 @@ function makeInterface(
   })
 
   if (defined[_typeName]) {
-    imports[_typeName] = { value: defined[_typeName], fromFile: true }
+    imports[_typeName] = { fromFile: true, value: defined[_typeName] }
   }
   defined[_typeName] = declared[_typeName]
   const heads = { [_typeName]: true }
@@ -1535,7 +1535,7 @@ function makeInterface(
     ? `tmp/${OUTPUT_PATH}/${mod}/${_typeName}`
     : `tmp/${OUTPUT_PATH}/${_typeName}`
 
-  const write = (writes[path] = writes[path] ?? { i: [], t: [], b: [] })
+  const write = (writes[path] = writes[path] ?? { b: [], i: [], t: [] })
   write.i.push(finalImportText)
   write.t.push('\n', ...text)
 }
