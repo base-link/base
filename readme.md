@@ -153,6 +153,12 @@ recognizable. Eventually it reaches a point where things don't change,
 and if all things are complete, then it was a success, otherwise there
 were potential errors.
 
+### Folders
+
+- `hack/text`: Code for generating base link code from other languages
+- `hack/code`: Main compiler
+- `hack/line`: Command line interface implementation (for now)
+
 ## Inspiration
 
 - [package dependency structure](https://pnpm.io/symlinked-node-modules-structure)

@@ -14,6 +14,9 @@ dependencies:
   '@tunebond/form':
     specifier: ^0.2.2
     version: 0.2.2(kysely@0.24.2)
+  '@tunebond/have':
+    specifier: ^0.1.2
+    version: 0.1.2
   chalk:
     specifier: ^5.2.0
     version: 5.2.0
