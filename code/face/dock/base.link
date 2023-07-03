@@ -1,2 +1,7 @@
 
 # components
+
+dock home
+  zone page
+    bind title, <The Base Link Deck List>
+    bind subtitle, <i.e. the package registry for base link projects>

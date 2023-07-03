@@ -86,7 +86,7 @@ When it searches for files, it searches like this:
 /link
 ```
 
-## Mint Files
+## Role Files
 
 There are special files which specify how the rest of the files in the
 deck are parsed. It says essentially what parser should be used on a set

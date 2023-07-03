@@ -1,7 +1,0 @@
-
-bear @tunebond/moon
-bear @tunebond/wolf/code/javascript
-bear @tunebond/wolf/code/shared
-bear @tunebond/crow/code/javascript
-bear @tunebond/crow/code/browser
-bear @tunebond/crow/code/shared
