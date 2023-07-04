@@ -102,10 +102,8 @@ Under base.link:
   - Organization billing admin page
 /host/:host/team
   - Organization member admin page
-/mind/:mind
-  - User admin page
-/mind/:mind/save
-  - User admin edit page
+/host/:host/save
+  - Organization/user settings
 /@:host
   - Organization/user public page
 /@:host/:deck
