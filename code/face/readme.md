@@ -31,12 +31,14 @@ Inspiration for the package-manager portion of the website.
 - https://github.com/mojombo (user)
 - https://www.npmjs.com/~mojombo (user)
 - https://www.npmjs.com/org/babel (org)
+- https://crates.io/users/dtolnay (user)
 
 ## Guides Inspiration
 
 - https://doc.rust-lang.org/book/
 - https://rust-book.cs.brown.edu/ (interacive quizzes)
 - https://coffeescript.org
+- https://docs.rs/rsonpath-lib/0.5.1/rsonpath/ (project-specific docs)
 
 ## Playground Inspiration
 
@@ -82,6 +84,16 @@ Under base.link:
   - Landing page for non-coders
 /find
   - Search packages
+/find/term
+  - List of keywords packages use
+/find/term/:term
+  - Packages by keyword
+/find/wave
+  - Popular packages
+/find/head
+  - Latest updated packages
+/find/make
+  - Newest packages
 /host/:host
   - Organization admin page
 /host/:host/deck
@@ -95,13 +107,19 @@ Under base.link:
 /mind/:mind/save
   - User admin edit page
 /@:host
-  - Organization public page
+  - Organization/user public page
 /@:host/:deck
-  - Project/package public page
-/@:host/:deck/home
-  - Latest version of package
-/@:host/:deck/:mark
-  - Specific version of package
+  - Latest version of project/package public page
+/@:host/:deck/link
+  - List of dependencies page.
+/@:host/:deck/mark
+  - List of versions page
+/@:host/:deck/mark/:mark
+  - Specific version of package page
+/@:host/:deck/mark/:mark/hint/:hint+
+  - Documentation for the package like https://docs.rs/rsonpath-lib/0.5.1/rsonpath/
+/@:host/:deck/mark/:mark/read/:read+
+  - Hand-written guides for the package.
 /dock
   - Login page (with GitHub and email login)
 /dock/:site
