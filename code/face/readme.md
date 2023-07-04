@@ -23,6 +23,7 @@ Inspiration for the package-manager portion of the website.
 - https://crates.io
 - https://www.npmjs.com
 - https://formulae.brew.sh/formula
+- https://rubygems.org
 
 ## Organization/User Page Inspiration
 
@@ -34,7 +35,7 @@ Inspiration for the package-manager portion of the website.
 ## Guides Inspiration
 
 - https://doc.rust-lang.org/book/
-- https://rust-book.cs.brown.edu/
+- https://rust-book.cs.brown.edu/ (interacive quizzes)
 - https://coffeescript.org
 
 ## Playground Inspiration
@@ -42,3 +43,90 @@ Inspiration for the package-manager portion of the website.
 - https://www.typescriptlang.org/play
 - https://play.rust-lang.org
 - https://coffeescript.org/#try
+
+## Status Page
+
+This will use a standard status page service, so no need to design for
+this.
+
+- https://status.rubygems.org
+
+## Uptime Page
+
+This will also use a standard uptime page service, so no need to design
+for this.
+
+- https://uptime.rubygems.org
+
+## URLs
+
+```
+https://base.link (main website)
+https://deck.base.link (hosted assets)
+https://load.base.link (status page)
+https://time.base.link (uptime page)
+```
+
+Under base.link:
+
+```
+/love
+  - Values, mission, and brand
+/love/team
+  - Team page
+/love/vibe
+  - Marketing asset page
+/land
+  - Landing page for coders
+/land/home
+  - Landing page for non-coders
+/find
+  - Search packages
+/host/:host
+  - Organization admin page
+/host/:host/deck
+  - Organization package list admin page
+/host/:host/bill
+  - Organization billing admin page
+/host/:host/team
+  - Organization member admin page
+/mind/:mind
+  - User admin page
+/mind/:mind/save
+  - User admin edit page
+/@:host
+  - Organization public page
+/@:host/:deck
+  - Project/package public page
+/@:host/:deck/home
+  - Latest version of package
+/@:host/:deck/:mark
+  - Specific version of package
+/dock
+  - Login page (with GitHub and email login)
+/dock/:site
+  - Redirect URL for GitHub oauth
+/dock/:site/back
+  - Callback URL for GitHub oauth
+/void
+  - Logout
+/code
+  - Playground
+/code/:code
+  - Saved playground state
+/note
+  - Legal documents section
+/note/lock
+/note/term
+/note/void
+/read
+  - Guides section
+/read/:read+
+```
+
+Under deck.base.link:
+
+```
+/:host/:deck/:mark/base.link
+/:host/:deck/:mark/base.tar.gz
+```
