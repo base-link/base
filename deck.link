@@ -1,13 +1,13 @@
 
 deck @tunebond/base
   mark <0.0.1>
-  head <Link Script Compiler>
-  term <Link Script>
-  term <Computation>
-  term <Philosophy>
-  term <Information>
-  term <Platform>
-  term <White Label>
+  head <Link Text Compiler>
+  term link-text
+  term computation
+  term philosophy
+  term information
+  term platform
+  term white-label
   face <Lance Pollard>, site <lp@elk.fm>
   task ./task # the task loader
   code ./code # the library loader

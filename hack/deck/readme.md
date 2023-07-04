@@ -493,11 +493,26 @@ https://developer.mozilla.org/en-US/docs/Web/Manifest
 There are source maps for Node.js too, and the compiler.
 
 ```
-/.base
+/base
+  # this folder changes a lot
   /make
-    /band.base.<hash>.js
-    /band.base.<hash>.js.map
-      => link to crow@1.0.23
+    /javascript
+      /browser
+        /band
+          /band.base.<hash>.js # final output
+          /band.base.<hash>.js.map
+            => link to crow@1.0.23
+          /band.shared.js # symlinks out to browser+node folder
+        /roll # cards/files with cyclic deps in current deck which change a lot
+          /roll.1.js
+          /roll.2.js
+        /deck
+          /deck.1.js # decks cached to be concatenated
+      /node
+        /hook.js
+        /roll
+        /deck
+      /browser+node
   /link
     /tunebond
       /crow # symlink to 1.0.23
@@ -507,9 +522,14 @@ There are source maps for Node.js too, and the compiler.
         /1.0.23
           /code
             /base.link
-          /link
-            /tunebond
-              /wolf => wolf/0.1.3
+          /.base
+            /link
+              /tunebond
+                /wolf => wolf/0.1.3
+      /wolf
+        /0.1.3
+          /code
+            /base.link
   /work
     /index.js
     /node_modules
@@ -560,3 +580,6 @@ And the source code in JavaScript is at:
 ```
 
 A hard link converts the path into something usable.
+
+Then when it loads a symlinked module, it still is loading from the
+base, recursively.
