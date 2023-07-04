@@ -808,3 +808,17 @@ function makeFileHead(path) {
   compileFile(path)
 }
 ```
+
+You make the files and they become baked, which you can then publish as
+a Node module or Swift package or Rust crate.
+
+- `node/hook.js` is the `bin`
+- `node/index.js` is the node main
+- `browser/index.js` is the browser main
+- `browser/band/*.js` is the build for the public assets
+
+Based on if it is `sort tool` or `sort site`:
+
+- `tool`: It exports a package.json for the node.js and the browser.
+- `site`: It exports standalone JS files ready to be loaded like how
+  webpack builds things.
