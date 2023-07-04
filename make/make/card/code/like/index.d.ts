@@ -1,0 +1,10 @@
+import { MeshLoad } from '../../../form.js';
+export declare function load_codeCard_like(load: MeshLoad): void;
+export declare function load_codeCard_like_free(load: MeshLoad): void;
+export declare function load_codeCard_like_head(load: MeshLoad): void;
+export declare function load_codeCard_like_like(load: MeshLoad): void;
+export declare function load_codeCard_like_list(load: MeshLoad): void;
+export declare function load_codeCard_like_mesh(load: MeshLoad): void;
+export declare function load_codeCard_like_nestedChildren(load: MeshLoad): void;
+export declare function load_codeCard_like_take(load: MeshLoad): void;
+export declare function load_codeCard_like_term(load: MeshLoad): void;

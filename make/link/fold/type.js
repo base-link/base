@@ -1,0 +1,30 @@
+export var Fold;
+(function (Fold) {
+    Fold["CloseHandle"] = "fold-close-handle";
+    Fold["CloseIndex"] = "fold-close-index";
+    Fold["CloseLine"] = "fold-close-line";
+    Fold["CloseModule"] = "fold-close-module";
+    Fold["CloseNest"] = "fold-close-nest";
+    Fold["ClosePlugin"] = "fold-close-plugin";
+    Fold["CloseTerm"] = "fold-close-term";
+    Fold["CloseTermPath"] = "fold-close-term-path";
+    Fold["CloseText"] = "fold-close-text";
+    Fold["Comment"] = "fold-comment";
+    Fold["Decimal"] = "fold-decimal";
+    Fold["Hashtag"] = "fold-hashtag";
+    Fold["OpenHandle"] = "fold-open-handle";
+    Fold["OpenIndex"] = "fold-open-index";
+    Fold["OpenLine"] = "fold-open-line";
+    Fold["OpenModule"] = "fold-open-module";
+    Fold["OpenNest"] = "fold-open-nest";
+    Fold["OpenPlugin"] = "fold-open-plugin";
+    Fold["OpenTerm"] = "fold-open-term";
+    Fold["OpenTermPath"] = "fold-open-term-path";
+    Fold["OpenText"] = "fold-open-text";
+    Fold["SignedInteger"] = "fold-signed-integer";
+    Fold["String"] = "fold-string";
+    Fold["TermFragment"] = "fold-term-fragment";
+    Fold["TermSeparator"] = "fold-term-separator";
+    Fold["UnsignedInteger"] = "fold-unsigned-integer";
+})(Fold || (Fold = {}));
+//# sourceMappingURL=type.js.map

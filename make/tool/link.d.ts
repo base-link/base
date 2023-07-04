@@ -1,0 +1,10 @@
+import { Link, LinkNodeType, LinkTreeType, LinkType, SiteLinkType, SiteProcessInputType } from '~';
+export declare function assertGenericLink(object: unknown, name?: string): asserts object is LinkType<Link>;
+export declare function assertLink<T extends Link>(object: unknown, type: T, name?: string): asserts object is LinkType<T>;
+export declare function assumeGenericLink(object: unknown, name?: string): LinkType<Link>;
+export declare function assumeLink<T extends Link>(input: SiteProcessInputType, type: T, name?: string): LinkType<T>;
+export declare function createLink(input: SiteProcessInputType, link: LinkNodeType, index?: number): SiteLinkType;
+export declare function createTopLink(link: LinkTreeType, index?: number): SiteLinkType;
+export declare function isGenericLink(object: unknown): object is LinkType<Link>;
+export declare function isLink<T extends Link>(object: unknown, type: T): object is LinkType<T>;
+export declare function withLink(input: SiteProcessInputType, element: LinkNodeType, index?: number): SiteProcessInputType;

@@ -1,0 +1,3 @@
+import { MeshLoad } from '../../../form.js';
+export declare function load_codeCard_take(load: MeshLoad): void;
+export declare function load_codeCard_take_nestedChildren(load: MeshLoad): void;

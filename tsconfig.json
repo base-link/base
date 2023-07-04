@@ -3,7 +3,7 @@
     "module": "ESNext",
     "target": "ESNext",
     "lib": ["es2020"],
-    "outDir": "host",
+    "outDir": "make",
     "rootDir": "hack",
     "sourceMap": true,
     "moduleResolution": "node",
@@ -22,5 +22,5 @@
     }
   },
   "include": ["*.ts", "**/*.ts", "*.d.ts"],
-  "exclude": ["node_modules", "host", "tmp"]
+  "exclude": ["node_modules", "make", "tmp"]
 }

@@ -1,0 +1,10 @@
+import { LinkHint } from '../index.js';
+import type { SiteProcessInputType } from '../index.js';
+export declare function assumeLinkIndex(input: SiteProcessInputType): number;
+export declare function getLinkHint(input: SiteProcessInputType): LinkHint;
+export declare function nestIsHashtag(input: SiteProcessInputType): boolean;
+export declare function nestIsPath(input: SiteProcessInputType): boolean;
+export declare function nestIsTerm(input: SiteProcessInputType): boolean;
+export declare function nestIsText(input: SiteProcessInputType): boolean;
+export declare function nestIsUnsignedInteger(input: SiteProcessInputType): boolean;
+export declare function pathIsInterpolated(input: SiteProcessInputType): boolean;

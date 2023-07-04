@@ -1,0 +1,1 @@
+{"version":3,"file":"path.js","sourceRoot":"","sources":["../../../hack/make/tool/path.ts"],"names":[],"mappings":"AAAA,MAAM,UAAU,QAAQ,CAAC,IAAc;IACrC,MAAM,cAAc,GAAG,IAAI,CAAC,yBAAyB,CAAC,IAAI,CAAC,CAAA;IAC3D,MAAM,kBAAkB,GAAG,IAAI,CAAC,qBAAqB,CAAC,cAAc,CAAC,CAAA;IACrE,qDAAqD;IACrD,gCAAgC;AAClC,CAAC"}

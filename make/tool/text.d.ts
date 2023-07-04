@@ -1,0 +1,10 @@
+import type { SiteProcessInputType } from '~';
+export declare function assumeText(input: SiteProcessInputType): string;
+export declare function bindText(input: SiteProcessInputType, callback: () => void): void;
+export declare function readLinkIndex(input: SiteProcessInputType): unknown;
+export declare function readLinkPath(input: SiteProcessInputType): unknown;
+export declare function readLinkPlugin(input: SiteProcessInputType): unknown;
+export declare function readLinkTerm(input: SiteProcessInputType): unknown;
+export declare function readLinkTree(input: SiteProcessInputType): unknown;
+export declare function resolveText(input: SiteProcessInputType): string | undefined;
+export declare function textIsInterpolated(input: SiteProcessInputType, size?: number): boolean;

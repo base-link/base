@@ -1,0 +1,10 @@
+import { BlueClassReferenceType, SiteProcessInputType } from '../..';
+import type { SiteContainerScopeType, SiteStepScopeType, SiteVariableDeclarationOptionsType, SiteVariableDeclarationType } from '../..';
+export declare const DEFAULT_CONTAINER_SCOPE: Record<string, SiteVariableDeclarationOptionsType>;
+export declare function createContainerScope(input: SiteProcessInputType, declarations?: Record<string, SiteVariableDeclarationType>): SiteContainerScopeType;
+export declare function createStepScope(container: SiteContainerScopeType, declarations?: Record<string, SiteVariableDeclarationType>): SiteStepScopeType;
+export declare function createTopContainerScope(declarations?: Record<string, SiteVariableDeclarationType>): SiteContainerScopeType;
+export declare function declareScopeVariable(scope: SiteStepScopeType, variable: SiteVariableDeclarationType): void;
+export declare function hasScopeVariable(scope: SiteStepScopeType, name: string): boolean;
+export declare function setInferredScopeType(scope: SiteStepScopeType, property: string, type: BlueClassReferenceType): void;
+export declare function withScope(input: SiteProcessInputType, scope: SiteStepScopeType): SiteProcessInputType;

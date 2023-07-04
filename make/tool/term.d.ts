@@ -1,0 +1,13 @@
+import { Link } from '../index.js';
+import type { LinkType, SiteProcessInputType } from '../index.js';
+export declare function assumeTermString(input: SiteProcessInputType): string;
+export declare function attachStaticTerm(input: SiteProcessInputType, property: string, value: string): void;
+export declare function bindTerm(input: SiteProcessInputType): void;
+export declare function getTerm(input: SiteProcessInputType): LinkType<Link.Term> | undefined;
+export declare function load_dynamicTerm(input: SiteProcessInputType): void;
+export declare function load_first_dynamicTerm(input: SiteProcessInputType, property: string): void;
+export declare function load_first_staticTerm(input: SiteProcessInputType, property: string): void;
+export declare function resolveTermString(input: SiteProcessInputType): string | undefined;
+export declare function termIsInterpolated(input: SiteProcessInputType): boolean;
+export declare function termIsInterpolatedImpl(term: LinkType<Link.Term>): boolean;
+export declare function termIsNested(input: SiteProcessInputType): boolean;

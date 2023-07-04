@@ -1,0 +1,10 @@
+import code from '../../../index.js';
+export declare function load_codeCard_like(load: code.MeshLoad): void;
+export declare function load_codeCard_like_free(load: code.MeshLoad): void;
+export declare function load_codeCard_like_head(load: code.MeshLoad): void;
+export declare function load_codeCard_like_like(load: code.MeshLoad): void;
+export declare function load_codeCard_like_list(load: code.MeshLoad): void;
+export declare function load_codeCard_like_mesh(load: code.MeshLoad): void;
+export declare function load_codeCard_like_nestedChildren(load: code.MeshLoad): void;
+export declare function load_codeCard_like_take(load: code.MeshLoad): void;
+export declare function load_codeCard_like_term(load: code.MeshLoad): void;

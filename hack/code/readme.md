@@ -4,6 +4,7 @@
 
 - [fog](https://github.com/fog/fog)
 - [terraform](https://github.com/hashicorp/terraform)
+- [pundit](https://github.com/varvet/pundit)
 
 ## Vercel Integration
 
@@ -156,18 +157,39 @@ base bind # with crow installed
 ```
 
 ```
+/.gitignore
 /back # backend
-  /base # database
-  /site # infrastructure
   /note # mailers
   /work # jobs
   /time # cron jobs
-  /hook # api
-  /seed # seeding data
+  /task # handle API calls
+  /hook # REST and webhook handlers
+/bind # configuration
+  /lock.link # commit this
+  /role.link
+  /text.link # copy
+  /kink.link # errors
+  /form # schema
+    /user
+  /rule # policies/permissions
+  /take.link # query allowance
+  /vibe.link # global styles
+  /base # database
+    /seed # seeding data
+    /move # migrations
+  /site # infrastructure
+    /hold.link # don't commit this
+    /move # migrations
+  /host # env variables, don't commit
+    /test.link
+    /base.link
+    /work.link # dev
+    /beat.link # prod
 /book # guides
 /deck # custom packages
 /face # frontend
   /dock # ui components
+  /vibe # styles/themes
   /wall # pages
     /host
       /base.link
@@ -177,35 +199,38 @@ base bind # with crow installed
         /case.link
   /text # copy
 /file # public directory
-/host # configuration
-  /lock.link # commit this
-  /role.link
-  /show.link # logs
-  /text.link # copy
-  /form # schema
-    /user
-  /take.link # query allowance
-  /hide
-    /site.link # don't commit this
-    /nest.link # env variables, don't commit
+  /text # fonts
+  /view # images
+/hook # api
+  /take
+  /save
+  /task # queries
 /line # command line processing
 /link
+  /hint.link
   /head
   /tree
 /make
   /javascript
     /browser
     /node
+/flow # logs
+  /work.link # dev logs
+  /test.link # test logs
+  /beat.link # prod logs
+/task # dev helpers
 /test
 /tool # shared
-/work # dev helpers
+  /tree
 /base.link # commit this
+/hack # scratchpad/tmp folder
 ```
 
 For libraries, you have:
 
 ```
 /code
+/task
 ```
 
 For sites, you have:
@@ -214,5 +239,6 @@ For sites, you have:
 /back
 /face
 /hook
+/line
 /task
 ```

@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "module": "es6",
+    "target": "es2020",
+    "lib": ["es2020"],
+    "outDir": ".",
+    "rootDir": ".",
+    "sourceMap": true,
+    "moduleResolution": "node",
+    "strictNullChecks": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "noUncheckedIndexedAccess": true,
+    "baseUrl": ".",
+    "noImplicitAny": true
+  },
+  "include": ["."],
+  "exclude": ["node_modules"]
+}
