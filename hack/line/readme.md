@@ -41,6 +41,9 @@ base make
 # watch the directory and recompile
 base make --ride
 # start a repl for the current deck
+base walk deck
+base walk
+# apply configuration like terraform
 base bind deck
 base bind
 # create a user account
@@ -144,6 +147,11 @@ base list self
 base show self
 # start development server
 base work
+# plan a terraform configuration
+base brew deck
+base brew
+# read config value
+base read <name>
 ```
 
 Since you can add your own commands to `base`, the convention is:

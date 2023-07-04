@@ -524,13 +524,15 @@ It builds to the base directory, and you have to grab it and make it
 public for the browser.
 
 ```
-/base
-  /base.link
-    hint base # base folder
-  /link
+/host
+  /bind.link
+  /lock.link
+/link
+  /hint.link
+  /head
     /tunebond
       /crow # symlink to 1.0.23
-  /sink
+  /tree
     /tunebond
       /crow
         /1.0.23
@@ -544,90 +546,90 @@ public for the browser.
         /0.1.3
           /code
             /base.link
-  /make
-    # this folder changes a lot
-    /bake # prepare the code
-      /javascript
-        /browser
-          /base.<hash>.js # final output
-          /base.<hash>.js.map
-            => link to crow@1.0.23
-        /node # symlink to node folder
-    /rake # organize the code
-      /javascript
-        /package.json
-          name: @tunebond/base
-          browser: ./browser/index.js
-        /browser
-          /hash.json
-          /node_modules
-            /.tree
-              /@tunebond
-                /nest
-                  /2.2.23
+/make
+  # this folder changes a lot
+  /bake # prepare the code
+    /javascript
+      /browser
+        /base.<hash>.js # final output
+        /base.<hash>.js.map
+          => link to crow@1.0.23
+      /node # symlink to node folder
+  /rake # organize the code
+    /javascript
+      /package.json
+        name: @tunebond/base
+        browser: ./browser/index.js
+      /browser
+        /hash.json
+        /node_modules
+          /.tree
             /@tunebond
               /nest
-            /@tunebond
-              /base+shared
-          /roll
-            /hash+<hash-of-names>.js
-            /<name>.js
-        /shared
-          /hash.json
-          /node_modules
-            /.tree
-              /@tunebond
-                /nest
-                  /2.2.23
-            /@tunebond
-              /nest
-          /roll
-            /hash+<hash-of-names>.js
-            /<name>.js
-        /node
-          /hash.json
-          /hook.js
-          /test.js
-          /index.js
-          /node_modules
-            /.tree
-              /tunebond+nest@2.2.23
-                /node_modules
-                  /@tunebond
-                    /crow
+                /2.2.23
+          /@tunebond
+            /nest
+          /@tunebond
+            /base+shared
+        /roll
+          /hash+<hash-of-names>.js
+          /<name>.js
+      /shared
+        /hash.json
+        /node_modules
+          /.tree
             /@tunebond
               /nest
-          /roll
-            /hash+<hash-of-names>.js
-            /<name>.js
-    /take # gather the code
-      /rust
-        /linux
-      /javascript
-        /browser
-        /shared
-          /hash.json
-        /node
-          /hash.json
-            {
-              [hash]: [link]
-            }
-          /index.js
-          /node_modules
-            /.tree
-              /tunebond+crow@1.0.23
-                /node_modules
-                  /@tunebond
-                    /crow
-                      /index.js
-                        //# sourceMappingURL=index.js.map
-                      /index.js.map
-                        => ../../../../../../../tree/tunebond/crow/1.0.23
-                    /wolf
-                      /index.js
-            /tunebond
-              /crow
-                /index.js # symlink to tunebond+crow@1.0.23/node_modules/tunebond/crow/base.js
+                /2.2.23
+          /@tunebond
+            /nest
+        /roll
+          /hash+<hash-of-names>.js
+          /<name>.js
+      /node
+        /hash.json
+        /hook.js
+        /test.js
+        /index.js
+        /node_modules
+          /.tree
+            /tunebond+nest@2.2.23
+              /node_modules
+                /@tunebond
+                  /crow
+          /@tunebond
+            /nest
+        /roll
+          /hash+<hash-of-names>.js
+          /<name>.js
+  /take # gather the code
+    /rust
+      /linux
+    /javascript
+      /browser
+      /shared
+        /hash.json
+      /node
+        /hash.json
+          {
+            [hash]: [link]
+          }
+        /index.js
+        /node_modules
+          /.tree
+            /tunebond+crow@1.0.23
+              /node_modules
+                /@tunebond
+                  /crow
+                    /index.js
+                      //# sourceMappingURL=index.js.map
+                    /index.js.map
+                      => ../../../../../../../tree/tunebond/crow/1.0.23
+                  /wolf
+                    /index.js
+          /tunebond
+            /crow
+              /index.js # symlink to tunebond+crow@1.0.23/node_modules/tunebond/crow/base.js
 ```
 
 You could periodically check and clean the cache, every 16th change,
