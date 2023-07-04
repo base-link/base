@@ -148,10 +148,29 @@ base show self
 # start development server
 base work
 # plan a terraform configuration
-base brew deck
+base brew site
 base brew
 # read config value
 base read <name>
+# terraform bind
+base bind site
+# load db console
+base bind base
+# create Database
+base make base
+# drop database
+base toss base
+# load seed data
+base seed base
+# clear logs
+base wash tail
+# run migrations
+base bind base head
+base bind base
+# rollback migrations
+base bind base back
+# generate UI component
+base make dock
 ```
 
 Since you can add your own commands to `base`, the convention is:

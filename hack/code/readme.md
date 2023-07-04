@@ -153,7 +153,7 @@ Saved locally to `bind.link`.
 Saved remotely using a cloud provider using the crow framework.
 
 ```
-base bind # with crow installed
+base bind site # with crow installed
 ```
 
 ```
