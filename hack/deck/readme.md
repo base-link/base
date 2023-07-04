@@ -416,22 +416,60 @@ It saves it into:
     /deck.js
     /line.js # CLI hook compiled file
 ./link
-  /base.js
-  /package.json
-  /node_modules # pnpm-like-mirror
-    /.tree
-      /<host+deck@mark>
-        /node_modules
-          /<host+deck>
-    /<host+deck> (soft symlink)
-  /head # symlink folder
-    /<host+deck> (soft symlink to tree/host+deck+mark/link/host+deck)
-  /tree # hardlink folder
+  /base.link # configuration file telling us this link directory is what we think.
+  /<host+deck> (soft symlink to tree/host+deck+mark/link/host+deck)
+  /.tree # hardlink folder
     /<host+deck@mark>
       /link
         /<host+deck> (soft symlink, except actual folder)
           /link
             /base.js
+```
+
+The source maps are like this:
+
+```
+/make
+  /browser
+    /link
+      /band.base.js
+        //# sourceMappingURL=band.base.js.map
+      /band.rest.js
+        //# sourceMappingURL=band.rest.js.map
+    /deck.js
+```
+
+There is a server which loads the source maps under `/link`:
+
+```
+/make
+  /link
+    /tunebond
+      /crow
+        /1.0.23
+          /code
+            /base.link
+          /link
+            /tunebond
+              /wolf => /wolf/0.1.0
+      /wolf
+        /0.1.0
+          /code
+            /base.link
+```
+
+The server aliases to `./link` on the file system, as in:
+
+```
+/link
+  /tunebond
+    /crow
+      /1.0.23
+        /code
+          /base.link
+        /link
+          /tunebond
+            /wolf => /wolf/0.1.0
 ```
 
 The `base.js` is compiled with types. Then that gets run and compiles to
@@ -446,3 +484,79 @@ deck @foo/bar
     link @tunebond/nest
     link @tunebond/crow
 ```
+
+Map [multiple sources](https://www.bugsnag.com/blog/source-maps/) to one
+JS file.
+
+https://developer.mozilla.org/en-US/docs/Web/Manifest
+
+There are source maps for Node.js too, and the compiler.
+
+```
+/.base
+  /make
+    /band.base.<hash>.js
+    /band.base.<hash>.js.map
+      => link to crow@1.0.23
+  /link
+    /tunebond
+      /crow # symlink to 1.0.23
+  /tree
+    /tunebond
+      /crow
+        /1.0.23
+          /code
+            /base.link
+          /link
+            /tunebond
+              /wolf => wolf/0.1.3
+  /work
+    /index.js
+    /node_modules
+      /.tree
+        /tunebond+crow@1.0.23
+          /node_modules
+            /@tunebond
+              /crow
+                /index.js
+                  //# sourceMappingURL=index.js.map
+                /index.js.map
+                  => ../../../../../../../tree/tunebond/crow/1.0.23
+              /wolf
+                /index.js
+      /tunebond
+        /crow
+          /index.js # symlink to tunebond+crow@1.0.23/node_modules/tunebond/crow/base.js
+```
+
+So:
+
+- loading from ./code loads ./link/tunebond/crow
+- loading from ./link/tunebond/crow loads from
+  - /link/.tree/tunebond/crow/1.0.23
+- that gets compiled into
+  - /link/.work/node_modules/tunebond/crow/index.js
+- and that is actually a symlink to
+  - /link/.work/node_modules/.tree/tunebond+crow@1.0.23/node_modules/tunebond/crow/index.js
+- so when we load ./link/.work/index.js, it loads from that last long
+  path.
+- and the source map path is always relative to that long path.
+
+Code loads from browser/server alias:
+
+```
+/tree
+  /tunebond
+    /crow
+      /1.0.23
+```
+
+And the source code in JavaScript is at:
+
+```
+/site
+  /band.base.<hash>.js
+  /band.rest.<hash>.js
+```
+
+A hard link converts the path into something usable.
