@@ -129,9 +129,9 @@ base make @foo/bar
 # deprecate a deck version
 base void deck my-thing@"< 0.2.3" "critical bug fixed in v0.2.3"
 # switch to a different version of base
-base work <version>
+base move self <version>
 # set the default version to use
-base save work <version>
+base load self <version>
 # install the latest base itself
 base save self
 # install a specific version of base itself
@@ -142,6 +142,8 @@ base diff self
 base list self
 # where base is located itself, and other things
 base show self
+# start development server
+base work
 ```
 
 Since you can add your own commands to `base`, the convention is:

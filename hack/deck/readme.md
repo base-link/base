@@ -492,63 +492,6 @@ https://developer.mozilla.org/en-US/docs/Web/Manifest
 
 There are source maps for Node.js too, and the compiler.
 
-```
-/base
-  # this folder changes a lot
-  /make
-    /javascript
-      /browser
-        /band
-          /band.base.<hash>.js # final output
-          /band.base.<hash>.js.map
-            => link to crow@1.0.23
-          /band.shared.js # symlinks out to browser+node folder
-        /roll # cards/files with cyclic deps in current deck which change a lot
-          /roll.1.js
-          /roll.2.js
-        /deck
-          /deck.1.js # decks cached to be concatenated
-      /node
-        /hook.js
-        /roll
-        /deck
-      /browser+node
-  /link
-    /tunebond
-      /crow # symlink to 1.0.23
-  /tree
-    /tunebond
-      /crow
-        /1.0.23
-          /code
-            /base.link
-          /.base
-            /link
-              /tunebond
-                /wolf => wolf/0.1.3
-      /wolf
-        /0.1.3
-          /code
-            /base.link
-  /work
-    /index.js
-    /node_modules
-      /.tree
-        /tunebond+crow@1.0.23
-          /node_modules
-            /@tunebond
-              /crow
-                /index.js
-                  //# sourceMappingURL=index.js.map
-                /index.js.map
-                  => ../../../../../../../tree/tunebond/crow/1.0.23
-              /wolf
-                /index.js
-      /tunebond
-        /crow
-          /index.js # symlink to tunebond+crow@1.0.23/node_modules/tunebond/crow/base.js
-```
-
 So:
 
 - loading from ./code loads ./link/tunebond/crow
@@ -562,13 +505,22 @@ So:
   path.
 - and the source map path is always relative to that long path.
 
-Code loads from browser/server alias:
+Code loads from browser/server alias (which is accessible through
+sourcemaps):
 
 ```
 /tree
   /tunebond
     /crow
       /1.0.23
+
+# or
+
+/base
+  /tree
+    /tunebond
+      /crow
+        /1.0.23
 ```
 
 And the source code in JavaScript is at:
@@ -577,9 +529,194 @@ And the source code in JavaScript is at:
 /site
   /band.base.<hash>.js
   /band.rest.<hash>.js
+
+# or
+
+/base
+  /make
+    /javascript
+      /browser
+        /band
+          /band.base.<hash>.js
+          /band.rest.<hash>.js
 ```
 
 A hard link converts the path into something usable.
 
 Then when it loads a symlinked module, it still is loading from the
 base, recursively.
+
+You can hide the sourcemaps behind a login wall, via:
+
+```
+hook /site/:file+
+  task load-make
+
+hook /tree/:file+
+  task load-tree
+```
+
+```
+deck @foo/bar
+  make browser, ./make/site/browser
+  make node, ./make/site/node
+```
+
+It builds to the base directory, and you have to grab it and make it
+public for the browser.
+
+```
+/base
+  /base.link
+    hint base # base folder
+  /link
+    /tunebond
+      /crow # symlink to 1.0.23
+  /sink
+    /tunebond
+      /crow
+        /1.0.23
+          /code
+            /base.link
+          /base
+            /link
+              /tunebond
+                /wolf => wolf/0.1.3
+      /wolf
+        /0.1.3
+          /code
+            /base.link
+  /make
+    # this folder changes a lot
+    /bake # prepare the code
+      /javascript
+        /browser
+          /base.<hash>.js # final output
+          /base.<hash>.js.map
+            => link to crow@1.0.23
+        /node # symlink to node folder
+    /rake # organize the code
+      /javascript
+        /package.json
+          name: @tunebond/base
+          browser: ./browser/index.js
+        /browser
+          /node_modules
+            /.tree
+              /@tunebond
+                /nest
+                  /2.2.23
+            /@tunebond
+              /nest
+            /@tunebond
+              /base+shared
+          /roll
+            /hash+<hash-of-names>.js
+            /<name>.js
+        /shared
+          /node_modules
+            /.tree
+              /@tunebond
+                /nest
+                  /2.2.23
+            /@tunebond
+              /nest
+          /roll
+            /hash+<hash-of-names>.js
+            /<name>.js
+        /node
+          /hook.js
+          /index.js
+          /node_modules
+            /.tree
+              /@tunebond
+                /nest
+                  /2.2.23
+            /@tunebond
+              /nest
+          /roll
+            /hash+<hash-of-names>.js
+            /<name>.js
+    /take # gather the code
+      /rust
+        /linux
+      /javascript
+        /browser
+        /node
+          /index.js
+          /node_modules
+            /.tree
+              /@tunebond+crow@1.0.23
+                /node_modules
+                  /@tunebond
+                    /crow
+                      /index.js
+                        //# sourceMappingURL=index.js.map
+                      /index.js.map
+                        => ../../../../../../../tree/tunebond/crow/1.0.23
+                    /wolf
+                      /index.js
+            /tunebond
+              /crow
+                /index.js # symlink to tunebond+crow@1.0.23/node_modules/tunebond/crow/base.js
+```
+
+You could periodically check and clean the cache, every 16th change,
+otherwise use file watching.
+
+```js
+hash([file, name].join('#'))
+```
+
+There is an in-memory cache of the modules. It saves the modules
+
+https://betterprogramming.pub/a-memory-friendly-way-of-reading-files-in-node-js-a45ad0cc7bb6
+
+On start the dev server, read each file's hash using streaming API or
+fs.read directly with shared memory buffer. Find all the old files using
+each hash, those files you don't have to recompile. Find the new files
+because they didn't exist in the cache, and compile those. Find the
+removed files because the cache contained extra files that weren't found
+in the new hash set. Remove those from the cache.
+
+Start the dev server, when a file renamed, clear the cache and add the
+new value.
+
+link: hash
+
+When file is renamed, find all the files that import that file, and
+change the import. Can do this on the AST for the import. Then write out
+the changed file.
+
+The JS files can all be named after codes, not hashes. Each deck gets a
+file. Then the current deck gets a set of rolls. Each deck is named
+after the deck in JS. The file is index.js. Each roll is named after the
+file if non-circular, otherwise the file names hash.
+
+```
+sinkFileHash (link files)
+takeFileHash (js files for compiler)
+rakeFileHash (js files for preliminary pass)
+bakeFileHash (js published file interface)
+```
+
+First read the tree files and check the hashes, invalidate any that have
+changed. Then read the work file hashes, invalidate any that have
+changed. Then read the make file hashes, invalidate any that have
+changed.
+
+The roll gets imported into the rest of the files so circular
+dependencies get resolved internally, but can be imported externally
+through JS.
+
+```js
+// foo.js
+import * as circularStuff from './<hash>.js'
+
+export const foo = circularStuff.foo
+
+// bar.js
+import * as circularStuff from './<hash>.js'
+
+export const bar = circularStuff.bar
+```
