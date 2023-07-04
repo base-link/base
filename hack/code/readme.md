@@ -157,20 +157,36 @@ base bind # with crow installed
 
 ```
 /back # backend
-  /bind # migrations
-    /base # database
-    /site # infrastructure
+  /base # database
+  /site # infrastructure
+  /note # mailers
+  /work # jobs
+  /time # cron jobs
+  /hook # api
+  /seed # seeding data
+/book # guides
 /deck # custom packages
 /face # frontend
   /dock # ui components
   /wall # pages
-/hook # api
-/host
+    /host
+      /base.link
+      /case.link
+      /deck
+        /base.link
+        /case.link
+  /text # copy
+/file # public directory
+/host # configuration
   /lock.link # commit this
   /role.link
   /show.link # logs
+  /text.link # copy
+  /form # schema
+    /user
+  /take.link # query allowance
   /hide
-    /bind.link # don't commit this
+    /site.link # don't commit this
     /nest.link # env variables, don't commit
 /line # command line processing
 /link
@@ -180,7 +196,7 @@ base bind # with crow installed
   /javascript
     /browser
     /node
-/read # guides
+/test
 /tool # shared
 /work # dev helpers
 /base.link # commit this
