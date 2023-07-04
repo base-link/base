@@ -25,7 +25,7 @@ The linking to the global store stores it at:
 
 ```
 ~/Library/base
-  /nest # global dependency store
+  /base # global dependency store
     /link
       /<host>
         /<deck>
@@ -35,20 +35,22 @@ The linking to the global store stores it at:
       /<hash>
 ```
 
-When you install packages, it hard symlinks them to your `./deck`
+When you install packages, it hard symlinks them to your `./link`
 folder.
 
 ```
 ./link
-  /base.link # configuration settings
-  /hold # hardlink folder
+  /base.js # compiled deck for API
+  /tree # hardlink folder
     /<host>
       /<deck>
         /<mark>
           /link
             /<host>
               /<deck> (soft symlink, except actual folder)
-  /hook # symlink folder
+                /hard linked files
+                /base.js
+  /list # symlink folder
     /<host>
       /<deck> (soft symlink to hold/host/deck/mark/link/host/deck)
 ```
@@ -314,3 +316,131 @@ You can only publish 20 versions of a deck per day, unless you upgrade
 to "verified".
 
 You can only create 20 decks per day, unless you upgrade to verified.
+
+---
+
+Get word like `bird-1234`
+
+```js
+const MAX = 2097151
+
+function splitInt(int) {
+  if (int > MAX) {
+    throw new Error('Too large a number')
+  }
+  let roughly10k = (int >> 8) & 0xffff
+  let terms256 = int & 0xff
+  return [terms256, roughly10k]
+}
+
+function log(int) {
+  const [a, b] = splitInt(int)
+  console.log(int, '=> [', a, b, ']')
+}
+```
+
+To find the commands from other projects, the other projects need to be
+installed in the local deck in the current directory. These are defined
+under the `hook` term in the deck definition.
+
+```
+deck @foo/bar
+  hook ./hook
+```
+
+After installation, they get added to the generated JS/etc.. so it is
+easy to find them.
+
+So the ./hook folder for all the decks gets compiled into a single CLI.
+
+- https://github.com/pkgjs/parseargs/blob/main/index.js#L175
+
+This is basically a `hook.js` file that gets created, which handles the
+CLI without importing anything, and only imports things lazily.
+
+Then for each deck, we have a `deck.js` that gets created, which
+resolves circular dependencies and such within the deck. This gets
+loaded dynamically after the command is parsed.
+
+So each deck becomes a separate file. But then we can combine some of
+them into bundles, for minimizing HTTP requests on changed files.
+
+The bolt.link project is all types, it is not needed at runtime. So
+there is type-annotated and type-free versions of the output JS.
+
+So we have the base.link "compiler" form of the output JS, which is
+basically a direct port of the code to the compiler AST in JS. Then we
+have the compiled AST output file, without any types. The JS base.link
+code is used to generate the output JS. This outputs stuff without the
+types, if the types aren't directly referenced. If there is any code
+directly or indirectly referencing types, it perhaps includes all the
+types, or it returns null, either one.
+
+The special top-level `seal` command will force include the types.
+
+```
+seal form user
+seal task create
+```
+
+So the compiler generates JS one per deck. And the JS is used to
+generate a build, where the files are grouped based on some heuristic.
+
+It saves it into:
+
+```
+~/Library/base
+  /base # global dependency store
+    /<host+deck>
+      /...files
+      /link
+        /base.js
+        /package.json
+  /tree # file store
+    /<hash-base>
+      /<hash>.{js,link}
+```
+
+```
+./make
+  /browser
+    /link
+      /band.base.js # dependencies all in one bundle
+      /band.rest.js # dependencies that weren't grouped explicitly
+    /deck.js # shared app code
+    /hook
+      /page1.js # standalone functions
+  /node
+    /link
+      /deck1.js
+    /deck.js
+    /line.js # CLI hook compiled file
+./link
+  /base.js
+  /package.json
+  /node_modules # pnpm-like-mirror
+    /.tree
+      /<host+deck+mark>
+        /node_modules
+          /<host+deck>
+    /<host+deck> (soft symlink)
+  /head # symlink folder
+    /<host+deck> (soft symlink to tree/host+deck+mark/link/host+deck)
+  /tree # hardlink folder
+    /<host+deck+mark>
+      /link
+        /<host+deck> (soft symlink, except actual folder)
+```
+
+The `base.js` is compiled with types. Then that gets run and compiles to
+output JS/Swift/etc..
+
+Specify the bundle groups with:
+
+```
+deck @foo/bar
+  band base
+    link @tunebond/bolt
+    link @tunebond/nest
+    link @tunebond/crow
+```
