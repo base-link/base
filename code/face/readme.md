@@ -76,9 +76,9 @@ Under base.link:
   - Team page
 /love/vibe
   - Marketing asset page
-/land
+/land/code
   - Landing page for coders
-/land/home
+/land/case
   - Landing page for non-coders
 /find
   - Search packages
