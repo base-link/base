@@ -559,7 +559,7 @@ public for the browser.
           name: @tunebond/base
           browser: ./browser/index.js
         /browser
-          /save.json
+          /hash.json
           /node_modules
             /.tree
               /@tunebond
@@ -573,7 +573,7 @@ public for the browser.
             /hash+<hash-of-names>.js
             /<name>.js
         /shared
-          /save.json
+          /hash.json
           /node_modules
             /.tree
               /@tunebond
@@ -585,14 +585,16 @@ public for the browser.
             /hash+<hash-of-names>.js
             /<name>.js
         /node
-          /save.json
+          /hash.json
           /hook.js
+          /test.js
           /index.js
           /node_modules
             /.tree
-              /@tunebond
-                /nest
-                  /2.2.23
+              /tunebond+nest@2.2.23
+                /node_modules
+                  /@tunebond
+                    /crow
             /@tunebond
               /nest
           /roll
@@ -603,20 +605,17 @@ public for the browser.
         /linux
       /javascript
         /browser
+        /shared
+          /hash.json
         /node
-          /save.json
+          /hash.json
             {
-              link: {
-                [link]: hash
-              },
-              hash: {
-                [hash]: [link]
-              }
+              [hash]: [link]
             }
           /index.js
           /node_modules
             /.tree
-              /@tunebond+crow@1.0.23
+              /tunebond+crow@1.0.23
                 /node_modules
                   /@tunebond
                     /crow
@@ -681,12 +680,131 @@ through JS.
 
 ```js
 // foo.js
-import * as circularStuff from './<hash>.js'
+import * as circularStuff from './hash+<hash>.js'
 
 export const foo = circularStuff.foo
 
 // bar.js
-import * as circularStuff from './<hash>.js'
+import * as circularStuff from './hash+<hash>.js'
 
 export const bar = circularStuff.bar
+```
+
+## Max File Size
+
+The max link file size is 16mb.
+
+```js
+import crypto from 'node:crypto'
+import * as fs from 'node:fs/promises'
+import pkg from 'glob'
+const { glob } = pkg
+
+const MB_16 = Math.pow(2, 24)
+const MB_1 = MB_16 / 16
+
+const fileSharedBuffer = Buffer.alloc(MB_1)
+
+async function readBytes(fh, sharedBuffer) {
+  return await fh.read(sharedBuffer, 0, sharedBuffer.length, null)
+}
+
+const start = new Date()
+
+const str = []
+
+main().then(() => {
+  const end = new Date()
+  console.log(end - start)
+})
+
+async function main() {
+  const paths = glob.sync('../bolt.link/code/**/*.link')
+  for (const path of paths) {
+    const hash = await getFileHash(path)
+    str.push(hash)
+  }
+}
+
+async function getFileHash(link) {
+  const hash = crypto.createHash('sha512')
+  hash.setEncoding('hex')
+
+  for await (const chunk of generateChunksFromFile(
+    link,
+    MB_1,
+    fileSharedBuffer,
+  )) {
+    hash.update(chunk)
+  }
+
+  hash.end()
+  return hash.read()
+}
+
+async function* generateChunksFromFile(filePath, size, sharedBuffer) {
+  const stats = await fs.stat(filePath) // file details
+
+  if (stats.size > MB_16) {
+    throw new Error(`File too big: ${stats.size} > ${MB_16}`)
+  }
+
+  const fh = await fs.open(filePath) // file descriptor
+  let bytesRead = 0 // how many bytes were read
+  let end = size
+  let n = Math.ceil(stats.size / size)
+
+  for (let i = 0; i < n; i++) {
+    await readBytes(fh, sharedBuffer)
+    bytesRead = (i + 1) * size
+    if (bytesRead > stats.size) {
+      // When we reach the end of file,
+      // we have to calculate how many bytes were actually read
+      end = size - (bytesRead - stats.size)
+      yield sharedBuffer.slice(0, end)
+    } else {
+      yield sharedBuffer
+    }
+  }
+
+  await fh.close()
+}
+```
+
+```js
+function loadFileHashBase(path) {
+  const paths = glob.sync(path)
+  const hashes = {}
+  for (const path of paths) {
+    const hash = await getFileHash(path)
+    hashes[hash] = [path]
+  }
+}
+
+function testFileHashList(hashList, fileHashList) {
+  const deleted = {}
+  for (const hash in fileHashList) {
+    if (!hashList[hash]) {
+      // it was deleted or renamed
+      deleted[hash] = true
+    }
+  }
+  const added = {}
+  for (const hash in hashList) {
+    if (!fileHashList[hash]) {
+      // it was added or changed
+      added[hash] = true
+    }
+  }
+  return { added, deleted }
+}
+
+function tossFileHead(path) {
+  // propagate all removals
+  // rebuild the tailing files that were dependent on this.
+}
+
+function makeFileHead(path) {
+  compileFile(path)
+}
 ```
