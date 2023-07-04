@@ -146,11 +146,11 @@ base host deck
 Stored on google cloud like:
 
 ```
-deck.base.link/@tunebond/base/1.2.3/host.tar.gz
-deck.base.link/@tunebond/base/1.2.3/host.link
+deck.base.link/@tunebond/base/1.2.3/base.tar.gz
+deck.base.link/@tunebond/base/1.2.3/base.link
 ```
 
-The `host.link` gives us the metadata associated with the deck:
+The `base.link` gives us the metadata associated with the deck:
 
 ```
 {
@@ -174,7 +174,7 @@ reaching out to support at meet@tune.bond.
 
 On publish to base.link, once the package hits the server and streams
 the upload to google cloud, it generates the hash and saves the
-`host.link`.
+`base.link`.
 
 ```js
 // open file stream
@@ -259,3 +259,58 @@ https://base.link/@tunebond/base/1.2.3
 The registry chooses to not use URLs and instead use the `@` at sign to
 keep things simple. A host is required to manage a deck, to provide a
 namespace as well.
+
+---
+
+The sandbox is basically a deck.
+
+https://codepen.io/ettrics/pen/WRbGRN
+
+```
+base.link/@tunebond/:deck/code/:file+
+base.link/@tunebond/buck-1212 (4 letter word followed by numbers)
+base.link/@tunebond/buck-1212/mark/:mark/code/:file+ (just the code)
+base.link/@tunebond/buck-1212/mark/:mark/hint/:file+/task/create-something
+```
+
+Then the sandbox decks are marked as "sort make".
+
+    sort make (playground)
+    sort tool (library)
+    sort site (application)
+
+When you add new dependencies, it runs a new vercel build. Otherwise it
+runs against the vercel code.
+
+```
+BaseLinkShow (project name)
+
+MakeBaseLink (project name)
+
+make.base.link/@tunebond/buck-1234
+  Shows the rendering
+make.base.link/@tunebond/buck-1234/hint/:file+
+make.base.link/@tunebond/buck-1234/code/:file+
+make.base.link
+  Try and share code
+base.link/dock/vercel/back
+```
+
+Those are `sort make` decks under the hood, or `make true`.
+
+For now, it links to GitHub projects and deploys directly through
+vercel. You don't host the code on base.link.
+
+show true (to your deck, so it gets published to the world)
+
+The decks that you publish to base.link are basically tools for the most
+part, though they can be apps / sites.
+
+```
+base link make deck
+```
+
+You can only publish 20 versions of a deck per day, unless you upgrade
+to "verified".
+
+You can only create 20 decks per day, unless you upgrade to verified.
