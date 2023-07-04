@@ -1,1 +1,0 @@
-{"version":3,"file":"id.js","sourceRoot":"","sources":["../../hack/tool/id.ts"],"names":[],"mappings":"AAAA,IAAI,SAAS,GAAG,CAAC,CAAA;AACjB,IAAI,UAAU,GAAG,CAAC,CAAA;AAElB,MAAM,UAAU,gBAAgB;IAC9B,OAAO,SAAS,EAAE,CAAA;AACpB,CAAC;AAED,MAAM,UAAU,iBAAiB;IAC/B,OAAO,UAAU,EAAE,CAAA;AACrB,CAAC"}
