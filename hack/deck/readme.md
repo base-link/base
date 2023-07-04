@@ -24,36 +24,19 @@ resolution is necessary.
 The linking to the global store stores it at:
 
 ```
-~/Library/base
-  /base # global dependency store
-    /link
+~/.base
+  /deck
+    /link # global dependency store
       /<host>
         /<deck>
           /...files
-  /mint # file store
-    /<hash-base>
-      /<hash>
+    /tree # file store
+      /<hash-base>
+        /<hash>
 ```
 
-When you install packages, it hard symlinks them to your `./link`
+When you install packages, it hard symlinks them to your `./base`
 folder.
-
-```
-./link
-  /base.js # compiled deck for API
-  /tree # hardlink folder
-    /<host>
-      /<deck>
-        /<mark>
-          /link
-            /<host>
-              /<deck> (soft symlink, except actual folder)
-                /hard linked files
-                /base.js
-  /list # symlink folder
-    /<host>
-      /<deck> (soft symlink to hold/host/deck/mark/link/host/deck)
-```
 
 You can have "workspaces" by adding a `deck` folder (or wherever you put
 it).
@@ -134,8 +117,8 @@ The decks are stored on google cloud.
 ```
 deck <host/name>
   base <0.0.1> # base.link version
-  lock <mit> # required for publishing
-  head <Required summary of the package in 92 characters or less.>
+  lock mit # required for publishing
+  head <Required summary of the package in 64 characters or less.>
   site <repo>
 ```
 
@@ -401,31 +384,6 @@ It saves it into:
       /<hash>.{js,link}
 ```
 
-```
-./make
-  /browser
-    /link
-      /band.base.js # dependencies all in one bundle
-      /band.rest.js # dependencies that weren't grouped explicitly
-    /deck.js # shared app code
-    /hook
-      /page1.js # standalone functions
-  /node
-    /link
-      /deck1.js
-    /deck.js
-    /line.js # CLI hook compiled file
-./link
-  /base.link # configuration file telling us this link directory is what we think.
-  /<host+deck> (soft symlink to tree/host+deck+mark/link/host+deck)
-  /.tree # hardlink folder
-    /<host+deck@mark>
-      /link
-        /<host+deck> (soft symlink, except actual folder)
-          /link
-            /base.js
-```
-
 The source maps are like this:
 
 ```
@@ -601,6 +559,7 @@ public for the browser.
           name: @tunebond/base
           browser: ./browser/index.js
         /browser
+          /save.json
           /node_modules
             /.tree
               /@tunebond
@@ -614,6 +573,7 @@ public for the browser.
             /hash+<hash-of-names>.js
             /<name>.js
         /shared
+          /save.json
           /node_modules
             /.tree
               /@tunebond
@@ -625,6 +585,7 @@ public for the browser.
             /hash+<hash-of-names>.js
             /<name>.js
         /node
+          /save.json
           /hook.js
           /index.js
           /node_modules
@@ -643,6 +604,15 @@ public for the browser.
       /javascript
         /browser
         /node
+          /save.json
+            {
+              link: {
+                [link]: hash
+              },
+              hash: {
+                [hash]: [link]
+              }
+            }
           /index.js
           /node_modules
             /.tree

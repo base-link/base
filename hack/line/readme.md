@@ -131,7 +131,7 @@ base void deck my-thing@"< 0.2.3" "critical bug fixed in v0.2.3"
 # switch to a different version of base
 base move self <version>
 # set the default version to use
-base load self <version>
+base bind self <version>
 # install the latest base itself
 base save self
 # install a specific version of base itself
