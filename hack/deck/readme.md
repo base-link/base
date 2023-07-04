@@ -420,16 +420,18 @@ It saves it into:
   /package.json
   /node_modules # pnpm-like-mirror
     /.tree
-      /<host+deck+mark>
+      /<host+deck@mark>
         /node_modules
           /<host+deck>
     /<host+deck> (soft symlink)
   /head # symlink folder
     /<host+deck> (soft symlink to tree/host+deck+mark/link/host+deck)
   /tree # hardlink folder
-    /<host+deck+mark>
+    /<host+deck@mark>
       /link
         /<host+deck> (soft symlink, except actual folder)
+          /link
+            /base.js
 ```
 
 The `base.js` is compiled with types. Then that gets run and compiles to
