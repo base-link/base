@@ -1,0 +1,231 @@
+/**
+ * Resets.
+ */
+
+*:focus {
+  outline: none;
+}
+
+*,
+*:active,
+*:hover {
+  text-decoration: none;
+}
+
+i {
+  font-style: normal;
+}
+
+details summary::-webkit-details-marker {
+  display: none;
+}
+details::-webkit-details-marker {
+  display: none;
+}
+details > summary:first-of-type,
+details:first-of-type {
+  list-style-type: none;
+}
+summary:before {
+  content: '';
+}
+details[open] summary:before {
+  content: '';
+}
+summary,
+details,
+details:focus {
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+meter,
+details {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+meter::-webkit-meter-optimum-value {
+  background: red;
+}
+
+*,
+*:after,
+*:before,
+*::placeholder {
+  padding: 0px;
+  margin: 0px;
+  border: none;
+
+  color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  text-transform: inherit;
+
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+  -webkit-text-size-adjust: none;
+  background: transparent;
+  position: relative;
+  min-height: 0px;
+  /* user-select: none; */
+}
+
+.ace_line > span {
+  background-color: transparent !important;
+}
+
+.ace_scroll-left {
+  box-shadow: none !important;
+}
+
+input::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
+textarea {
+  resize: none;
+}
+
+input,
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.selectable {
+  user-select: text;
+}
+
+ol,
+ul {
+  list-style: none;
+}
+blockquote,
+q {
+  quotes: none;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: '';
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/**
+ * For file upload form.
+ */
+
+body > form {
+  position: static;
+}
+
+/**
+ * Remove default stylings.
+ */
+
+input[type='search']::-webkit-search-decoration,
+input[type='search']::-webkit-search-cancel-button,
+input[type='search']::-webkit-search-results-button,
+input[type='search']::-webkit-search-results-decoration {
+  -webkit-appearance: none;
+}
+
+textarea,
+input[type='text'],
+input[type='radio'],
+input[type='checkbox'],
+input[type='button'],
+input[type='submit'] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  border-radius: 0;
+}
+
+input[type='search'] {
+  border-radius: 0;
+  -webkit-border-radius: 0px;
+}
+
+select::-ms-expand {
+  display: none;
+}
+
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+i,
+cite,
+address {
+  font-style: normal;
+}
+
+select {
+  background: transparent;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+select option[disabled] {
+  display: none;
+}
+
+img {
+  user-drag: none;
+}
+
+html,
+body,
+#start {
+  height: 100%;
+}
+
+ul,
+ol {
+  padding-inline-start: 0;
+  margin-block-start: 0px;
+  margin-block-end: 0px;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+}
+
+.stop-scrolling {
+  overflow: hidden;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+select::-ms-expand {
+  display: none;
+}

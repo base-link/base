@@ -4,14 +4,14 @@
     "target": "ESNext",
     "lib": ["es2020"],
     "outDir": "make",
-    "rootDir": "hack",
+    "rootDir": "deck/tool/hack",
     "sourceMap": true,
     "moduleResolution": "node",
     "strictNullChecks": true,
     "strict": true,
     "esModuleInterop": true,
     "noUncheckedIndexedAccess": true,
-    "baseUrl": "./hack",
+    "baseUrl": "deck/tool/hack",
     "noErrorTruncation": true,
     "types": ["node"],
     "typeRoots": ["node_modules/@types"],
@@ -22,5 +22,5 @@
     }
   },
   "include": ["*.ts", "**/*.ts", "*.d.ts"],
-  "exclude": ["node_modules", "make", "tmp"]
+  "exclude": ["node_modules", "make", "hold"]
 }

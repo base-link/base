@@ -1,7 +1,7 @@
 
 deck @tunebond/base
   mark <0.0.1>
-  head <Link Text Compiler>
+  head <A Link Text Compiler>
   term link-text
   term computation
   term philosophy
@@ -10,11 +10,10 @@ deck @tunebond/base
   term white-label
   face <Lance Pollard>, site <lp@elk.fm>
   task ./task # the task loader
-  code ./code # the library loader
   read ./book # also a default
-  lock <apache-2.0>
-  load base
-    link @tunebond/bolt, mark <*>
-    link @tunebond/wolf, mark <*>
+  lock apache-2
+  link @tunebond/bolt, mark <0.x.x>
+  link @tunebond/nest, mark <0.x.x>
+  link @tunebond/crow, mark <0.x.x>
   load work
   load host

@@ -1,0 +1,214 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;700&family=Noto+Sans+Armenian:wght@400;700&family=Noto+Sans+Bengali:wght@400;700&family=Noto+Sans+Canadian+Aboriginal:wght@400;700&family=Noto+Sans+Cuneiform&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Sans+Egyptian+Hieroglyphs&family=Noto+Sans+Ethiopic:wght@400;700&family=Noto+Sans+Georgian:wght@400;700&family=Noto+Sans+Gujarati:wght@400;700&family=Noto+Sans+Gurmukhi:wght@400;700&family=Noto+Sans+Hebrew:wght@400;700&family=Noto+Sans+JP:wght@400;700&family=Noto+Sans+KR:wght@400;700&family=Noto+Sans+Kannada:wght@400;700&family=Noto+Sans+Khmer:wght@400;700&family=Noto+Sans+Malayalam:wght@400;700&family=Noto+Sans+Mono:wght@400;700&family=Noto+Sans+Oriya:wght@400;700&family=Noto+Sans+Runic&family=Noto+Sans+SC:wght@400;700&family=Noto+Sans+Sinhala:wght@400;700&family=Noto+Sans+Syriac&family=Noto+Sans+Tamil:wght@400;700&family=Noto+Sans+Telugu:wght@400;700&family=Noto+Sans+Thai:wght@400;700&family=Noto+Serif+Tibetan:wght@400;700&display=swap');
+@import url('https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css');
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-size: 20px;
+}
+
+code * {
+  font-family: 'Noto Sans Mono';
+  line-height: 1.7;
+  font-size: 16px;
+}
+
+* {
+  font-family: 'Noto Sans Mono';
+}
+
+.ch-codeblock,
+.ch-codegroup,
+.ch-preview {
+  border-radius: 0px;
+}
+
+::selection {
+  background: #cdfff3;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+#__next {
+  width: 100vw;
+  height: 100vh;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: 'Noto Sans Mono';
+}
+
+/*
+body {
+  position:fixed;
+  overflow: hidden;
+}
+
+main {
+  overflow-y: scroll;
+} */
+
+strong {
+  font-weight: bold;
+}
+
+@page {
+  margin: 0;
+  padding: 0;
+  size: 6in 9in;
+}
+
+@media print {
+  html,
+  body {
+    -webkit-print-color-adjust: exact;
+    /* overflow-y: auto; */
+    background: white;
+    color: #111;
+  }
+}
+
+ul,
+ol {
+  padding-inline-start: 0;
+  margin-block-start: 0px;
+  margin-block-end: 0px;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+}
+
+blockquote,
+figure,
+p {
+  margin-block-start: 0px;
+  margin-block-end: 0px;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0px;
+  border-color: none;
+}
+
+dd {
+  margin-inline-start: 0px;
+}
+
+a[aria-hidden='true'] {
+  border-bottom: none;
+}
+
+/* h1,
+h2,
+h3,
+h4 {
+  display: flex;
+  align-items: center;
+  left: -24px;
+} */
+
+h1 a[aria-hidden='true'],
+h2 a[aria-hidden='true'],
+h3 a[aria-hidden='true'],
+h4 a[aria-hidden='true'] {
+  display: block;
+  margin-right: 16px;
+  visibility: hidden;
+}
+
+h1:hover a[aria-hidden='true'],
+h2:hover a[aria-hidden='true'],
+h3:hover a[aria-hidden='true'],
+h4:hover a[aria-hidden='true'] {
+  visibility: visible;
+}
+
+.icon-link {
+  box-sizing: border-box;
+  position: relative;
+  display: block;
+  transform: rotate(-45deg) scale(var(--ggs, 1));
+  width: 8px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 4px;
+}
+.icon-link::after,
+.icon-link::before {
+  content: '';
+  display: block;
+  box-sizing: border-box;
+  position: absolute;
+  border-radius: 3px;
+  width: 8px;
+  height: 10px;
+  border: 2px solid;
+  top: -4px;
+}
+.icon-link::before {
+  border-right: 0;
+  border-top-left-radius: 40px;
+  border-bottom-left-radius: 40px;
+  left: -6px;
+}
+.icon-link::after {
+  border-left: 0;
+  border-top-right-radius: 40px;
+  border-bottom-right-radius: 40px;
+  right: -6px;
+}
+/*
+::-webkit-scrollbar {
+  height: 12px;
+  width: 12px;
+  background: #111;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #393812;
+  -webkit-border-radius: 1ex;
+  -webkit-box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.75);
+}
+
+::-webkit-scrollbar-corner {
+  background: #111;
+} */
+
+::placeholder {
+  font-family: 'Noto Sans Mono' !important;
+  font-style: italic;
+  color: rgb(120, 120, 120);
+}
+
+.missingLatin ::placeholder {
+  color: transparent;
+}
+
+.activeSearch {
+  animation: changeColor 2s infinite;
+}
+
+.input::placeholder {
+  color: black;
+}
+
+@keyframes changeColor {
+  0% {
+    background-color: #82cdf0;
+  }
+
+  50% {
+    background-color: #bbd9e7;
+  }
+
+  100% {
+    background-color: #82cdf0;
+  }
+}

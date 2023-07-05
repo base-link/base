@@ -57,8 +57,8 @@ Do this to get going:
 mkdir tunebond
 cd tunebond
 git clone git@github.com:tunebond/bolt.link.git
-git clone git@github.com:tunebond/wolf.link.git
-git clone git@github.com:tunebond/moon.link.git
+git clone git@github.com:tunebond/nest.link.git
+git clone git@github.com:tunebond/crow.link.git
 git clone git@github.com:tunebond/base.link.git
 cd base.link
 # then watch or run files from here.
@@ -379,7 +379,7 @@ make bind
 #### Load
 
 The load is the import of other modules or "cards". Loads can be nested,
-Ddo pattern matching to select out object by type and name.
+do pattern matching to select out object by type and name.
 
 ```link
 load /form

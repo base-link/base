@@ -1,5 +1,0 @@
-
-load @tunebond/base/work
-  find task head
-
-call head
