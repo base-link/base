@@ -13,7 +13,7 @@ load @tunebond/base/code/head/task/hook
 hook make
   note <Create a new deck repository>
   take name
-  take lead
+  take head
     lead <-t>
     lead <--title>
   take host

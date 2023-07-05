@@ -135,9 +135,6 @@ Under base.link:
 /note/lock
 /note/term
 /note/void
-/read
-  - Guides section
-/read/:read+
 ```
 
 Under deck.base.link:

@@ -3,7 +3,6 @@
 import { Command } from 'commander'
 import fs from 'fs'
 import os from 'os'
-import build from '../task/build.js'
 
 const program = new Command()
 
@@ -68,9 +67,9 @@ function linkSelfBase() {
   const baseHost = os.homedir()
   const deckHost = process.cwd()
 
-  fs.mkdirSync(`${baseHost}/Library/base`, { recursive: true })
-  fs.mkdirSync(`${baseHost}/Library/base/nest`, { recursive: true })
-  fs.mkdirSync(`${baseHost}/Library/base/nest/link`, {
+  fs.mkdirSync(`${baseHost}/base`, { recursive: true })
+  fs.mkdirSync(`${baseHost}/base/nest`, { recursive: true })
+  fs.mkdirSync(`${baseHost}/base/nest/link`, {
     recursive: true,
   })
 
@@ -85,19 +84,19 @@ function linkSelfBase() {
     throw new Error(`Invalid name ${deck.name}`)
   }
 
-  fs.mkdirSync(`${baseHost}/Library/base/nest/link/${host}`, {
+  fs.mkdirSync(`${baseHost}/base/nest/link/${host}`, {
     recursive: true,
   })
 
   // TODO: do it like pnpm with hard links
-  const baseDeckHost = `${baseHost}/Library/base/nest/link/${host}/${name}`
+  const baseDeckHost = `${baseHost}/base/nest/link/${host}/${name}`
   fs.symlinkSync(deckHost, baseDeckHost)
 }
 
 function linkDeck(deck: string) {
   const baseHost = os.homedir()
 
-  if (!fs.existsSync(`${baseHost}/Library/base/nest/link`)) {
+  if (!fs.existsSync(`${baseHost}/base/nest/link`)) {
     return
   }
 
@@ -115,7 +114,7 @@ function linkDeck(deck: string) {
 
   // TODO: do it like pnpm with hard links
   fs.symlinkSync(
-    `${baseHost}/Library/base/nest/link/${host}/${name}`,
+    `${baseHost}/base/nest/link/${host}/${name}`,
     `${deckHost}/link/hold/${host}/${name}`,
   )
 }
