@@ -1,10 +1,25 @@
 # Platform Integration
 
+- declarative data model queries
+- declarative database schema formation
+- declarative infrastructure provisioning
+- declarative ui components
+- declarative parsing
+- declarative text generation
+- declarative apis
+- declarative clis
+- declarative beats
+
+The only other portion is writing the actual imperative logic to
+implement some actions. How much further can it be taken?
+
 ## Inspiration
 
 - [fog](https://github.com/fog/fog)
 - [terraform](https://github.com/hashicorp/terraform)
 - [pundit](https://github.com/varvet/pundit)
+- [atlas](https://github.com/ariga/atlas)
+  - https://github.com/ariga/atlas/blob/master/sql/mysql/diff.go#L36
 
 ## Vercel Integration
 
@@ -242,3 +257,129 @@ For sites, you have:
 /line
 /task
 ```
+
+## Beats
+
+```
+beat x5-4
+  tick x
+  tick o
+  tick o
+  tick x
+```
+
+## Errors
+
+```
+kink undefined-form
+  code 12
+  take form
+  note <Form is {{form}}>
+  hint <Try a different form>
+```
+
+```rs
+fn does_things() -> Result<u32, IoError> {
+    let res1 = match can_fail() {
+        Ok(v) => v,
+        Err(e) => return Err(e)
+    };
+
+    let res2 = match can_fail() {
+        Ok(v) => v,
+        Err(e) => return Err(e)
+    };
+
+    return Ok(res1 + res2);
+}
+
+fn does_things() -> Result<u32, IoError> {
+    let res1 = try!(canFail())
+    let res2 = try!(canFail())
+    return Ok(res1 + res2);
+}
+```
+
+```
+task does-things
+  like result
+    like u32
+    like io-error
+
+  save res1, call can-fail
+  save ok1
+    stem case
+      call read-form
+        loan res1
+      case ok
+        loan res1/value
+      case kink
+        back res1
+
+  save ok, fuse try, call can-fail
+```
+
+```
+tree try
+  take result
+
+  hook fuse
+    stem case
+      call read-form
+        loan result
+      case ok
+        loan result/value
+      case kink
+        back result
+```
+
+```
+bind.link # Platform Bindings
+bolt.link # Standard Library
+loom.link # Compiler Framework / TypeChecking / etc.
+fish.link # Linting/Printing Framework (Language Server)
+  note <Takes the compiler output and generates code from it.>
+  /code
+    /text
+      /:text
+        /rule
+          /:rule
+    /task
+tree.link # Content Grammars and Parsing
+  /code
+    /content
+      /pdf
+    /task
+star.link # Third-party library like with GitHub and Vercel
+snow.link # Modeling Framework / Querying
+moon.link # Resource Provisioning
+crow.link # UI Framework like React
+nest.link # Site Framework (last remaining folders)
+seed.link # Math Framework
+wolf.link # CLI/REPL Framework
+base.link # Package Framework
+door.link # Security/User/Rate Limiting Framework
+```
+
+Compiler needs to know about:
+
+- link folder for decks and dependencies
+- make folder for compiling to target
+- bind folder for configuration
+- book folder for readme
+- deck file for parsing decks
+- flow folder for logs
+- test folder for tests
+
+All that's left is the "code" part of the app.
+
+The dock (view) is part of the code file type, so that is known by the
+compiler.
+
+The compiler would know about the framework?!! The compiler is the
+framework basically.
+
+The compiler is aware of:
+
+- platform bindings
+- standard library

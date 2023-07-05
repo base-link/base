@@ -114,9 +114,8 @@ task
 like and
   like x
   like y
-twin
-  like x
-  like y
+twin x
+  twin y
 
 like maybe
   like x
@@ -127,3 +126,10 @@ like not
   like x
 
 turn x
+
+like or
+  like x
+  like y
+
+sink x
+  sink y

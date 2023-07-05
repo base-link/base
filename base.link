@@ -1,17 +1,19 @@
 
 deck @tunebond/base
   mark <0.0.1>
-  head <A Link Text Compiler>
+  head <A Link Text Package Manager>
   term link-text
   term computation
   term philosophy
   term information
   term platform
   term white-label
+  term compiler
   face <Lance Pollard>, site <lp@elk.fm>
   task ./task # the task loader
   read ./book # also a default
   lock apache-2
+  sort tool
   link @tunebond/bolt, mark <0.x.x>
   link @tunebond/nest, mark <0.x.x>
   link @tunebond/crow, mark <0.x.x>

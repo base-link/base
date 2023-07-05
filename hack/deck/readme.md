@@ -829,7 +829,7 @@ Based on if it is `sort tool` or `sort site`:
 
 ```
 link @tunebond/crow, mark <0.*>
-  rule 1 # singleton policy
+  have 1 # singleton policy
 ```
 
 ## Semver Cheatsheet

@@ -12,7 +12,7 @@
 
 <h3 align='center'>base.link</h3>
 <p align='center'>
-  A Link Text Compiler
+  A Link Text Package Manager
 </p>
 
 <br/>
@@ -57,14 +57,12 @@ Do this to get going:
 mkdir tunebond
 cd tunebond
 git clone git@github.com:tunebond/bolt.link.git
-git clone git@github.com:tunebond/nest.link.git
-git clone git@github.com:tunebond/crow.link.git
 git clone git@github.com:tunebond/base.link.git
 cd base.link
 # then watch or run files from here.
 ```
 
-Those 4 projects should be all you need for now to get going.
+Those projects should be all you need for now to get going.
 
 Also of note, is that the `code` object which you'll see throughout the
 compiler TypeScript codebase is basically a global object which is
@@ -159,6 +157,12 @@ were potential errors.
 - `hack/code`: Main compiler
 - `hack/line`: Command line interface implementation (for now)
 
+## Future
+
+```
+pnpm add @tunebond/base -g
+```
+
 ## Base Type System
 
 Every object in the system is a mesh, in a graph of nodes so to speak,
@@ -171,9 +175,9 @@ are passed around in a structured way.
 
 ```link
 save x, text 10 # create
-save y, move x # move
-save z, loan y # borrow
-save w, read z # copy
+save y, move x  # move
+save z, loan y  # borrow
+save w, read z  # copy
 ```
 
 Every variable is immutable by default, but you can specify it as

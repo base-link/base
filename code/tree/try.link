@@ -1,0 +1,12 @@
+
+tree try
+  take result
+
+  hook fuse
+    stem case
+      call read-form
+        loan result
+      case ok
+        loan result/value
+      case kink
+        back result
