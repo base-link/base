@@ -31,9 +31,9 @@ cast create-user
           text <asdf>
 
   bind body
-    fuse tag, <hello>
-      fuse key, <foo>, <bar>
-      fuse key, <food>, <bard>
+    fuse nest, <hello>
+      fuse name, <foo>, <bar>
+      fuse name, <food>, <bard>
       bind nest
-        fuse tag, <world>
+        fuse nest, <world>
           text <asdf>
