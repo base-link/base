@@ -41,45 +41,6 @@ which don't exist in JavaScript/browsers). This is possible thanks to
 the ownership ideas from the Rust community and the like, "move
 semantics" allow this to work.
 
-## Contributing
-
-Feel free to think about how to rewrite major portions of the compiler
-code, or just add/change/remove a small thing here or there. Things are
-in constant flux at this point, so you are welcome to make sweeping
-changes as well! Next we will outline how the compiler TypeScript code
-is generally organized.
-
-### Project Structure
-
-Do this to get going:
-
-```bash
-mkdir tunebond
-cd tunebond
-git clone git@github.com:tunebond/bolt.link.git
-git clone git@github.com:tunebond/base.link.git
-cd base.link
-# then watch or run files from here.
-```
-
-Those projects should be all you need for now to get going.
-
-Also of note, is that the `code` object which you'll see throughout the
-compiler TypeScript codebase is basically a global object which is
-constructed through circular module imports/exports. I feel this way is
-Ddo this, despite the circular references. If you have strong opinions
-on a different non-circular way, which isn't hacky and you have a clean
-solution for it, please bring it up as always looking for ways to
-improve the code.
-
-This TS compiler code will eventually (probably in multi-year timeframe)
-ideally be replaced with native link text code instead. So not making
-the TS repo perfect in every way, just getting the job done for now. But
-the more that this gets worked on, the more it becomes clear we need to
-solve some core stuff in TS now, like surfacing errors, or how to handle
-circular dependencies, so having a decently nice TS repo is also a good
-thing.
-
 ### Compiler Overview
 
 The compiler works in a few rough phases currently:
@@ -150,12 +111,6 @@ being processed, but which is interrupted often as new things a
 recognizable. Eventually it reaches a point where things don't change,
 and if all things are complete, then it was a success, otherwise there
 were potential errors.
-
-### Folders
-
-- `hack/text`: Code for generating base link code from other languages
-- `hack/code`: Main compiler
-- `hack/line`: Command line interface implementation (for now)
 
 ## Future
 
