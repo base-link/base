@@ -42,29 +42,53 @@ base make text
 
 ```
 /book
-  /start
-    /introduction
+  /introduction
+  /getting-started
     /hello-world
     /modeling
-      /link-text
     /contributing
     /development
+  /link-text
   /decks
     /hello-world
-    /deck-file
-    /lock-file
-    /dependency-management
+    /deck-files
+    /lock-files
+    /folders
   /sites
     /hello-world
+    /folders
+  /lines
   /books
     /hello-world
-  /models
+    /cheat-sheet
+  /models # data types
     /form
     /task
     /deck
     /host
+  /file-system
+  /compiler
+  /parsers
+  /linters
+  /databases
+    /migrations
+    /adapters
+      /mysql
+      /postgres
+  /queries
+    /mutations
+    /projections
+  /artifacts # provisioning resources
+    /migrations
+    /configuration
+  /graphics
+    /docks
+    /webgl
+  /mailers
+  /jobs
   /theory
   /architecture
+  /dependency-management
   /development
   /cli
     /make
@@ -78,3 +102,14 @@ base make text
 
 Have a set of prebuilt book components for writing nice books like
 readme.com or vercel.com.
+
+Could see vertical navigation in a hover state of navigation:
+
+```
+/deck
+  /make
+  /cli
+  /book
+```
+
+And we only see 3 levels of navigation at a time on the left.
