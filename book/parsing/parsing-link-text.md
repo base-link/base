@@ -1,5 +1,21 @@
 # Parsing Link Text
 
+The `mill` DSL is for parsing Link Text, the tree of terms you see in
+the Base Link environment. It is divided into a `mine` layer, which
+emits things it finds in the tree based on certain patterns you define,
+and the `mint`, which takes what is emitted from the mine and converts
+it into AST objects. So you just:
+
+1. Define what the pattern recognition rules are in the `mine`. These
+   form a tree.
+2. Specify what to `take` out of each pattern recognized in the `mine`
+   tree.
+3. Handle each `take` in the `mint`, and generate an AST structure.
+
+The mill then takes these two declarative rule sets, and turns it into a
+parser. The parser then does a lazy approach, as opposed to greedy. That
+is, it matches the minimal amount possible.
+
 ## `mine`
 
 Mine's get a name, and have a tree of parsing rules inside. They specify
@@ -15,10 +31,10 @@ mine deck
   mine term, term deck
     mine text
       mine text, text <@>
-      mine form, form name
+      mine form, form term
         take host
       mine text, text </>
-      mine form, form name
+      mine form, form term
         take name
 ```
 
@@ -163,3 +179,14 @@ This tells us that the mine is processed in another mint handler.
 ### `make` in `mint`
 
 This tells us the object we want to construct.
+
+## How parsing works
+
+Given the link tree (a data structure produced by the `@tunebond/link`
+parser), it processes it. If it encounters interpolation, it skips over
+it and waits for it to be resolved before continuing back where it left
+off. This is the `mine` step.
+
+Then out of the mine are emitted "takes", which it passes to the `mint`.
+The mint handles each take and generates the "loom" tree. This is the
+main AST used by the compiler.
