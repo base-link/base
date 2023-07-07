@@ -14,7 +14,9 @@ it into AST objects. So you just:
 
 The mill then takes these two declarative rule sets, and turns it into a
 parser. The parser then does a lazy approach, as opposed to greedy. That
-is, it matches the minimal amount possible.
+is, it matches the minimal amount possible. The end result here is, the
+parser parses Link Text and generates the Loom Tree. The Loom Tree is
+the AST the compiler uses.
 
 ## `mine`
 
