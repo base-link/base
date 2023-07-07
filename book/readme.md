@@ -49,18 +49,20 @@ base make text
     /contributing
     /development
   /link-text
-  /decks
+  /packages
     /hello-world
     /deck-files
     /lock-files
+  /libraries
     /folders
-  /sites
+  /applications
     /hello-world
     /folders
-  /lines
+  /executables
   /books
     /hello-world
     /cheat-sheet
+  /documentationn
   /models # data types
     /form
     /task
@@ -68,6 +70,18 @@ base make text
     /host
   /file-system
   /compiler
+  /targets
+    /languages
+      /javascript
+      /kotlin
+      /rust
+      /swift
+    /environments
+      /node
+      /browser
+      /macos
+      /ios
+      /linux
   /parsers
   /linters
   /databases
@@ -113,3 +127,7 @@ Could see vertical navigation in a hover state of navigation:
 ```
 
 And we only see 3 levels of navigation at a time on the left.
+
+This is similar to how Rust does it:
+
+https://doc.rust-lang.org/std/primitive.array.html#method.as_mut_slice
