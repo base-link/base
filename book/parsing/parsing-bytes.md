@@ -60,6 +60,8 @@ mine hunk
 
 ### `mine form`
 
+This delegates to separate mine definitions to parse complex structures.
+
 ### `mine band`
 
 This means parsing values between (and including) two values.
@@ -78,4 +80,50 @@ mine ascii
   mine band
     bind rise, text 0
     bind fall, text 127
+```
+
+### `mine test`
+
+### `mine head`
+
+This is a "lookahead" construct.
+
+> look for `x`, but match only if followed by `y`.
+
+```
+mine head
+  mine form, form x
+  mine form, form y
+```
+
+Or a "negative lookahead":
+
+> look for `x`, but match only if _not_ followed by `y`.
+
+```
+mine head
+  mine form, form x
+  mine miss, mine form, form y
+```
+
+### `mine back`
+
+This is a "positive lookbehind":
+
+> match `x`, but only if there’s `y` before it
+
+```
+mine back
+  mine form, form x
+  mine form, form y
+```
+
+Then a "negative lookbehind":
+
+> match `x`, but only if there’s _not_ `y` before it
+
+```
+mine back
+  mine form, form x
+  mine miss, mine form, form y
 ```

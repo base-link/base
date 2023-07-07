@@ -57,7 +57,7 @@ This gives you the ability to specify a range of how many to match.
 
 This means an optional parse of what's inside.
 
-### `mine head`
+### `mine sift`
 
 This means you are matching one of them inside.
 
@@ -73,6 +73,52 @@ Match a block of elements.
 ### `mine miss`
 
 This means you want to _not_ match what's inside.
+
+### `mine test`
+
+### `mine head`
+
+This is a "lookahead" construct.
+
+> look for `x`, but match only if followed by `y`.
+
+```
+mine head
+  mine form, form x
+  mine form, form y
+```
+
+Or a "negative lookahead":
+
+> look for `x`, but match only if _not_ followed by `y`.
+
+```
+mine head
+  mine form, form x
+  mine miss, mine form, form y
+```
+
+### `mine back`
+
+This is a "positive lookbehind":
+
+> match `x`, but only if there’s `y` before it
+
+```
+mine back
+  mine form, form x
+  mine form, form y
+```
+
+Then a "negative lookbehind":
+
+> match `x`, but only if there’s _not_ `y` before it
+
+```
+mine back
+  mine form, form x
+  mine miss, mine form, form y
+```
 
 ## `mint`
 
