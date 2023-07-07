@@ -84,6 +84,17 @@ mine ascii
 
 ### `mine test`
 
+This is for checking if a value fits certain constraints, and if so, it
+executes the parser for that branch.
+
+```
+mine test
+  call is-equal
+    bind base, link x
+    bind head, link y
+  mine ...
+```
+
 ### `mine head`
 
 This is a "lookahead" construct.

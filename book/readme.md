@@ -44,13 +44,11 @@ base make text
 /book
   /introduction
   /getting-started
-    /hello-world
     /modeling
     /contributing
     /development
   /link-text
   /packages
-    /hello-world
     /deck-files
     /lock-files
   /libraries
@@ -59,10 +57,10 @@ base make text
     /hello-world
     /folders
   /executables
-  /books
+  /notes
     /hello-world
     /cheat-sheet
-  /documentationn
+  /documentation
   /models # data types
     /form
     /task
