@@ -8,7 +8,7 @@ for how to parse the text or bytes.
 Match actual literal text.
 
 ```
-mine text, write <=>
+mine text, text <=>
 ```
 
 ### `mine code`
@@ -37,6 +37,15 @@ Match the first value (pick a choice basically).
 ### `mine room`
 
 This means an optional parse of what's inside.
+
+### `mine case`
+
+This means you are matching as many of these examples in any order as
+you'd like.
+
+### `mine miss`
+
+This means you want to _not_ match what's inside.
 
 ### `mine hunk`
 
