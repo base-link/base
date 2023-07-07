@@ -200,7 +200,7 @@ base bind site # with crow installed
     /base.link
     /work.link # dev
     /beat.link # prod
-/book # guides
+/note # guides
 /deck # custom packages
 /face # frontend
   /dock # ui components
