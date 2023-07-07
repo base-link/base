@@ -59,3 +59,32 @@ You can specify to include it for only subsets of attachments.
 form user
   loom link # only include the `link` (property) ASTs
 ```
+
+### `like` in `form`
+
+### `hold` in `form`
+
+This is for constraints.
+
+```
+form email
+  like text
+
+  hold true, take self
+    call is-email, loan self
+```
+
+```
+form login
+  link email, like email
+  link password, like text
+  link password-confirmation, like text
+
+  hold true, take self
+    call is-equal
+      loan self/password
+      loan self/password-confirmation
+```
+
+That would insert a runtime check that the passwords match upon setting
+them.
