@@ -1,12 +1,12 @@
 # Introduction to Base Link
 
 Base Link is the programming environment for Link Text, a minimal data
-modeling language. It is an object oriented language which (at some
-point in the future) will compile down to JS, Swift, Rust, and Kotlin,
-to cover the main environments where the code should run. In addition,
-it is a way to capture knowledge in a structured way, and to make it
-executable or otherwise machine readable, while also being human
-readable.
+modeling language. It is a statically typed, imperative, object oriented
+language which (at some point in the future) will compile down to JS,
+Swift, Rust, and Kotlin, to cover the main environments where the code
+should run. In addition, it is a way to capture knowledge in a
+structured way, and to make it executable or otherwise machine readable,
+while also being human readable.
 
 ## Goals
 
