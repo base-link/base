@@ -21,7 +21,7 @@
 
 ## Welcome
 
-Check out the [Book](book/readme.md) for the most up-to-date info on the
+Check out the [Book](note/readme.md) for the most up-to-date info on the
 project!
 
 _This is all just experimentation at this point, so buyer beware! But
