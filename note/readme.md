@@ -23,6 +23,8 @@
 - [Packages](packages.md)
 - [Folder Structure](folder-structure.md)
 - [Errors](errors.md)
+- [Traits](traits.md)
+- [Iterators](iterators.md)
 - Parsing
   - [Parsing Bytes](parsing/bytes.md)
   - Parsing Link Text

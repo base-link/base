@@ -56,20 +56,20 @@ implements a trait (if you're coming from Rust).
 
 This is for the imports when as part of a native binding.
 
-### `loom` in `form`
+### `mesh` in `form`
 
 You can specify to include the entire Loom Tree (AST):
 
 ```
 form user
-  loom true
+  mesh true
 ```
 
 You can specify to include it for only subsets of attachments.
 
 ```
 form user
-  loom link # only include the `link` (property) ASTs
+  mesh link # only include the `link` (property) ASTs
 ```
 
 ### `like` in `form`
@@ -119,8 +119,8 @@ impl<T, I: SliceIndex<[T]>, A: Allocator> Index<I> for Vec<T, A>
 ```
 form list
   seed item
-  seed i, base slice-read, like line, like item
-  seed allocator, base allocator
+  seed i, like slice-read, like line, like item
+  seed allocator, like allocator
 
   bind item, loan item
   bind allocator, loan allocator
@@ -179,3 +179,5 @@ another place. The current project is the focus, so it should have the
 ability to make the final decision, even if it came last. So the package
 that defines the override gets the final call. The package that is
 closest to home, gets the final call.
+
+- https://doc.rust-lang.org/reference/items/associated-items.html
