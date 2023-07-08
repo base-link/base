@@ -3,6 +3,7 @@
 - [Introduction](introduction.md)
 - [Syntax](link-text.md)
 - [Semantics](semantics.md)
+  - [Deck](semantics/deck.md)
   - Code
     - [`form`](semantics/code/form.md)
     - [`suit`](semantics/code/suit.md)
