@@ -21,6 +21,9 @@
 
 ## Welcome
 
+Check out the [Book](book/readme.md) for the most up-to-date info on the
+project!
+
 _This is all just experimentation at this point, so buyer beware! But
 would love to bounce off ideas with anyone out there interested in
 programming language design and implementation._
