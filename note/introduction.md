@@ -4,9 +4,10 @@ Base Link is the programming environment for Link Text, a minimal data
 modeling language. It is a statically typed, imperative, object oriented
 language which (at some point in the future) will compile down to JS,
 Swift, Rust, and Kotlin, to cover the main environments where the code
-should run. In addition, it is a way to capture knowledge in a
-structured way, and to make it executable or otherwise machine readable,
-while also being human readable.
+should run. While being statically typed, it also has dynamic features
+such as reflection, to make it robust. In addition, it is a way to
+capture knowledge in a structured way, and to make it executable or
+otherwise machine readable, while also being human readable.
 
 ## Goals
 
