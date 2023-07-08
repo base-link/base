@@ -1,7 +1,7 @@
 # The Base Link Book
 
 - [Introduction](introduction.md)
-- [Folder Structure](folder-structure.md)
+- [Link Text](link-text.md)
 - Terms
   - Code Terms
     - [`form`](terms/code/form.md)
@@ -20,6 +20,7 @@
   - [Parsing Bytes](parsing/bytes.md)
   - [Parsing Link Text](parsing/link-text.md)
 - [Packages](packages.md)
+- [Folder Structure](folder-structure.md)
 - [Errors](errors.md)
 - Protocols
   - [HTTP](protocols/http.md)
