@@ -71,7 +71,7 @@ Some of the drawbacks to Base Link are:
    a problem with any statically typed language.
 4. **Completeness**. It's far from complete at this point. While much of
    the design of the language is complete, we still need to implement a
-   fully working compiler, adn this could be a deterrent to checking it
+   fully working compiler, and this could be a deterrent to checking it
    out further.
 5. **Resources**. Since it's new, there's almost nothing in terms of
    resources. We've collected some initial docs on how things work, but
