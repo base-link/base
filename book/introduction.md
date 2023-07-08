@@ -15,7 +15,7 @@ There are a few goals for making this language:
 3. **Communicating**. Having a normalized way of writing algorithms and
    types and such in a readable language in academic papers would be
    nice, instead of every paper inventing their own syntax.
-4. **Understanding**. Almost all code except really for the
+4. **Structuring**. Almost all code except really for the
    functions/actions themselves can be declarative. So writing most code
    in a concise and readable form would make coding even more rewarding,
    and would make the mental model as simple as possible.
@@ -51,10 +51,21 @@ Some of the drawbacks to Base Link are:
    implementations of functions, because it doesn't have all the short
    operators and requires extra keywords, it is not as concise in this
    realm as most modern programming languages.
-2. **Esotericism**. It is very different from most modern programming
+2. **Esotericness**. It is very different from most modern programming
    languages, and is inspired by our design sense and experiences, which
-   might get in the way of seeing its beauty.
+   might get in the way of seeing it as a practical alternative.
 3. **Types**. While there are a ton of benefits to being statically
    typed (instead of dynamically typed), it makes it harder to rapid
    prototype in some cases. But perhaps we can add some features of
-   dynamic typing as well, to make it easier to get started.
+   dynamic typing as well, to make it easier to get started. And this is
+   a problem with any statically typed language.
+4. **Completeness**. It's far from complete at this point. While much of
+   the design of the language is complete, we still need to implement a
+   fully working compiler, adn this could be a deterrent to checking it
+   out further.
+5. **Resources**. Since it's new, there's almost nothing in terms of
+   resources. We've collected some initial docs on how things work, but
+   these could be greatly improved.
+6. **Community**. There is not a big community yet, since it is so new,
+   so you won't find a lot of help. But this is a problem for anything
+   new.
