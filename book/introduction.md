@@ -41,6 +41,8 @@ There are a few goals for making this language:
 10. **Learning**. It should require minimal learning for anyone to get
     started, and all the tooling should be very well designed with a
     great UX. Still a long way to go to get there, but working on it.
+11. **Pleasing**. It should be visually pleasing to the eye, and
+    stimulating when you experience it.
 
 ## Drawbacks
 
