@@ -16,7 +16,7 @@ mine text, text <=>
 Match actual literal bytes.
 
 ```
-mine code, code #b100
+mine code, code #b00000100
 ```
 
 ### `mine list`

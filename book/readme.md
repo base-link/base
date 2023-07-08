@@ -30,9 +30,9 @@ https://deck.base.link/@tunebond/base/1.2.3/tree
 
 ```
 # book building
-base make book
+base make note
 # code notes
-base make text
+base make code text
 ```
 
 - https://docs.gusto.com/app-integrations/reference/get-v1-me
