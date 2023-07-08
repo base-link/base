@@ -4,7 +4,7 @@
 - [Syntax](link-text.md)
 - [Semantics](semantics.md)
   - [Deck](semantics/deck.md)
-  - Code
+  - [Code](semantics/code.md)
     - [`form`](semantics/code/form.md)
     - [`suit`](semantics/code/suit.md)
     - [`fork`](semantics/code/fork.md)
@@ -19,12 +19,13 @@
     - [`walk`](semantics/code/walk.md)
     - [`mine`](semantics/code/mine.md)
     - [`mint`](semantics/code/mint.md)
-- Parsing
-  - [Parsing Bytes](parsing/bytes.md)
-  - Parsing Link Text
+  - [Book](semantics/book.md)
 - [Packages](packages.md)
 - [Folder Structure](folder-structure.md)
 - [Errors](errors.md)
+- Parsing
+  - [Parsing Bytes](parsing/bytes.md)
+  - Parsing Link Text
 - Protocols
   - [HTTP](protocols/http.md)
 - Linters
@@ -48,3 +49,4 @@
 - Architecture
 - Dependency-management
 - Development
+- [Semver](semver.md)

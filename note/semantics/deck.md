@@ -1,4 +1,4 @@
-# The `deck` in Base Link
+# The `deck` file in Base Link
 
 A deck is a package, and this is how you define the package metadata.
 
