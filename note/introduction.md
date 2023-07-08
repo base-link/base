@@ -48,13 +48,16 @@ There are a few goals for making this language:
    DSL, they should be as optimized as possible. So the goal is to make
    it so optimizations can be take to the extreme, somehow without
    making them get in the way of readability.
-9. **Sharing**. It should work like any of the best languages with their
-   package management, like Node's modules or Rust's crates. Sharing
-   should be easy and seamless.
-10. **Learning**. It should require minimal learning for anyone to get
+9. **Compiling**. It should compile and work on all the native platforms
+   and environments, at least JS in the browser, Node.js, and Windows,
+   Kotlin on Android, Rust for Linux, and Swift for Apple products.
+10. **Sharing**. It should work like any of the best languages with
+    their package management, like Node's modules or Rust's crates.
+    Sharing should be easy and seamless.
+11. **Learning**. It should require minimal learning for anyone to get
     started, and all the tooling should be very well designed with a
     great UX. Still a long way to go to get there, but working on it.
-11. **Pleasing**. It should be visually pleasing to the eye, and
+12. **Pleasing**. It should be visually pleasing to the eye, and
     stimulating when you experience it.
 
 ## Drawbacks
