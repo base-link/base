@@ -81,9 +81,3 @@ Some of the drawbacks to Base Link are:
    the design of the language is complete, we still need to implement a
    fully working compiler, and this could be a deterrent to checking it
    out further.
-5. **Resources**. Since it's new, there's almost nothing in terms of
-   resources. We've collected some initial docs on how things work, but
-   these could be greatly improved.
-6. **Community**. There is not a big community yet, since it is so new,
-   so you won't find a lot of help. But this is a problem for anything
-   new.
