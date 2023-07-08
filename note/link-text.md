@@ -1,12 +1,12 @@
-# Link Text
+# The Syntax of Base Link
 
 ## Overview
 
-Link Text is a little more than a markup language, tending toward a
-programming language. In fact, it can be used for a programming
-language. It is a way to model information and computation in an easy to
-read and write format, suitable for hierarchical note taking and other
-means of capturing data down into structured form.
+Base Link uses Link Text for its syntax. Link Text is a little more than
+a markup language, tending toward a programming language. It is a way to
+model information and computation in an easy to read and write format,
+suitable for hierarchical note taking and other means of capturing data
+down into structured form.
 
 It emerged out of the desire to have one way of writing things (notes,
 code, data models, etc.), that was not too verbose and was easy to learn
