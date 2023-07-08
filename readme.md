@@ -24,13 +24,6 @@
 Check out the [Book](note/readme.md) for the most up-to-date info on the
 project!
 
-_This is all just experimentation at this point, so buyer beware! But
-would love to bounce off ideas with anyone out there interested in
-programming language design and implementation._
-
-We are developing a suite of repositories for natural languages and
-programming languages.
-
 For the programming language, `link`, and it's compiler, `base`, we are
 making a language that works across devices (similar to Dart/Flutter, or
 better yet, [Haxe](https://haxe.org)), which will give you a minimal

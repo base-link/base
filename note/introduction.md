@@ -9,6 +9,10 @@ such as reflection, to make it robust. In addition, it is a way to
 capture knowledge in a structured way, and to make it executable or
 otherwise machine readable, while also being human readable.
 
+_This is all just experimentation at this point, so buyer beware! But
+would love to bounce off ideas with anyone out there interested in
+programming language design and implementation._
+
 ## Goals
 
 There are a few goals for making this language:
