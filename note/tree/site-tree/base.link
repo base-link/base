@@ -1,3 +1,0 @@
-
-hook /@:host, task load-host
-hook /:deck, task load-deck
