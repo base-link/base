@@ -1,5 +1,8 @@
 # Semantic Versioning in Base Link
 
+Here are examples of how you would define a specific version for a
+dependency in the `deck` file.
+
 ### `1.2.3`
 
 ```

@@ -1,5 +1,10 @@
 # Folder Structure in Base Link
 
+The "index" file for a folder is called `base.link` (you'll notice many
+of those in the repo already). This is how we name it, like `index.js`.
+Then you can name files whatever you want so long as it's a lowercase
+alphabetic, hyphen, or number character.
+
 ## Libraries
 
 In libraries it is common to use this convention:
