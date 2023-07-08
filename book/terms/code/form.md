@@ -48,7 +48,9 @@ implements a trait (if you're coming from Rust).
 
 ### `head` in `form`
 
-### `lead` in `form`
+### `bind` in `form`
+
+### `hold` in `form`
 
 ### `need` in `form`
 
