@@ -24,7 +24,7 @@ impl Add for Point {
 This might be translated roughly speaking into:
 
 ```link
-suit add
+mask add
   head rhs, base self
   head output
 
@@ -34,6 +34,10 @@ suit add
     like output
 
 form point
+  link x
+  link y
+
+suit point
   wear add
     bind output, like self
 
@@ -46,4 +50,35 @@ form point
 save p, make point
 save q, make point
 call p/add, q
+```
+
+```rs
+trait Container {
+  type E;
+  fn insert(&mut self, elem: Self::E);
+}
+
+impl<T> Container for Vec<T> {
+  type E = T;
+  fn insert(&mut self, x: T) { self.push(x); }
+}
+```
+
+```link
+mask container
+  head e
+  task insert
+    take self, cite flex self
+    take elem, like e
+
+suit vec
+  seed t
+  bind t, loan t
+
+  wear container
+    bind e, loan t
+
+    task insert
+      take self, cite flex self
+      take x, like t
 ```
