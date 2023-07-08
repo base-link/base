@@ -1,4 +1,4 @@
-# Base Link Notes
+# The Base Link Book
 
 - [Introduction](introduction.md)
 - [Folder Structure](folder-structure.md)
