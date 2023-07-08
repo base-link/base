@@ -44,6 +44,16 @@ form user
 This is saying that the form implements an interface basically, or
 implements a trait (if you're coming from Rust).
 
+### `seed` in `form`
+
+### `head` in `form`
+
+### `lead` in `form`
+
+### `need` in `form`
+
+This is for the imports when as part of a native binding.
+
 ### `loom` in `form`
 
 You can specify to include the entire Loom Tree (AST):
@@ -88,3 +98,82 @@ form login
 
 That would insert a runtime check that the passwords match upon setting
 them.
+
+### Implementing Traits
+
+```rs
+impl<T, I: SliceIndex<[T]>, A: Allocator> Index<I> for Vec<T, A>
+   type Output = I::Output;
+
+    fn index(&self, index: I) -> &Self::Output {
+        Index::index(&**self, index)
+    }
+
+   fn index_mut(&mut self, index: I) -> &mut Self::Output {
+        IndexMut::index_mut(&mut **self, index)
+    }
+```
+
+```
+form list
+  seed item
+  seed i, base slice-read, like line, like item
+  seed allocator, base allocator
+
+  bind item, loan item
+  bind allocator, loan allocator
+
+  wear read
+    bind i, loan i
+    bind output, loan i/output
+
+    task read
+      take self, cite self
+      take read, like i
+      cite self/output
+
+    task read-flex
+      take self, cite flex self
+      take read, like i
+      cite flex self/output
+```
+
+```rs
+impl<T> FromIterator<T> for Vec<T> {
+    #[inline]
+    fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> Vec<T> {
+        <Self as SpecFromIter<T, I::IntoIter>>::from_iter(iter.into_iter())
+    }
+}
+```
+
+```
+form list
+  seed t
+  bind t, loan t
+
+  wear from-iterator
+    bind t, loan t
+
+    task from-iter
+      head i, like into-iterator, bind item, loan t
+      take iter, like i
+      like list, like t
+      ?
+```
+
+- https://doc.rust-lang.org/book/ch19-03-advanced-traits.html
+
+Basically a class needs to implement a trait, but that can happen
+multiple times. So the thing you are asking is, in a specific context,
+use specific different information. So you need to bootstrap or
+configure your class at compile time, ignoring some other definitions.
+That is, you should only be setting the current value, not setting the
+value multiple times and ending with the final one that was set.
+
+Some external library function says "implement this trait for this
+class". But we already said implement this trait for this class in
+another place. The current project is the focus, so it should have the
+ability to make the final decision, even if it came last. So the package
+that defines the override gets the final call. The package that is
+closest to home, gets the final call.

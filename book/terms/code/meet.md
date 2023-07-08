@@ -1,11 +1,11 @@
 # The `meet` in Base Link
 
-### `meet link`
+### `meet and`
 
 This is an "and" statement.
 
 ```
-meet link
+meet and
   call is-equal
     size 20
     size 20
@@ -14,19 +14,19 @@ meet link
     size 10
 ```
 
-### `meet sink`
+### `meet or`
 
 This is the "or" statement.
 
 ```
-meet sink
-  test is-equal
+meet or
+  call is-equal
     size 10
     size 20
-  test is-equal
+  call is-equal
     size 10
     size 30
-  test is-equal
+  call is-equal
     size 10
     size 10
 ```
@@ -34,17 +34,17 @@ meet sink
 That is short for this:
 
 ```
-meet sink
+meet or
   hook test
-    test is-equal
+    call is-equal
       size 10
       size 20
   hook test
-    test is-equal
+    call is-equal
       size 10
       size 30
   hook test
-    test is-equal
+    call is-equal
       size 10
       size 10
 ```

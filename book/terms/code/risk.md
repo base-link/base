@@ -3,12 +3,10 @@
 The risk statement, like unsafe in rust.
 
 ```
-risk take
+risk
   save status
     call save-file
       wait take
       text <path.txt>
-      text <content >
-        loan z
-        cord < more content>
+      text <content {z} more content>
 ```
