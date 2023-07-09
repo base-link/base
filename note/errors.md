@@ -69,3 +69,68 @@ back
   make syntax-error
     ...
 ```
+
+## Notes
+
+- error definitions in js
+- link text
+
+Should you be able to override stuff from external libraries.
+
+Need to return a list of nodes for printing.
+
+JSON vs. tree vs. x vs. y.
+
+You could have a trait which calls a specific method on the thing.
+
+```
+lace syntax-error
+  take kink
+
+  lace form, form head
+    bind kink, loan kink
+  lace form, form link
+    bind link, loan kink/link
+    bind band, loan kink/band
+
+lace head
+  take kink
+  lace form, form note
+    bind note, loan kink/note
+  lace form, form code
+    bind code, loan kink/code
+
+lace note
+  take note, like text
+
+  lace term, term note
+    lace text, loan note
+
+lace code
+  take code, like size
+
+  save code-text
+    call make-code-text
+      loan code
+
+  lace term, term code
+    bind fill, loan blue
+    lace text, loan code-text
+      bind fill, loan gray
+```
+
+Then, you specify the method that will be used to render the code.
+
+```
+mask render-1
+  task render-1
+
+mask render-2
+  task render-2
+
+task render
+  take kink, like render-2
+  call kink/render-2
+
+save global/error-handler, loan render
+```
