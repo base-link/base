@@ -303,13 +303,18 @@ Link Tree, the AST for Link Text. This is the exact structure of the
 AST.
 
 ```ts
+export type LinkFold = {
+  base?: Leaf
+  head?: Leaf
+}
+
 export type LinkTree = {
   nest: LinkFork
   form: LinkName.Tree
 }
 
 export type LinkFork = {
-  leaf?: LinkLeaf
+  fold?: LinkFold
   nest: Array<
     | LinkText
     | LinkFork
@@ -345,14 +350,14 @@ export type LinkCull = {
   nest?: LinkFork | LinkSize | LinkKnit
   base?: LinkKnit
   form: LinkName.Cull
-  leaf?: LinkLeaf
+  fold?: LinkFold
 }
 
 export type LinkKnit = {
   base?: LinkFork
   nest: Array<LinkCull | LinkNick | LinkCord>
   form: LinkName.Knit
-  leaf?: LinkLeaf
+  fold?: LinkFold
 }
 
 export type LinkNick = {
@@ -360,7 +365,7 @@ export type LinkNick = {
   base?: LinkKnit | LinkText
   size: number
   form: LinkName.Nick
-  leaf?: LinkLeaf
+  fold?: LinkFold
 }
 
 export type LinkCord = {
@@ -373,7 +378,7 @@ export type LinkText = {
   nest: Array<LinkCord | LinkNick>
   form: LinkName.Text
   base?: LinkCull | LinkFork
-  leaf?: LinkLeaf
+  fold?: LinkFold
 }
 
 export type LinkSize = {
@@ -381,11 +386,6 @@ export type LinkSize = {
   bond: number
   base?: LinkCull | LinkFork
   leaf: Leaf
-}
-
-export type LinkLeaf = {
-  base?: Leaf
-  head?: Leaf
 }
 ```
 
