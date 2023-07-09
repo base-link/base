@@ -21,7 +21,7 @@
 
 ## Welcome
 
-[Here's the start of the Book](note/readme.md) on Base Link with the
+Here's the start of the [Book](note/readme.md) on Base Link with the
 most up-to-date info on the project.
 
 ## Future
