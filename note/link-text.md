@@ -296,6 +296,145 @@ hook /@:user
 That is, they are just special strings. You can interpolate on them like
 strings as well with curly brackets.
 
+## Types
+
+All of the TypeScript types below, which have a `form`, are part of the
+Link Tree, the AST for Link Text. This is the exact structure of the
+AST.
+
+```ts
+export type LinkTree = {
+  nest: LinkFork
+  form: LinkName.Tree
+}
+
+export type LinkFork = {
+  leaf?: LinkLeaf
+  nest: Array<
+    | LinkText
+    | LinkFork
+    | LinkSize
+    | LinkText
+    | LinkCord
+    | LinkNick
+    | LinkCull
+    | LinkComb
+    | LinkCode
+    | LinkKnit
+  >
+  base?: LinkFork | LinkNick | LinkCull
+  form: LinkName.Fork
+}
+
+export type LinkComb = {
+  form: LinkName.Comb
+  bond: number
+  base?: LinkCull | LinkFork
+  leaf: Leaf
+}
+
+export type LinkCode = {
+  bond: number
+  mold: string
+  base?: LinkCull | LinkFork
+  form: LinkName.Code
+  leaf: Leaf
+}
+
+export type LinkCull = {
+  nest?: LinkFork | LinkSize | LinkKnit
+  base?: LinkKnit
+  form: LinkName.Cull
+  leaf?: LinkLeaf
+}
+
+export type LinkKnit = {
+  base?: LinkFork
+  nest: Array<LinkCull | LinkNick | LinkCord>
+  form: LinkName.Knit
+  leaf?: LinkLeaf
+}
+
+export type LinkNick = {
+  nest?: LinkFork
+  base?: LinkKnit | LinkText
+  size: number
+  form: LinkName.Nick
+  leaf?: LinkLeaf
+}
+
+export type LinkCord = {
+  form: LinkName.Cord
+  base?: LinkText
+  leaf: Leaf
+}
+
+export type LinkText = {
+  nest: Array<LinkCord | LinkNick>
+  form: LinkName.Text
+  base?: LinkCull | LinkFork
+  leaf?: LinkLeaf
+}
+
+export type LinkSize = {
+  form: LinkName.Size
+  bond: number
+  base?: LinkCull | LinkFork
+  leaf: Leaf
+}
+
+export type LinkLeaf = {
+  base?: Leaf
+  head?: Leaf
+}
+```
+
+You'll notice, each element has a reference back to it's parent, for
+easier traversal. And if it has nested content, it is in the `nest`
+property.
+
+A `LinkTree` is at the top, this is what gets returned by the parser. A
+`LinkFork` is a slot for an element to go in the tree. Forks can be
+nested, and can nest every element except the `LinkTree` (which is the
+special base element).
+
+A `LinkKnit` is a weaving between `LinkCord` and `LinkNick` and
+`LinkCull`. This is the interpolation and such going on which can be in
+place of a simple term. Ultimately the knit gets resolved to either a
+term or a path in the end, which the compiler reads to figure out what
+to do with.
+
+A `LinkCord` is a contiguous string. A `LinkNick` is the curly brackets
+and everything nested inside. And a `LinkCull` is the square brackets
+and everything nested inside.
+
+A `LinkText` is a weaving of `LinkCord` and `LinkNick`, inside the
+text-delimiting angle brackets. So it is strings separated by optional
+interpolation basically.
+
+The `LinkNick` has inside of it a `LinkFork`, which is the space where
+it can start adding nested elements. Same with the `LinkCull`, it has a
+`LinkFork` inside of it, but the cull can also have `LinkSize`, an
+integer, for array lookups.
+
+The "primitive" contiguous structures, like the numbers, strings, and
+codes, have a `leaf` property to access the token which was taken out of
+the text input stream. The non-primitive or complex nested types also
+have a `fold` property, which is used to keep track of a starting and
+ending leaf that sets its boundaries. This way the parser can highlight
+blocks of text in the source code.
+
+So you can do essentially:
+
+```
+# nested seeds (seeds = elements)
+seed/fold/base/text
+seed/fold/head/text
+
+# leaf seeds
+seed/leaf/text
+```
+
 ## Conclusion
 
 That is all there is to it! It is a simple way of defining trees of
