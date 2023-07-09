@@ -104,11 +104,15 @@ foo-bar-baz
 abc123
 ```
 
-The following is an invalid term.
+The following is a valid term too! Starting a variable name with a
+number.
 
 ```link
 1xo
 ```
+
+You just can't have terms that are _only_ numbers. That would be a
+number.
 
 You can nest them arbitrarily into trees. These are all trees.
 
