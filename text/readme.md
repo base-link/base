@@ -17,6 +17,7 @@
     - [`risk`](semantics/code/risk.md)
     - [`text`](semantics/code/text.md)
     - [`walk`](semantics/code/walk.md)
+    - [`need`](semantics/code/need.md)
   - Role
   - Test
   - Mill (parsing)
@@ -28,7 +29,8 @@
   - Seed (artifacts)
   - [Line](semantics/line.md) (CLI)
   - Site (URL matching)
-  - Zone (UI)
+  - [Zone](semantics/zone.md) (UI)
+  - Cast (HTTP)
 - [Packages](packages.md)
 - [Folder Structure](folder-structure.md)
 - [Errors](errors.md)
