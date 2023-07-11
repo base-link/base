@@ -25,14 +25,14 @@ for i in fibonacci().take(4) {
 As such, we do something similar. We call the iterator a `walk`.
 
 ```
-suit walk
+mask walk
   head link
 
   task next
     take self, cite flex self
     like maybe, like link
 
-form fibonacci
+suit fibonacci
   wear iterator
     bind link, like u32
     # ...

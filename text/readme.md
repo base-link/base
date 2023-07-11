@@ -17,17 +17,26 @@
     - [`risk`](semantics/code/risk.md)
     - [`text`](semantics/code/text.md)
     - [`walk`](semantics/code/walk.md)
+  - Role
+  - Test
+  - Mill (parsing)
     - [`mine`](semantics/code/mine.md)
     - [`mint`](semantics/code/mint.md)
+  - Lace (writing)
   - [Book](semantics/book.md)
+  - Lock (lockfiles)
+  - Seed (artifacts)
+  - [Line](semantics/line.md) (CLI)
+  - Site (URL matching)
+  - Zone (UI)
 - [Packages](packages.md)
 - [Folder Structure](folder-structure.md)
 - [Errors](errors.md)
 - [Traits](traits.md)
 - [Iterators](iterators.md)
 - Parsing
-  - [Parsing Bytes](parsing/bytes.md)
-  - Parsing Link Text
+  - [Bytes](parsing/bytes.md)
+  - Link Trees
 - Protocols
   - [HTTP](protocols/http.md)
 - Linters
@@ -39,7 +48,7 @@
 - Queries
   - Mutations
   - Projections
-- Artifacts
+- [Artifacts](artifacts.md)
   - Migrations
   - Configuration
 - Graphics

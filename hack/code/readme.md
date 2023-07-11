@@ -59,47 +59,6 @@ host file-storage, term google-cloud-storage
 - https://github.com/fog/fog-google/tree/master/lib/fog
 - https://getbetterdevops.io/google-cloud-functions-with-terraform/
 
-```
-seed google-storage-bucket
-  bind name, "${random_id.default.hex}-gcf-source"
-  bind location, text <US>
-  bind uniform-bucket-level-access, term true
-
-data "aws_ami" "app_ami" {
-  most_recent = true
-  filter {
-    name   = "name"
-    values = ["app-*"]
-  }
-}
-
-need app-ami, like aws-ami
-  bind most-recent, term true
-
-seed app, like aws-instance
-  bind ami, "${data.aws_ami.app_ami.id}"
-  bind instance-type, <t2.micro>
-
-seed default, like google-cloudfunctions2-function
-  bind name, <function-v2>
-  bind location, <us-central1>
-  bind description, <a new function>
-
-  bind build-config
-    bind runtime, <nodejs16>
-    bind entry-point, <helloHttp> # Set the entry point
-    bind source
-      bind storage-source
-        bind bucket, loan google-storage-bucket.default.name
-        bind object, loan google-storage-bucket-object.object.name
-
-save project-id, <123>
-
-tool google
-  bind project, loan project-id
-  bind region, loan region
-```
-
 A `link` or `tell` is a variable which can be set from the outside.
 
 ```
@@ -150,26 +109,11 @@ It gets saved into a terraform "state" file.
 }
 ```
 
-```
-base <1.2.3>
-
-seed example, like aws-instance
-  sort managed
-  bind ami, <ami-0fb653ca2d3203ac1>
-  bind availability-zone, <us-east-2b>
-```
-
 - https://stackoverflow.com/questions/38486335/should-i-commit-tfstate-files-to-git
 - https://github.com/mdb/terraform-example/blob/master/terraform/terraform.tfstate
 - [Example Terraform State Files](https://gist.github.com/lancejpollard/1fbf133fdfd2bfcf96a29705ffd2e385)
 
 Saved locally to `bind.link`.
-
-Saved remotely using a cloud provider using the crow framework.
-
-```
-base bind site # with crow installed
-```
 
 ```
 /.gitignore
