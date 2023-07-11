@@ -20,8 +20,8 @@
   - Role
   - Test
   - Mill (parsing)
-    - [`mine`](semantics/code/mine.md)
-    - [`mint`](semantics/code/mint.md)
+    - [`mine`](semantics/mill/mine.md)
+    - [`mint`](semantics/mill/mint.md)
   - Lace (writing)
   - [Book](semantics/book.md)
   - Lock (lockfiles)
