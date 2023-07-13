@@ -39,3 +39,14 @@ with list data. Whether you're building applications, performing data
 transformations, or implementing complex algorithms, lists in BaseLink
 offer a powerful toolset to tackle these tasks effectively and
 efficiently.
+
+## Linked Lists
+
+```
+load @tunebond/bolt/code/base/list/link
+  find list
+```
+
+## Inspiration
+
+- https://doc.rust-lang.org/std/collections/index.html

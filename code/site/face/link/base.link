@@ -1,5 +1,5 @@
 
-dock home
+zone home
   zone find-land
   zone home-header-section
   zone home-how-it-works-section
@@ -7,7 +7,7 @@ dock home
   zone home-pricing-section
   zone home-footer-section
 
-dock home-footer-section
+zone home-footer-section
   zone nav
     zone ul
       zone li
@@ -19,19 +19,19 @@ dock home-footer-section
           bind href, text /code/lock
           bind text, text <Privacy>
 
-dock home-pricing-section
+zone home-pricing-section
   zone home-section
     zone home-container
 
-dock home-how-it-works-section
+zone home-how-it-works-section
   zone home-section
     zone home-container
 
-dock home-organization-section
+zone home-organization-section
   zone home-section
     zone home-container
 
-dock home-header-section
+zone home-header-section
   zone home-section
     zone home-container
       zone home-header
@@ -40,25 +40,25 @@ dock home-header-section
         zone home-header-description
           text <This is BaseLink>
 
-dock home-section
+zone home-section
   base link
   zone section
     bind width, text <100%>
     bind min-height, text <100vh>
     bind link, link link
 
-dock home-container
+zone home-container
   base link
   zone div
     bind width, text <100%>
     bind min-height, text <100vh>
     bind link, link link
 
-dock home-header
+zone home-header
   base link
   zone header
     bind link, link link
 
-dock home-header-title
+zone home-header-title
 
-dock home-header-description
+zone home-header-description

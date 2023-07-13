@@ -6,13 +6,13 @@ They can be chained together with nested `call`.
 
 ```
 call make, <image.png>
-  call resize
+  link resize
     bind width, size 300
     bind height, size 300
-  call grayscale
-  call rotate, size 33
-  call blur, size 4
-  call code
+  link grayscale
+  link rotate, size 33
+  link blur, size 4
+  link code
 ```
 
 The convention for tasks is to have a chainable API which constructs

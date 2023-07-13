@@ -8,13 +8,13 @@ load @tunebond/cone/code/image
   find make
 
 call make, <image.png>
-  call resize
+  link resize
     bind width, size 300
     bind height, size 300
-  call grayscale
-  call rotate, size 33
-  call blur, size 4
-  call code
+  link grayscale
+  link rotate, size 33
+  link blur, size 4
+  link code
 ```
 
 The library `@tunebond/cone` is for working with files of various types.

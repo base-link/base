@@ -72,7 +72,7 @@
 - [Artifacts](artifacts.md)
   - Migrations
   - Configuration
-- Graphics
+- [Graphics](graphics.md)
   - Components
   - Webgl
 - Mailers
@@ -83,3 +83,4 @@
 - Development
 - [Semver](semver.md)
 - [Words](words.md)
+- [Conclusion](conclusion.md)
