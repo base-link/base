@@ -1,0 +1,13 @@
+
+name <The BaseLink Book>
+face <Lance Pollard>
+term <Link Text>
+term <Compiler>
+mark <0.0.1>
+note <abstract>
+
+fuse ./head
+fuse ./code
+fuse ./mesh
+fuse ./tree
+fuse ./back

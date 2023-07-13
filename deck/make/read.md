@@ -21,7 +21,7 @@
 
 ## Welcome
 
-This is a Base Link app.
+This is a BaseLink app.
 
 ## Development
 
