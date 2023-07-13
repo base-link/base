@@ -57,6 +57,7 @@
   - [Images](files/images.md)
 - Protocols
   - [HTTP](protocols/http.md)
+- [Processes](processes.md)
 - [Linters](linters.md)
 - Databases
   - [Migrations](databases/migrations.md)
