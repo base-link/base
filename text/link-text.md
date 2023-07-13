@@ -205,8 +205,10 @@ form user
     >
 ```
 
-Then we can add interpolation into the template, by referencing terms
-wrapped in angle brackets:
+### Nick
+
+Then we can add interpolation ("nick") into the template, by referencing
+terms wrapped in angle brackets:
 
 ```link
 write <{hello-world}>
@@ -225,11 +227,31 @@ without ambiguity, you just need to prefix them with backslashes.
 i <am \<brackets\> included in the actual string>
 ```
 
-### Wave
+You can write interpolation on multiple lines, but things must line up.
 
-Although not really part of the language, for completeness we also have
-the _wave_, or boolean value. We typically just write `true` or `false`,
-but you can do it however.
+```
+i am {{
+  some interpolation {{
+    here
+  }}
+  or
+  {
+    here
+  }
+}}
+```
+
+Same with "culling", you can use that on multiple lines in the same way.
+
+```
+i am[
+  some culling[
+    here
+  ], or[
+    here
+  ]
+]
+```
 
 ### Code
 
@@ -261,9 +283,9 @@ for base 60:
 #60n123
 ```
 
-### Nest
+### Knit
 
-A nest is a selector, which is a digging down into terms. They look like
+A knit is a selector, which is a digging down into terms. They look like
 paths, but they are really diving down into terms, if you think of it
 that way.
 

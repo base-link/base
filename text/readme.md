@@ -1,5 +1,6 @@
 # The Base Link Book
 
+- [Foreword](foreword.md)
 - [Introduction](introduction.md)
 - [Syntax](link-text.md)
 - [Semantics](semantics.md)
@@ -7,16 +8,27 @@
   - [Code](semantics/code.md)
     - [`form`](semantics/code/form.md)
     - [`suit`](semantics/code/suit.md)
+    - `mask`
     - [`fork`](semantics/code/fork.md)
     - [`task`](semantics/code/task.md)
     - [`call`](semantics/code/call.md)
     - [`tree`](semantics/code/tree.md)
+    - `load`
     - [`bond`](semantics/code/bond.md)
     - [`meet`](semantics/code/meet.md)
+    - `link`
     - [`host`](semantics/code/host.md)
     - [`risk`](semantics/code/risk.md)
     - [`text`](semantics/code/text.md)
     - [`walk`](semantics/code/walk.md)
+  - Bind (native interfaces)
+    - `form`
+    - `task`
+    - `load`
+    - `tree`
+    - `mask`
+    - `suit`
+    - `host`
     - [`need`](semantics/code/need.md)
   - Role
   - Test
@@ -54,7 +66,7 @@
   - Migrations
   - Configuration
 - Graphics
-  - Docks
+  - Components
   - Webgl
 - Mailers
 - Jobs
