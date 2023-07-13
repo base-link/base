@@ -48,8 +48,48 @@ seed example, like aws-instance
   bind availability-zone, <us-east-2b>
 ```
 
-Saved remotely using a cloud provider using the moon framework.
+The provided code showcases the definition of artifacts, which are
+similar to resources in Terraform, in Base Link. Let's explore the
+different elements and syntax used:
 
-```
-base bind site # with moon installed
-```
+### Artifacts in Base Link
+
+1. **Resource Definition:** The artifacts are defined using the `seed`
+   keyword, similar to resources in Terraform. Each artifact has a
+   unique name, such as `google-storage-bucket`, `app-ami`, `app`, or
+   `default`.
+
+2. **Bindings:** Bindings are used to associate values with specific
+   properties of the artifact. Bindings can be either a direct value or
+   a reference to other artifacts or data sources.
+
+3. **Data Sources:** Data sources are defined using the `need` keyword,
+   similar to retrieving data in Terraform. The data source, such as
+   `app-ami`, fetches information like the most recent AWS AMI.
+
+4. **Nested Bindings:** Bindings can be nested to define complex
+   structures, such as the `build-config` under the `default` artifact.
+
+5. **Saving Values:** Values can be saved using the `save` keyword, such
+   as `project-id`, to store specific data for later use.
+
+6. **Tool Configuration:** Tool configurations can be defined, such as
+   the `google` tool, with bindings to retrieve and use the saved
+   values, like `project-id` and `region`.
+
+### Saving the Values
+
+The values can be saved in a separate `seed.link` file, following a
+similar syntax to the artifact definitions. The `base` statement at the
+beginning sets the version or base for the `seed.link` file.
+
+### Remote Storage with the Moon Framework
+
+To save the artifacts remotely using a cloud provider, the
+`base bind site` statement is used, indicating that the artifacts should
+be saved in a remote site using the Moon framework.
+
+This syntax in Base Link allows you to define and configure artifacts
+with their properties, bindings, and dependencies. It provides a
+structured way to manage and orchestrate resources or artifacts in your
+infrastructure or cloud environment.
