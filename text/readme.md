@@ -2,6 +2,7 @@
 
 - [Foreword](foreword.md)
 - [Introduction](introduction.md)
+- [Why](why.md)
 - [Syntax](link-text.md)
 - [Semantics](semantics.md)
   - [Deck](semantics/deck.md)
