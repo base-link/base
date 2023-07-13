@@ -119,3 +119,9 @@ coordination of various tasks within your applications. Processes serve
 as essential building blocks for implementing complex workflows,
 managing system interactions, and facilitating efficient and modular
 application development.
+
+## Sleep
+
+```
+call flow/wait, 1000
+```

@@ -1,407 +1,443 @@
+# Words in BaseLink
+
+In BaseLink, there is a design principle that suggests using four-letter
+words with no drooping letters for the terms and APIs within the
+language. This paradigm aims to promote a specific naming convention and
+reduce the overall API surface by enforcing a consistent pattern.
+
+The idea behind this approach is to create a concise and uniform syntax
+throughout the language, making it easier to read, write, and understand
+the code. By limiting the term length to four letters and avoiding
+drooping letters (such as 'g', 'p', 'q', 'y', etc.), the language's
+vocabulary becomes more compact and streamlined.
+
+Adopting this naming convention can have several benefits. It reduces
+cognitive load for developers as they work with the language, making it
+easier to remember and recognize terms. It also promotes a more uniform
+and aesthetically pleasing code style, which can contribute to code
+readability and maintainability.
+
+However, it's important to note that while this paradigm is encouraged
+within the BaseLink language itself, it may not necessarily apply to
+custom DSLs built on top of BaseLink. When implementing your own DSLs,
+you have the freedom to choose the naming patterns that best suit your
+specific domain or requirements.
+
+Ultimately, the decision to adhere to a specific naming convention, such
+as using four-letter words with no drooping letters, depends on the
+goals, principles, and preferences of the language designers and the
+community using the language. It's a design choice that aims to create a
+unique and consistent coding experience within the BaseLink ecosystem.
+
+## Word List
+
+Here is the collected valid word list which can be used in main BaseLink
+library projects.
+
 ```
-term arch
-term back
-term bait
-term bake
-term ball
-term band
-term bank
-term bark
-term base
-term bash
-term bead
-term beam
-term bean
-term bear
-term beat
-term bell
-term belt
-term bend
-term best
-term bike
-term bill
-term bind
-term bite
-term blob
-term blot
-term blow
-term blue
-term blur
-term boat
-term bolt
-term bond
-term book
-term boom
-term boot
-term boss
-term bowl
-term brew
-term brim
-term buck
-term buff
-term bulb
-term bulk
-term bull
-term bunk
-term bunt
-term burn
-term bush
-term bust
-term buzz
-term cake
-term call
-term calm
-term cane
-term card
-term care
-term cart
-term case
-term cash
-term cast
-term cave
-term char
-term chat
-term chew
-term chow
-term cite
-term clam
-term claw
-term clue
-term coal
-term coat
-term code
-term coin
-term comb
-term cone
-term cook
-term cool
-term cord
-term cork
-term cost
-term crab
-term crew
-term crib
-term crow
-term cube
-term cuff
-term cull
-term cure
-term curl
-term dare
-term dart
-term dash
-term date
-term daub
-term dawn
-term daze
-term deck
-term deed
-term dent
-term dice
-term diff
-term dish
-term disk
-term dive
-term dock
-term dole
-term doll
-term doom
-term dose
-term down
-term draw
-term drum
-term duck
-term duct
-term dude
-term duel
-term duke
-term dunk
-term dusk
-term dust
-term ease
-term etch
-term face
-term fade
-term fake
-term fare
-term farm
-term fast
-term fate
-term fawn
-term fear
-term feed
-term feel
-term fill
-term film
-term find
-term fine
-term firm
-term fish
-term fizz
-term flat
-term flaw
-term flex
-term flow
-term flux
-term foam
-term fold
-term fool
-term fork
-term form
-term foul
-term fret
-term fuel
-term fume
-term funk
-term fuse
-term fuss
-term fuzz
-term hack
-term haft
-term halt
-term hand
-term hare
-term harm
-term hash
-term haul
-term have
-term hawk
-term haze
-term head
-term heat
-term herd
-term hide
-term hike
-term hill
-term hint
-term hiss
-term hive
-term hold
-term hole
-term home
-term honk
-term hood
-term hoof
-term hook
-term hoot
-term horn
-term hose
-term host
-term howl
-term huff
-term hunt
-term hurt
-term hush
-term inch
-term keel
-term kern
-term kick
-term kill
-term kiln
-term kilt
-term kink
-term kiss
-term kite
-term knee
-term knit
-term knot
-term lace
-term lack
-term lake
-term land
-term lash
-term laze
-term lead
-term leaf
-term leak
-term lick
-term like
-term line
-term link
-term lint
-term list
-term load
-term loaf
-term loan
-term lock
-term look
-term loom
-term loot
-term lord
-term love
-term lull
-term lure
-term make
-term mark
-term mash
-term mask
-term mass
-term mate
-term maze
-term mean
-term meet
-term melt
-term mesh
-term mess
-term milk
-term mill
-term mime
-term mind
-term mine
-term mint
-term miss
-term mist
-term moan
-term mock
-term mold
-term molt
-term moon
-term moss
-term move
-term muse
-term mush
-term must
-term name
-term need
-term nerd
-term nest
-term nick
-term nose
-term note
-term null
-term oink
-term ooze
-term race
-term rack
-term raft
-term rake
-term rank
-term rant
-term rate
-term rave
-term read
-term reek
-term reel
-term rein
-term rent
-term rest
-term ride
-term riff
-term rift
-term rise
-term risk
-term roam
-term roar
-term robe
-term rock
-term role
-term roll
-term room
-term rose
-term rule
-term rush
-term rust
-term sack
-term salt
-term save
-term scam
-term scan
-term scar
-term seam
-term seat
-term seed
-term seek
-term self
-term sell
-term shed
-term shim
-term shoe
-term show
-term side
-term sift
-term silt
-term sink
-term site
-term size
-term skew
-term skid
-term skim
-term skin
-term slab
-term slam
-term sled
-term slot
-term snow
-term soak
-term sole
-term soot
-term sort
-term star
-term stem
-term stew
-term stir
-term stub
-term suck
-term suit
-term surf
-term swan
-term swim
-term take
-term talk
-term task
-term team
-term tear
-term tell
-term term
-term test
-term text
-term thaw
-term thud
-term tick
-term tide
-term tilt
-term time
-term toke
-term toll
-term tone
-term tool
-term toot
-term toss
-term tote
-term tour
-term tree
-term trek
-term trim
-term trot
-term tube
-term tuck
-term tune
-term turn
-term twin
-term vibe
-term view
-term void
-term vote
-term waft
-term wait
-term wake
-term walk
-term wall
-term want
-term wash
-term wave
-term wear
-term weed
-term weld
-term well
-term will
-term wind
-term wink
-term wish
-term wolf
-term word
-term work
-term worm
-term zone
-term zoom
+arch
+back
+bait
+bake
+ball
+band
+bank
+bark
+base
+bash
+bead
+beam
+bean
+bear
+beat
+bell
+belt
+bend
+best
+bike
+bill
+bind
+bite
+blob
+blot
+blow
+blue
+blur
+boat
+bolt
+bond
+book
+boom
+boot
+boss
+bowl
+brew
+brim
+buck
+buff
+bulb
+bulk
+bull
+bunk
+bunt
+burn
+bush
+bust
+buzz
+cake
+call
+calm
+cane
+card
+care
+cart
+case
+cash
+cast
+cave
+char
+chat
+chew
+chow
+cite
+clam
+claw
+clue
+coal
+coat
+code
+coin
+comb
+cone
+cook
+cool
+cord
+cork
+cost
+crab
+crew
+crib
+crow
+cube
+cuff
+cull
+cure
+curl
+dare
+dart
+dash
+date
+daub
+dawn
+daze
+deck
+deed
+dent
+dice
+diff
+dish
+disk
+dive
+dock
+dole
+doll
+doom
+dose
+down
+draw
+drum
+duck
+duct
+dude
+duel
+duke
+dunk
+dusk
+dust
+ease
+etch
+face
+fade
+fake
+fare
+farm
+fast
+fate
+fawn
+fear
+feed
+feel
+fill
+film
+find
+fine
+firm
+fish
+fizz
+flat
+flaw
+flex
+flow
+flux
+foam
+fold
+fool
+fork
+form
+foul
+fret
+fuel
+fume
+funk
+fuse
+fuss
+fuzz
+hack
+haft
+halt
+hand
+hare
+harm
+hash
+haul
+have
+hawk
+haze
+head
+heat
+herd
+hide
+hike
+hill
+hint
+hiss
+hive
+hold
+hole
+home
+honk
+hood
+hoof
+hook
+hoot
+horn
+hose
+host
+howl
+huff
+hunt
+hurt
+hush
+inch
+keel
+kern
+kick
+kill
+kiln
+kilt
+kink
+kiss
+kite
+knee
+knit
+knot
+lace
+lack
+lake
+land
+lash
+laze
+lead
+leaf
+leak
+lick
+like
+line
+link
+lint
+list
+load
+loaf
+loan
+lock
+look
+loom
+loot
+lord
+love
+lull
+lure
+make
+mark
+mash
+mask
+mass
+mate
+maze
+mean
+meet
+melt
+mesh
+mess
+milk
+mill
+mime
+mind
+mine
+mint
+miss
+mist
+moan
+mock
+mold
+molt
+moon
+moss
+move
+muse
+mush
+must
+name
+need
+nerd
+nest
+nick
+nose
+note
+null
+oink
+ooze
+race
+rack
+raft
+rake
+rank
+rant
+rate
+rave
+read
+reek
+reel
+rein
+rent
+rest
+ride
+riff
+rift
+rise
+risk
+roam
+roar
+robe
+rock
+role
+roll
+room
+rose
+rule
+rush
+rust
+sack
+salt
+save
+scam
+scan
+scar
+seam
+seat
+seed
+seek
+self
+sell
+shed
+shim
+shoe
+show
+side
+sift
+silt
+sink
+site
+size
+skew
+skid
+skim
+skin
+slab
+slam
+sled
+slot
+snow
+soak
+sole
+soot
+sort
+star
+stem
+stew
+stir
+stub
+suck
+suit
+surf
+swan
+swim
+take
+talk
+task
+team
+tear
+tell
+term
+test
+text
+thaw
+thud
+tick
+tide
+tilt
+time
+toke
+toll
+tone
+tool
+toot
+toss
+tote
+tour
+tree
+trek
+trim
+trot
+tube
+tuck
+tune
+turn
+twin
+vibe
+view
+void
+vote
+waft
+wait
+wake
+walk
+wall
+want
+wash
+wave
+wear
+weed
+weld
+well
+will
+wind
+wink
+wish
+wolf
+word
+work
+worm
+zone
+zoom
 ```
