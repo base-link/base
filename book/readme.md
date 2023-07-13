@@ -3,7 +3,7 @@
 - [Foreword](foreword.md)
 - [Introduction](introduction.md)
 - [Why](why.md)
-- [Syntax](link-text.md)
+- [Syntax](syntax.md)
 - [DSLs](dsls.md)
 - [Semantics](semantics.md)
   - [Deck](semantics/deck.md)
@@ -49,6 +49,8 @@
 - [Folder Structure](folder-structure.md)
 - [Errors](errors.md)
 - [Traits](traits.md)
+- [Lists](lists.md)
+- [Hash Tables](hashes.md)
 - [Iterators](iterators.md)
 - Parsing
   - [Bytes](parsing/bytes.md)
