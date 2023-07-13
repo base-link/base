@@ -6,46 +6,9 @@
 - [Syntax](syntax.md)
 - [DSLs](dsls.md)
 - [Semantics](semantics.md)
-  - [Deck](semantics/deck.md)
-  - [Code](semantics/code.md)
-    - [`form`](semantics/code/form.md)
-    - [`suit`](semantics/code/suit.md)
-    - `mask`
-    - [`fork`](semantics/code/fork.md)
-    - [`task`](semantics/code/task.md)
-    - [`call`](semantics/code/call.md)
-    - [`tree`](semantics/code/tree.md)
-    - `load`
-    - [`bond`](semantics/code/bond.md)
-    - [`meet`](semantics/code/meet.md)
-    - `link`
-    - [`host`](semantics/code/host.md)
-    - [`risk`](semantics/code/risk.md)
-    - [`text`](semantics/code/text.md)
-    - [`walk`](semantics/code/walk.md)
-  - Bind (native interfaces)
-    - `form`
-    - `task`
-    - `load`
-    - `tree`
-    - `mask`
-    - `suit`
-    - `host`
-    - [`need`](semantics/code/need.md)
-  - Role
-  - Test
-  - Mill (parsing)
-    - [`mine`](semantics/mill/mine.md)
-    - [`mint`](semantics/mill/mint.md)
-  - Lace (writing)
-  - [Book](semantics/book.md)
-  - Lock (lockfiles)
-  - Seed (artifacts)
-  - [Line](semantics/line.md) (CLI)
-  - Site (URL matching)
-  - [Zone](semantics/zone.md) (UI)
-  - Cast (HTTP)
 - [Packages](packages.md)
+  - Details
+- [Libraries](libraries.md)
 - [Folders](folders.md)
 - [Errors](errors.md)
 - [Traits](traits.md)
@@ -54,9 +17,12 @@
 - [Iterators](iterators.md)
 - Parsers
   - [Bytes](parsers/bytes.md)
-  - Link Trees
-- Files
+  - Trees
+- [Files](files.md)
   - [Images](files/images.md)
+  - PDFs
+  - Videos
+  - Fonts
 - Protocols
   - [HTTP](protocols/http.md)
 - [Processes](processes.md)
@@ -64,7 +30,7 @@
 - Databases
   - [Migrations](databases/migrations.md)
   - Adapters
-    - Mysql
+    - MySQL
     - Postgres
 - Queries
   - Mutations
@@ -79,8 +45,47 @@
 - Jobs
 - Theory
 - Architecture
-- Dependency-management
 - Development
 - [Semver](semver.md)
+- Terms
+  - [Deck](terms/deck.md)
+  - [Code](terms/code.md)
+    - [`form`](terms/code/form.md)
+    - [`suit`](terms/code/suit.md)
+    - `mask`
+    - [`fork`](terms/code/fork.md)
+    - [`task`](terms/code/task.md)
+    - [`call`](terms/code/call.md)
+    - [`tree`](terms/code/tree.md)
+    - `load`
+    - [`bond`](terms/code/bond.md)
+    - [`meet`](terms/code/meet.md)
+    - `link`
+    - [`host`](terms/code/host.md)
+    - [`risk`](terms/code/risk.md)
+    - [`text`](terms/code/text.md)
+    - [`walk`](terms/code/walk.md)
+  - Bind (native interfaces)
+    - `form`
+    - `task`
+    - `load`
+    - `tree`
+    - `mask`
+    - `suit`
+    - `host`
+    - [`need`](terms/code/need.md)
+  - Role
+  - Test
+  - Mill (parsing)
+    - [`mine`](terms/mill/mine.md)
+    - [`mint`](terms/mill/mint.md)
+  - Lace (writing)
+  - [Book](terms/book.md)
+  - Lock (lockfiles)
+  - Seed (artifacts)
+  - [Line](terms/line.md) (CLI)
+  - Site (URL matching)
+  - [Zone](terms/zone.md) (UI)
+  - Cast (HTTP)
 - [Words](words.md)
 - [Conclusion](conclusion.md)
