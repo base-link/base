@@ -1,3 +1,10 @@
+# Tests in BaseLink
+
+```
+test <I'm a test>
+  call stuff
+```
+
 ## Test Output
 
 The tests default renderer should be something like:

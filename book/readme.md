@@ -46,14 +46,14 @@
   - [Zone](semantics/zone.md) (UI)
   - Cast (HTTP)
 - [Packages](packages.md)
-- [Folder Structure](folder-structure.md)
+- [Folders](folders.md)
 - [Errors](errors.md)
 - [Traits](traits.md)
 - [Lists](lists.md)
 - [Maps](maps.md)
 - [Iterators](iterators.md)
-- Parsing
-  - [Bytes](parsing/bytes.md)
+- Parsers
+  - [Bytes](parsers/bytes.md)
   - Link Trees
 - Files
   - [Images](files/images.md)
