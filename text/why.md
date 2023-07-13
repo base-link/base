@@ -62,3 +62,8 @@ programming language, it's essential to consider the specific
 requirements of your projects, the maturity of the language, and the
 availability of libraries, tools, and community support before deciding
 if it's the best fit for your needs.
+
+_Note: Base Link is still evolving, and while we are committed to
+providing an exceptional developer experience, please be aware that it
+may not be suitable for production environments for a while. We welcome
+your feedback and contributions to help shape the future of Base Link._
