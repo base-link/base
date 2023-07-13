@@ -52,8 +52,6 @@ The provided code showcases the definition of artifacts, which are
 similar to resources in Terraform, in Base Link. Let's explore the
 different elements and syntax used:
 
-### Artifacts in Base Link
-
 1. **Resource Definition:** The artifacts are defined using the `seed`
    keyword, similar to resources in Terraform. Each artifact has a
    unique name, such as `google-storage-bucket`, `app-ami`, `app`, or
