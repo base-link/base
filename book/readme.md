@@ -50,7 +50,7 @@
 - [Errors](errors.md)
 - [Traits](traits.md)
 - [Lists](lists.md)
-- [Hash Tables](hashes.md)
+- [Maps](maps.md)
 - [Iterators](iterators.md)
 - Parsing
   - [Bytes](parsing/bytes.md)
