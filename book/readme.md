@@ -27,6 +27,7 @@
   - [HTTP](protocols/http.md)
 - [Processes](processes.md)
 - [Linters](linters.md)
+- [Logs](logs.md)
 - Databases
   - [Migrations](databases/migrations.md)
   - Adapters
