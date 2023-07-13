@@ -12,7 +12,7 @@
 
 <h3 align='center'>base.link</h3>
 <p align='center'>
-  A Link Text Programming Framework
+  A LinkText Programming Framework
 </p>
 
 <br/>

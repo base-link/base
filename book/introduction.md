@@ -1,6 +1,6 @@
 # Introduction to BaseLink
 
-BaseLink is the programming environment for Link Text, a minimal data
+BaseLink is the programming environment for LinkText, a minimal data
 modeling language. It is a statically typed, imperative, object oriented
 language which (at some point in the future) will compile down to JS,
 Swift, Rust, and Kotlin, to cover the main environments where the code

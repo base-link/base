@@ -141,10 +141,10 @@ mine back
   mine miss, mine form, form y
 ```
 
-## Parsing Link Text with `mine`
+## Parsing LinkText with `mine`
 
-The `mill` DSL is for parsing Link Text, the tree of terms you see in
-the BaseLink environment. It is divided into a `mine` layer, which emits
+The `mill` DSL is for parsing LinkText, the tree of terms you see in the
+BaseLink environment. It is divided into a `mine` layer, which emits
 things it finds in the tree based on certain patterns you define, and
 the `mint`, which takes what is emitted from the mine and converts it
 into AST objects. So you just:
@@ -158,8 +158,8 @@ into AST objects. So you just:
 The mill then takes these two declarative rule sets, and turns it into a
 parser. The parser then does a lazy approach, as opposed to greedy. That
 is, it matches the minimal amount possible. The end result here is, the
-parser parses Link Text and generates the Loom Tree. The Loom Tree is
-the AST the compiler uses.
+parser parses LinkText and generates the Loom Tree. The Loom Tree is the
+AST the compiler uses.
 
 ### `mine text`
 

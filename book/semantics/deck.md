@@ -5,7 +5,7 @@ A deck is a package, and this is how you define the package metadata.
 ```
 deck @tunebond/base
   mark <0.0.1>
-  head <A Link Text Package Manager>
+  head <A LinkText Package Manager>
   term link-text
   term computation
   term philosophy

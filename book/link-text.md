@@ -2,8 +2,8 @@
 
 ## Overview
 
-BaseLink uses Link Text for its syntax. Link Text is a little more than
-a markup language, tending toward a programming language. It is a way to
+BaseLink uses LinkText for its syntax. LinkText is a little more than a
+markup language, tending toward a programming language. It is a way to
 model information and computation in an easy to read and write format,
 suitable for hierarchical note taking and other means of capturing data
 down into structured form.
@@ -21,7 +21,7 @@ those are just style conventions.
 
 ## Example
 
-First, some images of different usages of Link Text. Here are a few
+First, some images of different usages of LinkText. Here are a few
 examples from existing code. The first is how you might define a "deck"
 (a "package" of Link code). The second is the first part of the Tao Te
 Ching captured in a tree, and the later we show how you might write a
@@ -35,7 +35,7 @@ A package definition:
 ```link
 deck @tunebond/base
   mark <0.0.1>
-  head <A Link Text Package Manager>
+  head <A LinkText Package Manager>
   term link-text
   term computation
   term philosophy
@@ -325,8 +325,7 @@ strings as well with curly brackets.
 ## Types
 
 All of the TypeScript types below, which have a `form`, are part of the
-Link Tree, the AST for Link Text. This is the exact structure of the
-AST.
+Link Tree, the AST for LinkText. This is the exact structure of the AST.
 
 ```ts
 export type LinkFold = {

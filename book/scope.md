@@ -8,6 +8,7 @@ card/link # the file path
 base # the main world
 base/host # environment variables
 fork # current scope
+flow # the current process
 ```
 
 It has access to these at compile time as well.

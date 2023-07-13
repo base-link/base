@@ -6,8 +6,12 @@ You can do "log info" with the short show command.
 
 To log, you would do:
 
-    note <hello world>
-      sort kink
+    load @tunebond/wolf
+      find note
+
+    call note
+      text <hello world>
+      term kink
 
 Should print
 

@@ -4,6 +4,7 @@
 - [Introduction](introduction.md)
 - [Why](why.md)
 - [Syntax](link-text.md)
+- [DSLs](dsls.md)
 - [Semantics](semantics.md)
   - [Deck](semantics/deck.md)
   - [Code](semantics/code.md)
@@ -52,11 +53,13 @@
 - Parsing
   - [Bytes](parsing/bytes.md)
   - Link Trees
+- Files
+  - [Images](files/images.md)
 - Protocols
   - [HTTP](protocols/http.md)
-- Linters
+- [Linters](linters.md)
 - Databases
-  - Migrations
+  - [Migrations](databases/migrations.md)
   - Adapters
     - Mysql
     - Postgres
