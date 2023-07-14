@@ -17,6 +17,7 @@ basically the minimal set of conventions for building packages.
 1. `@tunebond/nest`: The BaseLink Resource Provisioning Library
 1. `@tunebond/snow`: The BaseLink Querying Library
 1. `@tunebond/door`: The BaseLink Permission Library
+1. `@tunebond/seed`: The BaseLink Math Library
 
 ## `@tunebond/bind`
 
@@ -98,7 +99,9 @@ Vercel.
 
 ## `@tunebond/crow`
 
-This is for managing the UI and defining UI components.
+This is for managing the UI and defining UI components. This includes
+DOM trees like React, WebGL graphics, game graphics like Pixi.js, and
+game physics. Ideally there are both 2d and 3d variants.
 
 ## `@tunebond/nest`
 
