@@ -16,7 +16,7 @@ basically the minimal set of conventions for building packages.
 1. `@tunebond/crow`: The BaseLink Drawing Library
 1. `@tunebond/nest`: The BaseLink Resource Provisioning Library
 1. `@tunebond/snow`: The BaseLink Querying Library
-1. `@tunebond/base`: The BaseLink Framework
+1. `@tunebond/door`: The BaseLink Permission Library
 
 ## `@tunebond/bind`
 
@@ -55,6 +55,7 @@ platforms.
 - Clipboard
 - Cookies
 - Gamepad
+- Email
 
 ## `@tunebond/hare`
 
@@ -108,7 +109,7 @@ other infrastructure.
 
 This is for managing querying and mutations of all sorts, from the
 API-level down to database levels. As such, it is an abstraction over
-databases.
+databases. This includes job processing as well.
 
 ## Inspiration
 
