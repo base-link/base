@@ -57,6 +57,13 @@ platforms.
 - Cookies
 - Gamepad
 - Email
+- Speech recognition
+- Speech synthesis
+- Video
+- Screen capture
+- Audio
+- Drag and drop
+- Payments
 
 ## `@tunebond/hare`
 
