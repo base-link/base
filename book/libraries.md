@@ -8,7 +8,7 @@ basically the minimal set of conventions for building packages.
 1. `@tunebond/bolt`: The BaseLink Basic Data Type Library
 1. `@tunebond/moon`: The BaseLink Environment Tooling Library
 1. `@tunebond/hare`: The BaseLink Data Structure Library
-1. `@tunebond/tree`: The BaseLink Content Grammar Library
+1. `@tunebond/worm`: The BaseLink Content Grammar Library
 1. `@tunebond/mesh`: The BaseLink Compiler Library
 1. `@tunebond/fish`: The BaseLink Linting Library
 1. `@tunebond/wolf`: The BaseLink File Manipulation Library
@@ -18,6 +18,7 @@ basically the minimal set of conventions for building packages.
 1. `@tunebond/snow`: The BaseLink Querying Library
 1. `@tunebond/door`: The BaseLink Permission Library
 1. `@tunebond/seed`: The BaseLink Math Library
+1. `@tunebond/tree`: The BaseLink DSL Library
 
 ## `@tunebond/bind`
 
@@ -64,13 +65,14 @@ platforms.
 - Audio
 - Drag and drop
 - Payments
+- Testing
 
 ## `@tunebond/hare`
 
 This is an abstraction over data structures, and aims to include as many
 of them as possible.
 
-## `@tunebond/tree`
+## `@tunebond/worm`
 
 This is for parsing and writing text and/or bytes.
 
@@ -79,6 +81,9 @@ This is for parsing and writing text and/or bytes.
 This is the main BaseLink compiler. It takes input text and compiles it
 to a mesh, then runs typechecking / typeinference on it and everything,
 and outputs builds for target environments.
+
+This is where the `mine` and `mint` DSLs are defined, amongst other
+things.
 
 ## `@tunebond/fish`
 
@@ -120,6 +125,13 @@ other infrastructure.
 This is for managing querying and mutations of all sorts, from the
 API-level down to database levels. As such, it is an abstraction over
 databases. This includes job processing as well.
+
+## `@tunebond/tree`
+
+This is the set of collected DSLs for building the things in the various
+libraries. This makes it so the libraries are not bound by the DSLs, and
+you can write your own DSL on top of the base libraries if you really
+wanted.
 
 ## Inspiration
 
