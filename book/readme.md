@@ -32,16 +32,16 @@
   - [Migrations](databases/migrations.md)
   - Adapters
     - MySQL
-    - Postgres
-- Queries
+    - PostgreSQL
+- [Queries](queries.md)
   - Mutations
   - Projections
 - [Artifacts](artifacts.md)
   - Migrations
   - Configuration
 - [Graphics](graphics.md)
-  - Components
-  - Webgl
+  - [Components](graphics/components.md)
+  - [Webgl](graphics/webgl.md)
 - Mailers
 - Jobs
 - Theory
