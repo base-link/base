@@ -155,7 +155,7 @@ hash integrity
 ```
 
 If there are more than 256 downloads, it can't be deleted without
-reaching out to support at meet@tune.bond.
+reaching out to support at meet@nerd.bond.
 
 On publish to base.link, once the package hits the server and streams
 the upload to google cloud, it generates the hash and saves the

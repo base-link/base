@@ -32,7 +32,7 @@ pnpm add @nerdbond/base -g
 
 ## License
 
-Copyright 2021-2023 <a href='https://tune.bond'>TuneBond</a>
+Copyright 2021-2023 <a href='https://nerd.bond'>NerdBond</a>
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may
 not use this file except in compliance with the License. You may obtain
@@ -46,9 +46,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-## TuneBond
+## NerdBond
 
-This is being developed by the folks at [TuneBond](https://tune.bond), a
+This is being developed by the folks at [NerdBond](https://nerd.bond), a
 California-based project for helping humanity master information and
 computation. Find us on [Twitter](https://twitter.com/nerdbond),
 [LinkedIn](https://www.linkedin.com/company/nerdbond), and
