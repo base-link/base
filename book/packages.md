@@ -58,16 +58,16 @@ deck @my/deck
 When it searches for files, it searches like this:
 
 ```
-/something/deeply/nested/deck.link
+/something/deeply/nested/base.link
 /something/deeply/nested/link
 
-/something/deeply/deck.link
+/something/deeply/base.link
 /something/deeply/link
 
-/something/deck.link
+/something/base.link
 /something/link
 
-/deck.link
+/base.link
 /link
 ```
 
@@ -101,8 +101,8 @@ it is just built into the compiler, the specific ways different file
 types are handled.
 
 ```
-https://base.link/@tunebond/base/head/deck.link
-https://base.link/@tunebond/base/1.2.3/deck.link
+https://base.link/@nerdbond/base/head/deck.link
+https://base.link/@nerdbond/base/1.2.3/deck.link
 ```
 
 Limit to 256mb decks.
@@ -131,8 +131,8 @@ base host deck
 Stored on google cloud like:
 
 ```
-deck.base.link/@tunebond/base/1.2.3/base.tar.gz
-deck.base.link/@tunebond/base/1.2.3/base.link
+deck.base.link/@nerdbond/base/1.2.3/base.tar.gz
+deck.base.link/@nerdbond/base/1.2.3/base.link
 ```
 
 The `base.link` gives us the metadata associated with the deck:
@@ -183,19 +183,19 @@ The lockfile then loads the data:
 ```
 base <0.0.1>
 
-load @tunebond/moon
+load @nerdbond/moon
   mark <*>
   lock <0.0.1>
-load @tunebond/bolt
+load @nerdbond/bolt
   mark <*>
   lock <0.0.1>
-load @tunebond/wolf
+load @nerdbond/wolf
   mark <*>
   lock <0.0.1>
 
-link <@tunebond/wolf:0.0.1>
+link <@nerdbond/wolf:0.0.1>
   hash <sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==>
-  load @tunebond/bolt
+  load @nerdbond/bolt
     mark <0.0.1>
 ```
 
@@ -218,7 +218,7 @@ It stores a copy of the package readme.md and the deck file metadata for
 display in the UI.
 
 ```
-https://base.link/@tunebond/base
+https://base.link/@nerdbond/base
 ```
 
 Shows readme, with link to source.
@@ -238,7 +238,7 @@ For each version, it stores the readme and the metadata on the site in
 postgres, to render the website.
 
 ```
-https://base.link/@tunebond/base/1.2.3
+https://base.link/@nerdbond/base/1.2.3
 ```
 
 The registry chooses to not use URLs and instead use the `@` at sign to
@@ -252,10 +252,10 @@ The sandbox is basically a deck.
 https://codepen.io/ettrics/pen/WRbGRN
 
 ```
-base.link/@tunebond/:deck/code/:file+
-base.link/@tunebond/buck-1212 (4 letter word followed by numbers)
-base.link/@tunebond/buck-1212/mark/:mark/code/:file+ (just the code)
-base.link/@tunebond/buck-1212/mark/:mark/hint/:file+/task/create-something
+base.link/@nerdbond/:deck/code/:file+
+base.link/@nerdbond/buck-1212 (4 letter word followed by numbers)
+base.link/@nerdbond/buck-1212/mark/:mark/code/:file+ (just the code)
+base.link/@nerdbond/buck-1212/mark/:mark/hint/:file+/task/create-something
 ```
 
 Then the sandbox decks are marked as "sort make".
@@ -272,10 +272,10 @@ BaseLinkShow (project name)
 
 MakeBaseLink (project name)
 
-make.base.link/@tunebond/buck-1234
+make.base.link/@nerdbond/buck-1234
   Shows the rendering
-make.base.link/@tunebond/buck-1234/hint/:file+
-make.base.link/@tunebond/buck-1234/code/:file+
+make.base.link/@nerdbond/buck-1234/hint/:file+
+make.base.link/@nerdbond/buck-1234/code/:file+
 make.base.link
   Try and share code
 base.link/dock/vercel/back
@@ -402,13 +402,13 @@ There is a server which loads the source maps under `/link`:
 ```
 /make
   /link
-    /tunebond
+    /nerdbond
       /crow
         /1.0.23
           /code
             /base.link
           /link
-            /tunebond
+            /nerdbond
               /wolf => /wolf/0.1.0
       /wolf
         /0.1.0
@@ -420,13 +420,13 @@ The server aliases to `./link` on the file system, as in:
 
 ```
 /link
-  /tunebond
+  /nerdbond
     /crow
       /1.0.23
         /code
           /base.link
         /link
-          /tunebond
+          /nerdbond
             /wolf => /wolf/0.1.0
 ```
 
@@ -438,9 +438,9 @@ Specify the bundle groups with:
 ```
 deck @foo/bar
   band base
-    link @tunebond/bolt
-    link @tunebond/nest
-    link @tunebond/crow
+    link @nerdbond/bolt
+    link @nerdbond/nest
+    link @nerdbond/crow
 ```
 
 Map [multiple sources](https://www.bugsnag.com/blog/source-maps/) to one
@@ -452,13 +452,13 @@ There are source maps for Node.js too, and the compiler.
 
 So:
 
-- loading from ./code loads ./link/tunebond/crow
-- loading from ./link/tunebond/crow loads from
-  - /link/.tree/tunebond/crow/1.0.23
+- loading from ./code loads ./link/nerdbond/crow
+- loading from ./link/nerdbond/crow loads from
+  - /link/.tree/nerdbond/crow/1.0.23
 - that gets compiled into
-  - /link/.work/node_modules/tunebond/crow/index.js
+  - /link/.work/node_modules/nerdbond/crow/index.js
 - and that is actually a symlink to
-  - /link/.work/node_modules/.tree/tunebond+crow@1.0.23/node_modules/tunebond/crow/index.js
+  - /link/.work/node_modules/.tree/nerdbond+crow@1.0.23/node_modules/nerdbond/crow/index.js
 - so when we load ./link/.work/index.js, it loads from that last long
   path.
 - and the source map path is always relative to that long path.
@@ -468,7 +468,7 @@ sourcemaps):
 
 ```
 /tree
-  /tunebond
+  /nerdbond
     /crow
       /1.0.23
 
@@ -476,7 +476,7 @@ sourcemaps):
 
 /base
   /tree
-    /tunebond
+    /nerdbond
       /crow
         /1.0.23
 ```
@@ -530,17 +530,17 @@ public for the browser.
 /link
   /hint.link
   /head
-    /tunebond
+    /nerdbond
       /crow # symlink to 1.0.23
   /tree
-    /tunebond
+    /nerdbond
       /crow
         /1.0.23
           /code
             /base.link
           /base
             /link
-              /tunebond
+              /nerdbond
                 /wolf => wolf/0.1.3
       /wolf
         /0.1.3
@@ -558,18 +558,18 @@ public for the browser.
   /rake # organize the code
     /javascript
       /package.json
-        name: @tunebond/base
+        name: @nerdbond/base
         browser: ./browser/index.js
       /browser
         /hash.json
         /node_modules
           /.tree
-            /@tunebond
+            /@nerdbond
               /nest
                 /2.2.23
-          /@tunebond
+          /@nerdbond
             /nest
-          /@tunebond
+          /@nerdbond
             /base+shared
         /roll
           /hash+<hash-of-names>.js
@@ -578,10 +578,10 @@ public for the browser.
         /hash.json
         /node_modules
           /.tree
-            /@tunebond
+            /@nerdbond
               /nest
                 /2.2.23
-          /@tunebond
+          /@nerdbond
             /nest
         /roll
           /hash+<hash-of-names>.js
@@ -593,11 +593,11 @@ public for the browser.
         /index.js
         /node_modules
           /.tree
-            /tunebond+nest@2.2.23
+            /nerdbond+nest@2.2.23
               /node_modules
-                /@tunebond
+                /@nerdbond
                   /crow
-          /@tunebond
+          /@nerdbond
             /nest
         /roll
           /hash+<hash-of-names>.js
@@ -617,19 +617,19 @@ public for the browser.
         /index.js
         /node_modules
           /.tree
-            /tunebond+crow@1.0.23
+            /nerdbond+crow@1.0.23
               /node_modules
-                /@tunebond
+                /@nerdbond
                   /crow
                     /index.js
                       //# sourceMappingURL=index.js.map
                     /index.js.map
-                      => ../../../../../../../tree/tunebond/crow/1.0.23
+                      => ../../../../../../../tree/nerdbond/crow/1.0.23
                   /wolf
                     /index.js
-          /tunebond
+          /nerdbond
             /crow
-              /index.js # symlink to tunebond+crow@1.0.23/node_modules/tunebond/crow/base.js
+              /index.js # symlink to nerdbond+crow@1.0.23/node_modules/nerdbond/crow/base.js
 ```
 
 You could periodically check and clean the cache, every 16th change,
@@ -828,7 +828,7 @@ Based on if it is `sort tool` or `sort site`:
 ## Peer Dependencies
 
 ```
-link @tunebond/crow, mark <0.*>
+link @nerdbond/crow, mark <0.*>
   have 1 # singleton policy
 ```
 

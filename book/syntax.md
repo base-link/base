@@ -33,7 +33,7 @@ for defining trees of text.
 A package definition:
 
 ```link
-deck @tunebond/base
+deck @nerdbond/base
   mark <0.0.1>
   head <A LinkText Package Manager>
   term link-text
@@ -48,9 +48,9 @@ deck @tunebond/base
   read ./note
   lock apache-2
   sort tool
-  link @tunebond/bolt, mark <0.x.x>
-  link @tunebond/nest, mark <0.x.x>
-  link @tunebond/crow, mark <0.x.x>
+  link @nerdbond/bolt, mark <0.x.x>
+  link @nerdbond/nest, mark <0.x.x>
+  link @nerdbond/crow, mark <0.x.x>
 ```
 
 The first block of the Tao Te Ching:
@@ -73,15 +73,15 @@ head <道德经>
 And now for some pictures of the code, since we can't get GitHub to
 offer syntax highlighting for a while.
 
-<img src="https://github.com/tunebond/link/blob/make/view/tree.png?raw=true" />
+<img src="https://github.com/nerdbond/link/blob/make/view/tree.png?raw=true" />
 
 ---
 
-<img src="https://github.com/tunebond/link/blob/make/view/mine.png?raw=true" />
+<img src="https://github.com/nerdbond/link/blob/make/view/mine.png?raw=true" />
 
 ---
 
-<img src="https://github.com/tunebond/link/blob/make/view/lace.png?raw=true" />
+<img src="https://github.com/nerdbond/link/blob/make/view/lace.png?raw=true" />
 
 ## Specification
 

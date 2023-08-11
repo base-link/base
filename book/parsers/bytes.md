@@ -2,7 +2,7 @@
 
 ## How parsing works
 
-Given the link tree (a data structure produced by the `@tunebond/link`
+Given the link tree (a data structure produced by the `@nerdbond/link`
 parser), it processes it. If it encounters interpolation, it skips over
 it and waits for it to be resolved before continuing back where it left
 off. This is the `mine` step.

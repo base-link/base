@@ -6,7 +6,7 @@ You can do "log info" with the short show command.
 
 To log, you would do:
 
-    load @tunebond/wolf
+    load @nerdbond/wolf
       find note
 
     call note
@@ -18,7 +18,7 @@ Should print
     note <hello world>
       time <2023/07/10 04:32:01 pm utc>
       sort kink
-      deck <@tunebond/base>
+      deck <@nerdbond/base>
       term process-tag
 
 You also have:

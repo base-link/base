@@ -17,10 +17,10 @@ dependencies:
   '@lancejpollard/pretty-compact-json.js':
     specifier: ^0.2.0
     version: 0.2.0
-  '@tunebond/form':
+  '@nerdbond/form':
     specifier: ^0.2.2
     version: 0.2.2(kysely@0.24.2)
-  '@tunebond/have':
+  '@nerdbond/have':
     specifier: ^0.1.2
     version: 0.1.2
   chalk:
@@ -871,13 +871,13 @@ packages:
   /@tsconfig/node16@1.0.4:
     resolution: {integrity: sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==}
 
-  /@tunebond/form@0.2.2(kysely@0.24.2):
+  /@nerdbond/form@0.2.2(kysely@0.24.2):
     resolution: {integrity: sha512-T1UqBh7B12134RCh2snc/3RV5gSTviDRimkd9Q6pWOl3JZTA92k7XE0zA9nXprTN37EGuldcqx+YWLzRu8wv7g==}
     peerDependencies:
       kysely: ^0.24.2
     dependencies:
-      '@tunebond/have': 0.1.2
-      '@tunebond/love-code': 0.1.1
+      '@nerdbond/have': 0.1.2
+      '@nerdbond/love-code': 0.1.1
       kysely: 0.24.2
       lodash: 4.17.21
       prettier-eslint: 15.0.1
@@ -886,47 +886,47 @@ packages:
       - supports-color
     dev: false
 
-  /@tunebond/halt-text@0.1.3:
+  /@nerdbond/halt-text@0.1.3:
     resolution: {integrity: sha512-LAwdk/GG4MEj55lq6iSmVUB2odVy20rlE40YzVku523Xgp1vVDu6AH86rEJPCE5mkowPW4aO4QqGQknVEMIN/Q==}
     dependencies:
       '@cspotcode/source-map': 0.8.0
-      '@tunebond/halt': 0.1.6
-      '@tunebond/tint': 0.0.1
+      '@nerdbond/halt': 0.1.6
+      '@nerdbond/tint': 0.0.1
     dev: false
 
-  /@tunebond/halt@0.1.6:
+  /@nerdbond/halt@0.1.6:
     resolution: {integrity: sha512-IbA0lK2UjZGETHEPyCiMw22glhm2DtG6dKbP6pk14am9MOnKicjIBvBQcs6xn8YmzLdYQBWftWhrfVIH8XIVDA==}
     dependencies:
-      '@tunebond/tint': 0.0.1
+      '@nerdbond/tint': 0.0.1
       ts-custom-error: 3.3.1
     dev: false
 
-  /@tunebond/have@0.1.2:
+  /@nerdbond/have@0.1.2:
     resolution: {integrity: sha512-LLhy+PPx12v0QyfUt+FD0RxPZa5NCLLDTrIr7thQ60Jwb20xJXPq7h8bRnIlosNcyn/kEs9rwL1H1l8BQFqyTw==}
     dependencies:
-      '@tunebond/halt': 0.1.6
-      '@tunebond/halt-text': 0.1.3
-      '@tunebond/tint': 0.0.1
-      '@tunebond/tone-code': 0.1.1
+      '@nerdbond/halt': 0.1.6
+      '@nerdbond/halt-text': 0.1.3
+      '@nerdbond/tint': 0.0.1
+      '@nerdbond/tone-code': 0.1.1
       '@types/uuid': 9.0.2
       lodash: 4.17.21
       tsx: 3.12.7
       uuid: 9.0.0
     dev: false
 
-  /@tunebond/love-code@0.1.1:
+  /@nerdbond/love-code@0.1.1:
     resolution: {integrity: sha512-pcAFczzyI3K8qJQkFwIhDF7WPFsZvoxeOfuKv7N9E8m7vRwShW/oVTBMX7GGlIy7LRisnUbvalvtiMy7s6Y08A==}
     dependencies:
       '@lancejpollard/configured-quadratic-residue-prng.js': 1.0.0
     dev: false
 
-  /@tunebond/tint@0.0.1:
+  /@nerdbond/tint@0.0.1:
     resolution: {integrity: sha512-MrAFVN60PEuzf6I2heXUCYXefHsjfFY1zWjJJpQ0yqGtaVc7+7won9ZWF/Ud1blgS+Dcwb/h+HMxvCN1DFhX/w==}
     dependencies:
       chalk: 5.2.0
     dev: false
 
-  /@tunebond/tone-code@0.1.1:
+  /@nerdbond/tone-code@0.1.1:
     resolution: {integrity: sha512-UKe06BEwNJcKArRtyc06Bx9OVITj+1fwMARd4mexn6zjk+kjMegmw1F2YvXrFmFyDDgXDODbC+0TPGa6aoeShg==}
     dependencies:
       '@lancejpollard/configured-quadratic-residue-prng.js': 1.0.0

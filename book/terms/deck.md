@@ -3,7 +3,7 @@
 A deck is a package, and this is how you define the package metadata.
 
 ```
-deck @tunebond/base
+deck @nerdbond/base
   mark <0.0.1>
   head <A LinkText Package Manager>
   term link-text
@@ -18,9 +18,9 @@ deck @tunebond/base
   read ./book # also a default
   lock apache-2
   sort tool
-  link @tunebond/bolt, mark <0.x.x>
-  link @tunebond/nest, mark <0.x.x>
-  link @tunebond/crow, mark <0.x.x>
+  link @nerdbond/bolt, mark <0.x.x>
+  link @nerdbond/nest, mark <0.x.x>
+  link @nerdbond/crow, mark <0.x.x>
   load work
   load host
 ```

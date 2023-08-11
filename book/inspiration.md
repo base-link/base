@@ -4,7 +4,7 @@
 - https://doc.rust-lang.org/book/
 
 ```
-https://base.link/@tunebond/base/book
+https://base.link/@nerdbond/base/book
   /introduction
   /getting-started
     /installation
@@ -12,20 +12,20 @@ https://base.link/@tunebond/base/book
 ```
 
 ```
-https://base.link/@tunebond/base/team
-https://base.link/@tunebond/base/book/:file+
-https://base.link/@tunebond/base/text/:file+ # docs
-https://base.link/@tunebond/base/tree/:file+
-https://base.link/@tunebond/base/mark # versions
-https://base.link/@tunebond/base/1.2.3/tree/:file+
+https://base.link/@nerdbond/base/team
+https://base.link/@nerdbond/base/book/:file+
+https://base.link/@nerdbond/base/text/:file+ # docs
+https://base.link/@nerdbond/base/tree/:file+
+https://base.link/@nerdbond/base/mark # versions
+https://base.link/@nerdbond/base/1.2.3/tree/:file+
 ```
 
 ```
-https://deck.base.link/@tunebond/base/1.2.3/base.link
-https://deck.base.link/@tunebond/base/1.2.3/base.tar.gz
-https://deck.base.link/@tunebond/base/1.2.3/book
-https://deck.base.link/@tunebond/base/1.2.3/code
-https://deck.base.link/@tunebond/base/1.2.3/tree
+https://deck.base.link/@nerdbond/base/1.2.3/base.link
+https://deck.base.link/@nerdbond/base/1.2.3/base.tar.gz
+https://deck.base.link/@nerdbond/base/1.2.3/book
+https://deck.base.link/@nerdbond/base/1.2.3/code
+https://deck.base.link/@nerdbond/base/1.2.3/tree
 ```
 
 ```
