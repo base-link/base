@@ -69,6 +69,7 @@ bond
 book
 boom
 boot
+bore
 boss
 bowl
 brew
