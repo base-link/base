@@ -1,7 +1,7 @@
 # JSON in BaseLink
 
 ```
-load @nerdbond/moon/json
+load @wavebond/moon/json
   find seek
   find list
 

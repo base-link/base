@@ -61,7 +61,7 @@ can be appropriately handled.
 To create a new process dynamically, use the following code:
 
 ```link
-load @nerdbond/wolf/code/fork
+load @wavebond/wolf/code/fork
   find make
 
 save child, call make
@@ -78,7 +78,7 @@ To execute a command within your process, you can use the following
 code:
 
 ```link
-load @nerdbond/wolf/code/command
+load @wavebond/wolf/code/command
   find work
 
 call work, <convert>
@@ -87,7 +87,7 @@ call work, <convert>
     <image.svg>
 ```
 
-This code loads the `@nerdbond/wolf/code/command` module and executes
+This code loads the `@wavebond/wolf/code/command` module and executes
 the `work` command with the specified arguments. It allows you to run
 external commands or perform specific actions as part of your process
 workflow.

@@ -1,5 +1,5 @@
 
-deck @nerdbond/base
+deck @wavebond/base
   mark <0.0.1>
   head <A LinkText Package Manager>
   term link-text
@@ -14,8 +14,8 @@ deck @nerdbond/base
   read ./book # also a default
   lock apache-2
   sort tool
-  link @nerdbond/bolt, mark <0.x.x>
-  link @nerdbond/nest, mark <0.x.x>
-  link @nerdbond/crow, mark <0.x.x>
+  link @wavebond/bolt, mark <0.x.x>
+  link @wavebond/nest, mark <0.x.x>
+  link @wavebond/crow, mark <0.x.x>
   load work
   load host

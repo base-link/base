@@ -1,5 +1,5 @@
 {
-  "name": "@nerdbond/base",
+  "name": "@wavebond/base",
   "main": "./host",
   "type": "module",
   "version": "0.3.0",
@@ -48,8 +48,8 @@
     "@babel/types": "^7.22.5",
     "@drumwork/tone": "^4.2.1",
     "@lancejpollard/pretty-compact-json.js": "^0.2.0",
-    "@nerdbond/form": "^0.2.2",
-    "@nerdbond/have": "^0.1.2",
+    "@wavebond/form": "^0.2.2",
+    "@wavebond/have": "^0.1.2",
     "chalk": "^5.2.0",
     "colors": "^1.4.0",
     "commander": "^10.0.1",

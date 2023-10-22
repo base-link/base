@@ -1,5 +1,5 @@
 
-load @nerdbond/loom
+load @wavebond/loom
   find mill code
 
 file ./**/*.link

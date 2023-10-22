@@ -4,7 +4,7 @@ You can have a chaining API similar to
 [Sharp.js](https://www.digitalocean.com/community/tutorials/how-to-process-images-in-node-js-with-sharp)
 
 ```
-load @nerdbond/cone/code/image
+load @wavebond/cone/code/image
   find make
 
 call make, <image.png>
@@ -17,4 +17,4 @@ call make, <image.png>
   link code
 ```
 
-The library `@nerdbond/cone` is for working with files of various types.
+The library `@wavebond/cone` is for working with files of various types.

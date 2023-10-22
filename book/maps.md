@@ -2,13 +2,13 @@
 
 Maps, also known as hash maps or dictionaries, are powerful data
 structures that allow efficient storage and retrieval of key-value
-pairs. In BaseLink, you can leverage the built-in `@nerdbond/bolt`
+pairs. In BaseLink, you can leverage the built-in `@wavebond/bolt`
 module to work with maps seamlessly. Let's explore the potential use
 cases and the functionality provided by the BaseLink API for hash
 tables.
 
 ```link
-load @nerdbond/bolt
+load @wavebond/bolt
   find seek
 
 save x
@@ -40,8 +40,8 @@ You can get specific implementations of maps by going directly to the
 source.
 
 ```
-load @nerdbond/bolt/code/seek/b-tree
+load @wavebond/bolt/code/seek/b-tree
   find seek
-load @nerdbond/bolt/code/seek/hash/quadratic-probing
+load @wavebond/bolt/code/seek/hash/quadratic-probing
   find seek
 ```
