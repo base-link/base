@@ -1,27 +1,27 @@
 # Cryptography in BaseLink
 
 ```
-load @wavebond/bolt/code/base/cryptography/md5
+load @textsurf/bolt/code/base/cryptography/md5
   find hash
 
 save hash, call hash, <foo>
 ```
 
 ```
-load @wavebond/bolt/code/base/cryptography/aes
+load @textsurf/bolt/code/base/cryptography/aes
   find encrypt
   find decrypt
 
-load @wavebond/bolt/code/base/cryptography/rsa
+load @textsurf/bolt/code/base/cryptography/rsa
   find encrypt
   find decrypt
   find generate
   find sign
   find verify
 
-load @wavebond/bolt/code/base/cryptography/random/byte
+load @textsurf/bolt/code/base/cryptography/random/byte
   find make
 
-load @wavebond/bolt/code/base/cryptography/random/size
+load @textsurf/bolt/code/base/cryptography/random/size
   find make
 ```

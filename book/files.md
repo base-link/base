@@ -10,13 +10,13 @@ the various operations you can perform with files using BaseLink.
 To create a new file, you can use the following code:
 
 ```link
-load @wavebond/bolt/code/file
+load @textsurf/bolt/code/file
   find save
 
 call save, <foo.txt>, <hello world>
 ```
 
-This code loads the `@wavebond/bolt/code/file` module, invokes the
+This code loads the `@textsurf/bolt/code/file` module, invokes the
 `save` command, and provides the desired filename (`foo.txt`) and
 content (`hello world`). This creates a new file with the specified name
 and writes the content into it.
@@ -26,13 +26,13 @@ and writes the content into it.
 To read the contents of a file, you can use the following code:
 
 ```link
-load @wavebond/bolt/code/file
+load @textsurf/bolt/code/file
   find read
 
 call read, <foo.txt>
 ```
 
-This code loads the `@wavebond/bolt/code/file` module, executes the
+This code loads the `@textsurf/bolt/code/file` module, executes the
 `read` command, and specifies the file (`foo.txt`) from which you want
 to retrieve the content. The command returns the content of the file as
 a result.
@@ -43,7 +43,7 @@ If you need to process a file in a streaming manner, you can create a
 file read stream using the following code:
 
 ```link
-load @wavebond/bolt/code/file/stream/read
+load @textsurf/bolt/code/file/stream/read
   find make
 
 save stream, call make, <foo.txt>
@@ -53,7 +53,7 @@ walk list, loan stream
     show <{chunk}>
 ```
 
-This code loads the `@wavebond/bolt/code/file/stream/read` module,
+This code loads the `@textsurf/bolt/code/file/stream/read` module,
 invokes the `make` command to create a read stream for the specified
 file (`foo.txt`), and then iterates over the chunks of data in the
 stream. The `hook tick` captures each chunk of data, and you can perform
@@ -65,7 +65,7 @@ For writing data to a file in a streaming manner, you can use the
 following code:
 
 ```link
-load @wavebond/bolt/code/file/stream/write
+load @textsurf/bolt/code/file/stream/write
   find make
 
 save stream, call make, <foo.txt>
@@ -73,7 +73,7 @@ call stream/write, <hello world>
 call stream/end
 ```
 
-This code loads the `@wavebond/bolt/code/file/stream/write` module,
+This code loads the `@textsurf/bolt/code/file/stream/write` module,
 creates a write stream for the specified file (`foo.txt`), and then
 writes the content (`hello world`) to the stream using the
 `stream/write` command. Finally, the `stream/end` command is called to
@@ -84,13 +84,13 @@ signal the end of writing and close the stream.
 To create a new folder (directory), you can use the following code:
 
 ```link
-load @wavebond/bolt/code/folder
+load @textsurf/bolt/code/folder
   find save
 
 call save, <my-directory>
 ```
 
-This code loads the `@wavebond/bolt/code/folder` module, executes the
+This code loads the `@textsurf/bolt/code/folder` module, executes the
 `save` command, and specifies the name (`my-directory`) for the new
 folder. This creates a new directory with the provided name in the
 current working directory.

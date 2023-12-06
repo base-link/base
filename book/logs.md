@@ -6,7 +6,7 @@ You can do "log info" with the short show command.
 
 To log, you would do:
 
-    load @wavebond/wolf
+    load @textsurf/wolf
       find note
 
     call note
@@ -18,7 +18,7 @@ Should print
     note <hello world>
       time <2023/07/10 04:32:01 pm utc>
       sort kink
-      deck <@wavebond/base>
+      deck <@textsurf/base>
       term process-tag
 
 You also have:

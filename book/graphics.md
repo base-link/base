@@ -3,7 +3,7 @@
 Here is a hello world graphics rendering in BaseLink.
 
 ```
-load @wavebond/crow
+load @textsurf/crow
   find draw
   find square
 

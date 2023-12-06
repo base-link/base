@@ -1,5 +1,5 @@
 
-load @wavebond/loom
+load @textsurf/loom
   find mill code
 
 file ./**/*.link
