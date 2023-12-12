@@ -4,35 +4,35 @@ These are open source building blocks used to make up the BaseLink
 framework. Calling BaseLink a framework is kind of a misnomer, it is
 basically the minimal set of conventions for building packages.
 
-1. `@textsurf/bind`: The BaseLink Environment Binding Library
-1. `@textsurf/bolt`: The BaseLink Basic Data Type Library
-1. `@textsurf/moon`: The BaseLink Environment Tooling Library
-1. `@textsurf/hare`: The BaseLink Data Structure Library
-1. `@textsurf/worm`: The BaseLink Content Grammar Library
-1. `@textsurf/mesh`: The BaseLink Compiler Library
-1. `@textsurf/fish`: The BaseLink Linting Library
-1. `@textsurf/wolf`: The BaseLink File Manipulation Library
-1. `@textsurf/star`: The BaseLink Third-Party Integration Library
-1. `@textsurf/crow`: The BaseLink Drawing Library
-1. `@textsurf/nest`: The BaseLink Resource Provisioning Library
-1. `@textsurf/snow`: The BaseLink Querying Library
-1. `@textsurf/door`: The BaseLink Permission Library
-1. `@textsurf/seed`: The BaseLink Math Library
-1. `@textsurf/tree`: The BaseLink DSL Library
+1. `@termsurf/bind`: The BaseLink Environment Binding Library
+1. `@termsurf/bolt`: The BaseLink Basic Data Type Library
+1. `@termsurf/moon`: The BaseLink Environment Tooling Library
+1. `@termsurf/hare`: The BaseLink Data Structure Library
+1. `@termsurf/worm`: The BaseLink Content Grammar Library
+1. `@termsurf/mesh`: The BaseLink Compiler Library
+1. `@termsurf/fish`: The BaseLink Linting Library
+1. `@termsurf/wolf`: The BaseLink File Manipulation Library
+1. `@termsurf/star`: The BaseLink Third-Party Integration Library
+1. `@termsurf/crow`: The BaseLink Drawing Library
+1. `@termsurf/nest`: The BaseLink Resource Provisioning Library
+1. `@termsurf/snow`: The BaseLink Querying Library
+1. `@termsurf/door`: The BaseLink Permission Library
+1. `@termsurf/seed`: The BaseLink Math Library
+1. `@termsurf/tree`: The BaseLink DSL Library
 
-## `@textsurf/bind`
+## `@termsurf/bind`
 
 This is the set of interfaces built into the native environments, as
 well as a few very general types. This is the foundation of everything
 else.
 
-## `@textsurf/bolt`
+## `@termsurf/bolt`
 
 This is the "standard library", and builds the basic interfaces on top
 of the main datatypes, leaving the rest of the environment to be
-abstracted out in `@textsurf/moon`.
+abstracted out in `@termsurf/moon`.
 
-## `@textsurf/moon`
+## `@termsurf/moon`
 
 This builds on top of the standard library and includes abstractions
 over the common environment interfaces to normalize them across
@@ -67,16 +67,16 @@ platforms.
 - Payments
 - Testing
 
-## `@textsurf/hare`
+## `@termsurf/hare`
 
 This is an abstraction over data structures, and aims to include as many
 of them as possible.
 
-## `@textsurf/worm`
+## `@termsurf/worm`
 
 This is for parsing and writing text and/or bytes.
 
-## `@textsurf/mesh`
+## `@termsurf/mesh`
 
 This is the main BaseLink compiler. It takes input text and compiles it
 to a mesh, then runs typechecking / typeinference on it and everything,
@@ -85,12 +85,12 @@ and outputs builds for target environments.
 This is where the `mine` and `mint` DSLs are defined, amongst other
 things.
 
-## `@textsurf/fish`
+## `@termsurf/fish`
 
 This is for linting and prettifying various forms of text. It is used to
 format, for example, the generated source code output from the compiler.
 
-## `@textsurf/wolf`
+## `@termsurf/wolf`
 
 This is for dealing with different files. It includes:
 
@@ -104,29 +104,29 @@ This is for dealing with different files. It includes:
 - HTML
 - CSS
 
-## `@textsurf/star`
+## `@termsurf/star`
 
 This is for third-party library integrations like with GitHub and
 Vercel.
 
-## `@textsurf/crow`
+## `@termsurf/crow`
 
 This is for managing the UI and defining UI components. This includes
 DOM trees like React, WebGL graphics, game graphics like Pixi.js, and
 game physics. Ideally there are both 2d and 3d variants.
 
-## `@textsurf/nest`
+## `@termsurf/nest`
 
 This is for managing the provisioning of "resources" like databases and
 other infrastructure.
 
-## `@textsurf/snow`
+## `@termsurf/snow`
 
 This is for managing querying and mutations of all sorts, from the
 API-level down to database levels. As such, it is an abstraction over
 databases. This includes job processing as well.
 
-## `@textsurf/tree`
+## `@termsurf/tree`
 
 This is the set of collected DSLs for building the things in the various
 libraries. This makes it so the libraries are not bound by the DSLs, and

@@ -1,7 +1,7 @@
 # JSON in BaseLink
 
 ```
-load @textsurf/moon/json
+load @termsurf/moon/json
   find seek
   find list
 

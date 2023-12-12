@@ -7,7 +7,7 @@
 <br/>
 
 <p align='center'>
-  <img src='https://github.com/textsurf/crow.link/blob/make/view/base.logo.svg?raw=true' height='256'>
+  <img src='https://github.com/termsurf/crow.link/blob/make/view/base.logo.svg?raw=true' height='256'>
 </p>
 
 <h3 align='center'>{title}</h3>

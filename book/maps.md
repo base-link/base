@@ -2,13 +2,13 @@
 
 Maps, also known as hash maps or dictionaries, are powerful data
 structures that allow efficient storage and retrieval of key-value
-pairs. In BaseLink, you can leverage the built-in `@textsurf/bolt`
+pairs. In BaseLink, you can leverage the built-in `@termsurf/bolt`
 module to work with maps seamlessly. Let's explore the potential use
 cases and the functionality provided by the BaseLink API for hash
 tables.
 
 ```link
-load @textsurf/bolt
+load @termsurf/bolt
   find seek
 
 save x
@@ -40,8 +40,8 @@ You can get specific implementations of maps by going directly to the
 source.
 
 ```
-load @textsurf/bolt/code/seek/b-tree
+load @termsurf/bolt/code/seek/b-tree
   find seek
-load @textsurf/bolt/code/seek/hash/quadratic-probing
+load @termsurf/bolt/code/seek/hash/quadratic-probing
   find seek
 ```

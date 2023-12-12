@@ -4,7 +4,7 @@
 - https://doc.rust-lang.org/book/
 
 ```
-https://base.link/@textsurf/base/book
+https://base.link/@termsurf/base/book
   /introduction
   /getting-started
     /installation
@@ -12,20 +12,20 @@ https://base.link/@textsurf/base/book
 ```
 
 ```
-https://base.link/@textsurf/base/team
-https://base.link/@textsurf/base/book/:file+
-https://base.link/@textsurf/base/text/:file+ # docs
-https://base.link/@textsurf/base/tree/:file+
-https://base.link/@textsurf/base/mark # versions
-https://base.link/@textsurf/base/1.2.3/tree/:file+
+https://base.link/@termsurf/base/team
+https://base.link/@termsurf/base/book/:file+
+https://base.link/@termsurf/base/text/:file+ # docs
+https://base.link/@termsurf/base/tree/:file+
+https://base.link/@termsurf/base/mark # versions
+https://base.link/@termsurf/base/1.2.3/tree/:file+
 ```
 
 ```
-https://deck.base.link/@textsurf/base/1.2.3/base.link
-https://deck.base.link/@textsurf/base/1.2.3/base.tar.gz
-https://deck.base.link/@textsurf/base/1.2.3/book
-https://deck.base.link/@textsurf/base/1.2.3/code
-https://deck.base.link/@textsurf/base/1.2.3/tree
+https://deck.base.link/@termsurf/base/1.2.3/base.link
+https://deck.base.link/@termsurf/base/1.2.3/base.tar.gz
+https://deck.base.link/@termsurf/base/1.2.3/book
+https://deck.base.link/@termsurf/base/1.2.3/code
+https://deck.base.link/@termsurf/base/1.2.3/tree
 ```
 
 ```

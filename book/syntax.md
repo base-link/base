@@ -33,7 +33,7 @@ for defining trees of text.
 A package definition:
 
 ```link
-deck @textsurf/base
+deck @termsurf/base
   mark <0.0.1>
   head <A LinkText Package Manager>
   term link-text
@@ -48,9 +48,9 @@ deck @textsurf/base
   read ./note
   lock apache-2
   sort tool
-  link @textsurf/bolt, mark <0.x.x>
-  link @textsurf/nest, mark <0.x.x>
-  link @textsurf/crow, mark <0.x.x>
+  link @termsurf/bolt, mark <0.x.x>
+  link @termsurf/nest, mark <0.x.x>
+  link @termsurf/crow, mark <0.x.x>
 ```
 
 The first block of the Tao Te Ching:
@@ -73,15 +73,15 @@ head <道德经>
 And now for some pictures of the code, since we can't get GitHub to
 offer syntax highlighting for a while.
 
-<img src="https://github.com/textsurf/link/blob/make/view/tree.png?raw=true" />
+<img src="https://github.com/termsurf/link/blob/make/view/tree.png?raw=true" />
 
 ---
 
-<img src="https://github.com/textsurf/link/blob/make/view/mine.png?raw=true" />
+<img src="https://github.com/termsurf/link/blob/make/view/mine.png?raw=true" />
 
 ---
 
-<img src="https://github.com/textsurf/link/blob/make/view/lace.png?raw=true" />
+<img src="https://github.com/termsurf/link/blob/make/view/lace.png?raw=true" />
 
 ## Specification
 

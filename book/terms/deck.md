@@ -3,7 +3,7 @@
 A deck is a package, and this is how you define the package metadata.
 
 ```
-deck @textsurf/base
+deck @termsurf/base
   mark <0.0.1>
   head <A LinkText Package Manager>
   term link-text
@@ -18,9 +18,9 @@ deck @textsurf/base
   read ./book # also a default
   lock apache-2
   sort tool
-  link @textsurf/bolt, mark <0.x.x>
-  link @textsurf/nest, mark <0.x.x>
-  link @textsurf/crow, mark <0.x.x>
+  link @termsurf/bolt, mark <0.x.x>
+  link @termsurf/nest, mark <0.x.x>
+  link @termsurf/crow, mark <0.x.x>
   load work
   load host
 ```
