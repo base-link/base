@@ -29,6 +29,7 @@ In applications it is common to use this convention:
 ```
 /back # backend
 /bind # configuration
+/book # guides
 /deck # custom packages
 /face # frontend
 /file # public directory
@@ -39,7 +40,6 @@ In applications it is common to use this convention:
 /line # command line processing
 /link # dependencies
 /make # output builds
-/note # guides
 /task # dev helpers
 /test # tests
 ```
@@ -74,7 +74,7 @@ In applications it is common to use this convention:
     /base.link
     /work.link # dev
     /beat.link # prod
-/note # guides
+/book # guides
 /deck # custom packages
 /face # frontend
   /dock # ui components
@@ -106,7 +106,7 @@ In applications it is common to use this convention:
 /flow # logs
   /work.link # dev logs
   /test.link # test logs
-  /beat.link # prod logs
+  /ride.link # prod logs
 /task # dev helpers
 /test
 /host # shared

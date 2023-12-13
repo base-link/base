@@ -5,7 +5,7 @@ framework. Calling BaseLink a framework is kind of a misnomer, it is
 basically the minimal set of conventions for building packages.
 
 1. `@termsurf/bind`: The BaseLink Environment Binding Library
-1. `@termsurf/bolt`: The BaseLink Basic Data Type Library
+1. `@termsurf/bolt`: The BaseLink Data Type Library
 1. `@termsurf/moon`: The BaseLink Environment Tooling Library
 1. `@termsurf/hare`: The BaseLink Data Structure Library
 1. `@termsurf/worm`: The BaseLink Content Grammar Library

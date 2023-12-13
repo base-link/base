@@ -46,8 +46,8 @@ file read stream using the following code:
 load @termsurf/bolt/code/file/stream/read
   find make
 
-save stream, call make, <foo.txt>
-walk list, loan stream
+save flow, call make, <foo.txt>
+walk list, loan flow
   hook tick
     take chunk, name tick
     show <{chunk}>
@@ -68,16 +68,16 @@ following code:
 load @termsurf/bolt/code/file/stream/write
   find make
 
-save stream, call make, <foo.txt>
-call stream/write, <hello world>
-call stream/end
+save flow, call make, <foo.txt>
+call flow/save, <hello world>
+call flow/halt # end
 ```
 
 This code loads the `@termsurf/bolt/code/file/stream/write` module,
 creates a write stream for the specified file (`foo.txt`), and then
-writes the content (`hello world`) to the stream using the
-`stream/write` command. Finally, the `stream/end` command is called to
-signal the end of writing and close the stream.
+writes the content (`hello world`) to the stream using the `flow/save`
+command. Finally, the `flow/halt` command is called to signal the end of
+writing and close the stream.
 
 ### Creating a Folder
 

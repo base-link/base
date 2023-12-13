@@ -1,14 +1,14 @@
 ## API
 
 ```
-Content-Type: text/link
+Content-Type: text/note
 ```
 
 A `seek mint` is only the request parameters, no importing or loading
 external code. It allows `host` and interpolation, but not much else.
 
 ```
-PATCH https://base.link
+PATCH https://base.surf
 
 # no interpolation
 # it comes like this for seek requests by default.
