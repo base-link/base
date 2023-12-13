@@ -7,10 +7,10 @@
 <br/>
 
 <p align='center'>
-  <img src='https://github.com/termsurf/base.link/blob/make/view/base.svg?raw=true' height='192'>
+  <img src='https://github.com/termsurf/base.note/blob/make/view/base.svg?raw=true' height='192'>
 </p>
 
-<h3 align='center'>base.link</h3>
+<h3 align='center'>base.note</h3>
 <p align='center'>
   A LinkText Programming Framework
 </p>
