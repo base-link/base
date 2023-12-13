@@ -1,6 +1,6 @@
-# BaseLink Basic Guide
+# BaseNote Basic Guide
 
-Here is a brief, partial guide for BaseLink.
+Here is a brief, partial guide for BaseNote.
 
 1. First we show the _idioms_ (i.e. the how-to guide).
 2. Then we show the _keywords_ (i.e. the standard reference).
@@ -13,8 +13,8 @@ being an introductory tutorial.
 
 ## Idioms
 
-BaseLink idioms are standard ways of doing common programming things.
-Here we show how to write BaseLink for common situations.
+BaseNote idioms are standard ways of doing common programming things.
+Here we show how to write BaseNote for common situations.
 
 ### Defining a simple variable
 
@@ -165,7 +165,7 @@ comb 3.14159265
 
 ### Defining a string
 
-In BaseLink, strings are called "text". They are typically wrapped when
+In BaseNote, strings are called "text". They are typically wrapped when
 it helps with a term like integers and decimals.
 
 ```

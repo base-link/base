@@ -38,7 +38,7 @@ zone home-header-section
         zone home-header-title
           text <Create Data and Apps>
         zone home-header-description
-          text <This is BaseLink>
+          text <This is BaseNote>
 
 zone home-section
   base link

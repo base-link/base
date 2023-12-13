@@ -21,7 +21,7 @@
 
 ## Welcome
 
-This is a BaseLink app.
+This is a BaseNote app.
 
 ## Development
 

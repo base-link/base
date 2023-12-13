@@ -21,7 +21,8 @@
 
 ## Welcome
 
-Here's the start of the [Book](book/readme.md) on BaseNote with the most
+Here's the start of the
+[Book on BaseNote](https://github.com/termsurf/base-book) with the most
 up-to-date info on the project.
 
 ## Future
@@ -50,7 +51,7 @@ limitations under the License.
 
 This is being developed by the folks at [TermSurf](https://term.surf), a
 California-based project for helping humanity master information and
-computation. Find us on [Twitter](https://twitter.com/termsurfcode),
+computation. Find us on [Twitter](https://twitter.com/termsurf),
 [LinkedIn](https://www.linkedin.com/company/termsurf), and
 [Facebook](https://www.facebook.com/termsurf). Check out our other
 [GitHub projects](https://github.com/termsurf) as well!
