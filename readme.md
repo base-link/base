@@ -21,7 +21,7 @@
 
 ## Welcome
 
-Here's the start of the [Book](book/readme.md) on BaseLink with the most
+Here's the start of the [Book](book/readme.md) on BaseNote with the most
 up-to-date info on the project.
 
 ## Future
