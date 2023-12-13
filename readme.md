@@ -12,7 +12,7 @@
 
 <h3 align='center'>base.note</h3>
 <p align='center'>
-  A LinkText Programming Framework
+  A NoteText Programming Framework
 </p>
 
 <br/>
