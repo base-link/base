@@ -16,6 +16,8 @@ deck @termsurf/base
   sort tool
   link @termsurf/bolt, mark <0.x.x>
   link @termsurf/nest, mark <0.x.x>
+  link @termsurf/buzz, mark <0.x.x>
   link @termsurf/crow, mark <0.x.x>
+  link @termsurf/moon, mark <0.x.x>
   load work
   load host
