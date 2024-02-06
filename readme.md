@@ -7,23 +7,17 @@
 <br/>
 
 <p align='center'>
-  <img src='https://github.com/termsurf/base.note/blob/make/view/base.svg?raw=true' height='192'>
+  <img src='https://github.com/termsurf/seed.leaf/blob/make/view/base.svg?raw=true' height='192'>
 </p>
 
-<h3 align='center'>base.note</h3>
+<h3 align='center'>seed.leaf</h3>
 <p align='center'>
-  A NoteText Programming Framework
+  A LeafText Programming Framework
 </p>
 
 <br/>
 <br/>
 <br/>
-
-## Welcome
-
-Here's the start of the
-[Book on BaseNote](https://github.com/termsurf/base-book) with the most
-up-to-date info on the project.
 
 ## Future
 
