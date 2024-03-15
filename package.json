@@ -1,5 +1,5 @@
 {
-  "name": "@termsurf/seed",
+  "name": "@termsurf/star",
   "main": "./host",
   "type": "module",
   "version": "0.3.0",
