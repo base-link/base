@@ -21,7 +21,7 @@
 
 ## Welcome
 
-This is a BaseNote app.
+This is a Star app.
 
 ## Development
 
