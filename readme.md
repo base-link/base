@@ -19,6 +19,13 @@
 <br/>
 <br/>
 
+## Introduction
+
+This is a Cross-Platform Web Application Framework _in development_
+(extreme **prototype**). It is far from being working, so mainly just a
+collection of packages with API ideas. The long term goal is to now get
+this working :).
+
 ## Future
 
 ```
