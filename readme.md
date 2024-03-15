@@ -7,12 +7,12 @@
 <br/>
 
 <p align='center'>
-  <img src='https://github.com/termsurf/seed.leaf/blob/make/view/base.svg?raw=true' height='192'>
+  <img src='https://github.com/termsurf/star/blob/make/view/star.svg?raw=true' height='192'>
 </p>
 
-<h3 align='center'>seed.leaf</h3>
+<h3 align='center'>star</h3>
 <p align='center'>
-  A LeafText Programming Framework
+  A NoteText Programming Framework
 </p>
 
 <br/>
@@ -22,7 +22,7 @@
 ## Future
 
 ```
-pnpm add @termsurf/base -g
+pnpm add @termsurf/star -g
 ```
 
 ## License
