@@ -7,12 +7,12 @@
 <br/>
 
 <p align='center'>
-  <img src='https://github.com/termsurf/star/blob/make/view/star.svg?raw=true' height='192'>
+  <img src='https://github.com/termsurf/base/blob/make/view/star.svg?raw=true' height='192'>
 </p>
 
-<h3 align='center'>star</h3>
+<h3 align='center'>base</h3>
 <p align='center'>
-  A NoteText Programming Framework
+  A TreeCode Programming Framework
 </p>
 
 <br/>
@@ -29,7 +29,7 @@ this working :).
 ## Future
 
 ```
-pnpm add @termsurf/star -g
+pnpm add @termsurf/base -g
 ```
 
 ## License
