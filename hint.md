@@ -1,4 +1,4 @@
-# Star Basic Guide
+# BaseTree Basic Guide
 
 Here is a brief, partial guide for Star.
 
@@ -13,8 +13,8 @@ being an introductory tutorial.
 
 ## Idioms
 
-Star idioms are standard ways of doing common programming things. Here
-we show how to write Star for common situations.
+BaseTree idioms are standard ways of doing common programming things.
+Here we show how to write BaseTree for common situations.
 
 ### Defining a simple variable
 

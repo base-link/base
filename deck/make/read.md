@@ -21,7 +21,7 @@
 
 ## Welcome
 
-This is a Star app.
+This is a BaseTree app.
 
 ## Development
 
