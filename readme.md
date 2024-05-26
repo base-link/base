@@ -7,10 +7,10 @@
 <br/>
 
 <p align='center'>
-  <img src='https://github.com/termsurf/base/blob/make/view/star.svg?raw=true' height='192'>
+  <img src='https://github.com/termsurf/base.tree/blob/make/view/tree.gif?raw=true' height='192'>
 </p>
 
-<h3 align='center'>base</h3>
+<h3 align='center'>base.tree</h3>
 <p align='center'>
   A TreeCode Programming Framework
 </p>
@@ -21,7 +21,7 @@
 
 ## Introduction
 
-This is a Cross-Platform Web Application Framework _in development_
+BaseTree is a Cross-Platform Web Application Framework _in development_
 (extreme **prototype**). It is far from being working, so mainly just a
 collection of packages with API ideas. The long term goal is to now get
 this working :).

@@ -2,5 +2,5 @@
 load @termsurf/loom
   find mill code
 
-file ./**/*.link
-  bind role, loan code
+role code
+  take ./**/*.tree
