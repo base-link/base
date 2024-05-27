@@ -102,10 +102,6 @@ Here is how a monolithic app might be structured:
               /case.tree
         /text # copy
       /kink # errors
-      /text # copy
-        /en.tree
-        /fr.tree
-        /zh.tree
       /file # public directory
         /text # fonts
         /view # images
@@ -116,6 +112,10 @@ Here is how a monolithic app might be structured:
     /hold.tree # don't commit this
     /move # migrations
 /task # dev helpers
+/text # copy
+  /en.tree
+  /fr.tree
+  /zh.tree
 ```
 
 For libraries, you might only have:
