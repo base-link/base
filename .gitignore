@@ -1,3 +1,6 @@
-/make
-!/make/.eslintrc.json
 /hold
+
+/node_modules
+
+/link
+!/link/lock.tree

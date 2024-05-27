@@ -168,6 +168,8 @@ base bind base
 base bind base back
 # generate UI component
 base make dock
+# custom commands
+base call <command>
 ```
 
 Since you can add your own commands to `base`, the convention is:

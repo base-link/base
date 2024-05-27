@@ -9,7 +9,15 @@
     "project": ["./tsconfig.json"]
   },
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint", "import", "simple-import-sort", "sort-exports", "typescript-sort-keys", "sort-keys", "prettier"],
+  "plugins": [
+    "@typescript-eslint",
+    "import",
+    "simple-import-sort",
+    "sort-exports",
+    "typescript-sort-keys",
+    "sort-keys",
+    "prettier"
+  ],
   "extends": ["prettier"],
   "rules": {
     "curly": 2,
@@ -64,7 +72,10 @@
     ],
     "space-before-blocks": "off",
     "@typescript-eslint/space-before-blocks": ["error", "always"],
-    "@typescript-eslint/type-annotation-spacing": ["error", { "after": true }],
+    "@typescript-eslint/type-annotation-spacing": [
+      "error",
+      { "after": true }
+    ],
     "import/first": "error",
     "import/newline-after-import": "error",
     "import/no-duplicates": "error",

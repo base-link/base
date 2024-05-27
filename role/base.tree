@@ -1,0 +1,12 @@
+
+load @termsurf/cone
+  find mint code
+
+role book
+  take ~/book/**/*.tree
+    miss ~/book/**/{code,view}/**/*.tree
+
+role code
+  take ~/code/**/*.tree
+  # book can have nested code in it
+  take ~/book/**/{code,view}/**/*.tree

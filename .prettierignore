@@ -1,3 +1,8 @@
 host
+hold
+
+/link
+!/link/lock.tree
+
 node_modules
 tmp

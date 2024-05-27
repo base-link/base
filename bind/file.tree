@@ -1,6 +1,0 @@
-
-load @termsurf/loom
-  find mill code
-
-role code
-  take ./**/*.tree

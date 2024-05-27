@@ -1,0 +1,9 @@
+
+load @termsurf/cone
+  find mint code
+
+role code
+  take ~/code/**/*.tree
+
+role call
+  take ~/call/**/*.tree
