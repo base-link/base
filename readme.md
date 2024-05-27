@@ -176,6 +176,8 @@ deck.find({ file, base })
 
 ### Compiler Interface
 
+This is defined by the `buck` library.
+
 ```ts
 class Code {
   make() {
@@ -193,27 +195,28 @@ class Code {
 
   // load from the entrypoint of the project
   load() {
+    bead()
     buck()
   }
 
   // do type-checking, variable resolution, optimizations, etc..
   mesh() {
-    chew()
+    chew.mesh()
   }
 
   // do linting and fix up code
   lint() {
-    fish()
+    fish.lint()
   }
 
   // make output AST in target language
   tree() {
-    till()
+    till.make()
   }
 
   // write the AST to string
   text() {
-    seal()
+    seal.make()
   }
 }
 ```
