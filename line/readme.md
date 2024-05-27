@@ -2,9 +2,6 @@
 
 This is the first prototype of the CLI tool for base.
 
-- https://github.com/lancejpollard/normalize-ast.js
-- https://github.com/lancejpollard/js2link.js
-
 ## Future Commands
 
 ```bash
@@ -196,18 +193,19 @@ All commands can take these options:
 
 The `hook` is a slug, and can only contain `[a-z-]`.
 
-| property        | value                     |
-| :-------------- | :------------------------ |
-| hook            | example                   |
-| name            | Example User              |
-| email           | me@example.com (verified) |
-| two factor auth | auth or always            |
-| homepage        |                           |
-| freenode        |                           |
-| twitter         |                           |
-| github          |                           |
-| created         | 2015-02-26T01:38:35.892Z  |
-| updated         | 2017-10-02T21:29:45.922Z  |
+| property | value                     |
+| :------- | :------------------------ |
+| hook     | example                   |
+| name     | Example User              |
+| email    | me@example.com (verified) |
+| mfa      | yes/no                    |
+| homepage |                           |
+| freenode |                           |
+| discord  |                           |
+| x        |                           |
+| github   |                           |
+| created  | 2015-02-26T01:38:35.892Z  |
+| updated  | 2017-10-02T21:29:45.922Z  |
 
 ## Host Profile Settings
 
@@ -223,3 +221,8 @@ The `hook` is a slug, and can only contain `[a-z-]`.
 | vercel   |                             |
 | created  | 2015-02-26T01:38:35.892Z    |
 | updated  | 2017-10-02T21:29:45.922Z    |
+
+## JS2Tree
+
+- https://github.com/lancejpollard/normalize-ast.js
+- https://github.com/lancejpollard/js2link.js

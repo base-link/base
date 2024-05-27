@@ -6,8 +6,8 @@ import os from 'os'
 
 const program = new Command()
 
-const link = program.command('link')
-link
+const base = program.command('base')
+base
   .command('deck')
   .argument('[deck]')
   .action(deck => {
@@ -39,7 +39,7 @@ program.parse()
 
 async function testDeck() {
   const deckHost = process.cwd()
-  await build(deckHost)
+  // await build(deckHost)
 }
 
 function killLinkDeckDeck(deck: string) {
