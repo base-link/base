@@ -7,10 +7,10 @@
 <br/>
 
 <p align='center'>
-  <img src='https://github.com/termsurf/base.tree/blob/make/view/tree.gif?raw=true' height='192'>
+  <img src='https://github.com/termsurf/base/blob/make/view/tree.gif?raw=true' height='192'>
 </p>
 
-<h3 align='center'>base.tree</h3>
+<h3 align='center'>base</h3>
 <p align='center'>
   A TreeCode Programming Framework
 </p>
