@@ -21,6 +21,6 @@
       "~/*": ["./*"]
     }
   },
-  "include": ["*.ts", "**/*.ts", "*.d.ts"],
+  "include": ["**/*.ts"],
   "exclude": ["node_modules", "host", "hold"]
 }

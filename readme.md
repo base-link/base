@@ -130,6 +130,115 @@ For libraries, you might only have:
 /note
 ```
 
+## Interfaces
+
+The package manager and several other components can possibly be swapped
+out potentially in the future, each just depends on a small interface.
+
+### Package Manager Interface
+
+An example of this is the
+[`bead.tree`](https://github.com/termsurf/bead.tree) repo.
+
+```ts
+const deck = new Deck({ home: '.' })
+
+// save global package
+Deck.save()
+
+// remove global package
+Deck.toss()
+
+// verify global package
+Deck.test()
+
+// link global package
+Deck.link()
+
+// install defined packages
+deck.load()
+
+// add a package
+deck.save({ link, mark, site })
+
+// remove a package
+deck.toss({ link, mark, site })
+
+// verify a deck
+deck.test({ link, mark, site })
+
+// link a package
+deck.link({ link, mark, site })
+
+// resolve file link
+deck.find({ file, base })
+```
+
+### Compiler Interface
+
+```ts
+class Code {
+  make() {
+    this.load()
+    this.mesh()
+    this.lint()
+    this.tree()
+    this.text()
+    this.bind()
+  }
+
+  bind() {
+    code.on('file', code.make)
+  }
+
+  // load from the entrypoint of the project
+  load() {
+    buck()
+  }
+
+  // do type-checking, variable resolution, optimizations, etc..
+  mesh() {
+    chew()
+  }
+
+  // do linting and fix up code
+  lint() {
+    fish()
+  }
+
+  // make output AST in target language
+  tree() {
+    till()
+  }
+
+  // write the AST to string
+  text() {
+    seal()
+  }
+}
+```
+
+### Output Generator Interface
+
+An example of this is the
+[`seal.tree`](https://github.com/termsurf/seal.tree) repo.
+
+```ts
+const host = new Host({ code })
+
+const ts = host.make({ form: 'typescript' })
+const rust = host.make({ form: 'rust' })
+```
+
+The output is typed as a standard AST in each language.
+
+## TODO
+
+- parse mine/mind files (mint)
+  - parse tree-role file types
+  - parse chat-talk-link tree
+  - convert into json
+
 ## License
 
 Copyright 2021-2024 <a href='https://term.surf'>TermSurf</a>
