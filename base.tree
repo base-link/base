@@ -1,11 +1,11 @@
 
 deck @termsurf/base
   mark <0.0.1>
-  head <A LinkText Package Manager>
-  term link-text
+  head <A TreeCode Framework>
+  term tree-code
   term computation
-  term philosophy
   term information
+  term philosophy
   term platform
   term white-label
   term compiler
@@ -14,10 +14,11 @@ deck @termsurf/base
   read ./book # also a default
   lock apache-2
   sort tool
-  link @termsurf/bolt, mark <0.x.x>
-  link @termsurf/nest, mark <0.x.x>
-  link @termsurf/buzz, mark <0.x.x>
-  link @termsurf/crow, mark <0.x.x>
-  link @termsurf/moon, mark <0.x.x>
+  link @termsurf/bolt, mark <0.0.x>
+  link @termsurf/bind, mark <0.0.x>
+  link @termsurf/moon, mark <0.0.x>
+  link @termsurf/cone, mark <0.0.x>
+  link @termsurf/buzz, mark <0.0.x>
+  link @termsurf/crow, mark <0.0.x>
   load work
   load host
