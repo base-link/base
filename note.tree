@@ -1,0 +1,41 @@
+
+deck @termsurf/note
+  head <A TreeCode Programming Framework>
+
+  mark <0.0.1>
+  sort tool
+
+  lock apache-2
+
+  site <https://github.com/termsurf/note.tree>
+  view ./view/tree.gif
+
+  term tree-code
+  term computation
+  term information
+  term philosophy
+  term platform
+  term white-label
+  term compiler
+
+  deck ./deck/load
+  deck ./deck/line
+
+  link @termsurf/base, mark <0.0.x>
+  link @termsurf/bind, mark <0.0.x>
+  link @termsurf/moon, mark <0.0.x>
+  link @termsurf/bead, mark <0.0.x>
+  link @termsurf/chew, mark <0.0.x>
+  link @termsurf/move, mark <0.0.x>
+  link @termsurf/seal, mark <0.0.x>
+  link @termsurf/cone, mark <0.0.x>
+  link @termsurf/buzz, mark <0.0.x>
+  link @termsurf/crow, mark <0.0.x>
+
+  task ./task # the task loader
+  read ./book # also a default
+  role ./role # also a default
+  line ./line
+  test ./test
+
+  mind <Lance Pollard>, site <lp@elk.fm>

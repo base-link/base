@@ -1,6 +1,6 @@
-# BaseTree Basic Guide
+# NoteTree Basic Guide
 
-Here is a brief, partial guide for Star.
+Here is a brief, partial guide for NoteTree.
 
 1. First we show the _idioms_ (i.e. the how-to guide).
 2. Then we show the _keywords_ (i.e. the standard reference).
@@ -13,8 +13,8 @@ being an introductory tutorial.
 
 ## Idioms
 
-BaseTree idioms are standard ways of doing common programming things.
-Here we show how to write BaseTree for common situations.
+NoteTree idioms are standard ways of doing common programming things.
+Here we show how to write NoteTree for common situations.
 
 ### Defining a simple variable
 
@@ -165,8 +165,8 @@ comb 3.14159265
 
 ### Defining a string
 
-In Star, strings are called "text". They are typically wrapped when it
-helps with a term like integers and decimals.
+In NoteTree, strings are called "text". They are typically wrapped when
+it helps with a term like integers and decimals.
 
 ```
 text <This is some text.>
