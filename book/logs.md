@@ -18,7 +18,7 @@ Should print
     show <hello world>
       time <2023/07/10 04:32:01 pm utc>
       sort kink
-      deck <@termsurf/base>
+      deck <@termsurf/note>
       term process-tag
 
 You also have:

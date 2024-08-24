@@ -18,7 +18,7 @@ deck @termsurf/deck
   read ./book # also a default
   lock apache-2
   sort tool
-  link @termsurf/base, mark <0.x.x>
+  link @termsurf/note, mark <0.x.x>
   link @termsurf/nest, mark <0.x.x>
   link @termsurf/crow, mark <0.x.x>
   load work

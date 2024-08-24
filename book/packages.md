@@ -182,7 +182,7 @@ base <0.0.1>
 load @termsurf/moon
   mark <*>
   lock <0.0.1>
-load @termsurf/base
+load @termsurf/note
   mark <*>
   lock <0.0.1>
 load @termsurf/wolf
@@ -191,7 +191,7 @@ load @termsurf/wolf
 
 link <@termsurf/wolf:0.0.1>
   hash <sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==>
-  load @termsurf/base
+  load @termsurf/note
     mark <0.0.1>
 ```
 
@@ -435,7 +435,7 @@ Specify the bundle groups with:
 ```
 deck @foo/bar
   band base
-    link @termsurf/base
+    link @termsurf/note
     link @termsurf/nest
     link @termsurf/crow
 ```

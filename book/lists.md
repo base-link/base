@@ -2,12 +2,12 @@
 
 Lists, also known as arrays, provide a way to store and manipulate
 collections of elements in a specific order. In NoteTree, you can
-utilize the @termsurf/base module to work with lists seamlessly. Let's
+utilize the @termsurf/note module to work with lists seamlessly. Let's
 explore the capabilities and functionality of NoteTree's API for lists
 using the following code snippet:
 
 ```
-load @termsurf/base
+load @termsurf/note
   find list
 
 save x
@@ -33,7 +33,7 @@ algorithms, and much more. Lists enable you to organize and process data
 in a structured and efficient manner, allowing you to build robust and
 scalable solutions.
 
-The @termsurf/base module's list API empowers you to work with lists
+The @termsurf/note module's list API empowers you to work with lists
 seamlessly, providing a range of operations to manipulate and interact
 with list data. Whether you're building applications, performing data
 transformations, or implementing complex algorithms, lists in NoteTree
@@ -43,7 +43,7 @@ efficiently.
 ## Linked Lists
 
 ```
-load @termsurf/base/code/base/list/link
+load @termsurf/note/code/base/list/link
   find list
 ```
 

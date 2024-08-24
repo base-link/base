@@ -2,13 +2,13 @@
 
 Maps, also known as hash maps or dictionaries, are powerful data
 structures that allow efficient storage and retrieval of key-value
-pairs. In NoteTree, you can leverage the built-in `@termsurf/base`
+pairs. In NoteTree, you can leverage the built-in `@termsurf/note`
 module to work with maps seamlessly. Let's explore the potential use
 cases and the functionality provided by the NoteTree API for hash
 tables.
 
 ```link
-load @termsurf/base
+load @termsurf/note
   find seek
 
 save x
@@ -40,8 +40,8 @@ You can get specific implementations of maps by going directly to the
 source.
 
 ```
-load @termsurf/base/code/seek/b-tree
+load @termsurf/note/code/seek/b-tree
   find seek
-load @termsurf/base/code/seek/hash/quadratic-probing
+load @termsurf/note/code/seek/hash/quadratic-probing
   find seek
 ```

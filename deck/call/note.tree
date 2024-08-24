@@ -1,5 +1,5 @@
 
-deck @termsurf/base-call
+deck @termsurf/note-call
   mark <0.0.1>
   sort call
   lock apache-2
@@ -7,7 +7,7 @@ deck @termsurf/base-call
 
   head <A TreeCode Framework CLI>
 
-  link @termsurf/base, mark <0.0.x>
+  link @termsurf/note, mark <0.0.x>
   link @termsurf/bind, mark <0.0.x>
   link @termsurf/moon, mark <0.0.x>
   link @termsurf/cone, mark <0.0.x>

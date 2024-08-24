@@ -21,7 +21,7 @@ deck @termsurf/note
   deck ./deck/load
   deck ./deck/line
 
-  link @termsurf/base, mark <0.0.x>
+  link @termsurf/note, mark <0.0.x>
   link @termsurf/bind, mark <0.0.x>
   link @termsurf/moon, mark <0.0.x>
   link @termsurf/bead, mark <0.0.x>
