@@ -43,25 +43,25 @@ the implementation for (as ones figure out more optimal approaches, like
 how normal software tools evolve generation after generation). But we
 will have a default set of implementations to start.
 
-| Package                                              | Description                                                                                                                                             |
-| :--------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| [`bind.tree`](https://github.com/termsurf/bind.tree) | **Environment Binding Library.** This library will provide all the types for the base native runtimes (JavaScript, Swift, etc.).                        |
-| [`base.tree`](https://github.com/termsurf/base.tree) | **Data Type Library.** This will provide the main data types on top of the environment and all the standard functions.                                  |
-| [`tool.tree`](https://github.com/termsurf/tool.tree) | **Environment Tooling Library.** This will extend the base to include APIs for all the extra interfaces of the environment (cameras, flashlight, etc.). |
-| [`deck.tree`](https://github.com/termsurf/deck.tree) | **Package Management Library.** This will handle resolving, fetching, and publishing packages.                                                          |
-| [`lint.tree`](https://github.com/termsurf/lint.tree) | **Linting Library.** This will do regular code linting and formatting (like prettier and ESLint).                                                       |
-| [`test.tree`](https://github.com/termsurf/test.tree) | **Testing Library.** The framework and tooling to run unit and integration tests.                                                                       |
-| [`make.tree`](https://github.com/termsurf/make.tree) | **Compiler.** This will do typechecking and compile the code to output runtimes.                                                                        |
-| [`flow.tree`](https://github.com/termsurf/flow.tree) | **Runtime.** This will be the skeleton which wraps the logic implementing the runtime.                                                                  |
-| [`text.tree`](https://github.com/termsurf/text.tree) | **Parsing Library.** These will be grammars used to parse text into ASTs, and generate text from ASTs.                                                  |
-| [`mesh.tree`](https://github.com/termsurf/mesh.tree) | **ORM.** This will manage GraphQL/SQL-like querying and manipulation of database records.                                                               |
-| [`view.tree`](https://github.com/termsurf/view.tree) | **View Library.** This will be combined 2D and 3D graphics rendering for the web.                                                                       |
-| [`host.tree`](https://github.com/termsurf/host.tree) | **Resource Provisioning Framework.** This will be like working with terraform modules to deploy and manage infrastructure.                              |
-| [`link.tree`](https://github.com/termsurf/link.tree) | **Third-Party API Integration Library.** This will provide integration with common third-party REST APIs and the like.                                  |
-| [`form.tree`](https://github.com/termsurf/form.tree) | **Math Definition Library.** This will ideally contain models for the foundations of math.                                                              |
-| [`lock.tree`](https://github.com/termsurf/lock.tree) | **Security Framework**. All auth and security protocols go here.                                                                                        |
-| [`site.tree`](https://github.com/termsurf/site.tree) | **Application Framework**. A web application framework like Next.js or Ruby on Rails.                                                                   |
-| `chat.tree`                                          | **Natural Language Library.** This will contain tools for working with spoken languages and writing systems.                                            |
+| Package                                              | Description                                                                                                                                                                    |
+| :--------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`bind.tree`](https://github.com/termsurf/bind.tree) | **Environment Binding Library.** This library will provide all the types for the base native runtimes (JavaScript, Swift, etc.).                                               |
+| [`base.tree`](https://github.com/termsurf/base.tree) | **Data Type Library.** This will provide the main data types on top of the environment and all the standard functions.                                                         |
+| [`tool.tree`](https://github.com/termsurf/tool.tree) | **Environment Tooling Library.** This will extend the base to include APIs for all the extra interfaces of the environment (cameras, flashlight, etc.).                        |
+| [`deck.tree`](https://github.com/termsurf/deck.tree) | **Package Management Library.** This will handle resolving, fetching, and publishing packages.                                                                                 |
+| [`lint.tree`](https://github.com/termsurf/lint.tree) | **Linting Library.** This will do regular code linting and formatting (like prettier and ESLint).                                                                              |
+| [`test.tree`](https://github.com/termsurf/test.tree) | **Testing Library.** The framework and tooling to run unit and integration tests.                                                                                              |
+| [`make.tree`](https://github.com/termsurf/make.tree) | **Compiler.** This will do typechecking and compile the code to output runtimes.                                                                                               |
+| [`flow.tree`](https://github.com/termsurf/flow.tree) | **Runtime.** This will be the skeleton which wraps the logic implementing the runtime.                                                                                         |
+| [`text.tree`](https://github.com/termsurf/text.tree) | **Parsing Library.** These will be grammars used to parse text into ASTs, and generate text from ASTs.                                                                         |
+| [`mesh.tree`](https://github.com/termsurf/mesh.tree) | **ORM.** This will manage GraphQL/SQL-like querying and manipulation of database records. As well as handling caching, messaging, queueing, etc.. Basically all data transfer. |
+| [`view.tree`](https://github.com/termsurf/view.tree) | **View Library.** This will be combined 2D and 3D graphics rendering for the web.                                                                                              |
+| [`host.tree`](https://github.com/termsurf/host.tree) | **Resource Provisioning Framework.** This will be like working with terraform modules to deploy and manage infrastructure.                                                     |
+| [`link.tree`](https://github.com/termsurf/link.tree) | **Third-Party API Integration Library.** This will provide integration with common third-party REST APIs and the like.                                                         |
+| [`form.tree`](https://github.com/termsurf/form.tree) | **Math Definition Library.** This will ideally contain models for the foundations of math.                                                                                     |
+| [`lock.tree`](https://github.com/termsurf/lock.tree) | **Security Framework**. All auth and security protocols go here.                                                                                                               |
+| [`site.tree`](https://github.com/termsurf/site.tree) | **Application Framework**. A web application framework like Next.js or Ruby on Rails.                                                                                          |
+| `chat.tree`                                          | **Natural Language Library.** This will contain tools for working with spoken languages and writing systems.                                                                   |
 
 All of these are wrapped into the singular `note.tree` library, and you
 import from that.
