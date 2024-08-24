@@ -60,6 +60,7 @@ will have a default set of implementations to start.
 | [`link.tree`](https://github.com/termsurf/link.tree) | **Third-Party API Integration Library.** This will provide integration with common third-party REST APIs and the like.                                  |
 | [`form.tree`](https://github.com/termsurf/form.tree) | **Math Definition Library.** This will ideally contain models for the foundations of math.                                                              |
 | [`lock.tree`](https://github.com/termsurf/lock.tree) | **Security Framework**. All auth and security protocols go here.                                                                                        |
+| [`site.tree`](https://github.com/termsurf/site.tree) | **Application Framework**. A web application framework like Next.js or Ruby on Rails.                                                                   |
 | `chat.tree`                                          | **Natural Language Library.** This will contain tools for working with spoken languages and writing systems.                                            |
 
 All of these are wrapped into the singular `note.tree` library, and you
