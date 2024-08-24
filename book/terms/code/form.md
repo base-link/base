@@ -1,4 +1,4 @@
-# The `form` in Star
+# The `form` in NoteTree
 
 A `form` is a class or type or struct, like you would find across many
 types of programming languages. It can have properties and

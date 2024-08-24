@@ -1,4 +1,4 @@
-# The `text` in Star `code`
+# The `text` in NoteTree `code`
 
 ```
 text <foo>

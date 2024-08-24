@@ -1,4 +1,4 @@
-## Star Hello World Example
+## NoteTree Hello World Example
 
 You can do "log info" with the short show command.
 

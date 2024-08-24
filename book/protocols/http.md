@@ -1,4 +1,4 @@
-# HTTP Stuff in Star
+# HTTP Stuff in NoteTree
 
 ```
 cast create-user

@@ -1,4 +1,4 @@
-# The `meet` in Star
+# The `meet` in NoteTree
 
 ### `meet and`
 

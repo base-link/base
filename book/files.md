@@ -1,9 +1,9 @@
-# Working with Files in Star
+# Working with Files in NoteTree
 
-Star provides comprehensive functionality for working with files in
+NoteTree provides comprehensive functionality for working with files in
 your applications. Files play a crucial role in data storage,
 processing, and interaction with the underlying system. Let's explore
-the various operations you can perform with files using Star.
+the various operations you can perform with files using NoteTree.
 
 ### Creating a File
 
@@ -95,10 +95,10 @@ This code loads the `@termsurf/note/code/folder` module, executes the
 folder. This creates a new directory with the provided name in the
 current working directory.
 
-By leveraging these file-related features in Star, you can
+By leveraging these file-related features in NoteTree, you can
 effectively manage file operations, such as creating, reading,
 streaming, and organizing files and directories within your
 applications. Whether you need to store data, process files
-sequentially, or manipulate file system structures, Star provides
+sequentially, or manipulate file system structures, NoteTree provides
 the necessary tools to handle file-related tasks efficiently and
 reliably.

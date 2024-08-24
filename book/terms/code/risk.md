@@ -1,4 +1,4 @@
-# The `risk` in Star `code`
+# The `risk` in NoteTree `code`
 
 The risk statement, like unsafe in rust.
 

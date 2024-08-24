@@ -1,4 +1,4 @@
-# The `need` in Star `code`
+# The `need` in NoteTree `code`
 
 This is for imports from external native libraries, like Swift libraries
 or Node.js modules.

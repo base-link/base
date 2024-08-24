@@ -1,4 +1,4 @@
-# Database Migrations in Star
+# Database Migrations in NoteTree
 
 - https://github.com/ankane/strong_migrations
 

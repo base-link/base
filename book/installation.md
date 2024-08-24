@@ -1,4 +1,4 @@
-# Installing Star
+# Installing NoteTree
 
 _This is all idea phase at this time, not working yet!_
 

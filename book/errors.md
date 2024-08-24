@@ -1,4 +1,4 @@
-# Error Definition and Handling in Star
+# Error Definition and Handling in NoteTree
 
 First, in some library, you define your error:
 

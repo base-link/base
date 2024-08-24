@@ -1,4 +1,4 @@
-# CLIs in Star
+# CLIs in NoteTree
 
 ```
 hook make

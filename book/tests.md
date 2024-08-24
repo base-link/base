@@ -1,4 +1,4 @@
-# Tests in Star
+# Tests in NoteTree
 
 ```
 test <I'm a test>

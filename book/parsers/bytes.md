@@ -1,4 +1,4 @@
-# Parsing Bytes in Star
+# Parsing Bytes in NoteTree
 
 ## How parsing works
 

@@ -1,6 +1,6 @@
-# Graphics in Star
+# Graphics in NoteTree
 
-Here is a hello world graphics rendering in Star.
+Here is a hello world graphics rendering in NoteTree.
 
 ```
 load @termsurf/crow
@@ -14,7 +14,7 @@ call draw
 ```
 
 ```
-curl glyph-g-start
+curl glyph-g-NoteTreet
   move x, y
   line x, y
   bend cx, cy, x, y

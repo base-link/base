@@ -1,4 +1,4 @@
-# The Star Book
+# The NoteTree Book
 
 - [Foreword](foreword.md)
 - [Introduction](introduction.md)

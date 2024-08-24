@@ -1,4 +1,4 @@
-## The `mint` in Star
+## The `mint` in NoteTree
 
 Here's an example:
 

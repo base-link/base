@@ -1,4 +1,4 @@
-# The `walk` in Star
+# The `walk` in NoteTree
 
 A walk works on an "iterator". Anything that is an iterator can be used
 in the walk.
@@ -8,7 +8,7 @@ in the walk.
 A site is a generic word for any instance.
 
 ```
-# just before it starts
+# just before it NoteTreets
 hold x
 hold y
 
@@ -25,7 +25,7 @@ hold y
 ```
 
 You can use the "precondition" before to add constraints which must be
-invariant before the loop starts. The `hook tick` can be used for
+invariant before the loop NoteTreets. The `hook tick` can be used for
 invariants at each step, and the actual code for the loop. And then
 after holds can be invariants that hold at the end.
 

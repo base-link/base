@@ -1,12 +1,12 @@
-# Processes in Star
+# Processes in NoteTree
 
-Star provides powerful features for managing processes within your
+NoteTree provides powerful features for managing processes within your
 applications. Processes are isolated units of execution that allow you
 to perform specific tasks, control flows, and interact with the
 environment. They can be used to organize and orchestrate complex
 operations, handle input and output, execute commands, and more. Let's
 explore the capabilities and functionalities that processes offer in
-Star.
+NoteTree.
 
 ## Change the Current Process Title
 
@@ -113,7 +113,7 @@ immediately:
 call flow/toss
 ```
 
-By leveraging these process-related features in Star, you gain
+By leveraging these process-related features in NoteTree, you gain
 fine-grained control over the execution, input/output handling, and
 coordination of various tasks within your applications. Processes serve
 as essential building blocks for implementing complex workflows,

@@ -1,4 +1,4 @@
-# The `tree` in Star `code`
+# The `tree` in NoteTree `code`
 
 This is for compile-time code generation, and possibly runtime code
 generation if you generate a tree on the fly.

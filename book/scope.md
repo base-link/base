@@ -1,4 +1,4 @@
-# Scope in Star
+# Scope in NoteTree
 
 A "card" (module/file) has access to these variables within its scope:
 

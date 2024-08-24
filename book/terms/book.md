@@ -1,4 +1,4 @@
-# The `book` file in Star
+# The `book` file in NoteTree
 
 ```
 head [number], text [title]

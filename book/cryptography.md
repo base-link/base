@@ -1,4 +1,4 @@
-# Cryptography in Star
+# Cryptography in NoteTree
 
 ```
 load @termsurf/note/code/base/cryptography/md5

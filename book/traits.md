@@ -1,4 +1,4 @@
-# Traits in Star
+# Traits in NoteTree
 
 In Rust we have:
 

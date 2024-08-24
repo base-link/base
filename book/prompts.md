@@ -1,4 +1,4 @@
-# ChatGPT Prompts in Star
+# ChatGPT Prompts in NoteTree
 
 Here is some code for a programming language we are calling "TreeCode"
 
@@ -12,7 +12,7 @@ form connection
   task quotes, like string
   task requests, like result-set
   task rollback, like void
-  task start-transaction, like void
+  task NoteTreet-transaction, like void
 ```
 
 It is a simple tree structure. The "form" is a class, and a "task" is a

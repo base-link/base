@@ -1,6 +1,6 @@
-# Introduction to Star
+# Introduction to NoteTree
 
-Star is the programming environment for TreeCode, a minimal data
+NoteTree is the programming environment for TreeCode, a minimal data
 modeling language. It is a statically typed, imperative, object oriented
 language which (at some point in the future) will compile down to JS,
 Swift, Rust, and Kotlin, to cover the main environments where the code
@@ -55,16 +55,16 @@ There are a few goals for making this language:
     their package management, like Node's modules or Rust's crates.
     Sharing should be easy and seamless.
 11. **Learning**. It should require minimal learning for anyone to get
-    Started, and all the tooling should be very well designed with a
+    NoteTreeted, and all the tooling should be very well designed with a
     great UX. Still a long way to go to get there, but working on it.
 12. **Pleasing**. It should be visually pleasing to the eye, and
     stimulating when you experience it.
 
 ## Drawbacks
 
-Some of the drawbacks to Star are:
+Some of the drawbacks to NoteTree are:
 
-1. **Verbosity**. For much of data modeling, Star is quite consise
+1. **Verbosity**. For much of data modeling, NoteTree is quite consise
    (such as writing classes). But for writing programs and the
    implementations of functions, because it doesn't have all the short
    operators and requires extra keywords, it is not as concise in this
@@ -75,8 +75,8 @@ Some of the drawbacks to Star are:
 3. **Types**. While there are a ton of benefits to being statically
    typed (instead of dynamically typed), it makes it harder to rapid
    prototype in some cases. But perhaps we can add some features of
-   dynamic typing as well, to make it easier to get Started. And this is
-   a problem with any statically typed language.
+   dynamic typing as well, to make it easier to get NoteTreeted. And
+   this is a problem with any statically typed language.
 4. **Completeness**. It's far from complete at this point. While much of
    the design of the language is complete, we still need to implement a
    fully working compiler, and this could be a deterrent to checking it

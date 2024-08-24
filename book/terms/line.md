@@ -1,4 +1,4 @@
-# The `line` file in Star
+# The `line` file in NoteTree
 
 ```
 # file named foo.note

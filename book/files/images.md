@@ -1,4 +1,4 @@
-# Manipulating Images in Star
+# Manipulating Images in NoteTree
 
 You can have a chaining API similar to
 [Sharp.js](https://www.digitalocean.com/community/tutorials/how-to-process-images-in-node-js-with-sharp)

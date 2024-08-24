@@ -1,4 +1,4 @@
-# The `fork` in Star
+# The `fork` in NoteTree
 
 The `fork` is a term for creating branches in code. These are typically
 done when using if-statements, loops, switch-statements, or you just

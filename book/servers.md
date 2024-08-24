@@ -1,4 +1,4 @@
-# Defining a Server in Star
+# Defining a Server in NoteTree
 
 ```
 load @termsurf/nest

@@ -1,4 +1,4 @@
-# The `mine` in Star
+# The `mine` in NoteTree
 
 ## Parsing Bytes with `mine`
 
@@ -144,7 +144,7 @@ mine back
 ## Parsing TreeCode with `mine`
 
 The `mill` DSL is for parsing TreeCode, the tree of terms you see in the
-Star environment. It is divided into a `mine` layer, which emits
+NoteTree environment. It is divided into a `mine` layer, which emits
 things it finds in the tree based on certain patterns you define, and
 the `mint`, which takes what is emitted from the mine and converts it
 into AST objects. So you just:

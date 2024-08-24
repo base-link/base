@@ -1,4 +1,4 @@
-# UI Components in Star
+# UI Components in NoteTree
 
 ```
 zone home-footer-section
@@ -30,10 +30,10 @@ zone verse
   tune y
     move fade-out
 
-  hook mount-start
+  hook mount-NoteTreet
     save is-entering-title, link on
     save is-title-visible, link on
-  hook leave-start
+  hook leave-NoteTreet
     save is-leaving-title, link on
   hook leave
     save is-title-visible, link off

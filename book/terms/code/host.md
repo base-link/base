@@ -1,4 +1,4 @@
-# The `host` in Star `code`
+# The `host` in NoteTree `code`
 
 Hosts are basically namespaces or bindings to values. Basically they are
 defining constants.
