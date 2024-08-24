@@ -1,9 +1,9 @@
-# The `deck` file in Star
+# The `deck` file in NoteTree
 
 A deck is a package, and this is how you define the package metadata.
 
 ```
-deck @termsurf/base
+deck @termsurf/deck
   mark <0.0.1>
   head <A TreeCode Package Manager>
   term link-text
@@ -37,7 +37,7 @@ task ./task
 
 ### `boot`
 
-You can have a file run on startup. Just add this to your deck:
+You can have a file run on NoteTreetup. Just add this to your deck:
 
 ```
 boot ./boot
