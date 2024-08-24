@@ -1,4 +1,4 @@
-# NoteTree Basic Guide
+# NoteTree Syntax Basic Guide
 
 Here is a brief, partial guide for NoteTree.
 
