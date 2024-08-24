@@ -24,8 +24,11 @@
 NoteTree is a cross-platform application framework _in development_
 (extreme **prototype**). It is far from being working, so mainly just a
 collection of packages with API ideas. The long term goal is to now get
-this working :). NoteTree implements the
-[Star specification](https://github.com/termsurf/star).
+this working :).
+
+_Check out the
+"[Book](https://github.com/termsurf/note.tree/tree/make/book)" for the
+most up-to-date examples and outlines of how this might end up working._
 
 ## Installation
 
