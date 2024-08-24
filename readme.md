@@ -137,9 +137,6 @@ out potentially in the future, each just depends on a small interface.
 
 ### Package Manager Interface
 
-An example of this is the
-[`bead.tree`](https://github.com/termsurf/bead.tree) repo.
-
 ```ts
 const deck = new Deck({ home: '.' })
 
@@ -176,8 +173,6 @@ deck.find({ file, base })
 
 ### Compiler Interface
 
-This is defined by the `buck` library.
-
 ```ts
 class Code {
   make() {
@@ -194,37 +189,23 @@ class Code {
   }
 
   // load from the entrypoint of the project
-  load() {
-    bead()
-    buck()
-  }
+  load() {}
 
   // do type-checking, variable resolution, optimizations, etc..
-  mesh() {
-    chew.mesh()
-  }
+  mesh() {}
 
   // do linting and fix up code
-  lint() {
-    fish.lint()
-  }
+  lint() {}
 
   // make output AST in target language
-  tree() {
-    till.make()
-  }
+  make() {}
 
   // write the AST to string
-  text() {
-    seal.make()
-  }
+  text() {}
 }
 ```
 
 ### Output Generator Interface
-
-An example of this is the
-[`seal.tree`](https://github.com/termsurf/seal.tree) repo.
 
 ```ts
 const host = new Host({ code })
