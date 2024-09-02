@@ -7,10 +7,10 @@
 <br/>
 
 <p align='center'>
-  <img src='https://github.com/termsurf/note.tree/blob/make/view/note.svg?raw=true' height='192'/>
+  <img src='https://github.com/termsurf/note.tree/blob/make/view/tree.gif?raw=true' height='192'/>
 </p>
 
-<h3 align='center'>note.tree</h3>
+<h3 align='center'>text.tree</h3>
 <p align='center'>
   A TreeCode Programming Framework
 </p>
@@ -21,13 +21,13 @@
 
 ## Introduction
 
-NoteTree is a cross-platform application framework _in development_
+TextTree is a cross-platform application framework _in development_
 (extreme **prototype**). It is far from being working, so mainly just a
 collection of packages with API ideas. The long term goal is to now get
 this working :).
 
 _Check out the
-"[Book](https://github.com/termsurf/note.tree/tree/make/book)" for the
+"[Book](https://github.com/termsurf/text.tree/tree/make/book)" for the
 most up-to-date examples and outlines of how this might end up working._
 
 ## Installation
