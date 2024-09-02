@@ -12,7 +12,7 @@
 
 <h3 align='center'>text.tree</h3>
 <p align='center'>
-  A TreeCode Programming Framework
+  A <a href="https://github.com/termsurf/tree">TreeCode</a> Programming Framework
 </p>
 
 <br/>
