@@ -1,5 +1,5 @@
 {
-  "name": "@termsurf/note",
+  "name": "@termsurf/term",
   "main": "./host/hack/index.js",
   "type": "module",
   "version": "0.3.1",
