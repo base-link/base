@@ -1,4 +1,4 @@
-# The `text` in NoteTree `code`
+# The `text` in TermTree `code`
 
 ```
 text <foo>

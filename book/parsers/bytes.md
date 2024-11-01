@@ -1,4 +1,4 @@
-# Parsing Bytes in NoteTree
+# Parsing Bytes in TermTree
 
 ## How parsing works
 

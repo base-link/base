@@ -1,4 +1,4 @@
-# CLIs in NoteTree
+# CLIs in TermTree
 
 ```
 hook make

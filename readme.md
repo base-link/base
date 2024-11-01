@@ -7,10 +7,10 @@
 <br/>
 
 <p align='center'>
-  <img src='https://github.com/termsurf/note.tree/blob/make/view/tree.gif?raw=true' height='192'/>
+  <img src='https://github.com/termsurf/term.tree/blob/make/view/tree.gif?raw=true' height='192'/>
 </p>
 
-<h3 align='center'>text.tree</h3>
+<h3 align='center'>term.tree</h3>
 <p align='center'>
   A <a href="https://github.com/termsurf/tree">TreeCode</a> Programming Framework
 </p>
@@ -21,13 +21,13 @@
 
 ## Introduction
 
-TextTree is a cross-platform application framework _in development_
+TermTree is a cross-platform application framework _in development_
 (extreme **prototype**). It is far from being working, so mainly just a
 collection of packages with API ideas. The long term goal is to now get
 this working :).
 
 _Check out the
-"[Book](https://github.com/termsurf/text.tree/tree/make/book)" for the
+"[Book](https://github.com/termsurf/term.tree/tree/make/book)" for the
 most up-to-date examples and outlines of how this might end up working._
 
 ## Installation
@@ -49,7 +49,7 @@ will have a default set of implementations to start.
 | [`base.tree`](https://github.com/termsurf/base.tree) | **Environment Tooling Library.** This will provide the main data types on top of the environment and all the standard functions. This will also include APIs for all the extra interfaces of the environment (cameras, flashlight, etc.).                                                                                    |
 | [`link.tree`](https://github.com/termsurf/link.tree) | **Third-Party API Integration Library.** This will provide integration with common third-party REST APIs and the like.                                                                                                                                                                                                       |
 | [`feed.tree`](https://github.com/termsurf/feed.tree) | **Data Management Library.** This will manage GraphQL/SQL-like querying and manipulation of database records. As well as handling caching, messaging, queueing, logging, etc.. Basically all data transfer.                                                                                                                  |
-| [`text.tree`](https://github.com/termsurf/text.tree) | **Parsing Library.** These will be grammars used to parse text into ASTs, and generate text from ASTs.                                                                                                                                                                                                                       |
+| [`term.tree`](https://github.com/termsurf/term.tree) | **Parsing Library.** These will be grammars used to parse text into ASTs, and generate text from ASTs.                                                                                                                                                                                                                       |
 | [`view.tree`](https://github.com/termsurf/view.tree) | **View Library.** This will be combined 2D and 3D graphics rendering for the web.                                                                                                                                                                                                                                            |
 | [`make.tree`](https://github.com/termsurf/make.tree) | **Compiler.** This will do typechecking and compile the code to output runtimes. This will also do regular code linting and formatting (like prettier and ESLint). And it will allow for debugging and setting breakpoints, all from within the same AST and compilation scope. Finally, it will contain the runtime module. |
 | [`deck.tree`](https://github.com/termsurf/deck.tree) | **Package Management Library.** This will handle resolving, fetching, and publishing packages.                                                                                                                                                                                                                               |
@@ -60,7 +60,7 @@ will have a default set of implementations to start.
 | [`site.tree`](https://github.com/termsurf/site.tree) | **Application Framework**. A web application framework like Next.js or Ruby on Rails.                                                                                                                                                                                                                                        |
 | `chat.tree`                                          | **Natural Language Library.** This will contain tools for working with spoken languages and writing systems.                                                                                                                                                                                                                 |
 
-All of these are wrapped into the singular `note.tree` library, and you
+All of these are wrapped into the singular `term.tree` library, and you
 import from that.
 
 ## Folder Structure
@@ -80,10 +80,10 @@ Here is how a monolithic app might be structured:
 ```
 /.gitignore
 /.note
-/note.tree
+/term.tree
 /bind # env variables, don't commit
   /test.tree
-  /note.tree
+  /term.tree
   /work.tree # dev
   /moon.tree # staging
   /star.tree # prod
@@ -126,10 +126,10 @@ Here is how a monolithic app might be structured:
       /site-1
         /wall # pages
           /host
-            /note.tree
+            /term.tree
             /case.tree
             /deck
-              /note.tree
+              /term.tree
               /case.tree
         /text # copy
       /kink # errors
@@ -152,7 +152,7 @@ Here is how a monolithic app might be structured:
 For libraries, you might only have:
 
 ```
-/note.tree
+/term.tree
 /code
 /task
 /hold

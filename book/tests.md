@@ -1,4 +1,4 @@
-# Tests in NoteTree
+# Tests in TermTree
 
 ```
 test <I'm a test>

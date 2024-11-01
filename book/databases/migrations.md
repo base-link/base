@@ -1,4 +1,4 @@
-# Database Migrations in NoteTree
+# Database Migrations in TermTree
 
 - https://github.com/ankane/strong_migrations
 

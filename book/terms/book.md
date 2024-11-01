@@ -1,4 +1,4 @@
-# The `book` file in NoteTree
+# The `book` file in TermTree
 
 ```
 head [number], text [title]

@@ -1,6 +1,6 @@
-# Graphics in NoteTree
+# Graphics in TermTree
 
-Here is a hello world graphics rendering in NoteTree.
+Here is a hello world graphics rendering in TermTree.
 
 ```
 load @termsurf/crow
@@ -14,7 +14,7 @@ call draw
 ```
 
 ```
-curl glyph-g-NoteTreet
+curl glyph-g-TermTreet
   move x, y
   line x, y
   bend cx, cy, x, y

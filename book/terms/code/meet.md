@@ -1,4 +1,4 @@
-# The `meet` in NoteTree
+# The `meet` in TermTree
 
 ### `meet and`
 

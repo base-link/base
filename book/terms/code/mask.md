@@ -1,4 +1,4 @@
-## The `mask` in NoteTree
+## The `mask` in TermTree
 
 A `mask` is a thing which you cannot instantiate. It is a trait in Rust
 terms.

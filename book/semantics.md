@@ -1,7 +1,7 @@
-# Semantics of NoteTree
+# Semantics of TermTree
 
 On this page we will outline the basic conceptual model for how we think
-of the various things in the NoteTree programming framework. Then the
+of the various things in the TermTree programming framework. Then the
 semantic subpages dig into the specific _terms_ which you can use to
 model code like you would in other programming languages.
 
@@ -11,7 +11,7 @@ We begin by noticing that every "thing" in the universe is a "beat". We
 have "types" of things, and "instances" of things. Beat instances are
 "sites", and beat types are "casts". We have two key casts then, the
 actions or "tasks", and the objects or "forms". These are the two types
-of things that we deal with in NoteTree, everything stems from that.
+of things that we deal with in TermTree, everything stems from that.
 
 Sites have "links", which are their properties.
 
@@ -177,5 +177,5 @@ combines the two.
 
 ## Conclusion
 
-These are just some of the semantic terms used in NoteTree, which are
+These are just some of the semantic terms used in TermTree, which are
 detailed within the semantics subsections.

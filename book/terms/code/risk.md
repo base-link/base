@@ -1,4 +1,4 @@
-# The `risk` in NoteTree `code`
+# The `risk` in TermTree `code`
 
 The risk statement, like unsafe in rust.
 

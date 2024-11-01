@@ -1,4 +1,4 @@
-# The NoteTree Book
+# The TermTree Book
 
 - [Foreword](foreword.md)
 - [Introduction](introduction.md)

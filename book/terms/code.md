@@ -1,4 +1,4 @@
-# The `code` file in NoteTree
+# The `code` file in TermTree
 
 The `code` file is a type of file where you can do all of the standard
 "programming" things, such as defining types and writing functions and

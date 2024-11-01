@@ -1,6 +1,6 @@
-# Words in NoteTree
+# Words in TermTree
 
-In NoteTree, there is a design principle that suggests using four-letter
+In TermTree, there is a design principle that suggests using four-letter
 words with no drooping letters for the terms and APIs within the
 language. This paradigm aims to promote a specific naming convention and
 reduce the overall API surface by enforcing a consistent pattern.
@@ -18,8 +18,8 @@ and aesthetically pleasing code style, which can contribute to code
 readability and maintainability.
 
 However, it's important to note that while this paradigm is encouraged
-within the NoteTree language itself, it may not necessarily apply to
-custom DSLs built on top of NoteTree. When implementing your own DSLs,
+within the TermTree language itself, it may not necessarily apply to
+custom DSLs built on top of TermTree. When implementing your own DSLs,
 you have the freedom to choose the naming patterns that best suit your
 specific domain or requirements.
 
@@ -27,11 +27,11 @@ Ultimately, the decision to adhere to a specific naming convention, such
 as using four-letter words with no drooping letters, depends on the
 goals, principles, and preferences of the language designers and the
 community using the language. It's a design choice that aims to create a
-unique and consistent coding experience within the NoteTree ecosystem.
+unique and consistent coding experience within the TermTree ecosystem.
 
 ## Word List
 
-Here is the collected valid word list which can be used in main NoteTree
+Here is the collected valid word list which can be used in main TermTree
 library projects.
 
 ```
@@ -374,7 +374,7 @@ soak
 sole
 soot
 sort
-NoteTree
+TermTree
 stem
 stew
 stir

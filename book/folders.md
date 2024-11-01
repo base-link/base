@@ -1,4 +1,4 @@
-# Folder Structure in NoteTree
+# Folder Structure in TermTree
 
 The "index" file for a folder is called `note.tree` (you'll notice many
 of those in the repo already). This is how we name it, like `index.js`.

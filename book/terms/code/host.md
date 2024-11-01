@@ -1,4 +1,4 @@
-# The `host` in NoteTree `code`
+# The `host` in TermTree `code`
 
 Hosts are basically namespaces or bindings to values. Basically they are
 defining constants.

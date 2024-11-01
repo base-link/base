@@ -1,11 +1,11 @@
-# Semantic Versioning in NoteTree
+# Semantic Versioning in TermTree
 
 Semantic Versioning ([Semver](https://devhints.io/semver)) is a widely
 adopted versioning scheme for software libraries and packages. It
 provides a consistent way to express and manage dependencies based on
-version numbers. In NoteTree, you can define specific version ranges
+version numbers. In TermTree, you can define specific version ranges
 using the Link code syntax within the deck file. Let's explore various
-examples of Semver ranges and their corresponding NoteTree
+examples of Semver ranges and their corresponding TermTree
 representations.
 
 ## Defining Specific Versions
@@ -31,7 +31,7 @@ the minor and patch versions.
 
 Semver allows you to define version ranges to specify a broader set of
 acceptable versions. Here are some examples of version range definitions
-in NoteTree.
+in TermTree.
 
 ### `1.2 - 2.3.0`
 

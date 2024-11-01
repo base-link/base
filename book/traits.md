@@ -1,4 +1,4 @@
-# Traits in NoteTree
+# Traits in TermTree
 
 In Rust we have:
 

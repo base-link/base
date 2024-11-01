@@ -1,4 +1,4 @@
-# The `zone` file in NoteTree
+# The `zone` file in TermTree
 
 The `zone` is a UI component, which could be an actual `slab` (a visual
 element), or a meta component which doesn't have any visual

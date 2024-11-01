@@ -1,4 +1,4 @@
-# The `need` in NoteTree `code`
+# The `need` in TermTree `code`
 
 This is for imports from external native libraries, like Swift libraries
 or Node.js modules.

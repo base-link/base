@@ -1,4 +1,4 @@
-# Package Manager Internals in NoteTree
+# Package Manager Internals in TermTree
 
 This is the package manager section basically, the first prototype
 implemented in TypeScript. The goal is to eventually have it built using
@@ -265,9 +265,9 @@ When you add new dependencies, it runs a new vercel build. Otherwise it
 runs against the vercel code.
 
 ```
-NoteTreeShow (project name)
+TermTreeShow (project name)
 
-MakeNoteTree (project name)
+MakeTermTree (project name)
 
 make.note.surf/@termsurf/buck-1234
   Shows the rendering
@@ -640,14 +640,14 @@ There is an in-memory cache of the modules. It saves the modules
 
 https://betterprogramming.pub/a-memory-friendly-way-of-reading-files-in-node-js-a45ad0cc7bb6
 
-On NoteTreet the dev server, read each file's hash using streaming API
+On TermTreet the dev server, read each file's hash using streaming API
 or fs.read directly with shared memory buffer. Find all the old files
 using each hash, those files you don't have to recompile. Find the new
 files because they didn't exist in the cache, and compile those. Find
 the removed files because the cache contained extra files that weren't
 found in the new hash set. Remove those from the cache.
 
-NoteTreet the dev server, when a file renamed, clear the cache and add
+TermTreet the dev server, when a file renamed, clear the cache and add
 the new value.
 
 link: hash
@@ -708,13 +708,13 @@ async function readBytes(fh, sharedBuffer) {
   return await fh.read(sharedBuffer, 0, sharedBuffer.length, null)
 }
 
-const NoteTreet = new Date()
+const TermTreet = new Date()
 
 const str = []
 
 main().then(() => {
   const end = new Date()
-  console.log(end - NoteTreet)
+  console.log(end - TermTreet)
 })
 
 async function main() {

@@ -1,4 +1,4 @@
-# JSON in NoteTree
+# JSON in TermTree
 
 ```
 load @termsurf/moon/json

@@ -1,24 +1,24 @@
-# Main Libraries in NoteTree
+# Main Libraries in TermTree
 
-These are open source building blocks used to make up the NoteTree
-framework. Calling NoteTree a framework is kind of a misnomer, it is
+These are open source building blocks used to make up the TermTree
+framework. Calling TermTree a framework is kind of a misnomer, it is
 basically the minimal set of conventions for building packages.
 
-1. `@termsurf/bind`: The NoteTree Environment Binding Library
-1. `@termsurf/note`: The NoteTree Data Type Library
-1. `@termsurf/moon`: The NoteTree Environment Tooling Library
-1. `@termsurf/hare`: The NoteTree Data Structure Library
-1. `@termsurf/worm`: The NoteTree Content Grammar Library
-1. `@termsurf/mesh`: The NoteTree Compiler Library
-1. `@termsurf/fish`: The NoteTree Linting Library
-1. `@termsurf/wolf`: The NoteTree File Manipulation Library
-1. `@termsurf/NoteTree`: The NoteTree Third-Party Integration Library
-1. `@termsurf/crow`: The NoteTree Drawing Library
-1. `@termsurf/nest`: The NoteTree Resource Provisioning Library
-1. `@termsurf/snow`: The NoteTree Querying Library
-1. `@termsurf/door`: The NoteTree Permission Library
-1. `@termsurf/seed`: The NoteTree Math Library
-1. `@termsurf/tree`: The NoteTree DSL Library
+1. `@termsurf/bind`: The TermTree Environment Binding Library
+1. `@termsurf/note`: The TermTree Data Type Library
+1. `@termsurf/moon`: The TermTree Environment Tooling Library
+1. `@termsurf/hare`: The TermTree Data Structure Library
+1. `@termsurf/worm`: The TermTree Content Grammar Library
+1. `@termsurf/mesh`: The TermTree Compiler Library
+1. `@termsurf/fish`: The TermTree Linting Library
+1. `@termsurf/wolf`: The TermTree File Manipulation Library
+1. `@termsurf/TermTree`: The TermTree Third-Party Integration Library
+1. `@termsurf/crow`: The TermTree Drawing Library
+1. `@termsurf/nest`: The TermTree Resource Provisioning Library
+1. `@termsurf/snow`: The TermTree Querying Library
+1. `@termsurf/door`: The TermTree Permission Library
+1. `@termsurf/seed`: The TermTree Math Library
+1. `@termsurf/tree`: The TermTree DSL Library
 
 ## `@termsurf/bind`
 
@@ -78,7 +78,7 @@ This is for parsing and writing text and/or bytes.
 
 ## `@termsurf/mesh`
 
-This is the main NoteTree compiler. It takes input text and compiles it
+This is the main TermTree compiler. It takes input text and compiles it
 to a mesh, then runs typechecking / typeinference on it and everything,
 and outputs builds for target environments.
 
@@ -104,7 +104,7 @@ This is for dealing with different files. It includes:
 - HTML
 - CSS
 
-## `@termsurf/NoteTree`
+## `@termsurf/TermTree`
 
 This is for third-party library integrations like with GitHub and
 Vercel.

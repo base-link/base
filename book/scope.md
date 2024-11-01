@@ -1,4 +1,4 @@
-# Scope in NoteTree
+# Scope in TermTree
 
 A "card" (module/file) has access to these variables within its scope:
 

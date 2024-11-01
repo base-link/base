@@ -6,7 +6,7 @@
 ```
 https://note.surf/@termsurf/note/book
   /introduction
-  /getting-NoteTreeted
+  /getting-TermTreeted
     /installation
     /hello-world
 ```
@@ -43,7 +43,7 @@ note make code text
 ```
 /book
   /introduction
-  /getting-NoteTreeted
+  /getting-TermTreeted
     /modeling
     /contributing
     /development

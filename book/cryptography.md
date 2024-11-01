@@ -1,4 +1,4 @@
-# Cryptography in NoteTree
+# Cryptography in TermTree
 
 ```
 load @termsurf/note/code/base/cryptography/md5

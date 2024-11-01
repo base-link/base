@@ -1,4 +1,4 @@
-## The `mint` in NoteTree
+## The `mint` in TermTree
 
 Here's an example:
 

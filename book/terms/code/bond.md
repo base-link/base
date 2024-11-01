@@ -1,4 +1,4 @@
-# The bond in NoteTree `code`
+# The bond in TermTree `code`
 
 ### `loan`
 

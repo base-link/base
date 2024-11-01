@@ -1,4 +1,4 @@
-# The `line` file in NoteTree
+# The `line` file in TermTree
 
 ```
 # file named foo.note

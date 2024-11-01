@@ -1,4 +1,4 @@
-# Iterators in NoteTree
+# Iterators in TermTree
 
 Rust defines an iterator like this:
 

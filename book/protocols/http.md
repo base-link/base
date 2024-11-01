@@ -1,4 +1,4 @@
-# HTTP Stuff in NoteTree
+# HTTP Stuff in TermTree
 
 ```
 cast create-user

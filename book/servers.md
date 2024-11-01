@@ -1,4 +1,4 @@
-# Defining a Server in NoteTree
+# Defining a Server in TermTree
 
 ```
 load @termsurf/nest
