@@ -33,12 +33,12 @@ most up-to-date examples and outlines of how this might end up working._
 ## Installation
 
 ```
-pnpm add @termsurf/note -g
+pnpm add @termsurf/term -g
 ```
 
 ## Dependencies
 
-NoteText is aimed to be built as a set of APIs, which you can swap out
+TermTree is aimed to be built as a set of APIs, which you can swap out
 the implementation for (as ones figure out more optimal approaches, like
 how normal software tools evolve generation after generation). But we
 will have a default set of implementations to start.
