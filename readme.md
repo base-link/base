@@ -68,7 +68,7 @@ import from that.
 Ignore the key folders in `.gitignore`:
 
 ```.gitignore
-/.note  # compiled helper folder
+/.term  # compiled helper folder
 /bind   # environment variables
 /hold   # temporary folder
 /host   # generated content folder
@@ -79,7 +79,7 @@ Here is how a monolithic app might be structured:
 
 ```
 /.gitignore
-/.note
+/.term
 /term.tree
 /bind # env variables, don't commit
   /test.tree
