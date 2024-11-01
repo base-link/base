@@ -7,7 +7,7 @@
 - [DSLs](dsls.md)
 - [Semantics](semantics.md)
 - [Packages](packages.md)
-  - Details
+- [Types](types.md)
 - [Libraries](libraries.md)
 - [Folders](folders.md)
 - [Errors](errors.md)
