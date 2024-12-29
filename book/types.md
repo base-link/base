@@ -17,18 +17,19 @@
 | 13     | `Ins`       | `site` | self instance                      |
 | 14     | `Sub`       | `diff` | substitution                       |
 | 15     | `Jmp`       | `move` | jump                               |
-| 16     | `Hlt`       | `halt` | exit                               |
-| 17     | `Ret`       | `back` | return type                        |
-| 18     | `Lop`       | `walk` | loop                               |
-| 19     | `Mat`/`Swi` | `case` | pattern matching/switching/if-then |
-| 20     | `Bit`       | `wave` | bit                                |
-| 21     | `Lst`       | `list` | list/array                         |
-| 22     | `Hol`       | `hole` | IO                                 |
+| 16     | `Ret`       | `back` | return type                        |
+| 17     | `Lop`       | `walk` | loop                               |
+| 18     | `Mat`/`Swi` | `case` | pattern matching/switching/if-then |
+| 19     | `Bit`       | `wave` | bit                                |
+| 20     | `Lst`       | `list` | list/array                         |
+| 21     | `Hol`       | `hole` | placeholder                        |
+| 22     | `Mon`       | `work` | IO                                 |
 
 ## Expanded
 
 | academic | term        | explanation              |
 | :------- | :---------- | :----------------------- |
+| `Hlt`    | `halt`      | exit                     |
 | `Num`    | `size`      | number                   |
 | `Flt`    | `fill`      | floating point           |
 | `Txt`    | `text`      | text/string              |

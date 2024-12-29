@@ -4,7 +4,7 @@
 - https://doc.rust-lang.org/book/
 
 ```
-https://note.surf/@termsurf/note/book
+https://note.surf/@cluesurf/note/book
   /introduction
   /getting-TermTreeted
     /installation
@@ -12,20 +12,20 @@ https://note.surf/@termsurf/note/book
 ```
 
 ```
-https://note.surf/@termsurf/note/team
-https://note.surf/@termsurf/note/book/:file+
-https://note.surf/@termsurf/note/text/:file+ # docs
-https://note.surf/@termsurf/note/tree/:file+
-https://note.surf/@termsurf/note/mark # versions
-https://note.surf/@termsurf/note/1.2.3/tree/:file+
+https://note.surf/@cluesurf/note/team
+https://note.surf/@cluesurf/note/book/:file+
+https://note.surf/@cluesurf/note/text/:file+ # docs
+https://note.surf/@cluesurf/note/tree/:file+
+https://note.surf/@cluesurf/note/mark # versions
+https://note.surf/@cluesurf/note/1.2.3/tree/:file+
 ```
 
 ```
-https://deck.note.surf/@termsurf/note/1.2.3/base.note
-https://deck.note.surf/@termsurf/note/1.2.3/base.tar.gz
-https://deck.note.surf/@termsurf/note/1.2.3/book
-https://deck.note.surf/@termsurf/note/1.2.3/code
-https://deck.note.surf/@termsurf/note/1.2.3/tree
+https://deck.note.surf/@cluesurf/note/1.2.3/base.note
+https://deck.note.surf/@cluesurf/note/1.2.3/base.tar.gz
+https://deck.note.surf/@cluesurf/note/1.2.3/book
+https://deck.note.surf/@cluesurf/note/1.2.3/code
+https://deck.note.surf/@cluesurf/note/1.2.3/tree
 ```
 
 ```

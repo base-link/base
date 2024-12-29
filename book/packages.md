@@ -102,8 +102,8 @@ it is just built into the compiler, the specific ways different file
 types are handled.
 
 ```
-https://note.surf/@termsurf/note/head/deck.tree
-https://note.surf/@termsurf/note/1.2.3/deck.tree
+https://note.surf/@cluesurf/note/head/deck.tree
+https://note.surf/@cluesurf/note/1.2.3/deck.tree
 ```
 
 Limit to 256mb decks.
@@ -127,8 +127,8 @@ note host deck
 Stored on google cloud like:
 
 ```
-deck.note.surf/@termsurf/note/1.2.3/deck.tar.gz
-deck.note.surf/@termsurf/note/1.2.3/note.tree
+deck.note.surf/@cluesurf/note/1.2.3/deck.tar.gz
+deck.note.surf/@cluesurf/note/1.2.3/note.tree
 ```
 
 The `note.tree` gives us the metadata associated with the deck:
@@ -151,7 +151,7 @@ hash integrity
 ```
 
 If there are more than 256 downloads, it can't be deleted without
-reaching out to support at meet@term.surf.
+reaching out to support at meet@clue.surf.
 
 On publish to note.tree, once the package hits the server and streams
 the upload to google cloud, it generates the hash and saves the
@@ -179,19 +179,19 @@ The lockfile then loads the data:
 ```
 base <0.0.1>
 
-load @termsurf/moon
+load @cluesurf/moon
   mark <*>
   lock <0.0.1>
-load @termsurf/note
+load @cluesurf/note
   mark <*>
   lock <0.0.1>
-load @termsurf/wolf
+load @cluesurf/wolf
   mark <*>
   lock <0.0.1>
 
-link <@termsurf/wolf:0.0.1>
+link <@cluesurf/wolf:0.0.1>
   hash <sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==>
-  load @termsurf/note
+  load @cluesurf/note
     mark <0.0.1>
 ```
 
@@ -214,7 +214,7 @@ It stores a copy of the package readme.md and the deck file metadata for
 display in the UI.
 
 ```
-https://note.surf/@termsurf/note
+https://note.surf/@cluesurf/note
 ```
 
 Shows readme, with link to source.
@@ -234,7 +234,7 @@ For each version, it stores the readme and the metadata on the site in
 postgres, to render the website.
 
 ```
-https://note.surf/@termsurf/note/1.2.3
+https://note.surf/@cluesurf/note/1.2.3
 ```
 
 The registry chooses to not use URLs and instead use the `@` at sign to
@@ -248,10 +248,10 @@ The sandbox is basically a deck.
 https://codepen.io/ettrics/pen/WRbGRN
 
 ```
-note.surf/@termsurf/:deck/code/:file+
-note.surf/@termsurf/buck-1212 (4 letter word followed by numbers)
-note.surf/@termsurf/buck-1212/mark/:mark/code/:file+ (just the code)
-note.surf/@termsurf/buck-1212/mark/:mark/hint/:file+/task/create-something
+note.surf/@cluesurf/:deck/code/:file+
+note.surf/@cluesurf/buck-1212 (4 letter word followed by numbers)
+note.surf/@cluesurf/buck-1212/mark/:mark/code/:file+ (just the code)
+note.surf/@cluesurf/buck-1212/mark/:mark/hint/:file+/task/create-something
 ```
 
 Then the sandbox decks are marked as "sort make".
@@ -269,10 +269,10 @@ TermTreeShow (project name)
 
 MakeTermTree (project name)
 
-make.note.surf/@termsurf/buck-1234
+make.note.surf/@cluesurf/buck-1234
   Shows the rendering
-make.note.surf/@termsurf/buck-1234/hint/:file+
-make.note.surf/@termsurf/buck-1234/code/:file+
+make.note.surf/@cluesurf/buck-1234/hint/:file+
+make.note.surf/@cluesurf/buck-1234/code/:file+
 make.note.tree
   Try and share code
 note.surf/dock/vercel/back
@@ -399,13 +399,13 @@ There is a server which loads the source maps under `/link`:
 ```
 /make
   /link
-    /termsurf
+    /cluesurf
       /crow
         /1.0.23
           /code
             /note.tree
           /link
-            /termsurf
+            /cluesurf
               /wolf => /wolf/0.1.0
       /wolf
         /0.1.0
@@ -417,13 +417,13 @@ The server aliases to `./link` on the file system, as in:
 
 ```
 /link
-  /termsurf
+  /cluesurf
     /crow
       /1.0.23
         /code
           /note.tree
         /link
-          /termsurf
+          /cluesurf
             /wolf => /wolf/0.1.0
 ```
 
@@ -435,9 +435,9 @@ Specify the bundle groups with:
 ```
 deck @foo/bar
   band base
-    link @termsurf/note
-    link @termsurf/nest
-    link @termsurf/crow
+    link @cluesurf/note
+    link @cluesurf/nest
+    link @cluesurf/crow
 ```
 
 Map [multiple sources](https://www.bugsnag.com/blog/source-maps/) to one
@@ -449,13 +449,13 @@ There are source maps for Node.js too, and the compiler.
 
 So:
 
-- loading from ./code loads ./link/termsurf/crow
-- loading from ./link/termsurf/crow loads from
-  - /link/.tree/termsurf/crow/1.0.23
+- loading from ./code loads ./link/cluesurf/crow
+- loading from ./link/cluesurf/crow loads from
+  - /link/.tree/cluesurf/crow/1.0.23
 - that gets compiled into
-  - /link/.work/node_modules/termsurf/crow/index.js
+  - /link/.work/node_modules/cluesurf/crow/index.js
 - and that is actually a symlink to
-  - /link/.work/node_modules/.tree/termsurf+crow@1.0.23/node_modules/termsurf/crow/index.js
+  - /link/.work/node_modules/.tree/cluesurf+crow@1.0.23/node_modules/cluesurf/crow/index.js
 - so when we load ./link/.work/index.js, it loads from that last long
   path.
 - and the source map path is always relative to that long path.
@@ -465,7 +465,7 @@ sourcemaps):
 
 ```
 /tree
-  /termsurf
+  /cluesurf
     /crow
       /1.0.23
 
@@ -473,7 +473,7 @@ sourcemaps):
 
 /base
   /tree
-    /termsurf
+    /cluesurf
       /crow
         /1.0.23
 ```
@@ -527,17 +527,17 @@ public for the browser.
 /link
   /hint.tree
   /head
-    /termsurf
+    /cluesurf
       /crow # symlink to 1.0.23
   /tree
-    /termsurf
+    /cluesurf
       /crow
         /1.0.23
           /code
             /note.tree
           /base
             /link
-              /termsurf
+              /cluesurf
                 /wolf => wolf/0.1.3
       /wolf
         /0.1.3
@@ -555,18 +555,18 @@ public for the browser.
   /rake # organize the code
     /javascript
       /package.json
-        name: @termsurf/note
+        name: @cluesurf/note
         browser: ./browser/index.js
       /browser
         /hash.json
         /node_modules
           /.tree
-            /@termsurf
+            /@cluesurf
               /nest
                 /2.2.23
-          /@termsurf
+          /@cluesurf
             /nest
-          /@termsurf
+          /@cluesurf
             /base+shared
         /roll
           /hash+<hash-of-names>.js
@@ -575,10 +575,10 @@ public for the browser.
         /hash.json
         /node_modules
           /.tree
-            /@termsurf
+            /@cluesurf
               /nest
                 /2.2.23
-          /@termsurf
+          /@cluesurf
             /nest
         /roll
           /hash+<hash-of-names>.js
@@ -590,11 +590,11 @@ public for the browser.
         /index.js
         /node_modules
           /.tree
-            /termsurf+nest@2.2.23
+            /cluesurf+nest@2.2.23
               /node_modules
-                /@termsurf
+                /@cluesurf
                   /crow
-          /@termsurf
+          /@cluesurf
             /nest
         /roll
           /hash+<hash-of-names>.js
@@ -614,19 +614,19 @@ public for the browser.
         /index.js
         /node_modules
           /.tree
-            /termsurf+crow@1.0.23
+            /cluesurf+crow@1.0.23
               /node_modules
-                /@termsurf
+                /@cluesurf
                   /crow
                     /index.js
                       //# sourceMappingURL=index.js.map
                     /index.js.map
-                      => ../../../../../../../tree/termsurf/crow/1.0.23
+                      => ../../../../../../../tree/cluesurf/crow/1.0.23
                   /wolf
                     /index.js
-          /termsurf
+          /cluesurf
             /crow
-              /index.js # symlink to termsurf+crow@1.0.23/node_modules/termsurf/crow/base.js
+              /index.js # symlink to cluesurf+crow@1.0.23/node_modules/cluesurf/crow/base.js
 ```
 
 You could periodically check and clean the cache, every 16th change,
@@ -825,7 +825,7 @@ Based on if it is `sort tool` or `sort site`:
 ## Peer Dependencies
 
 ```
-link @termsurf/crow, mark <0.*>
+link @cluesurf/crow, mark <0.*>
   have 1 # singleton policy
 ```
 

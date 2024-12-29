@@ -1,7 +1,7 @@
 # JSON in TermTree
 
 ```
-load @termsurf/moon/json
+load @cluesurf/moon/json
   find seek
   find list
 

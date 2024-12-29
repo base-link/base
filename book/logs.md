@@ -6,7 +6,7 @@ You can do "log info" with the short show command.
 
 To log, you would do:
 
-    load @termsurf/wolf
+    load @cluesurf/wolf
       find show
 
     call show
@@ -18,7 +18,7 @@ Should print
     show <hello world>
       time <2023/07/10 04:32:01 pm utc>
       sort kink
-      deck <@termsurf/note>
+      deck <@cluesurf/note>
       term process-tag
 
 You also have:

@@ -1,5 +1,5 @@
 {
-  "name": "@termsurf/term",
+  "name": "@cluesurf/term",
   "main": "./host/hack/index.js",
   "type": "module",
   "version": "0.3.1",
@@ -46,7 +46,7 @@
   "dependencies": {
     "@babel/parser": "^7.22.5",
     "@babel/types": "^7.22.5",
-    "@termsurf/tree": "^1.1.3",
+    "@cluesurf/tree": "^1.1.3",
     "chalk": "^5.2.0",
     "colors": "^1.4.0",
     "commander": "^10.0.1",

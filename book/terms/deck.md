@@ -3,7 +3,7 @@
 A deck is a package, and this is how you define the package metadata.
 
 ```
-deck @termsurf/deck
+deck @cluesurf/deck
   mark <0.0.1>
   head <A TreeCode Package Manager>
   term link-text
@@ -18,9 +18,9 @@ deck @termsurf/deck
   read ./book # also a default
   lock apache-2
   sort tool
-  link @termsurf/note, mark <0.x.x>
-  link @termsurf/nest, mark <0.x.x>
-  link @termsurf/crow, mark <0.x.x>
+  link @cluesurf/note, mark <0.x.x>
+  link @cluesurf/nest, mark <0.x.x>
+  link @cluesurf/crow, mark <0.x.x>
   load work
   load host
 ```

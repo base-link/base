@@ -7,12 +7,12 @@
 <br/>
 
 <p align='center'>
-  <img src='https://github.com/termsurf/term.tree/blob/make/view/tree.gif?raw=true' height='192'/>
+  <img src='https://github.com/cluesurf/term.tree/blob/make/view/tree.gif?raw=true' height='192'/>
 </p>
 
 <h3 align='center'>term.tree</h3>
 <p align='center'>
-  A <a href="https://github.com/termsurf/tree">TreeCode</a> Programming Framework
+  A <a href="https://github.com/cluesurf/tree">TreeCode</a> Programming Framework
 </p>
 
 <br/>
@@ -27,13 +27,13 @@ collection of packages with API ideas. The long term goal is to now get
 this working :).
 
 _Check out the
-"[Book](https://github.com/termsurf/term.tree/tree/make/book)" for the
+"[Book](https://github.com/cluesurf/term.tree/tree/make/book)" for the
 most up-to-date examples and outlines of how this might end up working._
 
 ## Installation
 
 ```
-pnpm add @termsurf/term -g
+pnpm add @cluesurf/term -g
 ```
 
 ## Dependencies
@@ -45,19 +45,19 @@ will have a default set of implementations to start.
 
 | Package                                              | Description                                                                                                                                                                                                                                                                                                                  |
 | :--------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`case.tree`](https://github.com/termsurf/case.tree) | **Environment Binding Library.** This library will provide all the types for the base native runtimes (JavaScript, Swift, etc.).                                                                                                                                                                                             |
-| [`base.tree`](https://github.com/termsurf/base.tree) | **Environment Tooling Library.** This will provide the main data types on top of the environment and all the standard functions. This will also include APIs for all the extra interfaces of the environment (cameras, flashlight, etc.).                                                                                    |
-| [`link.tree`](https://github.com/termsurf/link.tree) | **Third-Party API Integration Library.** This will provide integration with common third-party REST APIs and the like.                                                                                                                                                                                                       |
-| [`feed.tree`](https://github.com/termsurf/feed.tree) | **Data Management Library.** This will manage GraphQL/SQL-like querying and manipulation of database records. As well as handling caching, messaging, queueing, logging, etc.. Basically all data transfer.                                                                                                                  |
-| [`text.tree`](https://github.com/termsurf/text.tree) | **Parsing Library.** These will be grammars used to parse text into ASTs, and generate text from ASTs.                                                                                                                                                                                                                       |
-| [`view.tree`](https://github.com/termsurf/view.tree) | **View Library.** This will be combined 2D and 3D graphics rendering for the web.                                                                                                                                                                                                                                            |
-| [`make.tree`](https://github.com/termsurf/make.tree) | **Compiler.** This will do typechecking and compile the code to output runtimes. This will also do regular code linting and formatting (like prettier and ESLint). And it will allow for debugging and setting breakpoints, all from within the same AST and compilation scope. Finally, it will contain the runtime module. |
-| [`deck.tree`](https://github.com/termsurf/deck.tree) | **Package Management Library.** This will handle resolving, fetching, and publishing packages.                                                                                                                                                                                                                               |
-| [`host.tree`](https://github.com/termsurf/host.tree) | **Resource Provisioning Framework.** This will be like working with terraform modules to deploy and manage infrastructure.                                                                                                                                                                                                   |
-| [`test.tree`](https://github.com/termsurf/test.tree) | **Testing Library.** The framework and tooling to run unit and integration tests.                                                                                                                                                                                                                                            |
-| [`form.tree`](https://github.com/termsurf/form.tree) | **Math Definition Library.** This will ideally contain models for the foundations of math.                                                                                                                                                                                                                                   |
-| [`lock.tree`](https://github.com/termsurf/lock.tree) | **Security Framework**. All auth and security protocols go here.                                                                                                                                                                                                                                                             |
-| [`site.tree`](https://github.com/termsurf/site.tree) | **Application Framework**. A web application framework like Next.js or Ruby on Rails.                                                                                                                                                                                                                                        |
+| [`case.tree`](https://github.com/cluesurf/case.tree) | **Environment Binding Library.** This library will provide all the types for the base native runtimes (JavaScript, Swift, etc.).                                                                                                                                                                                             |
+| [`base.tree`](https://github.com/cluesurf/base.tree) | **Environment Tooling Library.** This will provide the main data types on top of the environment and all the standard functions. This will also include APIs for all the extra interfaces of the environment (cameras, flashlight, etc.).                                                                                    |
+| [`link.tree`](https://github.com/cluesurf/link.tree) | **Third-Party API Integration Library.** This will provide integration with common third-party REST APIs and the like.                                                                                                                                                                                                       |
+| [`feed.tree`](https://github.com/cluesurf/feed.tree) | **Data Management Library.** This will manage GraphQL/SQL-like querying and manipulation of database records. As well as handling caching, messaging, queueing, logging, etc.. Basically all data transfer.                                                                                                                  |
+| [`text.tree`](https://github.com/cluesurf/text.tree) | **Parsing Library.** These will be grammars used to parse text into ASTs, and generate text from ASTs.                                                                                                                                                                                                                       |
+| [`view.tree`](https://github.com/cluesurf/view.tree) | **View Library.** This will be combined 2D and 3D graphics rendering for the web.                                                                                                                                                                                                                                            |
+| [`make.tree`](https://github.com/cluesurf/make.tree) | **Compiler.** This will do typechecking and compile the code to output runtimes. This will also do regular code linting and formatting (like prettier and ESLint). And it will allow for debugging and setting breakpoints, all from within the same AST and compilation scope. Finally, it will contain the runtime module. |
+| [`deck.tree`](https://github.com/cluesurf/deck.tree) | **Package Management Library.** This will handle resolving, fetching, and publishing packages.                                                                                                                                                                                                                               |
+| [`host.tree`](https://github.com/cluesurf/host.tree) | **Resource Provisioning Framework.** This will be like working with terraform modules to deploy and manage infrastructure.                                                                                                                                                                                                   |
+| [`test.tree`](https://github.com/cluesurf/test.tree) | **Testing Library.** The framework and tooling to run unit and integration tests.                                                                                                                                                                                                                                            |
+| [`form.tree`](https://github.com/cluesurf/form.tree) | **Math Definition Library.** This will ideally contain models for the foundations of math.                                                                                                                                                                                                                                   |
+| [`lock.tree`](https://github.com/cluesurf/lock.tree) | **Security Framework**. All auth and security protocols go here.                                                                                                                                                                                                                                                             |
+| [`site.tree`](https://github.com/cluesurf/site.tree) | **Application Framework**. A web application framework like Next.js or Ruby on Rails.                                                                                                                                                                                                                                        |
 | `chat.tree`                                          | **Natural Language Library.** This will contain tools for working with spoken languages and writing systems.                                                                                                                                                                                                                 |
 
 All of these are wrapped into the singular `term.tree` library, and you
@@ -256,7 +256,7 @@ The output is typed as a standard AST in each language.
 
 ## License
 
-Copyright 2021-2024 <a href='https://term.surf'>TermSurf</a>
+Copyright 2021-2024 <a href='https://clue.surf'>ClueSurf</a>
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may
 not use this file except in compliance with the License. You may obtain
@@ -270,11 +270,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-## TermSurf
+## ClueSurf
 
-This is being developed by the folks at [TermSurf](https://term.surf), a
+This is being developed by the folks at [ClueSurf](https://clue.surf), a
 California-based project for helping humanity master information and
-computation. Find us on [Twitter](https://twitter.com/termsurf),
-[LinkedIn](https://www.linkedin.com/company/termsurf), and
-[Facebook](https://www.facebook.com/termsurf). Check out our other
-[GitHub projects](https://github.com/termsurf) as well!
+computation. Find us on [Twitter](https://twitter.com/cluesurf),
+[LinkedIn](https://www.linkedin.com/company/cluesurf), and
+[Facebook](https://www.facebook.com/cluesurf). Check out our other
+[GitHub projects](https://github.com/cluesurf) as well!

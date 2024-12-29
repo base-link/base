@@ -2,7 +2,7 @@
 
 ## How parsing works
 
-Given the TreeCode (a data structure produced by the `@termsurf/tree`
+Given the TreeCode (a data structure produced by the `@cluesurf/tree`
 parser), it processes it. If it encounters interpolation, it skips over
 it and waits for it to be resolved before continuing back where it left
 off. This is the `mine` step.

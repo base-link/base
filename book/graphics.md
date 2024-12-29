@@ -3,7 +3,7 @@
 Here is a hello world graphics rendering in TermTree.
 
 ```
-load @termsurf/crow
+load @cluesurf/crow
   find draw
   find square
 
